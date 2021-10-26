@@ -94,7 +94,7 @@ public class RegisterFragment extends Fragment {
 
     @Override
     public View onCreateView(final LayoutInflater theInflater, final ViewGroup theContainer,
-                             Bundle savedInstanceState) {
+                             final Bundle theSavedInstanceState) {
         binding = FragmentRegisterBinding.inflate(theInflater);
         return binding.getRoot();
     }

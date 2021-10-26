@@ -48,7 +48,7 @@ public class RegisterViewModel extends AndroidViewModel {
      * @param theApplication the Application this ViewModel belongs to
      * @throws NullPointerException if theApplication is null
      */
-    public RegisterViewModel(@NonNull Application theApplication) {
+    public RegisterViewModel(@NonNull final Application theApplication) {
         super(Objects.requireNonNull(theApplication, "theApplication can not be null"));
         mResponse = new MutableLiveData<>();
         mResponse.setValue(new JSONObject());
@@ -62,15 +62,15 @@ public class RegisterViewModel extends AndroidViewModel {
      * @throws NullPointerException if theOwner is null
      * @throws NullPointerException if theObserver is null
      */
-    public void addResponseObserver(@NonNull LifecycleOwner theOwner,
-                                    @NonNull Observer<? super JSONObject> theObserver) {
+    public void addResponseObserver(@NonNull final LifecycleOwner theOwner,
+                                    @NonNull final Observer<? super JSONObject> theObserver) {
         Objects.requireNonNull(theOwner, "theOwner can not be null");
         Objects.requireNonNull(theObserver, "theObserver can not be null");
         mResponse.observe(theOwner, theObserver);
     }
 
     /**
-     * Completes the actions required when an error occurs during a http request to the server.
+     * Completes the actions required when an error occurs during a HTTP request to the server.
      *
      * @param theError the error that occurred
      */
@@ -106,6 +106,10 @@ public class RegisterViewModel extends AndroidViewModel {
      * @param theLast the new account's last name
      * @param theEmail the new account's email
      * @param thePassword the new account's password
+     * @throws NullPointerException if theFirst is null
+     * @throws NullPointerException if theLast is null
+     * @throws NullPointerException if theEmail is null
+     * @throws NullPointerException if thePassword is null
      */
     public void connect(@NonNull final String theFirst,
                         @NonNull final String theLast,
