@@ -86,21 +86,22 @@ public class RegisterFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(@Nullable Bundle theSavedInstanceState) {
+    public void onCreate(@Nullable final Bundle theSavedInstanceState) {
         super.onCreate(theSavedInstanceState);
         mRegisterModel = new ViewModelProvider(getActivity())
                 .get(RegisterViewModel.class);
     }
 
     @Override
-    public View onCreateView(LayoutInflater theInflater, ViewGroup theContainer,
+    public View onCreateView(final LayoutInflater theInflater, final ViewGroup theContainer,
                              Bundle savedInstanceState) {
         binding = FragmentRegisterBinding.inflate(theInflater);
         return binding.getRoot();
     }
 
     @Override
-    public void onViewCreated(@NonNull View theView, @Nullable Bundle theSavedInstanceState) {
+    public void onViewCreated(@NonNull final View theView,
+                              @Nullable final Bundle theSavedInstanceState) {
         super.onViewCreated(theView, theSavedInstanceState);
 
         binding.buttonRegister.setOnClickListener(this::attemptRegister);

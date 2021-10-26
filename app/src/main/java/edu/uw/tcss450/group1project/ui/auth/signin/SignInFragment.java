@@ -1,3 +1,8 @@
+/*
+ * TCSS450 Mobile Applications
+ * Fall 2021
+ */
+
 package edu.uw.tcss450.group1project.ui.auth.signin;
 
 import static edu.uw.tcss450.group1project.utils.PasswordValidator.*;
@@ -22,42 +27,67 @@ import edu.uw.tcss450.group1project.databinding.FragmentSignInBinding;
 import edu.uw.tcss450.group1project.utils.PasswordValidator;
 
 /**
- * A simple {@link Fragment} subclass.
+ * A {@link Fragment} subclass that handles input and output
+ * when the user is attempting to register for the app.
+ *
+ * @author Charles Bryan
+ * @author Austn Attaway
+ * @version Fall 2021
  */
 public class SignInFragment extends Fragment {
 
+    /** ViewBinding reference to the Sign in Fragment UI */
     private FragmentSignInBinding binding;
+
+    /** ViewModel used for sign in */
     private SignInViewModel mSignInModel;
 
+    /**
+     * A {@link PasswordValidator} dedicated to validating the user's inputted email
+     * text on the sign in page.
+     *
+     * The email text will be considered valid if the length of the given text
+     * is greater than 2, does not include whitespace, and includes the '@' character.
+     */
     private PasswordValidator mEmailValidator = checkPwdLength(2)
             .and(checkExcludeWhiteSpace())
             .and(checkPwdSpecialChar("@"));
 
+    /**
+     * A {@link PasswordValidator} dedicated to validating the user's inputted password
+     * text on the sign in page.
+     *
+     * The password is considered valid if the length of the given text
+     * is greater than one does not include whitespace.
+     */
     private PasswordValidator mPassWordValidator = checkPwdLength(1)
             .and(checkExcludeWhiteSpace());
 
+    /**
+     * Empty public constructor. Does not provide any functionality.
+     */
     public SignInFragment() {
         // Required empty public constructor
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onCreate(@Nullable final Bundle theSavedInstanceState) {
+        super.onCreate(theSavedInstanceState);
         mSignInModel = new ViewModelProvider(getActivity())
                 .get(SignInViewModel.class);
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(final LayoutInflater theInflater, final ViewGroup theContainer,
                              Bundle savedInstanceState) {
-        binding = FragmentSignInBinding.inflate(inflater);
+        binding = FragmentSignInBinding.inflate(theInflater);
         // Inflate the layout for this fragment
         return binding.getRoot();
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onViewCreated(@NonNull final View theView, @Nullable final Bundle savedInstanceState) {
+        super.onViewCreated(theView, savedInstanceState);
 
         binding.buttonToRegister.setOnClickListener(button ->
             Navigation.findNavController(getView()).navigate(
@@ -75,10 +105,22 @@ public class SignInFragment extends Fragment {
         binding.editPassword.setText(args.getPassword().equals("default") ? "" : args.getPassword());
     }
 
-    private void attemptSignIn(final View button) {
+    /**
+     * Starts the chain of text field validation that attempts to validate
+     * all sign in text input fields.
+     *
+     * @param theButton the Button that was pressed to invoke this method.
+     */
+    private void attemptSignIn(final View theButton) {
         validateEmail();
     }
 
+    /**
+     * Attempts to validate the text inputted for the user's email.
+     *
+     * If the validation succeeds, attempts to validate the password.
+     * Else, sets an error text on the email field that requests they enter a valid email.
+     */
     private void validateEmail() {
         mEmailValidator.processResult(
                 mEmailValidator.apply(binding.editEmail.getText().toString().trim()),
@@ -86,6 +128,12 @@ public class SignInFragment extends Fragment {
                 result -> binding.editEmail.setError("Please enter a valid Email address."));
     }
 
+    /**
+     * Attempts to validate that the inputted password is valid.
+     *
+     * If the validation succeeds, verify all of the credentials with the server.
+     * Else, sets an error on the first password field asking the user to input a valid password.
+     */
     private void validatePassword() {
         mPassWordValidator.processResult(
                 mPassWordValidator.apply(binding.editPassword.getText().toString()),
@@ -93,6 +141,10 @@ public class SignInFragment extends Fragment {
                 result -> binding.editPassword.setError("Please enter a valid Password."));
     }
 
+    /**
+     * Asynchronously attempts to sign into the app on the server with the information
+     * given in the sign in text fields.
+     */
     private void verifyAuthWithServer() {
         mSignInModel.connect(
                 binding.editEmail.getText().toString(),
@@ -103,36 +155,37 @@ public class SignInFragment extends Fragment {
 
     /**
      * Helper to abstract the navigation to the Activity past Authentication.
-     * @param email users email
-     * @param jwt the JSON Web Token supplied by the server
+     *
+     * @param theEmail the user's email
+     * @param theJwt the JSON Web Token supplied by the server
      */
-    private void navigateToSuccess(final String email, final String jwt) {
+    private void navigateToSuccess(final String theEmail, final String theJwt) {
         Navigation.findNavController(getView())
                 .navigate(SignInFragmentDirections
-                        .actionLoginFragmentToMainActivity(email, jwt));
+                        .actionLoginFragmentToMainActivity(theEmail, theJwt));
     }
 
     /**
      * An observer on the HTTP Response from the web server. This observer should be
      * attached to SignInViewModel.
      *
-     * @param response the Response from the server
+     * @param theResponse the Response from the server
      */
-    private void observeResponse(final JSONObject response) {
-        if (response.length() > 0) {
-            if (response.has("code")) {
+    private void observeResponse(final JSONObject theResponse) {
+        if (theResponse.length() > 0) {
+            if (theResponse.has("code")) {
                 try {
                     binding.editEmail.setError(
                             "Error Authenticating: " +
-                                    response.getJSONObject("data").getString("message"));
-                } catch (JSONException e) {
-                    Log.e("JSON Parse Error", e.getMessage());
+                                    theResponse.getJSONObject("data").getString("message"));
+                } catch (JSONException exception) {
+                    Log.e("JSON Parse Error", exception.getMessage());
                 }
             } else {
                 try {
                     navigateToSuccess(
                             binding.editEmail.getText().toString(),
-                            response.getString("token")
+                            theResponse.getString("token")
                     );
                 } catch (JSONException e) {
                     Log.e("JSON Parse Error", e.getMessage());
