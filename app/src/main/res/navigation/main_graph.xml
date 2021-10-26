@@ -3,11 +3,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_graph"
-    app:startDestination="@id/homeFragment">
+    app:startDestination="@id/navigation_home">
 
     <fragment
-        android:id="@+id/homeFragment"
-        android:name="edu.uw.tcss450.group1project.ui.HomeFragment"
-        android:label="fragment_home"
+        android:id="@+id/navigation_home"
+        android:name="edu.uw.tcss450.group1project.ui.home.HomeFragment"
+        android:label="@string/title_home"
         tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@+id/navigation_contacts"
+        android:name="edu.uw.tcss450.group1project.ui.contacts.ContactsFragment"
+        android:label="@string/title_contacts"
+        tools:layout="@layout/fragment_contacts" />
+    <fragment
+        android:id="@+id/navigation_messages"
+        android:name="edu.uw.tcss450.group1project.ui.messages.MessagesFragment"
+        android:label="@string/title_messages"
+        tools:layout="@layout/fragment_messages" />
+    <fragment
+        android:id="@+id/navigation_weather"
+        android:name="edu.uw.tcss450.group1project.ui.weather.WeatherFragment"
+        android:label="@string/title_weather"
+        tools:layout="@layout/fragment_weather" />
 </navigation>
