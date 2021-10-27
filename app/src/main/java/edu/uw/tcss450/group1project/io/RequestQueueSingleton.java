@@ -1,3 +1,8 @@
+/*
+ * TCSS450 Mobile Applications
+ * Fall 2021
+ */
+
 package edu.uw.tcss450.group1project.io;
 
 import android.content.Context;
@@ -10,6 +15,15 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 
+// TODO: UPDATE/ADD DOCUMENTATION WHEN WE UNDERSTAND THIS BETTER
+
+/**
+ * A Request queue class for http requests.
+ *
+ * @author Charles Bryan
+ * @author Austn Attaway (added documentation)
+ * @version Fall 2021
+ */
 public class RequestQueueSingleton {
     private static RequestQueueSingleton instance;
     private static Context context;
