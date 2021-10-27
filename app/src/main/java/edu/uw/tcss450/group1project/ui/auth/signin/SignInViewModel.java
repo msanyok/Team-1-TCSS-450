@@ -40,9 +40,9 @@ public class SignInViewModel extends AndroidViewModel {
         mResponse.observe(owner, observer);
     }
 
-
-
-
+    public void clearResponse() {
+        mResponse.setValue(new JSONObject());
+    }
 
     private void handleError(final VolleyError error) {
         if (Objects.isNull(error.networkResponse)) {
