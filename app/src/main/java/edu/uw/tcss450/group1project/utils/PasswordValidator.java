@@ -28,6 +28,7 @@ public interface PasswordValidator
         return checkPwdLength(6);
     }
 
+    // TODO: this comment has some errors (should be greater than length, not 6)
     /**
      * Returns a validator that when applied will validate the length of the String as greater
      * than 6.

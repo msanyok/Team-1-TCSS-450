@@ -1,3 +1,8 @@
+/*
+ * TCSS450 Mobile Applications
+ * Fall 2021
+ */
+
 package edu.uw.tcss450.group1project.ui.auth.signin;
 
 import android.app.Application;
@@ -25,41 +30,74 @@ import java.util.Objects;
 
 import edu.uw.tcss450.group1project.io.RequestQueueSingleton;
 
+/**
+ * An {@link AndroidViewModel} child class that handles the data related to
+ * a user's registration.
+ *
+ * @author Charles Bryan
+ * @author Austn Attaway
+ * @version Fall 2021
+ */
 public class SignInViewModel extends AndroidViewModel {
 
+    /**
+     * The {@link MutableLiveData} that stores the JSON response from the server
+     * when the user tries to log in.
+     */
     private MutableLiveData<JSONObject> mResponse;
 
-    public SignInViewModel(@NonNull Application application) {
-        super(application);
+    /**
+     * Creates a new SignInViewModel that is tied to the given application.
+     *
+     * @param theApplication the Application this ViewModel belongs to
+     * @throws NullPointerException if theApplication is null
+     */
+    public SignInViewModel(@NonNull final Application theApplication) {
+        super(Objects.requireNonNull(theApplication, "theApplication can not be null"));
         mResponse = new MutableLiveData<>();
         mResponse.setValue(new JSONObject());
     }
 
-    public void addResponseObserver(@NonNull LifecycleOwner owner,
-                                    @NonNull Observer<? super JSONObject> observer) {
-        mResponse.observe(owner, observer);
+    /**
+     * Adds the given observer to the response live data.
+     *
+     * @param theOwner the lifecycle owner of the fragment that contains the observer
+     * @param theObserver the observer that is used when the response data changes state
+     * @throws NullPointerException if theOwner is null
+     * @throws NullPointerException if theObserver is null
+     */
+    public void addResponseObserver(@NonNull final LifecycleOwner theOwner,
+                                    @NonNull final Observer<? super JSONObject> theObserver) {
+        Objects.requireNonNull(theOwner, "theOwner can not be null");
+        Objects.requireNonNull(theObserver, "theObserver can not be null");
+        mResponse.observe(theOwner, theObserver);
     }
 
     public void clearResponse() {
         mResponse.setValue(new JSONObject());
     }
 
-    private void handleError(final VolleyError error) {
-        if (Objects.isNull(error.networkResponse)) {
+    /**
+     * Completes the actions required when an error occurs during a HTTP request to the server.
+     *
+     * @param theError the error that occurred
+     */
+    private void handleError(final VolleyError theError) {
+        if (Objects.isNull(theError.networkResponse)) {
             try {
                 mResponse.setValue(new JSONObject("{" +
-                        "error:\"" + error.getMessage() +
+                        "error:\"" + theError.getMessage() +
                         "\"}"));
             } catch (JSONException e) {
                 Log.e("JSON PARSE", "JSON Parse Error in handleError");
             }
         }
         else {
-            String data = new String(error.networkResponse.data, Charset.defaultCharset())
+            String data = new String(theError.networkResponse.data, Charset.defaultCharset())
                     .replace('\"', '\'');
             try {
                 JSONObject response = new JSONObject();
-                response.put("code", error.networkResponse.statusCode);
+                response.put("code", theError.networkResponse.statusCode);
                 response.put("data", new JSONObject(data));
                 mResponse.setValue(response);
             } catch (JSONException e) {
@@ -68,10 +106,23 @@ public class SignInViewModel extends AndroidViewModel {
         }
     }
 
-    public void connect(final String email, final String password) {
-        String url = "https://parker19-tcss450-labs.herokuapp.com/auth";
+    /**
+     * Sends an HTTP GET request to the server attempting to sign in
+     * to the account corresponding to the given email and password.
+     *
+     * @param theEmail the email the account is assigned to
+     * @param thePassword the password intended to correspond to the given email
+     * @throws NullPointerException if theEmail is null
+     * @throws NullPointerException if thePassword is null
+     */
+    public void connect(final String theEmail, final String thePassword) {
 
-        Request request = new JsonObjectRequest(
+        Objects.requireNonNull(theEmail, "theEmail can not be null");
+        Objects.requireNonNull(thePassword, "thePassword can not be null");
+
+        final String url = "https://parker19-tcss450-labs.herokuapp.com/auth";
+
+        final Request request = new JsonObjectRequest(
                 Request.Method.GET,
                 url,
                 null, //no body for this get request
@@ -81,7 +132,7 @@ public class SignInViewModel extends AndroidViewModel {
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
                 // add headers <key,value>
-                String credentials = email + ":" + password;
+                String credentials = theEmail + ":" + thePassword;
                 String auth = "Basic "
                         + Base64.encodeToString(credentials.getBytes(),
                         Base64.NO_WRAP);
@@ -97,6 +148,5 @@ public class SignInViewModel extends AndroidViewModel {
         RequestQueueSingleton.getInstance(getApplication().getApplicationContext())
                 .addToRequestQueue(request);
     }
-
 
 }
