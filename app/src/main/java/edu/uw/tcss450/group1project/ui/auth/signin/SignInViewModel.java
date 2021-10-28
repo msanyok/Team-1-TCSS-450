@@ -69,7 +69,7 @@ public class SignInViewModel extends AndroidViewModel {
     }
 
     public void connect(final String email, final String password) {
-        String url = "https://team-1-tcss-450-server.herokuapp.com/";
+        String url = "https://team-1-tcss-450-server.herokuapp.com/auth";
 
         Request request = new JsonObjectRequest(
                 Request.Method.GET,
