@@ -104,30 +104,34 @@ public class RegisterViewModel extends AndroidViewModel {
      *
      * @param theFirst the new account's first name
      * @param theLast the new account's last name
+     * @param theNickname the new account's nickname
      * @param theEmail the new account's email
      * @param thePassword the new account's password
      * @throws NullPointerException if theFirst is null
      * @throws NullPointerException if theLast is null
+     * @throws NullPointerException if theNickname is null
      * @throws NullPointerException if theEmail is null
      * @throws NullPointerException if thePassword is null
      */
     public void connect(@NonNull final String theFirst,
                         @NonNull final String theLast,
+                        @NonNull final String theNickname,
                         @NonNull final String theEmail,
                         @NonNull final String thePassword) {
 
         Objects.requireNonNull(theFirst, "theFirst can not be null");
         Objects.requireNonNull(theLast, "theLast can not be null");
+        Objects.requireNonNull(theNickname, "theNickname can not be null");
         Objects.requireNonNull(theEmail, "theEmail can not be null");
         Objects.requireNonNull(thePassword, "thePassword can not be null");
 
-        // TODO: UPDATE WITH GROUP PROJECT URL
-        final String url = "https://parker19-tcss450-labs.herokuapp.com/auth";
+        final String url = "https://team-1-tcss-450-server.herokuapp.com/auth";
 
         final JSONObject body = new JSONObject();
         try {
             body.put("first", theFirst);
             body.put("last", theLast);
+            body.put("nickname", theNickname);
             body.put("email", theEmail);
             body.put("password", thePassword);
         } catch (JSONException exception) {

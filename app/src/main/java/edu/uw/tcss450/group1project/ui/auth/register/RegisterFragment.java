@@ -39,13 +39,14 @@ import edu.uw.tcss450.group1project.utils.PasswordValidator;
 public class RegisterFragment extends Fragment {
 
     /** ViewBinding reference to the Register Fragment UI */
-    private FragmentRegisterBinding binding;
+    private FragmentRegisterBinding mBinding;
 
     /** ViewModel for registration */
     private RegisterViewModel mRegisterModel;
 
     /**
      * A {@link PasswordValidator} dedicated to validating the user's inputted name texts.
+     * Used for the first name, last name, and nickname.
      *
      * The name texts will be considered valid if the length of the given
      * text is greater than one.
@@ -71,7 +72,7 @@ public class RegisterFragment extends Fragment {
      * uppercase or lowercase letter.
      */
     private PasswordValidator mPassWordValidator =
-            checkClientPredicate(pwd -> pwd.equals(binding.editPassword2.getText().toString()))
+            checkClientPredicate(pwd -> pwd.equals(mBinding.editPassword2.getText().toString()))
                     .and(checkPwdLength(7))
                     .and(checkPwdSpecialChar())
                     .and(checkExcludeWhiteSpace())
@@ -95,8 +96,8 @@ public class RegisterFragment extends Fragment {
     @Override
     public View onCreateView(final LayoutInflater theInflater, final ViewGroup theContainer,
                              final Bundle theSavedInstanceState) {
-        binding = FragmentRegisterBinding.inflate(theInflater);
-        return binding.getRoot();
+        mBinding = FragmentRegisterBinding.inflate(theInflater);
+        return mBinding.getRoot();
     }
 
     @Override
@@ -104,7 +105,7 @@ public class RegisterFragment extends Fragment {
                               @Nullable final Bundle theSavedInstanceState) {
         super.onViewCreated(theView, theSavedInstanceState);
 
-        binding.buttonRegister.setOnClickListener(this::attemptRegister);
+        mBinding.buttonRegister.setOnClickListener(this::attemptRegister);
         mRegisterModel.addResponseObserver(getViewLifecycleOwner(),
                 this::observeResponse);
     }
@@ -127,24 +128,35 @@ public class RegisterFragment extends Fragment {
      */
     private void validateFirst() {
         mNameValidator.processResult(
-                mNameValidator.apply(binding.editFirst.getText().toString().trim()),
+                mNameValidator.apply(mBinding.editFirst.getText().toString().trim()),
                 this::validateLast,
-                result -> binding.editFirst.setError("Please enter a first name."));
+                result -> mBinding.editFirst.setError("Please enter a first name."));
     }
 
-    // TODO: THIS METHOD MAY NEED TO ATTEMPT TO VALIDATE THE NICKNAME INSTEAD OF THE EMAIL
-    // THEN MOVE ONTO THE EMAIL
     /**
      * Attempts to validate the text inputted for the user's last name.
      *
-     * If the validation succeeds, attempts to validate the email.
+     * If the validation succeeds, attempts to validate the nickname.
      * Else, sets an error text on the last name field that requests they enter a last name.
      */
     private void validateLast() {
         mNameValidator.processResult(
-                mNameValidator.apply(binding.editLast.getText().toString().trim()),
+                mNameValidator.apply(mBinding.editLast.getText().toString().trim()),
+                this::validateNickname,
+                result -> mBinding.editLast.setError("Please enter a last name."));
+    }
+
+    /**
+     * Attempts to validate the text inputted for the user's nickname.
+     *
+     * If the validation succeeds, attempts to validate the email.
+     * Else, sets an error text on the nickname field that requests they enter a valid nickname.
+     */
+    private void validateNickname() {
+        mNameValidator.processResult(
+                mNameValidator.apply(mBinding.editNickname.getText().toString().trim()),
                 this::validateEmail,
-                result -> binding.editLast.setError("Please enter a last name."));
+                result -> mBinding.editNickname.setError("Please enter a valid nickname."));
     }
 
     /**
@@ -155,9 +167,9 @@ public class RegisterFragment extends Fragment {
      */
     private void validateEmail() {
         mEmailValidator.processResult(
-                mEmailValidator.apply(binding.editEmail.getText().toString().trim()),
+                mEmailValidator.apply(mBinding.editEmail.getText().toString().trim()),
                 this::validatePasswordsMatch,
-                result -> binding.editEmail.setError("Please enter a valid Email address."));
+                result -> mBinding.editEmail.setError("Please enter a valid Email address."));
     }
 
     /**
@@ -169,12 +181,12 @@ public class RegisterFragment extends Fragment {
     private void validatePasswordsMatch() {
         PasswordValidator matchValidator =
                 checkClientPredicate(
-                        pwd -> pwd.equals(binding.editPassword2.getText().toString().trim()));
+                        pwd -> pwd.equals(mBinding.editPassword2.getText().toString().trim()));
 
         mEmailValidator.processResult(
-                matchValidator.apply(binding.editPassword1.getText().toString().trim()),
+                matchValidator.apply(mBinding.editPassword1.getText().toString().trim()),
                 this::validatePassword,
-                result -> binding.editPassword1.setError("Passwords must match."));
+                result -> mBinding.editPassword1.setError("Passwords must match."));
     }
 
     /**
@@ -185,9 +197,9 @@ public class RegisterFragment extends Fragment {
      */
     private void validatePassword() {
         mPassWordValidator.processResult(
-                mPassWordValidator.apply(binding.editPassword1.getText().toString()),
+                mPassWordValidator.apply(mBinding.editPassword1.getText().toString()),
                 this::verifyAuthWithServer,
-                result -> binding.editPassword1.setError("Please enter a valid Password."));
+                result -> mBinding.editPassword1.setError("Please enter a valid Password."));
     }
 
     /**
@@ -196,10 +208,11 @@ public class RegisterFragment extends Fragment {
      */
     private void verifyAuthWithServer() {
         mRegisterModel.connect(
-                binding.editFirst.getText().toString(),
-                binding.editLast.getText().toString(),
-                binding.editEmail.getText().toString(),
-                binding.editPassword1.getText().toString());
+                mBinding.editFirst.getText().toString(),
+                mBinding.editLast.getText().toString(),
+                mBinding.editNickname.getText().toString(),
+                mBinding.editEmail.getText().toString(),
+                mBinding.editPassword1.getText().toString());
         //This is an Asynchronous call. No statements after should rely on the
         //result of connect().
 
@@ -212,8 +225,8 @@ public class RegisterFragment extends Fragment {
         RegisterFragmentDirections.ActionRegisterFragmentToLoginFragment directions =
                 RegisterFragmentDirections.actionRegisterFragmentToLoginFragment();
 
-        directions.setEmail(binding.editEmail.getText().toString());
-        directions.setPassword(binding.editPassword1.getText().toString());
+        directions.setEmail(mBinding.editEmail.getText().toString());
+        directions.setPassword(mBinding.editPassword1.getText().toString());
 
         Navigation.findNavController(getView()).navigate(directions);
 
@@ -229,7 +242,7 @@ public class RegisterFragment extends Fragment {
         if (theResponse.length() > 0) {
             if (theResponse.has("code")) {
                 try {
-                    binding.editEmail.setError(
+                    mBinding.editEmail.setError(
                             "Error Authenticating: " +
                                     theResponse.getJSONObject("data").getString("message"));
                 } catch (JSONException e) {
