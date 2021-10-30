@@ -10,22 +10,22 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import edu.uw.tcss450.group1project.R;
-import edu.uw.tcss450.group1project.databinding.FragmentContactsBinding;
+import edu.uw.tcss450.group1project.databinding.FragmentContactsCardBinding;
 
 public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecyclerAdapter.ContactsViewHolder> {
 
     private final List<Contact> mContacts;
 
-    public ContactsRecyclerAdapter(List<Contact> contacts) {
-        mContacts = contacts;
+    public ContactsRecyclerAdapter(List<Contact> theContacts) {
+        mContacts = theContacts;
     }
 
     @NonNull
     @Override
-    public ContactsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ContactsViewHolder onCreateViewHolder(@NonNull ViewGroup theParent, int theViewType) {
         return new ContactsViewHolder(LayoutInflater
-                                      .from(parent.getContext())
-                                      .inflate(R.layout.fragment_contacts_card, parent, false));
+                                      .from(theParent.getContext())
+                                      .inflate(R.layout.fragment_contacts_card, theParent, false));
     }
 
     @Override
@@ -41,17 +41,25 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
     public class ContactsViewHolder extends RecyclerView.ViewHolder {
 
         private final View mView;
-        private final FragmentContactsBinding mBinding;
+        private final FragmentContactsCardBinding mBinding;
         private Contact mContact;
 
-        public ContactsViewHolder(@NonNull View itemView) {
-            super(itemView);
-            mView = itemView;
-            mBinding = FragmentContactsBinding.bind(itemView);
+        public ContactsViewHolder(@NonNull View theItemView) {
+            super(theItemView);
+            mView = theItemView;
+            mBinding = FragmentContactsCardBinding.bind(theItemView);
         }
 
         public void setContact(final Contact theContact) {
             mContact = theContact;
+            display();
+        }
+
+        private void display() {
+            mBinding.contactName.setText(String.format("%s %s", mContact.getFirst(), mContact.getLast()));
+            mBinding.contactNickname.setText(mContact.getNickname());
+            mBinding.contactImage.setImageResource(R.drawable.ic__android__black_24dp);
+            mBinding.arrowImage.setImageResource(R.drawable.ic_arrow_right__black_24dp);
         }
     }
 }
