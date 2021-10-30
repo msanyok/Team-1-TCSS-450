@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,6 +25,7 @@ import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentRegisterBinding;
 import edu.uw.tcss450.group1project.databinding.FragmentVerificationBinding;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
+import edu.uw.tcss450.group1project.ui.auth.register.RegisterFragmentDirections;
 import edu.uw.tcss450.group1project.ui.auth.register.RegisterViewModel;
 import edu.uw.tcss450.group1project.utils.PasswordValidator;
 
@@ -88,6 +90,7 @@ public class RegisterVerificationFragment extends Fragment {
      * @param theButton the button that was pressed to initiate the verification.
      */
     private void attemptVerification(View theButton) {
+        navigateToHomePage();
         validateVerificationText();
     }
 
@@ -146,6 +149,8 @@ public class RegisterVerificationFragment extends Fragment {
     private void navigateToHomePage() {
         // TODO: NAVIGATE TO THE HOME/LANDING PAGE.
         // SEE THE LOGIN PAGE FOR TUTORIAL...?
+        Navigation.findNavController(getView()).navigate(
+                RegisterVerificationFragmentDirections.actionRegisterVerificationFragmentToSignInFragment());
     }
 
 
