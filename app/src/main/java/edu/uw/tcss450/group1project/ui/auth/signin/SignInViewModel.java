@@ -120,7 +120,7 @@ public class SignInViewModel extends AndroidViewModel {
         Objects.requireNonNull(theEmail, "theEmail can not be null");
         Objects.requireNonNull(thePassword, "thePassword can not be null");
 
-        final String url = "https://parker19-tcss450-labs.herokuapp.com/auth";
+        final String url = "https://team-1-tcss-450-server.herokuapp.com/auth";
 
         final Request request = new JsonObjectRequest(
                 Request.Method.GET,
