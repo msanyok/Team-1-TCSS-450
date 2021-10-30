@@ -12,15 +12,18 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentRegisterBinding;
 import edu.uw.tcss450.group1project.databinding.FragmentVerificationBinding;
+import edu.uw.tcss450.group1project.model.UserInfoViewModel;
 import edu.uw.tcss450.group1project.ui.auth.register.RegisterViewModel;
 import edu.uw.tcss450.group1project.utils.PasswordValidator;
 
@@ -106,25 +109,44 @@ public class RegisterVerificationFragment extends Fragment {
      * code entered on the verification fragment.
      */
     private void verifyCodeWithServer() {
-//        mRegisterModel.connect(
-//                mBinding.editFirst.getText().toString(),
-//                mBinding.editLast.getText().toString(),
-//                mBinding.editNickname.getText().toString(),
-//                mBinding.editEmail.getText().toString(),
-//                mBinding.editPassword1.getText().toString());
-        //This is an Asynchronous call. No statements after should rely on the
-        //result of connect().
-    }
+        UserInfoViewModel userInfoModel = new ViewModelProvider(getActivity())
+                .get(UserInfoViewModel.class);
+        final String userEmail = userInfoModel.getEmail();
 
-    // HELLO AUSTN START WORKING ON MODEL CODE TO ACCESS SERVER...
-
-    private void observeResponse(JSONObject jsonObject) {
-
+        mRegisterVerificationModel.connect(userEmail,
+                mBinding.editVerificationCode.getText().toString().trim());
+        // Above call is async, don't add code below.
     }
 
 
 
+    // TODO: NEED TO TEST THIS METHOD
+    /**
+     * Observes the HTTP Response from the web server. This observer should be
+     * attached to RegisterVerificationViewModel.
+     *
+     * @param theResponse the Response from the server
+     */
+    private void observeResponse(JSONObject theResponse) {
+        if (theResponse.length() > 0) {
+            if (theResponse.has("code")) {
+                mBinding.editVerificationCode.setError("Verification failed.");
+            } else {
 
+                navigateToHomePage();
+            }
+        } else {
+            Log.d("JSON Response", "No Response");
+        }
+    }
+
+    /**
+     * Navigates the app to the home/landing page.
+     */
+    private void navigateToHomePage() {
+        // TODO: NAVIGATE TO THE HOME/LANDING PAGE.
+        // SEE THE LOGIN PAGE FOR TUTORIAL...?
+    }
 
 
 

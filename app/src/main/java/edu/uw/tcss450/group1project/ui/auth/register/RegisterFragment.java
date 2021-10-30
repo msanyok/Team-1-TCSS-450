@@ -233,7 +233,7 @@ public class RegisterFragment extends Fragment {
     }
 
     /**
-     * An observer on the HTTP Response from the web server. This observer should be
+     * Observes the HTTP Response from the web server. This observer should be
      * attached to SignInViewModel.
      *
      * @param theResponse the Response from the server
