@@ -1,12 +1,26 @@
+/*
+ * TCSS450 Mobile Applications
+ * Fall 2021
+ */
+
 package edu.uw.tcss450.group1project.ui.contacts;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.uw.tcss450.group1project.R;
-
+/**
+ * ContactGenerator is a class to generate static contact data for initial testing.
+ *
+ * @author Parker Rosengreen
+ * @version Fall 2021
+ */
 public class ContactGenerator {
 
+    /**
+     * Returns a list of "dummy" contacts
+     *
+     * @return the list of contacts
+     */
     public static List<Contact> getContactList() {
         String[][] data = {
                 {"Charles", "Bryan", "Big C"},
