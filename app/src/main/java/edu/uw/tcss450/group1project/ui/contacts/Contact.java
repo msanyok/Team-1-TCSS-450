@@ -88,4 +88,8 @@ public class Contact {
     public void setLastName(final String theLast) {
         mLast = theLast;
     }
+
+    public String toString() {
+        return mNickname;
+    }
 }
