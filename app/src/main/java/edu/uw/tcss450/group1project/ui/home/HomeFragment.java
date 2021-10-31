@@ -49,6 +49,10 @@ public class HomeFragment extends Fragment {
         UserInfoViewModel model = new ViewModelProvider(getActivity())
                 .get(UserInfoViewModel.class);
 
-        FragmentHomeBinding.bind(getView()).textHello.setText("Welcome to Home " + model.getEmail() + "!");
+        FragmentHomeBinding binding = FragmentHomeBinding.bind(getView());
+        binding.weatherImage.setImageResource(R.drawable.ic_sun_yellow_24dp);
+        binding.welcomeText.setText(String.format("Welcome, %s!", model.getEmail()));
+        binding.weatherText.setText(String
+                           .format("It is %d degrees with a %d percent chance of rain.", 50, 10));
     }
 }

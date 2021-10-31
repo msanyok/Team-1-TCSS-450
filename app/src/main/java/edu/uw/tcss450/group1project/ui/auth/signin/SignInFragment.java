@@ -37,7 +37,7 @@ import edu.uw.tcss450.group1project.utils.PasswordValidator;
 public class SignInFragment extends Fragment {
 
     /** ViewBinding reference to the Sign in Fragment UI */
-    private FragmentSignInBinding binding;
+    private FragmentSignInBinding mBinding;
 
     /** ViewModel used for sign in */
     private SignInViewModel mSignInModel;
@@ -80,29 +80,30 @@ public class SignInFragment extends Fragment {
     @Override
     public View onCreateView(final LayoutInflater theInflater, final ViewGroup theContainer,
                              Bundle savedInstanceState) {
-        binding = FragmentSignInBinding.inflate(theInflater);
+
+        mBinding = FragmentSignInBinding.inflate(theInflater);
+
         // Inflate the layout for this fragment
-        return binding.getRoot();
+        return mBinding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull final View theView, @Nullable final Bundle savedInstanceState) {
         super.onViewCreated(theView, savedInstanceState);
 
-        binding.buttonToRegister.setOnClickListener(button ->
+        mBinding.buttonToRegister.setOnClickListener(button ->
             Navigation.findNavController(getView()).navigate(
                     SignInFragmentDirections.actionLoginFragmentToRegisterFragment()
             ));
 
-        binding.buttonSignIn.setOnClickListener(this::attemptSignIn);
+        mBinding.buttonSignIn.setOnClickListener(this::attemptSignIn);
 
-        mSignInModel.addResponseObserver(
-                getViewLifecycleOwner(),
-                this::observeResponse);
+        mSignInModel.clearResponse();
+        mSignInModel.addResponseObserver(getViewLifecycleOwner(), this::observeResponse);
 
         SignInFragmentArgs args = SignInFragmentArgs.fromBundle(getArguments());
-        binding.editEmail.setText(args.getEmail().equals("default") ? "" : args.getEmail());
-        binding.editPassword.setText(args.getPassword().equals("default") ? "" : args.getPassword());
+        mBinding.editEmail.setText(args.getEmail().equals("default") ? "" : args.getEmail());
+        mBinding.editPassword.setText(args.getPassword().equals("default") ? "" : args.getPassword());
     }
 
     /**
@@ -123,9 +124,9 @@ public class SignInFragment extends Fragment {
      */
     private void validateEmail() {
         mEmailValidator.processResult(
-                mEmailValidator.apply(binding.editEmail.getText().toString().trim()),
+                mEmailValidator.apply(mBinding.editEmail.getText().toString().trim()),
                 this::validatePassword,
-                result -> binding.editEmail.setError("Please enter a valid Email address."));
+                result -> mBinding.editEmail.setError("Please enter a valid Email address."));
     }
 
     /**
@@ -136,9 +137,9 @@ public class SignInFragment extends Fragment {
      */
     private void validatePassword() {
         mPassWordValidator.processResult(
-                mPassWordValidator.apply(binding.editPassword.getText().toString()),
+                mPassWordValidator.apply(mBinding.editPassword.getText().toString()),
                 this::verifyAuthWithServer,
-                result -> binding.editPassword.setError("Please enter a valid Password."));
+                result -> mBinding.editPassword.setError("Please enter a valid Password."));
     }
 
     /**
@@ -147,8 +148,8 @@ public class SignInFragment extends Fragment {
      */
     private void verifyAuthWithServer() {
         mSignInModel.connect(
-                binding.editEmail.getText().toString(),
-                binding.editPassword.getText().toString());
+                mBinding.editEmail.getText().toString(),
+                mBinding.editPassword.getText().toString());
         //This is an Asynchronous call. No statements after should rely on the
         //result of connect().
     }
@@ -161,8 +162,9 @@ public class SignInFragment extends Fragment {
      */
     private void navigateToSuccess(final String theEmail, final String theJwt) {
         Navigation.findNavController(getView())
-                .navigate(SignInFragmentDirections
+                        .navigate(SignInFragmentDirections
                         .actionLoginFragmentToMainActivity(theEmail, theJwt));
+        getActivity().finish();
     }
 
     /**
@@ -175,7 +177,7 @@ public class SignInFragment extends Fragment {
         if (theResponse.length() > 0) {
             if (theResponse.has("code")) {
                 try {
-                    binding.editEmail.setError(
+                    mBinding.editEmail.setError(
                             "Error Authenticating: " +
                                     theResponse.getJSONObject("data").getString("message"));
                 } catch (JSONException exception) {
@@ -184,7 +186,7 @@ public class SignInFragment extends Fragment {
             } else {
                 try {
                     navigateToSuccess(
-                            binding.editEmail.getText().toString(),
+                            mBinding.editEmail.getText().toString(),
                             theResponse.getString("token")
                     );
                 } catch (JSONException e) {

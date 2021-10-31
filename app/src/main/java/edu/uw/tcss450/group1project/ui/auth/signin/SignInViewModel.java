@@ -73,6 +73,10 @@ public class SignInViewModel extends AndroidViewModel {
         mResponse.observe(theOwner, theObserver);
     }
 
+    public void clearResponse() {
+        mResponse.setValue(new JSONObject());
+    }
+
     /**
      * Completes the actions required when an error occurs during a HTTP request to the server.
      *

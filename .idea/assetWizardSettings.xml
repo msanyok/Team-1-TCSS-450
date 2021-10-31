@@ -28,7 +28,8 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="ic_weather_black_24dp" />
+                            <entry key="color" value="fde400" />
+                            <entry key="outputName" value="ic_sun_yellow_24dp" />
                             <entry key="sourceFile" value="C:\Users\parke\OneDrive\Documents\TCSS450\projectrepo_client\Team-1-TCSS-450" />
                           </map>
                         </option>
