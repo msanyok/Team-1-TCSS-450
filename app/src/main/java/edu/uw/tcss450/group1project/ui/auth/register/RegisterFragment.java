@@ -51,7 +51,7 @@ public class RegisterFragment extends Fragment {
      * The name texts will be considered valid if the length of the given
      * text is greater than one.
      */
-    private PasswordValidator mNameValidator = checkPwdLength(1);
+    private final PasswordValidator mNameValidator = checkPwdLength(1);
 
     /**
      * A {@link PasswordValidator} dedicated to validating the user's inputted email text.
@@ -59,7 +59,7 @@ public class RegisterFragment extends Fragment {
      * The email text will be considered valid if the length of the given
      * text is greater than 2, does not include whitespace, and has the '@' symbol.
      */
-    private PasswordValidator mEmailValidator = checkPwdLength(2)
+    private final PasswordValidator mEmailValidator = checkPwdLength(2)
             .and(checkExcludeWhiteSpace())
             .and(checkPwdSpecialChar("@"));
 
@@ -71,7 +71,7 @@ public class RegisterFragment extends Fragment {
      * does not include whitespace, includes at least one digit, and contains at least one
      * uppercase or lowercase letter.
      */
-    private PasswordValidator mPassWordValidator =
+    private final PasswordValidator mPassWordValidator =
             checkClientPredicate(pwd -> pwd.equals(mBinding.editPassword2.getText().toString()))
                     .and(checkPwdLength(7))
                     .and(checkPwdSpecialChar())
@@ -94,7 +94,7 @@ public class RegisterFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(final LayoutInflater theInflater, final ViewGroup theContainer,
+    public View onCreateView(@NonNull final LayoutInflater theInflater, final ViewGroup theContainer,
                              final Bundle theSavedInstanceState) {
         mBinding = FragmentRegisterBinding.inflate(theInflater);
         return mBinding.getRoot();
@@ -213,28 +213,28 @@ public class RegisterFragment extends Fragment {
                 mBinding.editNickname.getText().toString(),
                 mBinding.editEmail.getText().toString(),
                 mBinding.editPassword1.getText().toString());
-        //This is an Asynchronous call. No statements after should rely on the
-        //result of connect().
-
+        // Above call is asynchronous, do not write code below that relies on the result.
     }
 
     /**
-     * Navigates to the login page.
+     * Navigates to the registration verification page.
      */
-    private void navigateToLogin() {
-        RegisterFragmentDirections.ActionRegisterFragmentToLoginFragment directions =
-                RegisterFragmentDirections.actionRegisterFragmentToLoginFragment();
+    private void navigateToRegistrationVerification() {
+        Navigation.findNavController(getView()).navigate(
+                RegisterFragmentDirections.actionRegisterFragmentToRegisterVerificationFragment(
+                        mBinding.editEmail.getText().toString(),
+                        mBinding.editPassword1.getText().toString()
+                ));
 
-        directions.setEmail(mBinding.editEmail.getText().toString());
-        directions.setPassword(mBinding.editPassword1.getText().toString());
-
-        Navigation.findNavController(getView()).navigate(directions);
-
+        // Remove the current JSON stored in the live data.
+        // This prevents the fragment from chaining navigations
+        // when they try to come back to this fragment
+        mRegisterModel.removeData();
     }
 
     /**
-     * An observer on the HTTP Response from the web server. This observer should be
-     * attached to SignInViewModel.
+     * Observes the HTTP Response from the web server. If an error occurred, notify the user
+     * accordingly. If it was a success, navigate to the registration verification page.
      *
      * @param theResponse the Response from the server
      */
@@ -242,17 +242,37 @@ public class RegisterFragment extends Fragment {
         if (theResponse.length() > 0) {
             if (theResponse.has("code")) {
                 try {
-                    mBinding.editEmail.setError(
-                            "Error Authenticating: " +
-                                    theResponse.getJSONObject("data").getString("message"));
-                } catch (JSONException e) {
-                    Log.e("JSON Parse Error", e.getMessage());
+                    final String message =
+                            theResponse.getJSONObject("data").get("message").toString();
+
+                    if (message.equals("Email exists")) {
+                        // email already exists, so notify the user
+                        mBinding.editEmail.setError(
+                                "Error Authenticating: " +
+                                        theResponse.getJSONObject("data").getString("message"));
+                    } else {
+
+                        final String detail = theResponse.getJSONObject("data").get("detail").toString();
+                        final String duplicateNicknameDetail = "Key (nickname)=("
+                                + mBinding.editNickname.getText().toString() + ") already exists.";
+
+                        if (detail.equals(duplicateNicknameDetail)) {
+                            // the nickname already exists, so notify the user.
+                            mBinding.editNickname.setError("Nickname already exists.");
+                        } else {
+                            // a different, unexpected error occurred.
+                            mBinding.editEmail.setError("Other error. Check logs.");
+                        }
+                    }
+
+                } catch (JSONException exception) {
+                    Log.e("JSON Parse Error", exception.getMessage());
                 }
             } else {
-                navigateToLogin();
+                navigateToRegistrationVerification();
             }
         } else {
-            Log.d("JSON Response", "No Response");
+            Log.d("Registration JSON Response", "No Response");
         }
     }
 

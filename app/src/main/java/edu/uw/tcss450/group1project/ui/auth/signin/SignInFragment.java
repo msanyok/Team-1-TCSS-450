@@ -49,7 +49,7 @@ public class SignInFragment extends Fragment {
      * The email text will be considered valid if the length of the given text
      * is greater than 2, does not include whitespace, and includes the '@' character.
      */
-    private PasswordValidator mEmailValidator = checkPwdLength(2)
+    private final PasswordValidator mEmailValidator = checkPwdLength(2)
             .and(checkExcludeWhiteSpace())
             .and(checkPwdSpecialChar("@"));
 
@@ -60,7 +60,7 @@ public class SignInFragment extends Fragment {
      * The password is considered valid if the length of the given text
      * is greater than one does not include whitespace.
      */
-    private PasswordValidator mPassWordValidator = checkPwdLength(1)
+    private final PasswordValidator mPassWordValidator = checkPwdLength(1)
             .and(checkExcludeWhiteSpace());
 
     /**
@@ -80,7 +80,6 @@ public class SignInFragment extends Fragment {
     @Override
     public View onCreateView(final LayoutInflater theInflater, final ViewGroup theContainer,
                              Bundle savedInstanceState) {
-
         mBinding = FragmentSignInBinding.inflate(theInflater);
 
         // Inflate the layout for this fragment

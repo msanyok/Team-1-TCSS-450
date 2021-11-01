@@ -3,7 +3,7 @@
  * Fall 2021
  */
 
-package edu.uw.tcss450.group1project.ui.auth.register;
+package edu.uw.tcss450.group1project.ui.auth.verification;
 
 import android.app.Application;
 import android.util.Log;
@@ -26,30 +26,30 @@ import org.json.JSONObject;
 import java.nio.charset.Charset;
 import java.util.Objects;
 
+
 /**
  * An {@link AndroidViewModel} child class that handles the data related to
- * a user's registration.
+ * verifying a user's account.
  *
- * @author Charles Bryan
  * @author Austn Attaway
  * @version Fall 2021
  */
-public class RegisterViewModel extends AndroidViewModel {
+public class RegisterVerificationViewModel extends AndroidViewModel {
 
     /**
      * The {@link MutableLiveData} that stores the JSON response from the server
-     * when the user tries to register an account.
+     * when the user tries to verify their account.
      */
     private MutableLiveData<JSONObject> mResponse;
 
     /**
-     * Creates a new RegisterViewModel that is tied to the given application.
+     * Creates a new RegisterVerificationViewModel that is tied to the given application.
      *
      * @param theApplication the Application this ViewModel belongs to
      * @throws NullPointerException if theApplication is null
      */
-    public RegisterViewModel(@NonNull final Application theApplication) {
-        super(Objects.requireNonNull(theApplication, "theApplication can not be null"));
+    public RegisterVerificationViewModel(@NonNull final Application theApplication) {
+        super(Objects.requireNonNull(theApplication, "theApplication can not be null."));
         mResponse = new MutableLiveData<>();
         mResponse.setValue(new JSONObject());
     }
@@ -70,41 +70,25 @@ public class RegisterViewModel extends AndroidViewModel {
     }
 
     /**
-     * Sends an HTTP POST request to the server attempting to register a new account
-     * corresponding to the given information provided.
+     * Sends an HTTP POST request to the server attempting to validate
+     * the account that corresponds to the given email using the
+     * given verification code.
      *
-     * @param theFirst the new account's first name
-     * @param theLast the new account's last name
-     * @param theNickname the new account's nickname
-     * @param theEmail the new account's email
-     * @param thePassword the new account's password
-     * @throws NullPointerException if theFirst is null
-     * @throws NullPointerException if theLast is null
-     * @throws NullPointerException if theNickname is null
+     * @param theEmail the user's email attatched to their account
+     * @param theCode  the user's inputted verification code
      * @throws NullPointerException if theEmail is null
-     * @throws NullPointerException if thePassword is null
+     * @throws NullPointerException if theCode is null
      */
-    public void connect(@NonNull final String theFirst,
-                        @NonNull final String theLast,
-                        @NonNull final String theNickname,
-                        @NonNull final String theEmail,
-                        @NonNull final String thePassword) {
+    public void connect(final String theEmail, final String theCode) {
+        Objects.requireNonNull(theCode, "theEmail can not be null");
+        Objects.requireNonNull(theCode, "theCode can not be null");
 
-        Objects.requireNonNull(theFirst, "theFirst can not be null");
-        Objects.requireNonNull(theLast, "theLast can not be null");
-        Objects.requireNonNull(theNickname, "theNickname can not be null");
-        Objects.requireNonNull(theEmail, "theEmail can not be null");
-        Objects.requireNonNull(thePassword, "thePassword can not be null");
-
-        final String url = "https://team-1-tcss-450-server.herokuapp.com/auth";
+        final String url = "https://team-1-tcss-450-server.herokuapp.com/auth/verify";
 
         final JSONObject body = new JSONObject();
         try {
-            body.put("first", theFirst);
-            body.put("last", theLast);
-            body.put("nickname", theNickname);
             body.put("email", theEmail);
-            body.put("password", thePassword);
+            body.put("code", theCode);
         } catch (JSONException exception) {
             exception.printStackTrace();
         }
@@ -123,6 +107,7 @@ public class RegisterViewModel extends AndroidViewModel {
         //Instantiate the RequestQueue and add the request to the queue
         Volley.newRequestQueue(getApplication().getApplicationContext())
                 .add(request);
+
     }
 
     /**
@@ -130,7 +115,7 @@ public class RegisterViewModel extends AndroidViewModel {
      *
      * @param theError the error that occurred
      */
-    private void handleError(final VolleyError theError) {
+    private void handleError(VolleyError theError) {
         if (Objects.isNull(theError.networkResponse)) {
             try {
                 mResponse.setValue(new JSONObject("{" +
@@ -155,7 +140,7 @@ public class RegisterViewModel extends AndroidViewModel {
     }
 
     /**
-     * Clears the data stored in this view model.
+     * Clear the live data stored in this view model
      */
     public void removeData() {
         mResponse.setValue(new JSONObject());
