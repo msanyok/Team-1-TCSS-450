@@ -18,7 +18,8 @@
     <string name="title_contacts">Contacts</string>
     <string name="title_messages">Messages</string>
     <string name="title_weather">Weather</string>
-
+    <string name="title_missed_messages">Missed Messages</string>
+    <string name="title_contact_requests">New Contact Requests</string>
 
     <string name="message_verification_greeting">Hey! We sent you an email.</string>
     <string name="message_verification_instructions">Enter the code we sent you to register your account.</string>

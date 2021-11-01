@@ -81,6 +81,7 @@ public class SignInFragment extends Fragment {
     public View onCreateView(final LayoutInflater theInflater, final ViewGroup theContainer,
                              Bundle savedInstanceState) {
         mBinding = FragmentSignInBinding.inflate(theInflater);
+
         // Inflate the layout for this fragment
         return mBinding.getRoot();
     }
@@ -96,9 +97,8 @@ public class SignInFragment extends Fragment {
 
         mBinding.buttonSignIn.setOnClickListener(this::attemptSignIn);
 
-        mSignInModel.addResponseObserver(
-                getViewLifecycleOwner(),
-                this::observeResponse);
+        mSignInModel.clearResponse();
+        mSignInModel.addResponseObserver(getViewLifecycleOwner(), this::observeResponse);
 
         SignInFragmentArgs args = SignInFragmentArgs.fromBundle(getArguments());
         mBinding.editEmail.setText(args.getEmail().equals("default") ? "" : args.getEmail());
@@ -161,8 +161,9 @@ public class SignInFragment extends Fragment {
      */
     private void navigateToSuccess(final String theEmail, final String theJwt) {
         Navigation.findNavController(getView())
-                .navigate(SignInFragmentDirections
+                        .navigate(SignInFragmentDirections
                         .actionLoginFragmentToMainActivity(theEmail, theJwt));
+        getActivity().finish();
     }
 
     /**

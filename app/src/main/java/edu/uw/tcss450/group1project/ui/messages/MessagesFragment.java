@@ -6,7 +6,6 @@
 package edu.uw.tcss450.group1project.ui.messages;
 
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +39,7 @@ public class MessagesFragment extends Fragment {
     public View onCreateView(final LayoutInflater theInflater, final ViewGroup theContainer,
                              final Bundle theSavedInstanceState) {
         // Inflate the layout for this fragment
-        return theInflater.inflate(R.layout.fragment_contacts, theContainer, false);
+        return theInflater.inflate(R.layout.fragment_messages, theContainer, false);
     }
 
     @Override
@@ -49,7 +48,7 @@ public class MessagesFragment extends Fragment {
         super.onViewCreated(theView, theSavedInstanceState);
         UserInfoViewModel model = new ViewModelProvider(getActivity())
                 .get(UserInfoViewModel.class);
-
-        FragmentMessagesBinding.bind(getView()).textHello.setText("Welcome to Messages " + model.getEmail() + "!");
+        FragmentMessagesBinding binding = FragmentMessagesBinding.bind(getView());
+        binding.listRoot.setAdapter(new MessagesRecyclerAdapter(ChatRoomGenerator.getChatRooms()));
     }
 }
