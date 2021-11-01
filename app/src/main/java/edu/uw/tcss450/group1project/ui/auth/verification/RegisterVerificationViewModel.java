@@ -69,7 +69,6 @@ public class RegisterVerificationViewModel extends AndroidViewModel {
         mResponse.observe(theOwner, theObserver);
     }
 
-
     /**
      * Sends an HTTP POST request to the server attempting to validate
      * the account that corresponds to the given email using the
@@ -140,6 +139,9 @@ public class RegisterVerificationViewModel extends AndroidViewModel {
         }
     }
 
+    /**
+     * Clear the live data stored in this view model
+     */
     public void removeData() {
         mResponse.setValue(new JSONObject());
     }

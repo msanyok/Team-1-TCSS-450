@@ -52,7 +52,7 @@ public class RegisterVerificationFragment extends Fragment {
      * The verification code will be valid if the code entered is at least 6 characters
      * and contains no whitespace.
      */
-    private PasswordValidator mCodeValidator = PasswordValidator.checkPwdLength(5)
+    private final PasswordValidator mCodeValidator = PasswordValidator.checkPwdLength(5)
             .and(PasswordValidator.checkExcludeWhiteSpace());
 
 
@@ -80,7 +80,6 @@ public class RegisterVerificationFragment extends Fragment {
                 this::observeResponse);
     }
 
-
     /**
      * Starts the chain validations that attempts to validate
      * the verification code, then sends a request to the server.
@@ -104,7 +103,6 @@ public class RegisterVerificationFragment extends Fragment {
                 result -> mBinding.editVerificationCode.setError("Enter a valid code"));
     }
 
-
     /**
      * Asynchronously attempts to verify the account in the server with the verification
      * code entered on the verification fragment.
@@ -118,9 +116,6 @@ public class RegisterVerificationFragment extends Fragment {
         // Above call is async, don't add code below.
     }
 
-
-
-
     /**
      * Observes the HTTP Response from the web server. This observer should be
      * attached to RegisterVerificationViewModel.
@@ -133,7 +128,6 @@ public class RegisterVerificationFragment extends Fragment {
                 mBinding.editVerificationCode.setError("Verification failed.");
             } else {
                 navigateToSignIn();
-                mRegisterVerificationModel.removeData();
             }
         } else {
             Log.d("Registration Verification JSON Response", "No Response: " + theResponse.toString());
@@ -155,12 +149,9 @@ public class RegisterVerificationFragment extends Fragment {
 
         Navigation.findNavController(getView()).navigate(directions);
 
-
-//        Navigation.findNavController(getView()).navigate(
-//                RegisterVerificationFragmentDirections.actionRegisterVerificationFragmentToSignInFragment(
-//                        "email", "password"
-//                ));
-
+        // Clear the data stored in the view model to set up for
+        // when the user comes back to this page.
+        mRegisterVerificationModel.removeData();
     }
 
 }

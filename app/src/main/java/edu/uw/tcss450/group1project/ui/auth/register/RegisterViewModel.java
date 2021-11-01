@@ -70,35 +70,6 @@ public class RegisterViewModel extends AndroidViewModel {
     }
 
     /**
-     * Completes the actions required when an error occurs during a HTTP request to the server.
-     *
-     * @param theError the error that occurred
-     */
-    private void handleError(final VolleyError theError) {
-        if (Objects.isNull(theError.networkResponse)) {
-            try {
-                mResponse.setValue(new JSONObject("{" +
-                        "error:\"" + theError.getMessage() +
-                        "\"}"));
-            } catch (JSONException e) {
-                Log.e("JSON PARSE", "JSON Parse Error in handleError");
-            }
-        }
-        else {
-            String data = new String(theError.networkResponse.data, Charset.defaultCharset())
-                    .replace('\"', '\'');
-            try {
-                JSONObject response = new JSONObject();
-                response.put("code", theError.networkResponse.statusCode);
-                response.put("data", new JSONObject(data));
-                mResponse.setValue(response);
-            } catch (JSONException e) {
-                Log.e("JSON PARSE", "JSON Parse Error in handleError");
-            }
-        }
-    }
-
-    /**
      * Sends an HTTP POST request to the server attempting to register a new account
      * corresponding to the given information provided.
      *
@@ -154,7 +125,38 @@ public class RegisterViewModel extends AndroidViewModel {
                 .add(request);
     }
 
+    /**
+     * Completes the actions required when an error occurs during a HTTP request to the server.
+     *
+     * @param theError the error that occurred
+     */
+    private void handleError(final VolleyError theError) {
+        if (Objects.isNull(theError.networkResponse)) {
+            try {
+                mResponse.setValue(new JSONObject("{" +
+                        "error:\"" + theError.getMessage() +
+                        "\"}"));
+            } catch (JSONException e) {
+                Log.e("JSON PARSE", "JSON Parse Error in handleError");
+            }
+        }
+        else {
+            String data = new String(theError.networkResponse.data, Charset.defaultCharset())
+                    .replace('\"', '\'');
+            try {
+                JSONObject response = new JSONObject();
+                response.put("code", theError.networkResponse.statusCode);
+                response.put("data", new JSONObject(data));
+                mResponse.setValue(response);
+            } catch (JSONException e) {
+                Log.e("JSON PARSE", "JSON Parse Error in handleError");
+            }
+        }
+    }
 
+    /**
+     * Clears the data stored in this view model.
+     */
     public void removeData() {
         mResponse.setValue(new JSONObject());
     }
