@@ -43,7 +43,7 @@ public class ContactRequestRecyclerAdapter
     @NonNull
     @Override
     public ContactRequestViewHolder onCreateViewHolder(@NonNull final ViewGroup theParent,
-                                                       int theViewType) {
+                                                       final int theViewType) {
         return new ContactRequestViewHolder(LayoutInflater
                 .from(theParent.getContext())
                 .inflate(R.layout.fragment_home_contact_request_card, theParent, false));
