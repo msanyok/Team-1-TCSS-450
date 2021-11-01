@@ -115,7 +115,7 @@ public class RegisterVerificationViewModel extends AndroidViewModel {
      *
      * @param theError the error that occurred
      */
-    private void handleError(VolleyError theError) {
+    private void handleError(final VolleyError theError) {
         if (Objects.isNull(theError.networkResponse)) {
             try {
                 mResponse.setValue(new JSONObject("{" +

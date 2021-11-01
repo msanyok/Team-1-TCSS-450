@@ -96,7 +96,8 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
 
         /** Displays all contact data and image views for a single contact card */
         private void display() {
-            mBinding.contactName.setText(String.format("%s %s", mContact.getFirst(), mContact.getLast()));
+            mBinding.contactName.setText(String.format("%s %s", mContact.getFirst(),
+                                                                mContact.getLast()));
             mBinding.contactNickname.setText(mContact.getNickname());
             mBinding.contactImage.setImageResource(R.drawable.ic__android__black_24dp);
             mBinding.arrowImage.setImageResource(R.drawable.ic_arrow_right__black_24dp);
