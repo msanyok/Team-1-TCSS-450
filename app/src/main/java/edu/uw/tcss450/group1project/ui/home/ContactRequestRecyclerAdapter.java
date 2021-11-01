@@ -19,7 +19,8 @@ import edu.uw.tcss450.group1project.databinding.FragmentHomeContactRequestCardBi
 import edu.uw.tcss450.group1project.ui.contacts.Contact;
 
 /**
- * ContactRecyclerAdapter provides an adapter for the ContactsFragment RecyclerView.
+ * ContactRequestRecyclerAdapter provides an adapter for the HomeFragment contact request
+ * RecyclerView.
  *
  * @author Parker Rosengreen
  * @version Fall 2021
@@ -27,21 +28,21 @@ import edu.uw.tcss450.group1project.ui.contacts.Contact;
 public class ContactRequestRecyclerAdapter
         extends RecyclerView.Adapter<ContactRequestRecyclerAdapter.ContactRequestViewHolder> {
 
-    /** The list of contacts to be displayed */
+    /** The list of potential contacts to be displayed */
     private final List<Contact> mContacts;
 
     /**
-     * Creates a new ContactsRecyclerAdapter with a provided list of contacts
+     * Creates a new ContactRequestRecyclerAdapter with a provided list of potential contacts
      *
-     * @param theContacts the list of contacts
+     * @param theContacts the list of potential contacts
      */
-    public ContactRequestRecyclerAdapter(List<Contact> theContacts) {
+    public ContactRequestRecyclerAdapter(final List<Contact> theContacts) {
         mContacts = theContacts;
     }
 
     @NonNull
     @Override
-    public ContactRequestViewHolder onCreateViewHolder(@NonNull ViewGroup theParent,
+    public ContactRequestViewHolder onCreateViewHolder(@NonNull final ViewGroup theParent,
                                                        int theViewType) {
         return new ContactRequestViewHolder(LayoutInflater
                 .from(theParent.getContext())
@@ -49,7 +50,8 @@ public class ContactRequestRecyclerAdapter
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ContactRequestViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ContactRequestViewHolder holder,
+                                 final int position) {
         holder.setContact(mContacts.get(position));
     }
 
@@ -59,8 +61,8 @@ public class ContactRequestRecyclerAdapter
     }
 
     /**
-     * ContactsViewHolder is a class defining an individual ViewHolder for the ContactsFragment
-     * RecyclerView.
+     * ContactRequestViewHolder is a class defining an individual ViewHolder for the
+     * HomeFragment contact request RecyclerView.
      *
      * @author Parker Rosengreen
      * @version Fall 2021
@@ -70,25 +72,25 @@ public class ContactRequestRecyclerAdapter
         /** The assigned view */
         private final View mView;
 
-        /** The ViewBinding corresponded to a contact RecyclerView card */
+        /** The ViewBinding corresponded to a contact request RecyclerView card */
         private final FragmentHomeContactRequestCardBinding mBinding;
 
-        /** The contact assigned to this ViewHolder */
+        /** The potential contact assigned to this ViewHolder */
         private Contact mContact;
 
         /**
-         * Creates a new ContactsViewHolder with the provided view
+         * Creates a new ContactRequestViewHolder with the provided view
          *
          * @param theItemView the view to be assigned
          */
-        public ContactRequestViewHolder(@NonNull View theItemView) {
+        public ContactRequestViewHolder(@NonNull final View theItemView) {
             super(theItemView);
             mView = theItemView;
             mBinding = FragmentHomeContactRequestCardBinding.bind(theItemView);
         }
 
         /**
-         * Assigns a contact to this view holder
+         * Assigns a potential contact to this view holder
          *
          * @param theContact the contact to be assigned
          */
@@ -97,7 +99,7 @@ public class ContactRequestRecyclerAdapter
             display();
         }
 
-        /** Displays all contact data and image views for a single contact card */
+        /** Displays all potential contact data and image views for a single contact card */
         private void display() {
             mBinding.contactName.setText(String.format("%s %s", mContact.getFirst(),
                                                                 mContact.getLast()));

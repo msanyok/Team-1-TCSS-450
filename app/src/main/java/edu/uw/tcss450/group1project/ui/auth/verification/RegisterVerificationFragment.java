@@ -86,7 +86,7 @@ public class RegisterVerificationFragment extends Fragment {
      *
      * @param theButton the button that was pressed to initiate the verification.
      */
-    private void attemptVerification(View theButton) {
+    private void attemptVerification(final View theButton) {
         validateVerificationText();
     }
 
@@ -122,7 +122,7 @@ public class RegisterVerificationFragment extends Fragment {
      *
      * @param theResponse the Response from the server
      */
-    private void observeResponse(JSONObject theResponse) {
+    private void observeResponse(final JSONObject theResponse) {
         if (theResponse.length() > 0) {
             if (theResponse.has("code")) {
                 mBinding.editVerificationCode.setError("Verification failed.");

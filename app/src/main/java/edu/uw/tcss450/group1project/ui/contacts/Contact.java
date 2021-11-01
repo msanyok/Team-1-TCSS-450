@@ -5,6 +5,8 @@
 
 package edu.uw.tcss450.group1project.ui.contacts;
 
+import androidx.annotation.NonNull;
+
 /**
  * Contact is a class that stores data for a registered contact.
  *
@@ -89,6 +91,8 @@ public class Contact {
         mLast = theLast;
     }
 
+    @NonNull
+    @Override
     public String toString() {
         return mNickname;
     }

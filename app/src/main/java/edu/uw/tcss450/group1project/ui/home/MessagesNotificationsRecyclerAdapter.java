@@ -21,7 +21,8 @@ import edu.uw.tcss450.group1project.ui.messages.ChatRoom;
 import edu.uw.tcss450.group1project.ui.messages.MessageGenerator;
 
 /**
- * ContactRecyclerAdapter provides an adapter for the ContactsFragment RecyclerView.
+ * MessagesNotificationsRecyclerAdapter provides an adapter for the HomeFragment
+ * new messages RecyclerView.
  *
  * @author Parker Rosengreen
  * @version Fall 2021
@@ -29,22 +30,22 @@ import edu.uw.tcss450.group1project.ui.messages.MessageGenerator;
 public class MessagesNotificationsRecyclerAdapter extends
         RecyclerView.Adapter<MessagesNotificationsRecyclerAdapter.MessagesNotificationsViewHolder> {
 
-    /** The list of contacts to be displayed */
+    /** The list of relevant chat rooms to be displayed */
     private final List<ChatRoom> mChatRooms;
 
     /**
-     * Creates a new ContactsRecyclerAdapter with a provided list of contacts
+     * Creates a new MessagesNotificationsRecyclerAdapter with a provided list of chat rooms
      *
-     * @param theRooms the list of contacts
+     * @param theRooms the list of chat rooms
      */
-    public MessagesNotificationsRecyclerAdapter(List<ChatRoom> theRooms) {
+    public MessagesNotificationsRecyclerAdapter(final List<ChatRoom> theRooms) {
         mChatRooms = theRooms;
     }
 
     @NonNull
     @Override
-    public MessagesNotificationsViewHolder onCreateViewHolder(@NonNull ViewGroup theParent,
-                                                              int theViewType) {
+    public MessagesNotificationsViewHolder onCreateViewHolder(@NonNull final ViewGroup theParent,
+                                                              final int theViewType) {
         return new MessagesNotificationsViewHolder(LayoutInflater
                 .from(theParent.getContext())
                 .inflate(R.layout.fragment_home_message_notification_card,
@@ -52,7 +53,8 @@ public class MessagesNotificationsRecyclerAdapter extends
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MessagesNotificationsViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final MessagesNotificationsViewHolder holder,
+                                 final int position) {
         holder.setChatRoom(mChatRooms.get(position));
     }
 
@@ -62,8 +64,8 @@ public class MessagesNotificationsRecyclerAdapter extends
     }
 
     /**
-     * ContactsViewHolder is a class defining an individual ViewHolder for the ContactsFragment
-     * RecyclerView.
+     * MessagesNotificationsViewHolder is a class defining an individual ViewHolder for
+     * HomeFragment new messages RecyclerView.
      *
      * @author Parker Rosengreen
      * @version Fall 2021
@@ -73,25 +75,25 @@ public class MessagesNotificationsRecyclerAdapter extends
         /** The assigned view */
         private final View mView;
 
-        /** The ViewBinding corresponded to a contact RecyclerView card */
+        /** The ViewBinding corresponded to a new message RecyclerView card */
         private final FragmentHomeMessageNotificationCardBinding mBinding;
 
-        /** The contact assigned to this ViewHolder */
+        /** The chat room assigned to this ViewHolder */
         private ChatRoom mRoom;
 
         /**
-         * Creates a new ContactsViewHolder with the provided view
+         * Creates a new MessagesNotificationsViewHolder with the provided view
          *
          * @param theItemView the view to be assigned
          */
-        public MessagesNotificationsViewHolder(@NonNull View theItemView) {
+        public MessagesNotificationsViewHolder(@NonNull final View theItemView) {
             super(theItemView);
             mView = theItemView;
             mBinding = FragmentHomeMessageNotificationCardBinding.bind(theItemView);
         }
 
         /**
-         * Assigns a contact to this view holder
+         * Assigns a chat room to this view holder
          *
          * @param theRoom the contact to be assigned
          */
@@ -100,7 +102,7 @@ public class MessagesNotificationsRecyclerAdapter extends
             display();
         }
 
-        /** Displays all contact data and image views for a single contact card */
+        /** Displays all chat room data and image views for a single new message card */
         private void display() {
             StringBuilder builder = new StringBuilder();
             List<Contact> participants = mRoom.getParticipants();
