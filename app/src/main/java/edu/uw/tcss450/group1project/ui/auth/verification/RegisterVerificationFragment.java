@@ -5,11 +5,14 @@
 
 package edu.uw.tcss450.group1project.ui.auth.verification;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
@@ -18,15 +21,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import edu.uw.tcss450.group1project.R;
-import edu.uw.tcss450.group1project.databinding.FragmentRegisterBinding;
 import edu.uw.tcss450.group1project.databinding.FragmentVerificationBinding;
-import edu.uw.tcss450.group1project.model.UserInfoViewModel;
-import edu.uw.tcss450.group1project.ui.auth.register.RegisterFragmentDirections;
-import edu.uw.tcss450.group1project.ui.auth.register.RegisterViewModel;
+import edu.uw.tcss450.group1project.ui.auth.signin.SignInFragmentArgs;
+import edu.uw.tcss450.group1project.ui.auth.signin.SignInFragmentDirections;
 import edu.uw.tcss450.group1project.utils.PasswordValidator;
 
 /**
@@ -38,6 +37,7 @@ import edu.uw.tcss450.group1project.utils.PasswordValidator;
  * @version Fall 2021
  */
 public class RegisterVerificationFragment extends Fragment {
+
 
     /** ViewBinding reference to the Verification Fragment UI */
     private FragmentVerificationBinding mBinding;
@@ -56,13 +56,11 @@ public class RegisterVerificationFragment extends Fragment {
             .and(PasswordValidator.checkExcludeWhiteSpace());
 
 
-
     @Override
     public void onCreate(@Nullable final Bundle theSavedInstanceState) {
         super.onCreate(theSavedInstanceState);
         mRegisterVerificationModel = new ViewModelProvider(getActivity())
                 .get(RegisterVerificationViewModel.class);
-
     }
 
     @Override
@@ -90,7 +88,6 @@ public class RegisterVerificationFragment extends Fragment {
      * @param theButton the button that was pressed to initiate the verification.
      */
     private void attemptVerification(View theButton) {
-        navigateToHomePage();
         validateVerificationText();
     }
 
@@ -107,23 +104,23 @@ public class RegisterVerificationFragment extends Fragment {
                 result -> mBinding.editVerificationCode.setError("Enter a valid code"));
     }
 
+
     /**
      * Asynchronously attempts to verify the account in the server with the verification
      * code entered on the verification fragment.
      */
     private void verifyCodeWithServer() {
-        UserInfoViewModel userInfoModel = new ViewModelProvider(getActivity())
-                .get(UserInfoViewModel.class);
-        final String userEmail = userInfoModel.getEmail();
+        final RegisterVerificationFragmentArgs args =
+                RegisterVerificationFragmentArgs.fromBundle(getArguments());
 
-        mRegisterVerificationModel.connect(userEmail,
+        mRegisterVerificationModel.connect(args.getEmail(),
                 mBinding.editVerificationCode.getText().toString().trim());
         // Above call is async, don't add code below.
     }
 
 
 
-    // TODO: NEED TO TEST THIS METHOD
+
     /**
      * Observes the HTTP Response from the web server. This observer should be
      * attached to RegisterVerificationViewModel.
@@ -135,24 +132,34 @@ public class RegisterVerificationFragment extends Fragment {
             if (theResponse.has("code")) {
                 mBinding.editVerificationCode.setError("Verification failed.");
             } else {
-
-                navigateToHomePage();
+                navigateToSignIn();
             }
         } else {
-            Log.d("JSON Response", "No Response");
+            Log.d("Registration Verification JSON Response", "No Response: " + theResponse.toString());
         }
     }
 
     /**
      * Navigates the app to the home/landing page.
      */
-    private void navigateToHomePage() {
-        // TODO: NAVIGATE TO THE HOME/LANDING PAGE.
-        // SEE THE LOGIN PAGE FOR TUTORIAL...?
-        Navigation.findNavController(getView()).navigate(
-                RegisterVerificationFragmentDirections.actionRegisterVerificationFragmentToSignInFragment());
+    private void navigateToSignIn() {
+        final RegisterVerificationFragmentArgs args =
+                RegisterVerificationFragmentArgs.fromBundle(getArguments());
+
+        RegisterVerificationFragmentDirections.ActionRegisterVerificationFragmentToSignInFragment directions =
+                RegisterVerificationFragmentDirections.actionRegisterVerificationFragmentToSignInFragment();
+
+        directions.setEmail(args.getEmail());
+        directions.setPassword(args.getPassword());
+
+        Navigation.findNavController(getView()).navigate(directions);
+
+
+//        Navigation.findNavController(getView()).navigate(
+//                RegisterVerificationFragmentDirections.actionRegisterVerificationFragmentToSignInFragment(
+//                        "email", "password"
+//                ));
+
     }
-
-
 
 }

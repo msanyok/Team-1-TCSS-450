@@ -223,7 +223,10 @@ public class RegisterFragment extends Fragment {
      */
     private void navigateToRegistrationVerification() {
         Navigation.findNavController(getView()).navigate(
-                RegisterFragmentDirections.actionRegisterFragmentToRegisterVerificationFragment());
+                RegisterFragmentDirections.actionRegisterFragmentToRegisterVerificationFragment(
+                        mBinding.editEmail.getText().toString(),
+                        mBinding.editPassword1.getText().toString()
+                ));
     }
 
     /**
@@ -236,17 +239,38 @@ public class RegisterFragment extends Fragment {
         if (theResponse.length() > 0) {
             if (theResponse.has("code")) {
                 try {
-                    mBinding.editEmail.setError(
-                            "Error Authenticating: " +
-                                    theResponse.getJSONObject("data").getString("message"));
-                } catch (JSONException e) {
-                    Log.e("JSON Parse Error", e.getMessage());
+
+                    final String message =
+                            theResponse.getJSONObject("data").get("message").toString();
+
+                    if (message.equals("Email exists")) {
+                        mBinding.editEmail.setError(
+                                "Error Authenticating: " +
+                                        theResponse.getJSONObject("data").getString("message"));
+                    } else {
+                        // there is a different 400 error, so get the detail and act accordingly
+                        // TODO: we could modify the server so we are able to accept this better
+                        final String detail = theResponse.getJSONObject("data").get("detail").toString();
+                        final String duplicateNicknameDetail = "Key (nickname)=("
+                                + mBinding.editNickname.getText().toString() + ") already exists.";
+
+                        if (detail.equals(duplicateNicknameDetail)) {
+                            // the nickname already exists, so notify the user.
+                            mBinding.editNickname.setError("Nickname already exists.");
+                        } else {
+                            System.out.println(theResponse.getJSONObject("data").toString());
+                            mBinding.editEmail.setError("Other error. Check logs.");
+                        }
+                    }
+
+                } catch (JSONException exception) {
+                    Log.e("JSON Parse Error", exception.getMessage());
                 }
             } else {
                 navigateToRegistrationVerification();
             }
         } else {
-            Log.d("JSON Response", "No Response");
+            Log.d("Registration JSON Response", "No Response");
         }
     }
 

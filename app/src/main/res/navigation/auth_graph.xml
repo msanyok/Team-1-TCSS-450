@@ -24,6 +24,7 @@
             android:name="password"
             app:argType="string"
             android:defaultValue="default" />
+
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
@@ -52,5 +53,11 @@
         <action
             android:id="@+id/action_registerVerificationFragment_to_SignInFragment"
             app:destination="@id/SignInFragment" />
+        <argument
+            android:name="email"
+            app:argType="string" />
+        <argument
+            android:name="password"
+            app:argType="string" />
     </fragment>
 </navigation>

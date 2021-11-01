@@ -44,8 +44,8 @@ public class MainActivity extends AppCompatActivity {
         MainActivityArgs args = MainActivityArgs.fromBundle(getIntent().getExtras());
 
         new ViewModelProvider(this,
-                new UserInfoViewModel.UserInfoViewModelFactory(args.getEmail(), args.getJwt())
-                ).get(UserInfoViewModel.class);
+                new UserInfoViewModel.UserInfoViewModelFactory(args.getEmail(), args.getJwt()))
+                        .get(UserInfoViewModel.class);
 
         setContentView(R.layout.activity_main);
         BottomNavigationView navView = findViewById(R.id.nav_view);
