@@ -28,7 +28,9 @@ public class ContactGenerator {
                 {"Steven", "Omegna", "The Fisherman"},
                 {"Alex", "Maistruk", "The Human Database"},
                 {"Parker", "Rosengreen", "Muscles"},
-                {"Chris", "Ding", "The Intern"}
+                {"Chris", "Ding", "The Intern"},
+                {"Random", "Guy", "IDKWHATTOPUT"},
+                {"Harold", "LooooooooonnnnnngggggName", "The G.O.A.T"}
         };
         List<Contact> contacts = new ArrayList<>();
         for (String[] info : data) {

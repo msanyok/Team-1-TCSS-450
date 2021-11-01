@@ -28,7 +28,7 @@ public class ChatRoomGenerator {
         List<ChatRoom> rooms = new ArrayList<>();
         List<Contact> contacts = ContactGenerator.getContactList();
         List<Contact[]> combinations = new ArrayList<>();
-        for (int i = 1; i <= contacts.size(); i++) { // generate all possible combinations
+        for (int i = 1; i <= 4; i++) { // generate all possible combinations
             generateCombinations(combinations, 0, 0, contacts, new Contact[i]);
         }
         Collections.shuffle(combinations);
@@ -41,7 +41,7 @@ public class ChatRoomGenerator {
     /**
      * A utility method to generate all combinations of size theCurrentCombo.length
      *
-     * @param theCombos the accumulated list of combinatios
+     * @param theCombos the accumulated list of combinations
      * @param theInsertionIndex the index to insert into theCurrentCombo
      * @param theListIndex the index from which to retrieve the next contact
      * @param theContacts the list of available contacts

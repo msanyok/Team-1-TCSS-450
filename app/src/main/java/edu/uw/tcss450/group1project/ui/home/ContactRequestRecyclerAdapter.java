@@ -3,7 +3,7 @@
  * Fall 2021
  */
 
-package edu.uw.tcss450.group1project.ui.contacts;
+package edu.uw.tcss450.group1project.ui.home;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import edu.uw.tcss450.group1project.R;
-import edu.uw.tcss450.group1project.databinding.FragmentContactsCardBinding;
+import edu.uw.tcss450.group1project.databinding.FragmentHomeContactRequestCardBinding;
+import edu.uw.tcss450.group1project.ui.contacts.Contact;
 
 /**
  * ContactRecyclerAdapter provides an adapter for the ContactsFragment RecyclerView.
@@ -23,7 +24,8 @@ import edu.uw.tcss450.group1project.databinding.FragmentContactsCardBinding;
  * @author Parker Rosengreen
  * @version Fall 2021
  */
-public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecyclerAdapter.ContactsViewHolder> {
+public class ContactRequestRecyclerAdapter
+        extends RecyclerView.Adapter<ContactRequestRecyclerAdapter.ContactRequestViewHolder> {
 
     /** The list of contacts to be displayed */
     private final List<Contact> mContacts;
@@ -33,20 +35,21 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
      *
      * @param theContacts the list of contacts
      */
-    public ContactsRecyclerAdapter(List<Contact> theContacts) {
+    public ContactRequestRecyclerAdapter(List<Contact> theContacts) {
         mContacts = theContacts;
     }
 
     @NonNull
     @Override
-    public ContactsViewHolder onCreateViewHolder(@NonNull ViewGroup theParent, int theViewType) {
-        return new ContactsViewHolder(LayoutInflater
-                                      .from(theParent.getContext())
-                                      .inflate(R.layout.fragment_contacts_card, theParent, false));
+    public ContactRequestViewHolder onCreateViewHolder(@NonNull ViewGroup theParent,
+                                                       int theViewType) {
+        return new ContactRequestViewHolder(LayoutInflater
+                .from(theParent.getContext())
+                .inflate(R.layout.fragment_home_contact_request_card, theParent, false));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ContactsViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ContactRequestViewHolder holder, int position) {
         holder.setContact(mContacts.get(position));
     }
 
@@ -62,13 +65,13 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
      * @author Parker Rosengreen
      * @version Fall 2021
      */
-    public class ContactsViewHolder extends RecyclerView.ViewHolder {
+    public class ContactRequestViewHolder extends RecyclerView.ViewHolder {
 
         /** The assigned view */
         private final View mView;
 
         /** The ViewBinding corresponded to a contact RecyclerView card */
-        private final FragmentContactsCardBinding mBinding;
+        private final FragmentHomeContactRequestCardBinding mBinding;
 
         /** The contact assigned to this ViewHolder */
         private Contact mContact;
@@ -78,10 +81,10 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
          *
          * @param theItemView the view to be assigned
          */
-        public ContactsViewHolder(@NonNull View theItemView) {
+        public ContactRequestViewHolder(@NonNull View theItemView) {
             super(theItemView);
             mView = theItemView;
-            mBinding = FragmentContactsCardBinding.bind(theItemView);
+            mBinding = FragmentHomeContactRequestCardBinding.bind(theItemView);
         }
 
         /**
@@ -100,7 +103,8 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
                                                                 mContact.getLast()));
             mBinding.contactNickname.setText(mContact.getNickname());
             mBinding.contactImage.setImageResource(R.drawable.ic__android__black_24dp);
-            mBinding.arrowImage.setImageResource(R.drawable.ic_arrow_right__black_24dp);
+            mBinding.denyButton.setImageResource(R.drawable.ic_deny_red_24dp);
+            mBinding.acceptButton.setImageResource(R.drawable.ic_check_green_24dp);
         }
     }
 }
