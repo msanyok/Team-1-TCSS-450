@@ -5,6 +5,8 @@
 
 package edu.uw.tcss450.group1project.model;
 
+import android.app.Application;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
@@ -34,10 +36,12 @@ public class UserInfoViewModel extends ViewModel {
      * @throws NullPointerException if theEmail is null
      * @throws NullPointerException if theJwt is null
      */
-    private UserInfoViewModel(@NonNull final String theEmail, @NonNull final String theJwt) {
+    private UserInfoViewModel(@NonNull final String theEmail,
+                              @NonNull final String theJwt) {
         mEmail = Objects.requireNonNull(theEmail, "theEmail can not be null");
-        mJwt = Objects.requireNonNull(theJwt, "theHwt can not be null");
+        mJwt = Objects.requireNonNull(theJwt, "theJwt can not be null");
     }
+
 
     /**
      * Returns the user's email
