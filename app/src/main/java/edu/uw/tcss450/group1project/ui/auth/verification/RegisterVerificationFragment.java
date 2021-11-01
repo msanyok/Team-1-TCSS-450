@@ -133,6 +133,7 @@ public class RegisterVerificationFragment extends Fragment {
                 mBinding.editVerificationCode.setError("Verification failed.");
             } else {
                 navigateToSignIn();
+                mRegisterVerificationModel.removeData();
             }
         } else {
             Log.d("Registration Verification JSON Response", "No Response: " + theResponse.toString());

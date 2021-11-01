@@ -248,8 +248,6 @@ public class RegisterFragment extends Fragment {
                                 "Error Authenticating: " +
                                         theResponse.getJSONObject("data").getString("message"));
                     } else {
-                        // there is a different 400 error, so get the detail and act accordingly
-                        // TODO: we could modify the server so we are able to accept this better
                         final String detail = theResponse.getJSONObject("data").get("detail").toString();
                         final String duplicateNicknameDetail = "Key (nickname)=("
                                 + mBinding.editNickname.getText().toString() + ") already exists.";
@@ -268,6 +266,10 @@ public class RegisterFragment extends Fragment {
                 }
             } else {
                 navigateToRegistrationVerification();
+
+                // remove the current JSON stored in the registration model.
+                // This prevents the fragment from chaining navigations
+                mRegisterModel.removeData();
             }
         } else {
             Log.d("Registration JSON Response", "No Response");

@@ -140,4 +140,8 @@ public class RegisterVerificationViewModel extends AndroidViewModel {
         }
     }
 
+    public void removeData() {
+        mResponse.setValue(new JSONObject());
+    }
+
 }

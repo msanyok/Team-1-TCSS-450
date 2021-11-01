@@ -154,4 +154,9 @@ public class RegisterViewModel extends AndroidViewModel {
                 .add(request);
     }
 
+
+    public void removeData() {
+        mResponse.setValue(new JSONObject());
+    }
+
 }
