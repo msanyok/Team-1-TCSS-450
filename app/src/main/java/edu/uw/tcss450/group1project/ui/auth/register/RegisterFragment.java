@@ -1,3 +1,8 @@
+/*
+ * TCSS450 Mobile Applications
+ * Fall 2021
+ */
+
 package edu.uw.tcss450.group1project.ui.auth.register;
 
 import static edu.uw.tcss450.group1project.utils.PasswordValidator.*;
@@ -24,142 +29,251 @@ import edu.uw.tcss450.group1project.utils.PasswordValidator;
 
 
 /**
- * A simple {@link Fragment} subclass.
+ * A {@link Fragment} subclass that handles input and output
+ * when the user is attempting to register for the app.
+ *
+ * @author Charles Bryan
+ * @author Austn Attaway
+ * @version Fall 2021
  */
 public class RegisterFragment extends Fragment {
 
-    private FragmentRegisterBinding binding;
+    /** ViewBinding reference to the Register Fragment UI */
+    private FragmentRegisterBinding mBinding;
 
+    /** ViewModel for registration */
     private RegisterViewModel mRegisterModel;
 
-    private PasswordValidator mNameValidator = checkPwdLength(1);
+    /**
+     * A {@link PasswordValidator} dedicated to validating the user's inputted name texts.
+     * Used for the first name, last name, and nickname.
+     *
+     * The name texts will be considered valid if the length of the given
+     * text is greater than one.
+     */
+    private final PasswordValidator mNameValidator = checkPwdLength(1);
 
-    private PasswordValidator mEmailValidator = checkPwdLength(2)
+    /**
+     * A {@link PasswordValidator} dedicated to validating the user's inputted email text.
+     *
+     * The email text will be considered valid if the length of the given
+     * text is greater than 2, does not include whitespace, and has the '@' symbol.
+     */
+    private final PasswordValidator mEmailValidator = checkPwdLength(2)
             .and(checkExcludeWhiteSpace())
             .and(checkPwdSpecialChar("@"));
 
-    private PasswordValidator mPassWordValidator =
-            checkClientPredicate(pwd -> pwd.equals(binding.editPassword2.getText().toString()))
+    /**
+     * A {@link PasswordValidator} dedicated to validating the user's inputted password text.
+     *
+     * The password text will be considered valid if the length of the given
+     * text is greater than 7, has at least one special character,
+     * does not include whitespace, includes at least one digit, and contains at least one
+     * uppercase or lowercase letter.
+     */
+    private final PasswordValidator mPassWordValidator =
+            checkClientPredicate(pwd -> pwd.equals(mBinding.editPassword2.getText().toString()))
                     .and(checkPwdLength(7))
                     .and(checkPwdSpecialChar())
                     .and(checkExcludeWhiteSpace())
                     .and(checkPwdDigit())
                     .and(checkPwdLowerCase().or(checkPwdUpperCase()));
 
+    /**
+     * Empty public constructor. Does not provide any functionality.
+     */
     public RegisterFragment() {
         // Required empty public constructor
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onCreate(@Nullable final Bundle theSavedInstanceState) {
+        super.onCreate(theSavedInstanceState);
         mRegisterModel = new ViewModelProvider(getActivity())
                 .get(RegisterViewModel.class);
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        binding = FragmentRegisterBinding.inflate(inflater);
-        return binding.getRoot();
+    public View onCreateView(@NonNull final LayoutInflater theInflater, final ViewGroup theContainer,
+                             final Bundle theSavedInstanceState) {
+        mBinding = FragmentRegisterBinding.inflate(theInflater);
+        return mBinding.getRoot();
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onViewCreated(@NonNull final View theView,
+                              @Nullable final Bundle theSavedInstanceState) {
+        super.onViewCreated(theView, theSavedInstanceState);
 
-        binding.buttonRegister.setOnClickListener(this::attemptRegister);
+        mBinding.buttonRegister.setOnClickListener(this::attemptRegister);
         mRegisterModel.addResponseObserver(getViewLifecycleOwner(),
                 this::observeResponse);
     }
 
-    private void attemptRegister(final View button) {
+    /**
+     * Starts the chain of text field validation that attempts to validate
+     * all registration text input fields.
+     *
+     * @param theButton the Button that was pressed to invoke this method.
+     */
+    private void attemptRegister(final View theButton) {
         validateFirst();
     }
 
+    /**
+     * Attempts to validate the text inputted for the user's first name.
+     *
+     * If the validation succeeds, attempts to validate the last name.
+     * Else, sets an error text on the first name field that requests they enter a first name.
+     */
     private void validateFirst() {
         mNameValidator.processResult(
-                mNameValidator.apply(binding.editFirst.getText().toString().trim()),
+                mNameValidator.apply(mBinding.editFirst.getText().toString().trim()),
                 this::validateLast,
-                result -> binding.editFirst.setError("Please enter a first name."));
-    }
-
-    private void validateLast() {
-        mNameValidator.processResult(
-                mNameValidator.apply(binding.editLast.getText().toString().trim()),
-                this::validateEmail,
-                result -> binding.editLast.setError("Please enter a last name."));
-    }
-
-    private void validateEmail() {
-        mEmailValidator.processResult(
-                mEmailValidator.apply(binding.editEmail.getText().toString().trim()),
-                this::validatePasswordsMatch,
-                result -> binding.editEmail.setError("Please enter a valid Email address."));
-    }
-
-    private void validatePasswordsMatch() {
-        PasswordValidator matchValidator =
-                checkClientPredicate(
-                        pwd -> pwd.equals(binding.editPassword2.getText().toString().trim()));
-
-        mEmailValidator.processResult(
-                matchValidator.apply(binding.editPassword1.getText().toString().trim()),
-                this::validatePassword,
-                result -> binding.editPassword1.setError("Passwords must match."));
-    }
-
-    private void validatePassword() {
-        mPassWordValidator.processResult(
-                mPassWordValidator.apply(binding.editPassword1.getText().toString()),
-                this::verifyAuthWithServer,
-                result -> binding.editPassword1.setError("Please enter a valid Password."));
-    }
-
-    private void verifyAuthWithServer() {
-        mRegisterModel.connect(
-                binding.editFirst.getText().toString(),
-                binding.editLast.getText().toString(),
-                binding.editEmail.getText().toString(),
-                binding.editPassword1.getText().toString());
-        //This is an Asynchronous call. No statements after should rely on the
-        //result of connect().
-
-    }
-
-    private void navigateToLogin() {
-        RegisterFragmentDirections.ActionRegisterFragmentToLoginFragment directions =
-                RegisterFragmentDirections.actionRegisterFragmentToLoginFragment();
-
-        directions.setEmail(binding.editEmail.getText().toString());
-        directions.setPassword(binding.editPassword1.getText().toString());
-
-        Navigation.findNavController(getView()).navigate(directions);
-
+                result -> mBinding.editFirst.setError("Please enter a first name."));
     }
 
     /**
-     * An observer on the HTTP Response from the web server. This observer should be
-     * attached to SignInViewModel.
+     * Attempts to validate the text inputted for the user's last name.
      *
-     * @param response the Response from the server
+     * If the validation succeeds, attempts to validate the nickname.
+     * Else, sets an error text on the last name field that requests they enter a last name.
      */
-    private void observeResponse(final JSONObject response) {
-        if (response.length() > 0) {
-            if (response.has("code")) {
+    private void validateLast() {
+        mNameValidator.processResult(
+                mNameValidator.apply(mBinding.editLast.getText().toString().trim()),
+                this::validateNickname,
+                result -> mBinding.editLast.setError("Please enter a last name."));
+    }
+
+    /**
+     * Attempts to validate the text inputted for the user's nickname.
+     *
+     * If the validation succeeds, attempts to validate the email.
+     * Else, sets an error text on the nickname field that requests they enter a valid nickname.
+     */
+    private void validateNickname() {
+        mNameValidator.processResult(
+                mNameValidator.apply(mBinding.editNickname.getText().toString().trim()),
+                this::validateEmail,
+                result -> mBinding.editNickname.setError("Please enter a valid nickname."));
+    }
+
+    /**
+     * Attempts to validate the text inputted for the user's email.
+     *
+     * If the validation succeeds, attempts to validate the passwords.
+     * Else, sets an error text on the email field that requests they enter a valid email.
+     */
+    private void validateEmail() {
+        mEmailValidator.processResult(
+                mEmailValidator.apply(mBinding.editEmail.getText().toString().trim()),
+                this::validatePasswordsMatch,
+                result -> mBinding.editEmail.setError("Please enter a valid Email address."));
+    }
+
+    /**
+     * Attempts to validate that the inputted passwords are the same.
+     *
+     * If the validation succeeds, attempts to validate the password itself.
+     * Else, sets an error on the first password field telling the user the passwords must match.
+     */
+    private void validatePasswordsMatch() {
+        PasswordValidator matchValidator =
+                checkClientPredicate(
+                        pwd -> pwd.equals(mBinding.editPassword2.getText().toString().trim()));
+
+        mEmailValidator.processResult(
+                matchValidator.apply(mBinding.editPassword1.getText().toString().trim()),
+                this::validatePassword,
+                result -> mBinding.editPassword1.setError("Passwords must match."));
+    }
+
+    /**
+     * Attempts to validate that the inputted password is valid.
+     *
+     * If the validation succeeds, verify all of the credentials with the server.
+     * Else, sets an error on the first password field asking the user to input a valid password.
+     */
+    private void validatePassword() {
+        mPassWordValidator.processResult(
+                mPassWordValidator.apply(mBinding.editPassword1.getText().toString()),
+                this::verifyAuthWithServer,
+                result -> mBinding.editPassword1.setError("Please enter a valid Password."));
+    }
+
+    /**
+     * Asynchronously attempts to register a new account in the server with the information
+     * given in the registration text fields.
+     */
+    private void verifyAuthWithServer() {
+        mRegisterModel.connect(
+                mBinding.editFirst.getText().toString(),
+                mBinding.editLast.getText().toString(),
+                mBinding.editNickname.getText().toString(),
+                mBinding.editEmail.getText().toString(),
+                mBinding.editPassword1.getText().toString());
+        // Above call is asynchronous, do not write code below that relies on the result.
+    }
+
+    /**
+     * Navigates to the registration verification page.
+     */
+    private void navigateToRegistrationVerification() {
+        Navigation.findNavController(getView()).navigate(
+                RegisterFragmentDirections.actionRegisterFragmentToRegisterVerificationFragment(
+                        mBinding.editEmail.getText().toString(),
+                        mBinding.editPassword1.getText().toString()
+                ));
+
+        // Remove the current JSON stored in the live data.
+        // This prevents the fragment from chaining navigations
+        // when they try to come back to this fragment
+        mRegisterModel.removeData();
+    }
+
+    /**
+     * Observes the HTTP Response from the web server. If an error occurred, notify the user
+     * accordingly. If it was a success, navigate to the registration verification page.
+     *
+     * @param theResponse the Response from the server
+     */
+    private void observeResponse(final JSONObject theResponse) {
+        if (theResponse.length() > 0) {
+            if (theResponse.has("code")) {
                 try {
-                    binding.editEmail.setError(
-                            "Error Authenticating: " +
-                                    response.getJSONObject("data").getString("message"));
-                } catch (JSONException e) {
-                    Log.e("JSON Parse Error", e.getMessage());
+                    final String message =
+                            theResponse.getJSONObject("data").get("message").toString();
+
+                    if (message.equals("Email exists")) {
+                        // email already exists, so notify the user
+                        mBinding.editEmail.setError(
+                                "Error Authenticating: " +
+                                        theResponse.getJSONObject("data").getString("message"));
+                    } else {
+
+                        final String detail = theResponse.getJSONObject("data").get("detail").toString();
+                        final String duplicateNicknameDetail = "Key (nickname)=("
+                                + mBinding.editNickname.getText().toString() + ") already exists.";
+
+                        if (detail.equals(duplicateNicknameDetail)) {
+                            // the nickname already exists, so notify the user.
+                            mBinding.editNickname.setError("Nickname already exists.");
+                        } else {
+                            // a different, unexpected error occurred.
+                            mBinding.editEmail.setError("Other error. Check logs.");
+                        }
+                    }
+
+                } catch (JSONException exception) {
+                    Log.e("JSON Parse Error", exception.getMessage());
                 }
             } else {
-                navigateToLogin();
+                navigateToRegistrationVerification();
             }
         } else {
-            Log.d("JSON Response", "No Response");
+            Log.d("Registration JSON Response", "No Response");
         }
-
     }
+
 }
