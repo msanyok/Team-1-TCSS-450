@@ -49,8 +49,9 @@ public class WeatherRecyclerAdapter10Day
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final WeatherDayViewHolder holder, final int position) {
-        holder.setWeatherData(mForecast.get(position));
+    public void onBindViewHolder(@NonNull final WeatherDayViewHolder theHolder,
+                                 final int thePosition) {
+        theHolder.setWeatherData(mForecast.get(thePosition));
     }
 
     @Override

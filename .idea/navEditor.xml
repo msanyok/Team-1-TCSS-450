@@ -98,13 +98,13 @@
             <LayoutPositions>
               <option name="myPositions">
                 <map>
-                  <entry key="contactsInfo">
+                  <entry key="navigation_contact_info">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="-539" />
-                            <option name="y" value="-149" />
+                            <option name="x" value="12" />
+                            <option name="y" value="12" />
                           </Point>
                         </option>
                       </LayoutPositions>
@@ -118,6 +118,15 @@
                             <option name="x" value="-330" />
                             <option name="y" value="-162" />
                           </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_navigation_contacts_to_contactInfo">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
                         </option>
                       </LayoutPositions>
                     </value>

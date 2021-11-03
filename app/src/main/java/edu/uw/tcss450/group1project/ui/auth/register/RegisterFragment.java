@@ -27,7 +27,6 @@ import org.json.JSONObject;
 import edu.uw.tcss450.group1project.databinding.FragmentRegisterBinding;
 import edu.uw.tcss450.group1project.utils.PasswordValidator;
 
-
 /**
  * A {@link Fragment} subclass that handles input and output
  * when the user is attempting to register for the app.
@@ -94,7 +93,8 @@ public class RegisterFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(@NonNull final LayoutInflater theInflater, final ViewGroup theContainer,
+    public View onCreateView(@NonNull final LayoutInflater theInflater,
+                             final ViewGroup theContainer,
                              final Bundle theSavedInstanceState) {
         mBinding = FragmentRegisterBinding.inflate(theInflater);
         return mBinding.getRoot();
@@ -104,7 +104,6 @@ public class RegisterFragment extends Fragment {
     public void onViewCreated(@NonNull final View theView,
                               @Nullable final Bundle theSavedInstanceState) {
         super.onViewCreated(theView, theSavedInstanceState);
-
         mBinding.buttonRegister.setOnClickListener(this::attemptRegister);
         mRegisterModel.addResponseObserver(getViewLifecycleOwner(),
                 this::observeResponse);
@@ -249,10 +248,12 @@ public class RegisterFragment extends Fragment {
                         // email already exists, so notify the user
                         mBinding.editEmail.setError(
                                 "Error Authenticating: " +
-                                        theResponse.getJSONObject("data").getString("message"));
+                                        theResponse.getJSONObject("data")
+                                                .getString("message"));
                     } else {
 
-                        final String detail = theResponse.getJSONObject("data").get("detail").toString();
+                        final String detail =
+                                theResponse.getJSONObject("data").get("detail").toString();
                         final String duplicateNicknameDetail = "Key (nickname)=("
                                 + mBinding.editNickname.getText().toString() + ") already exists.";
 

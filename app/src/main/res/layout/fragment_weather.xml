@@ -31,9 +31,7 @@
                 android:textAlignment="center"
                 android:drawableStart="@drawable/ic_search_grey_24dp">
             </EditText>
-
         </LinearLayout>
-
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
@@ -95,7 +93,6 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
                 </ImageView>
-
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -140,11 +137,9 @@
                     android:text="@string/title_humidity"
                     android:textColor="@color/primaryTextColor"
                     app:layout_constraintLeft_toLeftOf="parent"
-
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent">
                 </TextView>
-
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
 
@@ -227,5 +222,4 @@
             </androidx.recyclerview.widget.RecyclerView>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
-
 </LinearLayout>

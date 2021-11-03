@@ -50,8 +50,9 @@ public class WeatherRecyclerAdapter24Hour
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final WeatherHourViewHolder holder, final int position) {
-        holder.setWeatherData(mForecast.get(position));
+    public void onBindViewHolder(@NonNull final WeatherHourViewHolder theHolder,
+                                 final int thePosition) {
+        theHolder.setWeatherData(mForecast.get(thePosition));
     }
 
     @Override
@@ -82,7 +83,7 @@ public class WeatherRecyclerAdapter24Hour
          *
          * @param theItemView the view to be assigned
          */
-        public WeatherHourViewHolder(@NonNull View theItemView) {
+        public WeatherHourViewHolder(@NonNull final View theItemView) {
             super(theItemView);
             mView = theItemView;
             mBinding = FragmentWeather24hrCardBinding.bind(theItemView);

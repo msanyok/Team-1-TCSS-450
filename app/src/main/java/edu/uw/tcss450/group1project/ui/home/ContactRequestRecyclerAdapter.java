@@ -50,9 +50,9 @@ public class ContactRequestRecyclerAdapter
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final ContactRequestViewHolder holder,
-                                 final int position) {
-        holder.setContact(mContacts.get(position));
+    public void onBindViewHolder(@NonNull final ContactRequestViewHolder theHolder,
+                                 final int thePosition) {
+        theHolder.setContact(mContacts.get(thePosition));
     }
 
     @Override
@@ -102,7 +102,7 @@ public class ContactRequestRecyclerAdapter
         /** Displays all potential contact data and image views for a single contact card */
         private void display() {
             mBinding.contactName.setText(String.format("%s %s", mContact.getFirst(),
-                                                                mContact.getLast()));
+                    mContact.getLast()));
             mBinding.contactNickname.setText(mContact.getNickname());
             mBinding.contactImage.setImageResource(R.drawable.ic__android__black_24dp);
             mBinding.denyButton.setImageResource(R.drawable.ic_deny_red_24dp);

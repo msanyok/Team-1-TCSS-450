@@ -42,7 +42,6 @@ public class UserInfoViewModel extends ViewModel {
         mJwt = Objects.requireNonNull(theJwt, "theJwt can not be null");
     }
 
-
     /**
      * Returns the user's email
      *
@@ -52,7 +51,11 @@ public class UserInfoViewModel extends ViewModel {
         return mEmail;
     }
 
-    // TODO: determine if this method is important or not. It is currently unused
+    /**
+     * Provides access to the jwt
+     *
+     * @return the jwt string
+     */
     public String getmJwt() {
         return mJwt;
     }
@@ -89,7 +92,7 @@ public class UserInfoViewModel extends ViewModel {
 
         @NonNull
         @Override
-        public <T extends ViewModel> T create(@NonNull Class<T> theModelClass) {
+        public <T extends ViewModel> T create(@NonNull final Class<T> theModelClass) {
             if (theModelClass == UserInfoViewModel.class) {
                 return (T) new UserInfoViewModel(mEmail, mJwt);
             }

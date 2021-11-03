@@ -40,7 +40,7 @@ public class ContactsFragment extends Fragment {
 
     @Override
     public View onCreateView(final LayoutInflater theInflater, final ViewGroup theContainer,
-                             Bundle theSavedInstanceState) {
+                             final Bundle theSavedInstanceState) {
         // Inflate the layout for this fragment
         return theInflater.inflate(R.layout.fragment_contacts, theContainer, false);
 

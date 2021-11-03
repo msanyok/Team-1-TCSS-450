@@ -28,7 +28,8 @@ import edu.uw.tcss450.group1project.databinding.FragmentContactsCardBinding;
  * @author Parker Rosengreen
  * @version Fall 2021
  */
-public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecyclerAdapter.ContactsViewHolder> {
+public class ContactsRecyclerAdapter
+        extends RecyclerView.Adapter<ContactsRecyclerAdapter.ContactsViewHolder> {
 
     /** The list of contacts to be displayed */
     private final List<Contact> mContacts;
@@ -48,13 +49,14 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
                                                  final int theViewType) {
         return new ContactsViewHolder(LayoutInflater
                                       .from(theParent.getContext())
-                                      .inflate(R.layout.fragment_contacts_card, theParent, false));
+                                      .inflate(R.layout.fragment_contacts_card,
+                                              theParent, false));
 
 
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ContactsViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ContactsViewHolder holder, final int position) {
         holder.setContact(mContacts.get(position));
     }
 
