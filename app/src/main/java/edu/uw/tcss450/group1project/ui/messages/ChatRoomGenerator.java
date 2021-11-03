@@ -29,7 +29,8 @@ public class ChatRoomGenerator {
         List<Contact> contacts = ContactGenerator.getContactList();
         List<Contact[]> combinations = new ArrayList<>();
         for (int i = 1; i <= 4; i++) { // generate all possible combinations
-            generateCombinations(combinations, 0, 0, contacts, new Contact[i]);
+            generateCombinations(combinations, 0, 0,
+                    contacts, new Contact[i]);
         }
         Collections.shuffle(combinations);
         for (Contact[] arr : combinations) {
@@ -58,11 +59,10 @@ public class ChatRoomGenerator {
         }
         if (theListIndex < theContacts.size()) {
             theCurrentCombo[theInsertionIndex] = theContacts.get(theListIndex);
-            generateCombinations(theCombos, theInsertionIndex + 1, theListIndex + 1,
-                                 theContacts, theCurrentCombo);
+            generateCombinations(theCombos, theInsertionIndex + 1,
+                       theListIndex + 1, theContacts, theCurrentCombo);
             generateCombinations(theCombos, theInsertionIndex, theListIndex + 1,
                                  theContacts, theCurrentCombo);
-
         }
     }
 }

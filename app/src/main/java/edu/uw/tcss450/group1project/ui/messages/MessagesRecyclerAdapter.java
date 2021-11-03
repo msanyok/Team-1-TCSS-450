@@ -24,7 +24,8 @@ import edu.uw.tcss450.group1project.ui.contacts.Contact;
  * @author Parker Rosengreen
  * @version Fall 2021
  */
-public class MessagesRecyclerAdapter extends RecyclerView.Adapter<MessagesRecyclerAdapter.MessagesViewHolder> {
+public class MessagesRecyclerAdapter
+        extends RecyclerView.Adapter<MessagesRecyclerAdapter.MessagesViewHolder> {
 
     /** The list of contacts to be displayed */
     private final List<ChatRoom> mChatRooms;
@@ -34,7 +35,7 @@ public class MessagesRecyclerAdapter extends RecyclerView.Adapter<MessagesRecycl
      *
      * @param theRooms the list of contacts
      */
-    public MessagesRecyclerAdapter(List<ChatRoom> theRooms) {
+    public MessagesRecyclerAdapter(final List<ChatRoom> theRooms) {
         mChatRooms = theRooms;
     }
 
@@ -48,8 +49,9 @@ public class MessagesRecyclerAdapter extends RecyclerView.Adapter<MessagesRecycl
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final MessagesViewHolder holder, final int position) {
-        holder.setChatRoom(mChatRooms.get(position));
+    public void onBindViewHolder(@NonNull final MessagesViewHolder theHolder,
+                                 final int thePosition) {
+        theHolder.setChatRoom(mChatRooms.get(thePosition));
     }
 
     @Override

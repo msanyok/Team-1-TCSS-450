@@ -87,7 +87,8 @@ public class SignInFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(@NonNull final View theView, @Nullable final Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull final View theView,
+                              @Nullable final Bundle savedInstanceState) {
         super.onViewCreated(theView, savedInstanceState);
 
         mBinding.buttonToRegister.setOnClickListener(button ->
@@ -102,7 +103,8 @@ public class SignInFragment extends Fragment {
 
         SignInFragmentArgs args = SignInFragmentArgs.fromBundle(getArguments());
         mBinding.editEmail.setText(args.getEmail().equals("default") ? "" : args.getEmail());
-        mBinding.editPassword.setText(args.getPassword().equals("default") ? "" : args.getPassword());
+        mBinding.editPassword.setText(
+                args.getPassword().equals("default") ? "" : args.getPassword());
     }
 
     /**

@@ -28,6 +28,7 @@ import edu.uw.tcss450.group1project.model.UserInfoViewModel;
  * @author Charles Bryan
  * @author Austn Attaway
  * @author Chris Ding
+ * @author Parker Rosengreen
  * @version Fall 2021
  */
 public class MainActivity extends AppCompatActivity {

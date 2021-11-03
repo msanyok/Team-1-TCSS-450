@@ -48,7 +48,8 @@ public class HomeFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(@NonNull final View theView, @Nullable Bundle theSavedInstanceState) {
+    public void onViewCreated(@NonNull final View theView,
+                              @Nullable final Bundle theSavedInstanceState) {
         super.onViewCreated(theView, theSavedInstanceState);
         UserInfoViewModel model = new ViewModelProvider(getActivity())
                 .get(UserInfoViewModel.class);
@@ -57,7 +58,7 @@ public class HomeFragment extends Fragment {
         binding.weatherImage.setImageResource(R.drawable.ic_sun_yellow_24dp);
         binding.welcomeText.setText(String.format("Welcome, %s!", model.getEmail()));
         binding.weatherText.setText(String
-                           .format("It is %d degrees with a %d percent chance of rain.", 50, 10));
+                .format("It is %d degrees with a %d percent chance of rain.", 50, 10));
         binding.listNewMessages.setAdapter(
                 new MessagesNotificationsRecyclerAdapter(ChatRoomGenerator.getChatRooms()));
         binding.listContactRequests.setAdapter(

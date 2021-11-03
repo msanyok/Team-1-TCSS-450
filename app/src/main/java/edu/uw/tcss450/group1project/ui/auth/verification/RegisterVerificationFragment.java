@@ -38,7 +38,6 @@ import edu.uw.tcss450.group1project.utils.PasswordValidator;
  */
 public class RegisterVerificationFragment extends Fragment {
 
-
     /** ViewBinding reference to the Verification Fragment UI */
     private FragmentVerificationBinding mBinding;
 
@@ -130,7 +129,8 @@ public class RegisterVerificationFragment extends Fragment {
                 navigateToSignIn();
             }
         } else {
-            Log.d("Registration Verification JSON Response", "No Response: " + theResponse.toString());
+            Log.d("Registration Verification JSON Response", "No Response: "
+                    + theResponse.toString());
         }
     }
 
@@ -141,8 +141,10 @@ public class RegisterVerificationFragment extends Fragment {
         final RegisterVerificationFragmentArgs args =
                 RegisterVerificationFragmentArgs.fromBundle(getArguments());
 
-        RegisterVerificationFragmentDirections.ActionRegisterVerificationFragmentToSignInFragment directions =
-                RegisterVerificationFragmentDirections.actionRegisterVerificationFragmentToSignInFragment();
+        RegisterVerificationFragmentDirections
+                .ActionRegisterVerificationFragmentToSignInFragment directions =
+                    RegisterVerificationFragmentDirections
+                        .actionRegisterVerificationFragmentToSignInFragment();
 
         directions.setEmail(args.getEmail());
         directions.setPassword(args.getPassword());
