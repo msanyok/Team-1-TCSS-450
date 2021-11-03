@@ -38,13 +38,14 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
      *
      * @param theContacts the list of contacts
      */
-    public ContactsRecyclerAdapter(List<Contact> theContacts) {
+    public ContactsRecyclerAdapter(final List<Contact> theContacts) {
         mContacts = theContacts;
     }
 
     @NonNull
     @Override
-    public ContactsViewHolder onCreateViewHolder(@NonNull ViewGroup theParent, int theViewType) {
+    public ContactsViewHolder onCreateViewHolder(@NonNull final ViewGroup theParent,
+                                                 final int theViewType) {
         return new ContactsViewHolder(LayoutInflater
                                       .from(theParent.getContext())
                                       .inflate(R.layout.fragment_contacts_card, theParent, false));
@@ -86,7 +87,7 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
          *
          * @param theItemView the view to be assigned
          */
-        public ContactsViewHolder(@NonNull View theItemView) {
+        public ContactsViewHolder(@NonNull final View theItemView) {
             super(theItemView);
             mView = theItemView;
             mBinding = FragmentContactsCardBinding.bind(theItemView);
