@@ -10,6 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.Navigation;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -43,6 +48,8 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
         return new ContactsViewHolder(LayoutInflater
                                       .from(theParent.getContext())
                                       .inflate(R.layout.fragment_contacts_card, theParent, false));
+
+
     }
 
     @Override
@@ -60,6 +67,7 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
      * RecyclerView.
      *
      * @author Parker Rosengreen
+     * @author Chris Ding
      * @version Fall 2021
      */
     public class ContactsViewHolder extends RecyclerView.ViewHolder {
@@ -82,6 +90,8 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
             super(theItemView);
             mView = theItemView;
             mBinding = FragmentContactsCardBinding.bind(theItemView);
+
+
         }
 
         /**
@@ -89,8 +99,13 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
          *
          * @param theContact the contact to be assigned
          */
-        public void setContact(final Contact theContact) {
+        void setContact(final Contact theContact) {
             mContact = theContact;
+
+            mBinding.buttonContactInfo.setOnClickListener(view -> {
+                Navigation.findNavController(view).navigate(R.id.action_navigation_contacts_to_contactsInfo);
+
+            });
             display();
         }
 

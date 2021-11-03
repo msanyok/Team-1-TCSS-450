@@ -27,6 +27,7 @@ import edu.uw.tcss450.group1project.model.UserInfoViewModel;
  *
  * @author Charles Bryan
  * @author Austn Attaway
+ * @author Chris Ding
  * @version Fall 2021
  */
 public class MainActivity extends AppCompatActivity {
@@ -76,4 +77,13 @@ public class MainActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(theItem);
     }
+
+    //Back arrow function
+    @Override
+    public boolean onSupportNavigateUp() {
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        return NavigationUI.navigateUp(navController, mAppBarConfiguration)
+                || super.onSupportNavigateUp();
+    }
+
 }
