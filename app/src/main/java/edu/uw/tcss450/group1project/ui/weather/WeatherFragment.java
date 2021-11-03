@@ -51,7 +51,7 @@ public class WeatherFragment extends Fragment {
                 .get(UserInfoViewModel.class);
 
         FragmentWeatherBinding binding = FragmentWeatherBinding.bind(getView());
-        binding.titleWeatherIcon.setImageResource(R.drawable.ic_cloud_grey_24dp);
+        binding.titleWeatherIcon.setImageResource(R.drawable.ic_sun_yellow_24dp);
         binding.titleTemperature.setText(String.valueOf(50) + "\u2109");
         binding.titleFeelsLike.setText(binding.titleFeelsLike.getText() + " "
                 + String.valueOf(45) + "\u2109");

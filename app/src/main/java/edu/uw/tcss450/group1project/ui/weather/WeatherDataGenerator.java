@@ -28,7 +28,7 @@ public class WeatherDataGenerator {
         Random rand = new Random();
         int currHour = 12;
         boolean am = false;
-        list.add(new WeatherData("Now", 50, 1));
+        list.add(new WeatherData("Now", 50, 0));
         for (int i = 1; i <= 24; i++) {
             currHour = currHour + 1 == 12 ? 12 : (currHour + 1) % 12;
             am = currHour == 12 ? !am : am;

@@ -217,7 +217,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/list_10day_forecast"
                 android:layout_width="match_parent"
-                android:layout_height="140dp"
+                android:layout_height="130dp"
                 android:layout_margin="5dp"
                 android:orientation="vertical"
                 app:layoutManager="LinearLayoutManager"
