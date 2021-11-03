@@ -91,8 +91,6 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
             super(theItemView);
             mView = theItemView;
             mBinding = FragmentContactsCardBinding.bind(theItemView);
-
-
         }
 
         /**
@@ -102,10 +100,9 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
          */
         void setContact(final Contact theContact) {
             mContact = theContact;
-
             mBinding.buttonContactInfo.setOnClickListener(view -> {
-                Navigation.findNavController(view).navigate(R.id.action_navigation_contacts_to_contactsInfo);
-
+                Navigation.findNavController(view)
+                        .navigate(R.id.action_navigation_contacts_to_contactInfo);
             });
             display();
         }
