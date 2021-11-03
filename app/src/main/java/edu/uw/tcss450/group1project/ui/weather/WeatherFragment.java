@@ -55,7 +55,7 @@ public class WeatherFragment extends Fragment {
         binding.titleTemperature.setText(String.valueOf(50) + "\u2109");
         binding.titleFeelsLike.setText(binding.titleFeelsLike.getText() + " "
                 + String.valueOf(45) + "\u2109");
-        binding.titleChanceRain.setText(binding.titleChanceRain.getText() + " 75%");
+        binding.titleChanceRain.setText(binding.titleChanceRain.getText() + " 10%");
         binding.titleHumidity.setText(binding.titleHumidity.getText() + " 80%");
         binding.list24hrForecast.setAdapter(
                 new WeatherRecyclerAdapter24Hour(WeatherDataGenerator.get24HrForecast()));

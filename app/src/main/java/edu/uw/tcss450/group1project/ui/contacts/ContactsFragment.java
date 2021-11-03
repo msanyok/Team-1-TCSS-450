@@ -47,15 +47,13 @@ public class ContactsFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(@NonNull final View theView, @Nullable final Bundle theSavedInstanceState) {
+    public void onViewCreated(@NonNull final View theView,
+                              @Nullable final Bundle theSavedInstanceState) {
         super.onViewCreated(theView, theSavedInstanceState);
         UserInfoViewModel model = new ViewModelProvider(getActivity())
                                                         .get(UserInfoViewModel.class);
 
         FragmentContactsBinding binding = FragmentContactsBinding.bind(getView());
         binding.listRoot.setAdapter(new ContactsRecyclerAdapter(ContactGenerator.getContactList()));
-        //      FragmentContactsBinding.bind(getView()).textHello.setText("Welcome to Contacts " + model.getEmail() + "!");
-
-
     }
 }
