@@ -80,7 +80,7 @@ public class RegisterVerificationViewModel extends AndroidViewModel {
      * @throws NullPointerException if theCode is null
      */
     public void connect(final String theEmail, final String theCode) {
-        Objects.requireNonNull(theCode, "theEmail can not be null");
+        Objects.requireNonNull(theEmail, "theEmail can not be null");
         Objects.requireNonNull(theCode, "theCode can not be null");
 
         final String url = "https://team-1-tcss-450-server.herokuapp.com/auth/verify";
@@ -144,6 +144,60 @@ public class RegisterVerificationViewModel extends AndroidViewModel {
      */
     public void removeData() {
         mResponse.setValue(new JSONObject());
+    }
+
+
+    /**
+     * Sends a request to the server asking
+     * it to send a new verification code to the given email.
+     * @param theEmail the user's email
+     * @throws NullPointerException if theEmail is null
+     */
+    protected void sendResendCodeRequest(final String theEmail) {
+        Objects.requireNonNull(theEmail, "theEmail can not be null");
+
+        // todo: UPDATE URL
+        final String url = "https://team-1-tcss-450-server.herokuapp.com/auth/resendcode";
+
+        // todo: update json body
+        final JSONObject body = new JSONObject();
+        try {
+            body.put("email", theEmail);
+        } catch (JSONException exception) {
+            exception.printStackTrace();
+        }
+
+        // should the UI update if the code fails to send?
+
+        final Request request = new JsonObjectRequest(
+                Request.Method.POST,
+                url,
+                body,
+                this::handleResendSuccess,
+                this::handleResendError);
+
+        request.setRetryPolicy(new DefaultRetryPolicy(
+                10_000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        //Instantiate the RequestQueue and add the request to the queue
+
+        // todo: uncomment request send and delete log
+//        Volley.newRequestQueue(getApplication().getApplicationContext())
+//                .add(request);
+        Log.d("TO BE DELETED", "WILL SEND RESEND CODE REQUEST, EMAIL: " + theEmail);
+    }
+
+
+
+    // todo: do what should happen when the code resend is successful
+    private void handleResendSuccess(JSONObject theJsonObject) {
+
+    }
+
+    // todo: do what should happen when the code resend fails
+    private void handleResendError(VolleyError theVolleyError) {
+
     }
 
 }

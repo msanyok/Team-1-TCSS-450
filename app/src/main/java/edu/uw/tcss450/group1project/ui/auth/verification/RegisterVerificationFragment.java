@@ -88,7 +88,9 @@ public class RegisterVerificationFragment extends Fragment {
      * @param theView the button that was pressed to initiate the code resend
      */
     private void sendNewVerificationCode(final View theView) {
-        Log.d("TO BE DELETED", "RESEND VERIFICATION CODE BUTTON PRESSED");
+        final RegisterVerificationFragmentArgs args =
+                RegisterVerificationFragmentArgs.fromBundle(getArguments());
+        mRegisterVerificationModel.sendResendCodeRequest(args.getEmail());
     }
 
     /**
