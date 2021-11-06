@@ -5,8 +5,13 @@
 
 package edu.uw.tcss450.group1project.ui.auth.verification;
 
+import android.app.AlertDialog;
 import android.app.Application;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.Toast;
+import android.widget.inline.InlineContentView;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -186,6 +191,8 @@ public class RegisterVerificationViewModel extends AndroidViewModel {
 //        Volley.newRequestQueue(getApplication().getApplicationContext())
 //                .add(request);
         Log.d("TO BE DELETED", "WILL SEND RESEND CODE REQUEST, EMAIL: " + theEmail);
+        handleResendSuccess(null); // delete
+
     }
 
 
@@ -193,11 +200,21 @@ public class RegisterVerificationViewModel extends AndroidViewModel {
     // todo: do what should happen when the code resend is successful
     private void handleResendSuccess(JSONObject theJsonObject) {
 
+        final Toast successToast = new Toast(this.getApplication().getApplicationContext());
+        successToast.setText("Email sent!");
+        successToast.setDuration(Toast.LENGTH_SHORT);
+        successToast.show();
+
+
+
     }
 
     // todo: do what should happen when the code resend fails
     private void handleResendError(VolleyError theVolleyError) {
-
+        final Toast successToast = new Toast(this.getApplication().getApplicationContext());
+        successToast.setText("Email failed to send");
+        successToast.setDuration(Toast.LENGTH_SHORT);
+        successToast.show();
     }
 
 }
