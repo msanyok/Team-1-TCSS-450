@@ -215,7 +215,6 @@ public class RegisterFragment extends Fragment {
 
                     final String message =
                             theResponse.getJSONObject("data").get("message").toString();
-                    Log.d("TO BE DELETED", message);
 
                     if (message.equals("Email exists")) {
                         mBinding.editEmail.setError(
