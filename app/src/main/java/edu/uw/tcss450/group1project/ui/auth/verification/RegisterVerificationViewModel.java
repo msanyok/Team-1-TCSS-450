@@ -7,6 +7,7 @@ package edu.uw.tcss450.group1project.ui.auth.verification;
 
 import android.app.Application;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -80,7 +81,7 @@ public class RegisterVerificationViewModel extends AndroidViewModel {
      * @throws NullPointerException if theCode is null
      */
     public void connect(final String theEmail, final String theCode) {
-        Objects.requireNonNull(theCode, "theEmail can not be null");
+        Objects.requireNonNull(theEmail, "theEmail can not be null");
         Objects.requireNonNull(theCode, "theCode can not be null");
 
         final String url = "https://team-1-tcss-450-server.herokuapp.com/auth/verify";
@@ -142,8 +143,72 @@ public class RegisterVerificationViewModel extends AndroidViewModel {
     /**
      * Clear the live data stored in this view model
      */
-    public void removeData() {
+    protected void removeData() {
         mResponse.setValue(new JSONObject());
+    }
+
+
+    /**
+     * Sends a request to the server asking
+     * it to send a new verification code to the given email.
+     *
+     * @param theEmail the user's email
+     * @throws NullPointerException if theEmail is null
+     */
+    protected void sendResendCodeRequest(final String theEmail) {
+        Objects.requireNonNull(theEmail, "theEmail can not be null");
+
+        final String url = "https://team-1-tcss-450-server.herokuapp.com/auth/resendcode";
+
+        final JSONObject body = new JSONObject();
+        try {
+            body.put("email", theEmail);
+        } catch (JSONException exception) {
+            exception.printStackTrace();
+        }
+
+        final Request request = new JsonObjectRequest(
+                Request.Method.POST,
+                url,
+                body,
+                this::handleResendSuccess,
+                this::handleResendError);
+        request.setRetryPolicy(new DefaultRetryPolicy(
+                10_000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        //Instantiate the RequestQueue and add the request to the queue
+        Volley.newRequestQueue(getApplication().getApplicationContext())
+                .add(request);
+    }
+
+    /**
+     * Conducts the actions that should occur after successfully resending a verification
+     * code to the user.
+     * Will show a short Toast message at the bottom of the screen notifying the success.
+     *
+     * @param theJsonObject the JSON response from the successful request
+     */
+    private void handleResendSuccess(final JSONObject theJsonObject) {
+        final Toast successToast = new Toast(this.getApplication().getApplicationContext());
+        successToast.setText("Email sent!");
+        successToast.setDuration(Toast.LENGTH_SHORT);
+        successToast.show();
+    }
+
+    /**
+     * Conducts the actions that should occur after unsuccessfully resending a verification
+     * code to the user.
+     * Will show a short Toast message at the bottom of the screen notifying the failure.
+     *
+     * @param theVolleyError the error that occurred
+     */
+    private void handleResendError(final VolleyError theVolleyError) {
+        final Toast successToast = new Toast(this.getApplication().getApplicationContext());
+        successToast.setText("Email failed to send");
+        successToast.setDuration(Toast.LENGTH_SHORT);
+        successToast.show();
     }
 
 }

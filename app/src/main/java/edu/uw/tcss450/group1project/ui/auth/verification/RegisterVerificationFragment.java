@@ -75,8 +75,22 @@ public class RegisterVerificationFragment extends Fragment {
         super.onViewCreated(theView, theSavedInstanceState);
 
         mBinding.buttonVerification.setOnClickListener(this::attemptVerification);
+        mBinding.buttonResendCode.setOnClickListener(this::sendNewVerificationCode);
         mRegisterVerificationModel.addResponseObserver(getViewLifecycleOwner(),
                 this::observeResponse);
+    }
+
+    /**
+     * Starts the process of asking the server to send a new verification code
+     * to the client so they can enter it on this fragment and update their account
+     * to verified.
+     *
+     * @param theView the button that was pressed to initiate the code resend
+     */
+    private void sendNewVerificationCode(final View theView) {
+        final RegisterVerificationFragmentArgs args =
+                RegisterVerificationFragmentArgs.fromBundle(getArguments());
+        mRegisterVerificationModel.sendResendCodeRequest(args.getEmail());
     }
 
     /**
