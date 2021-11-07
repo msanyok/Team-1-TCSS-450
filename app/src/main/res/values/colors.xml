@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+  <color name="black">#000000</color>
+  <color name="white">#ffffff</color>
+
+  <!-- Theme 1 Colors -->
   <color name="primaryColor">#b2dfdb</color>
   <color name="primaryLightColor">#e5ffff</color>
   <color name="primaryDarkColor">#82ada9</color>
   <color name="secondaryColor">#ffebee</color>
-  <color name="secondaryLightColor">#ffffff</color>
+
   <color name="secondaryDarkColor">#ccb9bc</color>
-  <color name="primaryTextColor">#000000</color>
+
   <color name="secondaryTextColor">#000000</color>
 
 </resources>

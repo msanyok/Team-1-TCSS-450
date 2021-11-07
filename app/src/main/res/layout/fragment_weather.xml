@@ -13,8 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_margin="10dp"
-        app:cardElevation="10dp"
-        app:cardCornerRadius="15dp">
+        app:cardElevation="10dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -36,9 +35,8 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="130dp"
         android:layout_margin="10dp"
-        app:cardCornerRadius="15dp"
         app:cardElevation="10dp">
 
         <LinearLayout
@@ -56,8 +54,8 @@
                     android:id="@+id/title_city"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="75dp"
-                    android:textColor="@color/primaryTextColor"
+                    android:layout_marginBottom="65dp"
+                    android:textColor="@color/black"
                     android:text="@string/title_city"
                     android:textAlignment="center"
                     android:textSize="25sp"
@@ -72,7 +70,7 @@
                     android:id="@+id/title_temperature"
                     android:layout_width="55dp"
                     android:layout_height="55dp"
-                    android:layout_marginTop="60dp"
+                    android:layout_marginTop="50dp"
                     android:layout_marginEnd="70dp"
                     android:gravity="center"
                     android:textSize="25sp"
@@ -87,7 +85,7 @@
                     android:layout_width="55dp"
                     android:layout_height="55dp"
                     android:layout_marginStart="70dp"
-                    android:layout_marginTop="60dp"
+                    android:layout_marginTop="50dp"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -106,7 +104,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="70dp"
                     android:layout_marginStart="15dp"
-                    android:textColor="@color/primaryTextColor"
+                    android:textColor="@color/black"
                     android:text="@string/title_feels_like"
                     android:textSize="15sp"
                     app:layout_constraintTop_toTopOf="parent"
@@ -119,7 +117,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="15dp"
-                    android:textColor="@color/primaryTextColor"
+                    android:textColor="@color/black"
                     android:text="@string/title_chance_rain"
                     android:textSize="15sp"
                     app:layout_constraintTop_toBottomOf="@id/title_feels_like"
@@ -135,7 +133,7 @@
                     android:layout_marginStart="15dp"
                     android:textSize="15sp"
                     android:text="@string/title_humidity"
-                    android:textColor="@color/primaryTextColor"
+                    android:textColor="@color/black"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent">
@@ -150,8 +148,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         app:contentPadding="10dp"
-        app:cardElevation="10dp"
-        app:cardCornerRadius="15dp">
+        app:cardElevation="10dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -189,8 +186,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         app:contentPadding="10dp"
-        app:cardElevation="10dp"
-        app:cardCornerRadius="15dp">
+        app:cardElevation="10dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -212,7 +208,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/list_10day_forecast"
                 android:layout_width="match_parent"
-                android:layout_height="130dp"
+                android:layout_height="150dp"
                 android:layout_margin="5dp"
                 android:orientation="vertical"
                 app:layoutManager="LinearLayoutManager"

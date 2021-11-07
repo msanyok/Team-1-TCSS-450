@@ -1,56 +1,59 @@
-<LinearLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/layout_root"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <androidx.cardview.widget.CardView
-        android:layout_margin="10dp"
         android:id="@+id/welcome_weather_card"
         android:layout_width="match_parent"
-        android:layout_height="112dp"
-        app:cardCornerRadius="15dp"
-        app:cardElevation="10dp"
-        app:contentPadding="10dp">
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/missed_messages_card"
+        app:cardBackgroundColor="@android:color/transparent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-             <ImageView
-                 android:id="@+id/weather_image"
-                 android:layout_width="70dp"
-                 android:layout_height="70dp"
-                 android:layout_marginTop="11dp"
-                 android:layout_marginStart="10dp"
-                 app:layout_constraintTop_toTopOf="parent"
-                 app:layout_constraintLeft_toLeftOf="parent"/>
+            <ImageView
+                android:id="@+id/weather_image"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/welcome_text"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="ImageContrastCheck" />
 
             <TextView
                 android:id="@+id/welcome_text"
                 android:layout_width="250dp"
-                android:layout_height="35dp"
-                android:layout_marginTop="11dp"
-                android:layout_marginStart="20dp"
+                android:layout_height="wrap_content"
                 android:textSize="18sp"
                 android:textStyle="bold"
+                android:textColor="?android:textColorSecondary"
                 android:maxLines="1"
                 android:ellipsize="end"
+                android:layout_marginTop="15dp"
                 app:layout_constraintLeft_toRightOf="@+id/weather_image"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/weather_text">
             </TextView>
 
             <TextView
                 android:id="@+id/weather_text"
                 android:layout_width="250dp"
-                android:layout_height="35dp"
-                android:layout_marginBottom="11dp"
-                android:layout_marginStart="20dp"
+                android:layout_height="wrap_content"
                 android:textSize="15sp"
+                android:layout_marginBottom="15dp"
+                android:textColor="?android:textColorSecondary"
                 app:layout_constraintLeft_toRightOf="@+id/weather_image"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/welcome_text"
                 app:layout_constraintBottom_toBottomOf="parent">
             </TextView>
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -60,10 +63,9 @@
         android:id="@+id/missed_messages_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        app:contentPadding="10dp"
-        app:cardCornerRadius="15dp"
-        app:cardElevation="10dp">
+        app:layout_constraintTop_toBottomOf="@id/welcome_weather_card"
+        app:layout_constraintBottom_toTopOf="@+id/contact_requests_card"
+        app:cardBackgroundColor="@android:color/transparent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -77,12 +79,13 @@
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:textAlignment="center"
+                android:textColor="?android:textColorSecondary"
                 app:layout_constraintTop_toTopOf="parent">
             </TextView>
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/list_new_messages"
                 android:layout_width="match_parent"
-                android:layout_height="165dp"
+                android:layout_height="217dp"
                 android:layout_margin="5dp"
                 android:orientation="vertical"
                 app:layoutManager="LinearLayoutManager"
@@ -98,10 +101,11 @@
         android:id="@+id/contact_requests_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        app:contentPadding="10dp"
-        app:cardCornerRadius="15dp"
-        app:cardElevation="10dp">
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintTop_toBottomOf="@id/missed_messages_card"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:cardBackgroundColor="@android:color/transparent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -114,6 +118,7 @@
                 android:text="@string/title_contact_requests"
                 android:textSize="20sp"
                 android:textStyle="bold"
+                android:textColor="?android:textColorSecondary"
                 android:textAlignment="center"
                 app:layout_constraintTop_toTopOf="parent">
             </TextView>
@@ -121,7 +126,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/list_contact_requests"
                 android:layout_width="match_parent"
-                android:layout_height="165dp"
+                android:layout_height="217dp"
                 android:layout_margin="5dp"
                 android:layout_marginTop="8dp"
                 android:orientation="vertical"
@@ -133,4 +138,4 @@
                 tools:listitem="@layout/fragment_home_contact_request_card" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
