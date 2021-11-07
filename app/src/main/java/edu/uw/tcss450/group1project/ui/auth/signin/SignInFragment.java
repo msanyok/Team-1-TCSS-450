@@ -5,8 +5,6 @@
 
 package edu.uw.tcss450.group1project.ui.auth.signin;
 
-import static edu.uw.tcss450.group1project.utils.PasswordValidator.*;
-
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -24,7 +22,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import edu.uw.tcss450.group1project.databinding.FragmentSignInBinding;
-import edu.uw.tcss450.group1project.utils.PasswordValidator;
+import edu.uw.tcss450.group1project.utils.TextFieldHints;
+import edu.uw.tcss450.group1project.utils.TextFieldValidators;
 
 /**
  * A {@link Fragment} subclass that handles input and output
@@ -41,27 +40,6 @@ public class SignInFragment extends Fragment {
 
     /** ViewModel used for sign in */
     private SignInViewModel mSignInModel;
-
-    /**
-     * A {@link PasswordValidator} dedicated to validating the user's inputted email
-     * text on the sign in page.
-     *
-     * The email text will be considered valid if the length of the given text
-     * is greater than 2, does not include whitespace, and includes the '@' character.
-     */
-    private final PasswordValidator mEmailValidator = checkPwdLength(2)
-            .and(checkExcludeWhiteSpace())
-            .and(checkPwdSpecialChar("@"));
-
-    /**
-     * A {@link PasswordValidator} dedicated to validating the user's inputted password
-     * text on the sign in page.
-     *
-     * The password is considered valid if the length of the given text
-     * is greater than one does not include whitespace.
-     */
-    private final PasswordValidator mPassWordValidator = checkPwdLength(1)
-            .and(checkExcludeWhiteSpace());
 
     /**
      * Empty public constructor. Does not provide any functionality.
@@ -124,10 +102,11 @@ public class SignInFragment extends Fragment {
      * Else, sets an error text on the email field that requests they enter a valid email.
      */
     private void validateEmail() {
-        mEmailValidator.processResult(
-                mEmailValidator.apply(mBinding.editEmail.getText().toString().trim()),
+        final String emailText = mBinding.editEmail.getText().toString().trim();
+        TextFieldValidators.EMAIL_VALIDATOR.processResult(
+                TextFieldValidators.EMAIL_VALIDATOR.apply(emailText),
                 this::validatePassword,
-                result -> mBinding.editEmail.setError("Please enter a valid Email address."));
+                result -> mBinding.editEmail.setError(TextFieldHints.getEmailHint(emailText)));
     }
 
     /**
@@ -137,10 +116,11 @@ public class SignInFragment extends Fragment {
      * Else, sets an error on the first password field asking the user to input a valid password.
      */
     private void validatePassword() {
-        mPassWordValidator.processResult(
-                mPassWordValidator.apply(mBinding.editPassword.getText().toString()),
+        final String passwordText = mBinding.editPassword.getText().toString();
+        TextFieldValidators.PASSWORD_VALIDATOR.processResult(
+                TextFieldValidators.PASSWORD_VALIDATOR.apply(passwordText),
                 this::verifyAuthWithServer,
-                result -> mBinding.editPassword.setError("Please enter a valid Password."));
+                result -> mBinding.editPassword.setError(TextFieldHints.getPasswordHint(passwordText)));
     }
 
     /**
