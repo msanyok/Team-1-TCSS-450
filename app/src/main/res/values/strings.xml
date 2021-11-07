@@ -16,6 +16,7 @@
     <string name="action_register_short">Register</string>
     <string name="action_settings">Settings</string>
     <string name="action_send_code">Verify</string>
+    <string name="action_resend_code">Resend Code</string>
     <string name="action_send_contact_request">Request</string>
     <string name="action_start_chat_room">Chat</string>
 
@@ -34,7 +35,9 @@
     <string name="title_10day_forecast">10-day forecast</string>
 
     <string name="message_verification_greeting">Hey! We sent you an email.</string>
+    <string name="message_resend_code_instructions">Need a new code?</string>
     <string name="message_verification_instructions">
         Enter the code we sent you to register your account.</string>
+
 
 </resources>

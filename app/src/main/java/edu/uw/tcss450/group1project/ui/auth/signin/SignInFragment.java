@@ -22,6 +22,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import edu.uw.tcss450.group1project.databinding.FragmentSignInBinding;
+import edu.uw.tcss450.group1project.ui.auth.verification.RegisterVerificationFragmentDirections;
 import edu.uw.tcss450.group1project.utils.TextFieldHints;
 import edu.uw.tcss450.group1project.utils.TextFieldValidators;
 
@@ -149,6 +150,18 @@ public class SignInFragment extends Fragment {
     }
 
     /**
+     * Helper to abstract the navigation to the registration verification fragment.
+     *
+     * @param theEmail the user's email
+     * @param thePassword the user's password
+     */
+    private void navigateToRegistrationVerification(final String theEmail, final String thePassword) {
+        Navigation.findNavController(getView())
+                .navigate(SignInFragmentDirections
+                .actionSignInFragmentToRegisterVerificationFragment(theEmail, thePassword));
+    }
+
+    /**
      * An observer on the HTTP Response from the web server. This observer should be
      * attached to SignInViewModel.
      *
@@ -158,9 +171,22 @@ public class SignInFragment extends Fragment {
         if (theResponse.length() > 0) {
             if (theResponse.has("code")) {
                 try {
-                    mBinding.editEmail.setError(
-                            "Error Authenticating: " +
-                                    theResponse.getJSONObject("data").getString("message"));
+
+                    final String message = theResponse.getJSONObject("data").getString("message");
+                    if (message.equals("Email is not verified")) {
+                        // received message that the given account exists,
+                        // but is not registered yet. Therefore navigate to the
+                        // verification code page.
+                        navigateToRegistrationVerification(
+                                mBinding.editEmail.getText().toString(),
+                                mBinding.editPassword.getText().toString());
+
+                    } else {
+                        // other error occurred unrelated to an invalid account
+                        mBinding.editEmail.setError(
+                                "Error Authenticating: " +
+                                        theResponse.getJSONObject("data").getString("message"));
+                    }
                 } catch (JSONException exception) {
                     Log.e("JSON Parse Error", exception.getMessage());
                 }

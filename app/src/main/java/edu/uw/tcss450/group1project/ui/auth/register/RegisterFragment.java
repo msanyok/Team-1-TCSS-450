@@ -212,29 +212,21 @@ public class RegisterFragment extends Fragment {
         if (theResponse.length() > 0) {
             if (theResponse.has("code")) {
                 try {
+
                     final String message =
                             theResponse.getJSONObject("data").get("message").toString();
 
                     if (message.equals("Email exists")) {
-                        // email already exists, so notify the user
                         mBinding.editEmail.setError(
                                 "Error Authenticating: " +
                                         theResponse.getJSONObject("data")
                                                 .getString("message"));
+                    } else if (message.equals("Username exists")) {
+                        mBinding.editNickname.setError("Error Authenticating: Nickname exists");
                     } else {
-
-                        final String detail =
-                                theResponse.getJSONObject("data").get("detail").toString();
-                        final String duplicateNicknameDetail = "Key (nickname)=("
-                                + mBinding.editNickname.getText().toString() + ") already exists.";
-
-                        if (detail.equals(duplicateNicknameDetail)) {
-                            // the nickname already exists, so notify the user.
-                            mBinding.editNickname.setError("Nickname already exists.");
-                        } else {
-                            // a different, unexpected error occurred.
-                            mBinding.editEmail.setError("Other error. Check logs.");
-                        }
+                        // a different registration error occurred that
+                        // was not a duplicate email or nickname
+                        mBinding.editEmail.setError("Other error. Check logs.");
                     }
 
                 } catch (JSONException exception) {
