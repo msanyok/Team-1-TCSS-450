@@ -18,7 +18,8 @@
     <string name="action_send_code">Verify</string>
     <string name="action_resend_code">Resend Code</string>
     <string name="action_send_contact_request">Request</string>
-    <string name="action_start_chat_room">Chat</string>
+    <string name="action_start_chat_room">New Chat Room</string>
+    <string name="action_search_weather">Search</string>
 
     <string name="title_home">Home</string>
     <string name="title_contacts">Contacts</string>

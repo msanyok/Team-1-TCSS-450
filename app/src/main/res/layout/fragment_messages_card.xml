@@ -19,7 +19,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:tint="@color/black">
+            app:tint="?cardImageColor">
         </ImageView>
 
         <ImageView
@@ -29,7 +29,7 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:tint="@color/black">
+            app:tint="?cardImageColor">
         </ImageView>
 
         <TextView
@@ -39,6 +39,7 @@
             android:layout_marginStart="10dp"
             android:textStyle="bold"
             android:textSize="14sp"
+            android:textColor="?cardTextColor"
             android:maxLines="1"
             android:ellipsize="end"
             app:layout_constraintTop_toTopOf="parent"
@@ -51,6 +52,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:textSize="12sp"
+            android:textColor="?cardTextColor"
             android:maxLines="2"
             android:ellipsize="end"
             app:layout_constraintBottom_toBottomOf="parent"
