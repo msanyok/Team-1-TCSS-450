@@ -9,36 +9,58 @@
     android:layout_height="match_parent"
     tools:context=".ui.weather.WeatherFragment">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="270dp"
+            android:layout_height="60dp"
+            android:layout_margin="10dp"
+            app:cardElevation="10dp"
+            app:cardBackgroundColor="@color/white"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <EditText
+                    android:id="@+id/location_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:hint="@string/hint_weather_location"
+                    android:inputType="text"
+                    android:background="@null"
+                    android:textAlignment="center"
+                    android:textColorHint="@color/black"
+                    android:drawableTint="@color/black"
+                    android:drawableStart="@drawable/ic_search_grey_24dp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent">
+                </EditText>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+
+        <Button
+            android:id="@+id/button_search"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:text="@string/action_search_weather"
+            android:layout_margin="10dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+        </Button>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="130dp"
         android:layout_margin="10dp"
-        app:cardElevation="10dp"
-        app:cardCornerRadius="15dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:gravity="center">
-
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:hint="@string/hint_weather_location"
-                android:inputType="text"
-                android:background="@null"
-                android:textAlignment="center"
-                android:drawableStart="@drawable/ic_search_grey_24dp">
-            </EditText>
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
-
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:layout_margin="10dp"
-        app:cardCornerRadius="15dp"
+        app:cardBackgroundColor="@color/white"
         app:cardElevation="10dp">
 
         <LinearLayout
@@ -56,8 +78,8 @@
                     android:id="@+id/title_city"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="75dp"
-                    android:textColor="@color/primaryTextColor"
+                    android:layout_marginBottom="65dp"
+                    android:textColor="@color/black"
                     android:text="@string/title_city"
                     android:textAlignment="center"
                     android:textSize="25sp"
@@ -72,10 +94,11 @@
                     android:id="@+id/title_temperature"
                     android:layout_width="55dp"
                     android:layout_height="55dp"
-                    android:layout_marginTop="60dp"
+                    android:layout_marginTop="50dp"
                     android:layout_marginEnd="70dp"
                     android:gravity="center"
                     android:textSize="25sp"
+                    android:textColor="@color/black"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -87,7 +110,7 @@
                     android:layout_width="55dp"
                     android:layout_height="55dp"
                     android:layout_marginStart="70dp"
-                    android:layout_marginTop="60dp"
+                    android:layout_marginTop="50dp"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -106,7 +129,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="70dp"
                     android:layout_marginStart="15dp"
-                    android:textColor="@color/primaryTextColor"
+                    android:textColor="@color/black"
                     android:text="@string/title_feels_like"
                     android:textSize="15sp"
                     app:layout_constraintTop_toTopOf="parent"
@@ -119,7 +142,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="15dp"
-                    android:textColor="@color/primaryTextColor"
+                    android:textColor="@color/black"
                     android:text="@string/title_chance_rain"
                     android:textSize="15sp"
                     app:layout_constraintTop_toBottomOf="@id/title_feels_like"
@@ -135,23 +158,22 @@
                     android:layout_marginStart="15dp"
                     android:textSize="15sp"
                     android:text="@string/title_humidity"
-                    android:textColor="@color/primaryTextColor"
+                    android:textColor="@color/black"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent">
                 </TextView>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
-
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
+        app:cardBackgroundColor="@color/white"
         app:contentPadding="10dp"
-        app:cardElevation="10dp"
-        app:cardCornerRadius="15dp">
+        app:cardElevation="10dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -165,6 +187,7 @@
                 android:textStyle="bold"
                 android:textAlignment="center"
                 android:text="@string/title_24hr_forecast"
+                android:textColor="@color/black"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -188,9 +211,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
+        app:cardBackgroundColor="@color/white"
         app:contentPadding="10dp"
-        app:cardElevation="10dp"
-        app:cardCornerRadius="15dp">
+        app:cardElevation="10dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -204,6 +227,7 @@
                 android:textStyle="bold"
                 android:textAlignment="center"
                 android:text="@string/title_10day_forecast"
+                android:textColor="@color/black"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -212,7 +236,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/list_10day_forecast"
                 android:layout_width="match_parent"
-                android:layout_height="130dp"
+                android:layout_height="150dp"
                 android:layout_margin="5dp"
                 android:orientation="vertical"
                 app:layoutManager="LinearLayoutManager"

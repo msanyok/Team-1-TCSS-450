@@ -15,6 +15,7 @@
         android:gravity="center"
         android:text="@string/message_verification_greeting"
         android:textAlignment="center"
+        android:textColor="?android:textColorPrimary"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -29,6 +30,7 @@
         android:text="@string/message_verification_instructions"
         android:textAlignment="center"
         android:textSize="16sp"
+        android:textColor="?android:textColorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/message_verification_greeting" />
@@ -42,6 +44,7 @@
         android:text="@string/message_resend_code_instructions"
         android:textAlignment="center"
         android:textSize="20sp"
+        android:textColor="?newCodeTextColor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button_verification" />
@@ -67,7 +70,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:text="@string/action_send_code"
-        android:background="@color/primaryDarkColor"
         android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -77,9 +79,8 @@
 
     <Button
         android:id="@+id/button_resend_code"
-        android:layout_width="123dp"
-        android:layout_height="47dp"
-        android:background="@color/primaryDarkColor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:gravity="center"
         android:text="@string/action_resend_code"
         app:layout_constraintBottom_toBottomOf="parent"

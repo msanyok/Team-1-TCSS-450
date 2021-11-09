@@ -5,10 +5,7 @@
     android:id="@+id/fragment_messages_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="5dp"
-    app:cardBackgroundColor="@color/secondaryDarkColor"
-    app:cardCornerRadius="15dp"
-    app:cardElevation="5dp"
+    android:layout_margin="2dp"
     app:contentPadding="10dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -22,7 +19,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:tint="@color/primaryTextColor">
+            app:tint="?cardImageColor">
         </ImageView>
 
         <ImageView
@@ -32,16 +29,17 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:tint="@color/primaryTextColor">
+            app:tint="?cardImageColor">
         </ImageView>
 
         <TextView
             android:id="@+id/participant_names"
             android:layout_width="270dp"
-            android:layout_height="20dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:textStyle="bold"
             android:textSize="14sp"
+            android:textColor="?cardTextColor"
             android:maxLines="1"
             android:ellipsize="end"
             app:layout_constraintTop_toTopOf="parent"
@@ -51,9 +49,10 @@
         <TextView
             android:id="@+id/current_message"
             android:layout_width="270dp"
-            android:layout_height="30dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:textSize="12sp"
+            android:textColor="?cardTextColor"
             android:maxLines="2"
             android:ellipsize="end"
             app:layout_constraintBottom_toBottomOf="parent"
