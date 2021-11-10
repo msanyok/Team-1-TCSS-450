@@ -36,6 +36,7 @@
                     android:background="@null"
                     android:textAlignment="center"
                     android:textColorHint="@color/black"
+                    android:textColor="@color/black"
                     android:drawableTint="@color/black"
                     android:drawableStart="@drawable/ic_search_grey_24dp"
                     app:layout_constraintLeft_toLeftOf="parent"
