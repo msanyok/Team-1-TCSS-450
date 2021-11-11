@@ -44,7 +44,7 @@ public class PushReceiver extends BroadcastReceiver {
      * @param theIntent the Intent that stores the Pushy payload
      */
     @Override
-    public void onReceive(Context theContext, Intent theIntent) {
+    public void onReceive(final Context theContext, final Intent theIntent) {
 
         //the following variables are used to store the information sent from Pushy
         //In the WS, you define what gets sent. You can change it there to suit your needs
