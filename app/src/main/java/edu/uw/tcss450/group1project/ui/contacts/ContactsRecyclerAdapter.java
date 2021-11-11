@@ -5,6 +5,7 @@
 
 package edu.uw.tcss450.group1project.ui.contacts;
 
+import android.graphics.drawable.Icon;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -93,6 +94,37 @@ public class ContactsRecyclerAdapter
             super(theItemView);
             mView = theItemView;
             mBinding = FragmentContactsCardBinding.bind(theItemView);
+            mBinding.buttonMore.setOnClickListener(this::expandContactCard);
+        }
+
+        /**
+         * When the button is clicked in the more state, expand the card to display
+         * the blog preview and switch the icon to the less state.  When the button
+         * is clicked in the less state, shrink the card and switch the icon to the
+         * more state.
+         * @param button the button that was clicked
+         */
+        private void expandContactCard(View button){
+            displayContactCardPreview();
+        }
+
+        /**
+         * Helper used to determine if the preview should be displayed or not.
+         */
+        private void displayContactCardPreview() {
+            if (mBinding.buttonDelete.getVisibility() == View.GONE) {
+                mBinding.buttonDelete.setVisibility(View.VISIBLE);
+                mBinding.buttonMore.setImageIcon(
+                        Icon.createWithResource(
+                                mView.getContext(),
+                                R.drawable.ic_less_grey_arrow_up_24));
+            } else {
+                mBinding.buttonDelete.setVisibility(View.GONE);
+                mBinding.buttonMore.setImageIcon(
+                        Icon.createWithResource(
+                                mView.getContext(),
+                                R.drawable.ic_more_grey_arrow_down_24));
+            }
         }
 
         /**
@@ -102,10 +134,7 @@ public class ContactsRecyclerAdapter
          */
         void setContact(final Contact theContact) {
             mContact = theContact;
-            mBinding.buttonContactInfo.setOnClickListener(view -> {
-                Navigation.findNavController(view)
-                        .navigate(R.id.action_navigation_contacts_to_contactInfo);
-            });
+            displayContactCardPreview();
             display();
         }
 
@@ -115,7 +144,6 @@ public class ContactsRecyclerAdapter
                                                                 mContact.getLast()));
             mBinding.contactNickname.setText(mContact.getNickname());
             mBinding.contactImage.setImageResource(R.drawable.ic__android__black_24dp);
-            mBinding.arrowImage.setImageResource(R.drawable.ic_arrow_right__black_24dp);
         }
     }
 }
