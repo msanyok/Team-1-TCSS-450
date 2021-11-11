@@ -6,7 +6,6 @@
         <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:fontFamily">@font/font_balsamiq_sans</item>
         <item name="android:windowBackground">@color/slate_blue</item>
-        <item name="android:textColor">@color/white</item>
         <item name="android:textColorPrimary">@color/white</item>
         <item name="android:itemBackground">@color/white</item>
         <item name="android:textViewStyle">@style/TextViewStyleTheme1</item>
@@ -92,6 +91,39 @@
 
     <style name="ButtonStyleTheme2" parent="Widget.AppCompat.Button">
         <item name="backgroundTint">@color/stone</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:drawableTint">@color/white</item>
+    </style>
+
+    <style name="AppTheme3" parent="AppTheme1">
+        <item name="android:windowBackground">@color/purple</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:itemBackground">@color/gray</item>
+        <item name="android:textViewStyle">@style/TextViewStyleTheme3</item>
+        <item name="editTextStyle">@style/EditTextStyleTheme3</item>
+        <item name="cardViewStyle">@style/CardStyleTheme3</item>
+        <item name="buttonStyle">@style/ButtonStyleTheme3</item>
+        <item name="bottomNavigationStyle">@style/BottomNavStyleTheme3</item>
+    </style>
+
+    <style name="CardStyleTheme3" parent="CardStyleTheme1">
+        <item name="cardBackgroundColor">@color/gray</item>
+    </style>
+
+    <style name="BottomNavStyleTheme3" parent="BottomNavStyleTheme1">
+
+    </style>
+
+    <style name="EditTextStyleTheme3" parent="EditTextStyleTheme1">
+
+    </style>
+
+    <style name="TextViewStyleTheme3" parent="TextViewStyleTheme1">
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="ButtonStyleTheme3" parent="ButtonStyleTheme1">
+        <item name="backgroundTint">@color/gold</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:drawableTint">@color/white</item>
     </style>

@@ -13,4 +13,9 @@
   <color name="cream">#dddcc5</color>
   <color name="stone">#1d2326</color>
 
+  <!-- Theme 3 Colors -->
+  <color name="purple">#4b2e83</color>
+  <color name="gold">#85754d</color>
+  <color name="gray">#d3d3d3</color>
+
 </resources>
