@@ -23,11 +23,11 @@
 
         <ImageButton
             android:id="@+id/button_more"
-            style="@style/Widget.AppCompat.ImageButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:background="@android:color/transparent"
+            app:tint="?cardImageColor"
             app:layout_constraintBottom_toBottomOf="@+id/contact_nickname"
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/ic_more_grey_arrow_down_24"
