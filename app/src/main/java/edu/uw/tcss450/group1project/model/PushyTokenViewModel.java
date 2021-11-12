@@ -119,7 +119,7 @@ public class PushyTokenViewModel extends AndroidViewModel{
          * @param theParams unused
          * @return the token
          */
-        protected String doInBackground(Void... theParams) {
+        protected String doInBackground(final Void... theParams) {
             String deviceToken;
             try {
                 // Assign a unique token to this device
@@ -134,7 +134,7 @@ public class PushyTokenViewModel extends AndroidViewModel{
         }
 
         @Override
-        protected void onPostExecute(String theToken) {
+        protected void onPostExecute(final String theToken) {
             if (theToken.isEmpty()) {
                 // Show error in log - You should add error handling for the user.
                 Log.e("ERROR RETRIEVING PUSHY TOKEN", theToken);

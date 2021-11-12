@@ -112,7 +112,7 @@ public final class ChatMessage implements Serializable {
      * @return true if other message ID matches this message ID, false otherwise
      */
     @Override
-    public boolean equals(@Nullable Object theOther) {
+    public boolean equals(@Nullable final Object theOther) {
         boolean result = false;
         if (theOther instanceof ChatMessage) {
             result = mMessageId == ((ChatMessage) theOther).mMessageId;
