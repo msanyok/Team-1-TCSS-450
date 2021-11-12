@@ -14,7 +14,11 @@
         android:id="@+id/navigation_contacts"
         android:name="edu.uw.tcss450.group1project.ui.contacts.ContactsFragment"
         android:label="@string/title_contacts"
-        tools:layout="@layout/fragment_contacts" />
+        tools:layout="@layout/fragment_contacts" >
+        <action
+            android:id="@+id/action_navigation_contacts_to_contactInfo"
+            app:destination="@id/navigation_contact_info" />
+    </fragment>
     <fragment
         android:id="@+id/navigation_messages"
         android:name="edu.uw.tcss450.group1project.ui.messages.MessagesFragment"
@@ -25,4 +29,8 @@
         android:name="edu.uw.tcss450.group1project.ui.weather.WeatherFragment"
         android:label="@string/title_weather"
         tools:layout="@layout/fragment_weather" />
+    <fragment
+        android:id="@+id/navigation_contact_info"
+        android:name="edu.uw.tcss450.group1project.ui.contacts.ContactInfoFragment"
+        android:label="@string/title_contact_info" />
 </navigation>

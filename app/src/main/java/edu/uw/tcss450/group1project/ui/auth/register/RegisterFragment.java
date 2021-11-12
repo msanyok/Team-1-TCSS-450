@@ -5,7 +5,6 @@
 
 package edu.uw.tcss450.group1project.ui.auth.register;
 
-import static edu.uw.tcss450.group1project.utils.PasswordValidator.*;
 import static edu.uw.tcss450.group1project.utils.PasswordValidator.checkClientPredicate;
 
 import android.os.Bundle;
@@ -26,7 +25,8 @@ import org.json.JSONObject;
 
 import edu.uw.tcss450.group1project.databinding.FragmentRegisterBinding;
 import edu.uw.tcss450.group1project.utils.PasswordValidator;
-
+import edu.uw.tcss450.group1project.utils.TextFieldHints;
+import edu.uw.tcss450.group1project.utils.TextFieldValidators;
 
 /**
  * A {@link Fragment} subclass that handles input and output
@@ -45,41 +45,6 @@ public class RegisterFragment extends Fragment {
     private RegisterViewModel mRegisterModel;
 
     /**
-     * A {@link PasswordValidator} dedicated to validating the user's inputted name texts.
-     * Used for the first name, last name, and nickname.
-     *
-     * The name texts will be considered valid if the length of the given
-     * text is greater than one.
-     */
-    private final PasswordValidator mNameValidator = checkPwdLength(1);
-
-    /**
-     * A {@link PasswordValidator} dedicated to validating the user's inputted email text.
-     *
-     * The email text will be considered valid if the length of the given
-     * text is greater than 2, does not include whitespace, and has the '@' symbol.
-     */
-    private final PasswordValidator mEmailValidator = checkPwdLength(2)
-            .and(checkExcludeWhiteSpace())
-            .and(checkPwdSpecialChar("@"));
-
-    /**
-     * A {@link PasswordValidator} dedicated to validating the user's inputted password text.
-     *
-     * The password text will be considered valid if the length of the given
-     * text is greater than 7, has at least one special character,
-     * does not include whitespace, includes at least one digit, and contains at least one
-     * uppercase or lowercase letter.
-     */
-    private final PasswordValidator mPassWordValidator =
-            checkClientPredicate(pwd -> pwd.equals(mBinding.editPassword2.getText().toString()))
-                    .and(checkPwdLength(7))
-                    .and(checkPwdSpecialChar())
-                    .and(checkExcludeWhiteSpace())
-                    .and(checkPwdDigit())
-                    .and(checkPwdLowerCase().or(checkPwdUpperCase()));
-
-    /**
      * Empty public constructor. Does not provide any functionality.
      */
     public RegisterFragment() {
@@ -94,7 +59,8 @@ public class RegisterFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(@NonNull final LayoutInflater theInflater, final ViewGroup theContainer,
+    public View onCreateView(@NonNull final LayoutInflater theInflater,
+                             final ViewGroup theContainer,
                              final Bundle theSavedInstanceState) {
         mBinding = FragmentRegisterBinding.inflate(theInflater);
         return mBinding.getRoot();
@@ -104,7 +70,6 @@ public class RegisterFragment extends Fragment {
     public void onViewCreated(@NonNull final View theView,
                               @Nullable final Bundle theSavedInstanceState) {
         super.onViewCreated(theView, theSavedInstanceState);
-
         mBinding.buttonRegister.setOnClickListener(this::attemptRegister);
         mRegisterModel.addResponseObserver(getViewLifecycleOwner(),
                 this::observeResponse);
@@ -127,10 +92,11 @@ public class RegisterFragment extends Fragment {
      * Else, sets an error text on the first name field that requests they enter a first name.
      */
     private void validateFirst() {
-        mNameValidator.processResult(
-                mNameValidator.apply(mBinding.editFirst.getText().toString().trim()),
+        final String firstText = mBinding.editFirst.getText().toString().trim();
+        TextFieldValidators.NAME_VALIDATOR.processResult(
+                TextFieldValidators.NAME_VALIDATOR.apply(firstText),
                 this::validateLast,
-                result -> mBinding.editFirst.setError("Please enter a first name."));
+                result -> mBinding.editFirst.setError(TextFieldHints.getNameHint(firstText)));
     }
 
     /**
@@ -140,10 +106,11 @@ public class RegisterFragment extends Fragment {
      * Else, sets an error text on the last name field that requests they enter a last name.
      */
     private void validateLast() {
-        mNameValidator.processResult(
-                mNameValidator.apply(mBinding.editLast.getText().toString().trim()),
+        final String lastText = mBinding.editLast.getText().toString().trim();
+        TextFieldValidators.NAME_VALIDATOR.processResult(
+                TextFieldValidators.NAME_VALIDATOR.apply(lastText),
                 this::validateNickname,
-                result -> mBinding.editLast.setError("Please enter a last name."));
+                result -> mBinding.editLast.setError(TextFieldHints.getNameHint(lastText)));
     }
 
     /**
@@ -153,10 +120,11 @@ public class RegisterFragment extends Fragment {
      * Else, sets an error text on the nickname field that requests they enter a valid nickname.
      */
     private void validateNickname() {
-        mNameValidator.processResult(
-                mNameValidator.apply(mBinding.editNickname.getText().toString().trim()),
+        final String nicknameText = mBinding.editNickname.getText().toString().trim();
+        TextFieldValidators.NAME_VALIDATOR.processResult(
+                TextFieldValidators.NAME_VALIDATOR.apply(nicknameText),
                 this::validateEmail,
-                result -> mBinding.editNickname.setError("Please enter a valid nickname."));
+                result -> mBinding.editNickname.setError(TextFieldHints.getNameHint(nicknameText)));
     }
 
     /**
@@ -166,10 +134,11 @@ public class RegisterFragment extends Fragment {
      * Else, sets an error text on the email field that requests they enter a valid email.
      */
     private void validateEmail() {
-        mEmailValidator.processResult(
-                mEmailValidator.apply(mBinding.editEmail.getText().toString().trim()),
+        final String emailText = mBinding.editEmail.getText().toString().trim();
+        TextFieldValidators.EMAIL_VALIDATOR.processResult(
+                TextFieldValidators.EMAIL_VALIDATOR.apply(emailText),
                 this::validatePasswordsMatch,
-                result -> mBinding.editEmail.setError("Please enter a valid Email address."));
+                result -> mBinding.editEmail.setError(TextFieldHints.getEmailHint(emailText)));
     }
 
     /**
@@ -183,7 +152,7 @@ public class RegisterFragment extends Fragment {
                 checkClientPredicate(
                         pwd -> pwd.equals(mBinding.editPassword2.getText().toString().trim()));
 
-        mEmailValidator.processResult(
+        TextFieldValidators.EMAIL_VALIDATOR.processResult(
                 matchValidator.apply(mBinding.editPassword1.getText().toString().trim()),
                 this::validatePassword,
                 result -> mBinding.editPassword1.setError("Passwords must match."));
@@ -196,10 +165,11 @@ public class RegisterFragment extends Fragment {
      * Else, sets an error on the first password field asking the user to input a valid password.
      */
     private void validatePassword() {
-        mPassWordValidator.processResult(
-                mPassWordValidator.apply(mBinding.editPassword1.getText().toString()),
+        final String passwordText = mBinding.editPassword1.getText().toString();
+        TextFieldValidators.PASSWORD_VALIDATOR.processResult(
+                TextFieldValidators.PASSWORD_VALIDATOR.apply(passwordText),
                 this::verifyAuthWithServer,
-                result -> mBinding.editPassword1.setError("Please enter a valid Password."));
+                result -> mBinding.editPassword1.setError(TextFieldHints.getPasswordHint(passwordText)));
     }
 
     /**
@@ -242,27 +212,21 @@ public class RegisterFragment extends Fragment {
         if (theResponse.length() > 0) {
             if (theResponse.has("code")) {
                 try {
+
                     final String message =
                             theResponse.getJSONObject("data").get("message").toString();
 
                     if (message.equals("Email exists")) {
-                        // email already exists, so notify the user
                         mBinding.editEmail.setError(
                                 "Error Authenticating: " +
-                                        theResponse.getJSONObject("data").getString("message"));
+                                        theResponse.getJSONObject("data")
+                                                .getString("message"));
+                    } else if (message.equals("Username exists")) {
+                        mBinding.editNickname.setError("Error Authenticating: Nickname exists");
                     } else {
-
-                        final String detail = theResponse.getJSONObject("data").get("detail").toString();
-                        final String duplicateNicknameDetail = "Key (nickname)=("
-                                + mBinding.editNickname.getText().toString() + ") already exists.";
-
-                        if (detail.equals(duplicateNicknameDetail)) {
-                            // the nickname already exists, so notify the user.
-                            mBinding.editNickname.setError("Nickname already exists.");
-                        } else {
-                            // a different, unexpected error occurred.
-                            mBinding.editEmail.setError("Other error. Check logs.");
-                        }
+                        // a different registration error occurred that
+                        // was not a duplicate email or nickname
+                        mBinding.editEmail.setError("Other error. Check logs.");
                     }
 
                 } catch (JSONException exception) {

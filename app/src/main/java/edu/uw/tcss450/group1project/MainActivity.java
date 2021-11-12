@@ -27,6 +27,8 @@ import edu.uw.tcss450.group1project.model.UserInfoViewModel;
  *
  * @author Charles Bryan
  * @author Austn Attaway
+ * @author Chris Ding
+ * @author Parker Rosengreen
  * @version Fall 2021
  */
 public class MainActivity extends AppCompatActivity {
@@ -52,10 +54,13 @@ public class MainActivity extends AppCompatActivity {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_home, R.id.navigation_contacts, R.id.navigation_messages, R.id.navigation_weather)
+                R.id.navigation_home, R.id.navigation_contacts,
+                R.id.navigation_messages, R.id.navigation_weather)
                 .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
+        NavController navController = Navigation.findNavController(
+                this, R.id.nav_host_fragment);
+        NavigationUI.setupActionBarWithNavController(
+                this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
     }
 
@@ -76,4 +81,13 @@ public class MainActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(theItem);
     }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        NavController navController =
+                Navigation.findNavController(this, R.id.nav_host_fragment);
+        return NavigationUI.navigateUp(navController, mAppBarConfiguration)
+                || super.onSupportNavigateUp();
+    }
+
 }

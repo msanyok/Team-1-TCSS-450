@@ -10,10 +10,12 @@ import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import edu.uw.tcss450.group1project.R;
@@ -38,19 +40,20 @@ public class ContactsFragment extends Fragment {
 
     @Override
     public View onCreateView(final LayoutInflater theInflater, final ViewGroup theContainer,
-                             Bundle theSavedInstanceState) {
+                             final Bundle theSavedInstanceState) {
         // Inflate the layout for this fragment
         return theInflater.inflate(R.layout.fragment_contacts, theContainer, false);
+
     }
 
     @Override
-    public void onViewCreated(@NonNull final View theView, @Nullable final Bundle theSavedInstanceState) {
+    public void onViewCreated(@NonNull final View theView,
+                              @Nullable final Bundle theSavedInstanceState) {
         super.onViewCreated(theView, theSavedInstanceState);
         UserInfoViewModel model = new ViewModelProvider(getActivity())
                                                         .get(UserInfoViewModel.class);
 
         FragmentContactsBinding binding = FragmentContactsBinding.bind(getView());
         binding.listRoot.setAdapter(new ContactsRecyclerAdapter(ContactGenerator.getContactList()));
-//        FragmentContactsBinding.bind(getView()).textHello.setText("Welcome to Contacts " + model.getEmail() + "!");
     }
 }

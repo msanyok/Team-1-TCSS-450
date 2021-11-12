@@ -21,7 +21,8 @@ public class ChatRoom {
     /** The contacts participating in this chat room */
     private final List<Contact> mContacts;
 
-    // IDEA : possibly a List of type Message (message would store String message and Contact sender?
+    // IDEA : possibly a List of type Message
+    // (message would store String message and Contact sender?
 
     /**
      * Creates a new chat room with the provided list of contacts

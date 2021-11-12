@@ -24,7 +24,8 @@ import edu.uw.tcss450.group1project.ui.contacts.Contact;
  * @author Parker Rosengreen
  * @version Fall 2021
  */
-public class MessagesRecyclerAdapter extends RecyclerView.Adapter<MessagesRecyclerAdapter.MessagesViewHolder> {
+public class MessagesRecyclerAdapter
+        extends RecyclerView.Adapter<MessagesRecyclerAdapter.MessagesViewHolder> {
 
     /** The list of contacts to be displayed */
     private final List<ChatRoom> mChatRooms;
@@ -34,21 +35,23 @@ public class MessagesRecyclerAdapter extends RecyclerView.Adapter<MessagesRecycl
      *
      * @param theRooms the list of contacts
      */
-    public MessagesRecyclerAdapter(List<ChatRoom> theRooms) {
+    public MessagesRecyclerAdapter(final List<ChatRoom> theRooms) {
         mChatRooms = theRooms;
     }
 
     @NonNull
     @Override
-    public MessagesViewHolder onCreateViewHolder(@NonNull ViewGroup theParent, int theViewType) {
+    public MessagesViewHolder onCreateViewHolder(@NonNull final ViewGroup theParent,
+                                                 final int theViewType) {
         return new MessagesViewHolder(LayoutInflater
                 .from(theParent.getContext())
                 .inflate(R.layout.fragment_messages_card, theParent, false));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MessagesViewHolder holder, int position) {
-        holder.setChatRoom(mChatRooms.get(position));
+    public void onBindViewHolder(@NonNull final MessagesViewHolder theHolder,
+                                 final int thePosition) {
+        theHolder.setChatRoom(mChatRooms.get(thePosition));
     }
 
     @Override
@@ -79,7 +82,7 @@ public class MessagesRecyclerAdapter extends RecyclerView.Adapter<MessagesRecycl
          *
          * @param theItemView the view to be assigned
          */
-        public MessagesViewHolder(@NonNull View theItemView) {
+        public MessagesViewHolder(@NonNull final View theItemView) {
             super(theItemView);
             mView = theItemView;
             mBinding = FragmentMessagesCardBinding.bind(theItemView);

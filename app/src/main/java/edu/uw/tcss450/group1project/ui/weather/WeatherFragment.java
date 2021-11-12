@@ -44,11 +44,22 @@ public class WeatherFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(@NonNull final View theView, @Nullable final Bundle theSavedInstanceState) {
+    public void onViewCreated(@NonNull final View theView,
+                              @Nullable final Bundle theSavedInstanceState) {
         super.onViewCreated(theView, theSavedInstanceState);
         UserInfoViewModel model = new ViewModelProvider(getActivity())
                 .get(UserInfoViewModel.class);
 
-        FragmentWeatherBinding.bind(getView()).textHello.setText("Welcome to Weather " + model.getEmail() + "!");
+        FragmentWeatherBinding binding = FragmentWeatherBinding.bind(getView());
+        binding.titleWeatherIcon.setImageResource(R.drawable.ic_sun_yellow_24dp);
+        binding.titleTemperature.setText(String.valueOf(50) + "\u2109");
+        binding.titleFeelsLike.setText(binding.titleFeelsLike.getText() + " "
+                + String.valueOf(45) + "\u2109");
+        binding.titleChanceRain.setText(binding.titleChanceRain.getText() + " 10%");
+        binding.titleHumidity.setText(binding.titleHumidity.getText() + " 80%");
+        binding.list24hrForecast.setAdapter(
+                new WeatherRecyclerAdapter24Hour(WeatherDataGenerator.get24HrForecast()));
+        binding.list10dayForecast.setAdapter(
+                new WeatherRecyclerAdapter10Day(WeatherDataGenerator.get10DayForecast()));
     }
 }

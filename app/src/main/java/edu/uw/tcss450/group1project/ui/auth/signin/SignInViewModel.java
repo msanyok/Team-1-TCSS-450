@@ -73,6 +73,7 @@ public class SignInViewModel extends AndroidViewModel {
         mResponse.observe(theOwner, theObserver);
     }
 
+    /** Clears the JSON response object of this sign in view model */
     public void clearResponse() {
         mResponse.setValue(new JSONObject());
     }

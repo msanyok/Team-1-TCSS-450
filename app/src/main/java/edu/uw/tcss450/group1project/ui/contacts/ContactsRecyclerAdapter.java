@@ -10,6 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.Navigation;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -23,7 +28,8 @@ import edu.uw.tcss450.group1project.databinding.FragmentContactsCardBinding;
  * @author Parker Rosengreen
  * @version Fall 2021
  */
-public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecyclerAdapter.ContactsViewHolder> {
+public class ContactsRecyclerAdapter
+        extends RecyclerView.Adapter<ContactsRecyclerAdapter.ContactsViewHolder> {
 
     /** The list of contacts to be displayed */
     private final List<Contact> mContacts;
@@ -33,20 +39,24 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
      *
      * @param theContacts the list of contacts
      */
-    public ContactsRecyclerAdapter(List<Contact> theContacts) {
+    public ContactsRecyclerAdapter(final List<Contact> theContacts) {
         mContacts = theContacts;
     }
 
     @NonNull
     @Override
-    public ContactsViewHolder onCreateViewHolder(@NonNull ViewGroup theParent, int theViewType) {
+    public ContactsViewHolder onCreateViewHolder(@NonNull final ViewGroup theParent,
+                                                 final int theViewType) {
         return new ContactsViewHolder(LayoutInflater
                                       .from(theParent.getContext())
-                                      .inflate(R.layout.fragment_contacts_card, theParent, false));
+                                      .inflate(R.layout.fragment_contacts_card,
+                                              theParent, false));
+
+
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ContactsViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ContactsViewHolder holder, final int position) {
         holder.setContact(mContacts.get(position));
     }
 
@@ -60,6 +70,7 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
      * RecyclerView.
      *
      * @author Parker Rosengreen
+     * @author Chris Ding
      * @version Fall 2021
      */
     public class ContactsViewHolder extends RecyclerView.ViewHolder {
@@ -78,7 +89,7 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
          *
          * @param theItemView the view to be assigned
          */
-        public ContactsViewHolder(@NonNull View theItemView) {
+        public ContactsViewHolder(@NonNull final View theItemView) {
             super(theItemView);
             mView = theItemView;
             mBinding = FragmentContactsCardBinding.bind(theItemView);
@@ -89,8 +100,12 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
          *
          * @param theContact the contact to be assigned
          */
-        public void setContact(final Contact theContact) {
+        void setContact(final Contact theContact) {
             mContact = theContact;
+            mBinding.buttonContactInfo.setOnClickListener(view -> {
+                Navigation.findNavController(view)
+                        .navigate(R.id.action_navigation_contacts_to_contactInfo);
+            });
             display();
         }
 

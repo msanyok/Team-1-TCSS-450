@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--
-    <color name="colorPrimary">#6200EE</color>
-    <color name="colorPrimaryDark">#3700B3</color>
-    <color name="colorAccent">#03DAC5</color>
-    -->
 
+  <color name="black">#000000</color>
+  <color name="white">#ffffff</color>
 
-  <color name="primaryColor">#b2dfdb</color>
-  <color name="primaryLightColor">#e5ffff</color>
-  <color name="primaryDarkColor">#82ada9</color>
-  <color name="secondaryColor">#ffebee</color>
-  <color name="secondaryLightColor">#ffffff</color>
-  <color name="secondaryDarkColor">#ccb9bc</color>
-  <color name="primaryTextColor">#000000</color>
-  <color name="secondaryTextColor">#000000</color>
+  <!-- Theme 1 Colors -->
+  <color name="slate_blue">#4e687f</color>
+  <color name="berry">#9e4e6e</color>
+
+  <!-- Theme 2 Colors -->
+  <color name="maroon">#611427</color>
+  <color name="cream">#dddcc5</color>
+  <color name="stone">#1d2326</color>
+
+  <!-- Theme 3 Colors -->
+  <color name="purple">#4b2e83</color>
+  <color name="gold">#85754d</color>
+  <color name="gray">#d3d3d3</color>
 
 </resources>

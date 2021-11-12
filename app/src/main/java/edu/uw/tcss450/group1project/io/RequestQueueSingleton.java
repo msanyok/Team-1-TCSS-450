@@ -15,8 +15,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 
-// TODO: UPDATE/ADD DOCUMENTATION WHEN WE UNDERSTAND THIS BETTER
-
 /**
  * A Request queue class for http requests.
  *
@@ -25,13 +23,14 @@ import com.android.volley.toolbox.Volley;
  * @version Fall 2021
  */
 public class RequestQueueSingleton {
+
     private static RequestQueueSingleton instance;
     private static Context context;
 
     private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;
 
-    private RequestQueueSingleton(Context context) {
+    private RequestQueueSingleton(final Context context) {
         RequestQueueSingleton.context = context;
         mRequestQueue = getmRequestQueue();
 
@@ -41,18 +40,18 @@ public class RequestQueueSingleton {
                             cache = new LruCache<String, Bitmap>(20);
 
                     @Override
-                    public Bitmap getBitmap(String url) {
+                    public Bitmap getBitmap(final String url) {
                         return cache.get(url);
                     }
 
                     @Override
-                    public void putBitmap(String url, Bitmap bitmap) {
+                    public void putBitmap(final String url, final Bitmap bitmap) {
                         cache.put(url, bitmap);
                     }
                 });
     }
 
-    public static synchronized RequestQueueSingleton getInstance(Context context) {
+    public static synchronized RequestQueueSingleton getInstance(final Context context) {
         if (instance == null) {
             instance = new RequestQueueSingleton(context);
         }
@@ -68,7 +67,7 @@ public class RequestQueueSingleton {
         return mRequestQueue;
     }
 
-    public <T> void addToRequestQueue(Request<T> req) {
+    public <T> void addToRequestQueue(final Request<T> req) {
         getmRequestQueue().add(req);
     }
 
