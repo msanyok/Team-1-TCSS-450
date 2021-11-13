@@ -22,6 +22,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import edu.uw.tcss450.group1project.databinding.FragmentSignInBinding;
+import edu.uw.tcss450.group1project.model.PushyTokenViewModel;
+import edu.uw.tcss450.group1project.model.UserInfoViewModel;
 import edu.uw.tcss450.group1project.ui.auth.verification.RegisterVerificationFragmentDirections;
 import edu.uw.tcss450.group1project.utils.TextFieldHints;
 import edu.uw.tcss450.group1project.utils.TextFieldValidators;
@@ -42,6 +44,13 @@ public class SignInFragment extends Fragment {
     /** ViewModel used for sign in */
     private SignInViewModel mSignInModel;
 
+    /** The view model that stores the Pushy token */
+    private PushyTokenViewModel mPushyTokenViewModel;
+
+    /** The view model that stores the user's information */
+    private UserInfoViewModel mUserViewModel;
+
+
     /**
      * Empty public constructor. Does not provide any functionality.
      */
@@ -54,6 +63,8 @@ public class SignInFragment extends Fragment {
         super.onCreate(theSavedInstanceState);
         mSignInModel = new ViewModelProvider(getActivity())
                 .get(SignInViewModel.class);
+        mPushyTokenViewModel = new ViewModelProvider(getActivity())
+                .get(PushyTokenViewModel.class);
     }
 
     @Override
@@ -84,7 +95,47 @@ public class SignInFragment extends Fragment {
         mBinding.editEmail.setText(args.getEmail().equals("default") ? "" : args.getEmail());
         mBinding.editPassword.setText(
                 args.getPassword().equals("default") ? "" : args.getPassword());
+
+        // do not allow a sign in until the pushy token has been retrieved
+        mPushyTokenViewModel.addTokenObserver(getViewLifecycleOwner(), token ->
+                mBinding.buttonSignIn.setEnabled(!token.isEmpty()));
+
+        // add observer to the pushy model so when a pushy token is available,
+        // we observe that token's live data and use it
+        mPushyTokenViewModel.addResponseObserver(
+                getViewLifecycleOwner(),
+                this::observePushyPutResponse);
     }
+
+    /**
+     * Helper to abstract the request to send the pushy token to the web service.
+     * Called after the webservice has returned a successful verification of credentials
+     */
+    private void sendPushyToken() {
+        mPushyTokenViewModel.sendTokenToWebservice(mUserViewModel.getmJwt());
+    }
+
+    /**
+     * An observer on the HTTP Response from the web server. This observer should be
+     * attached to PushyTokenViewModel.
+     *
+     * @param theResponse the Response from the server
+     */
+    private void observePushyPutResponse(final JSONObject theResponse) {
+        if (theResponse.length() > 0) {
+            if (theResponse.has("code")) {
+                //this error cannot be fixed by the user changing credentials...
+                mBinding.editEmail.setError(
+                        "Error Authenticating on Push Token. Please contact support");
+            } else {
+                navigateToSuccess(
+                        mBinding.editEmail.getText().toString(),
+                        mUserViewModel.getmJwt()
+                );
+            }
+        }
+    }
+
 
     /**
      * Starts the chain of text field validation that attempts to validate
@@ -192,6 +243,17 @@ public class SignInFragment extends Fragment {
                 }
             } else {
                 try {
+                    // successfully signed into the app. This is where we should
+                    // create a new user info view model, send a new pushy token to the server,
+                    // and navigate to the home page.
+                    mUserViewModel = new ViewModelProvider(getActivity(),
+                            new UserInfoViewModel.UserInfoViewModelFactory(
+                                    mBinding.editEmail.getText().toString(),
+                                    theResponse.getString("token")
+                            )).get(UserInfoViewModel.class);
+
+                    this.sendPushyToken();
+
                     navigateToSuccess(
                             mBinding.editEmail.getText().toString(),
                             theResponse.getString("token")

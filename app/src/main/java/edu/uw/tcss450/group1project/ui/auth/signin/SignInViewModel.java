@@ -79,35 +79,6 @@ public class SignInViewModel extends AndroidViewModel {
     }
 
     /**
-     * Completes the actions required when an error occurs during a HTTP request to the server.
-     *
-     * @param theError the error that occurred
-     */
-    private void handleError(final VolleyError theError) {
-        if (Objects.isNull(theError.networkResponse)) {
-            try {
-                mResponse.setValue(new JSONObject("{" +
-                        "error:\"" + theError.getMessage() +
-                        "\"}"));
-            } catch (JSONException e) {
-                Log.e("JSON PARSE", "JSON Parse Error in handleError");
-            }
-        }
-        else {
-            String data = new String(theError.networkResponse.data, Charset.defaultCharset())
-                    .replace('\"', '\'');
-            try {
-                JSONObject response = new JSONObject();
-                response.put("code", theError.networkResponse.statusCode);
-                response.put("data", new JSONObject(data));
-                mResponse.setValue(response);
-            } catch (JSONException e) {
-                Log.e("JSON PARSE", "JSON Parse Error in handleError");
-            }
-        }
-    }
-
-    /**
      * Sends an HTTP GET request to the server attempting to sign in
      * to the account corresponding to the given email and password.
      *
@@ -148,6 +119,35 @@ public class SignInViewModel extends AndroidViewModel {
         //Instantiate the RequestQueue and add the request to the queue
         RequestQueueSingleton.getInstance(getApplication().getApplicationContext())
                 .addToRequestQueue(request);
+    }
+
+    /**
+     * Completes the actions required when an error occurs during a HTTP request to the server.
+     *
+     * @param theError the error that occurred
+     */
+    private void handleError(final VolleyError theError) {
+        if (Objects.isNull(theError.networkResponse)) {
+            try {
+                mResponse.setValue(new JSONObject("{" +
+                        "error:\"" + theError.getMessage() +
+                        "\"}"));
+            } catch (JSONException e) {
+                Log.e("JSON PARSE", "JSON Parse Error in handleError");
+            }
+        }
+        else {
+            String data = new String(theError.networkResponse.data, Charset.defaultCharset())
+                    .replace('\"', '\'');
+            try {
+                JSONObject response = new JSONObject();
+                response.put("code", theError.networkResponse.statusCode);
+                response.put("data", new JSONObject(data));
+                mResponse.setValue(response);
+            } catch (JSONException e) {
+                Log.e("JSON PARSE", "JSON Parse Error in handleError");
+            }
+        }
     }
 
 }
