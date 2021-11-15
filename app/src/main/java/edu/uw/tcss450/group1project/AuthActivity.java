@@ -7,8 +7,12 @@ package edu.uw.tcss450.group1project;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
+
+import edu.uw.tcss450.group1project.model.PushyTokenViewModel;
+import me.pushy.sdk.Pushy;
 
 /**
  * A {@link AppCompatActivity} subclass that is responsible
@@ -25,5 +29,17 @@ public class AuthActivity extends AppCompatActivity {
     protected void onCreate(final Bundle theSavedInstanceState) {
         super.onCreate(theSavedInstanceState);
         setContentView(R.layout.activity_auth);
+
+        //If it is not already running, start the Pushy listening service
+        Pushy.listen(this);
+
+        initiatePushyTokenRequest();
+    }
+
+    /**
+     * Requests the PushyViewModel to retrieve the Pushy token
+     */
+    private void initiatePushyTokenRequest() {
+        new ViewModelProvider(this).get(PushyTokenViewModel.class).retrieveToken();
     }
 }
