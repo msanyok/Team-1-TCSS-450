@@ -98,23 +98,22 @@ public class MainActivity extends ThemedActivity {
     }
 
     /**
-     * function of warning for deleting a contact using alert dialog
+     * Function of warning for deleting a contact using alert dialog
+     *
+     * @param theView the view to be assigned
      */
     public void showAlertDialog(final View theView) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
-        alertDialog.setMessage(Html.fromHtml("<font color='#FF7F27'>Deleting this contact will be permanent, are you sure?</font>"));
-        alertDialog.setPositiveButton(Html.fromHtml("<font color='#FF7F27'>Delete</font>"), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(final DialogInterface theDialog, final int theWhich) {
-                //TODO add delete function in it
-                Toast.makeText(getApplicationContext(),"You have delete this Contact.", Toast.LENGTH_SHORT).show();
-            }
+        alertDialog.setMessage(Html.fromHtml("<font color='#000000'>Deleting this contact " +
+                "will be permanent. Are you sure?</font>"));
+        alertDialog.setPositiveButton(Html.fromHtml("<font color='000000'>Delete</font>"),
+                (dialog, which) -> {
+                    //TODO add delete function in it
+                    Toast.makeText(getApplicationContext(),"You have deleted this contact.",
+                            Toast.LENGTH_SHORT).show();
         });
-        alertDialog.setNegativeButton(Html.fromHtml("<font color='#FF7F27'>Cancel</font>"),new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(final DialogInterface theDialog, final int theWhich) {
-            }
-        });
+        alertDialog.setNegativeButton(Html.fromHtml("<font color='#000000'>Cancel</font>"),
+                (dialog, which) -> {});
         alertDialog.show();
     }
 }
