@@ -23,11 +23,12 @@ import me.pushy.sdk.Pushy;
  * @author Austn Attaway
  * @version Fall 2021
  */
-public class AuthActivity extends AppCompatActivity {
+public class AuthActivity extends ThemedActivity {
 
     @Override
     protected void onCreate(final Bundle theSavedInstanceState) {
         super.onCreate(theSavedInstanceState);
+        applyTheme();
         setContentView(R.layout.activity_auth);
 
         //If it is not already running, start the Pushy listening service
