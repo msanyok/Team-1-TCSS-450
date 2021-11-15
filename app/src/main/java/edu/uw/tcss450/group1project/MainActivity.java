@@ -5,11 +5,16 @@
 
 package edu.uw.tcss450.group1project;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -90,5 +95,26 @@ public class MainActivity extends ThemedActivity {
                 Navigation.findNavController(this, R.id.nav_host_fragment);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    /**
+     * function of warning for deleting a contact using alert dialog
+     */
+    public void showAlertDialog(final View theView) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+        alertDialog.setMessage(Html.fromHtml("<font color='#FF7F27'>Deleting this contact will be permanent, are you sure?</font>"));
+        alertDialog.setPositiveButton(Html.fromHtml("<font color='#FF7F27'>Delete</font>"), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(final DialogInterface theDialog, final int theWhich) {
+                //TODO add delete function in it
+                Toast.makeText(getApplicationContext(),"You have delete this Contact.", Toast.LENGTH_SHORT).show();
+            }
+        });
+        alertDialog.setNegativeButton(Html.fromHtml("<font color='#FF7F27'>Cancel</font>"),new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(final DialogInterface theDialog, final int theWhich) {
+            }
+        });
+        alertDialog.show();
     }
 }
