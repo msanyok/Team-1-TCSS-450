@@ -69,7 +69,7 @@
             android:layout_height="wrap_content"
             android:onClick="showAlertDialog"
             android:text="@string/contact_delete_button"
-            android:textColor="#000000"
+            android:textColor="?cardTextColor"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
