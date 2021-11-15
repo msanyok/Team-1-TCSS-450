@@ -5,14 +5,6 @@
 
 package edu.uw.tcss450.group1project;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
-
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Html;
@@ -21,6 +13,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -36,7 +36,7 @@ import edu.uw.tcss450.group1project.model.UserInfoViewModel;
  * @author Parker Rosengreen
  * @version Fall 2021
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends ThemedActivity {
 
     /**
      * The configuration for the bottom navigation displayed
@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(final Bundle theSavedInstanceState) {
+        Log.d("HELLO", "onCREATE CALLED");
         super.onCreate(theSavedInstanceState);
 
         MainActivityArgs args = MainActivityArgs.fromBundle(getIntent().getExtras());
@@ -54,7 +55,9 @@ public class MainActivity extends AppCompatActivity {
                 new UserInfoViewModel.UserInfoViewModelFactory(args.getEmail(), args.getJwt()))
                         .get(UserInfoViewModel.class);
 
+        applyTheme();
         setContentView(R.layout.activity_main);
+
         BottomNavigationView navView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -78,10 +81,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(final MenuItem theItem) {
         int id = theItem.getItemId();
-
         if (id == R.id.action_settings) {
-            //TODO open a settings fragment
-            Log.d("SETTINGS", "Clicked");
+            Navigation.findNavController(this, R.id.nav_host_fragment)
+                    .navigate(R.id.navigation_settings);
             return true;
         }
         return super.onOptionsItemSelected(theItem);
@@ -96,24 +98,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * function of warning for deleting a contact using alert dialog
+     * Function of warning for deleting a contact using alert dialog
+     *
+     * @param theView the view to be assigned
      */
     public void showAlertDialog(final View theView) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
-        alertDialog.setMessage(Html.fromHtml("<font color='#FF7F27'>Deleting this contact will be permanent, are you sure?</font>"));
-        alertDialog.setPositiveButton(Html.fromHtml("<font color='#FF7F27'>Delete</font>"), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(final DialogInterface theDialog, final int theWhich) {
-                //TODO add delete function in it
-                Toast.makeText(getApplicationContext(),"You have delete this Contact.", Toast.LENGTH_SHORT).show();
-            }
+        alertDialog.setMessage(Html.fromHtml("<font color='#000000'>Deleting this contact " +
+                "will be permanent. Are you sure?</font>"));
+        alertDialog.setPositiveButton(Html.fromHtml("<font color='000000'>Delete</font>"),
+                (dialog, which) -> {
+                    //TODO add delete function in it
+                    Toast.makeText(getApplicationContext(),"You have deleted this contact.",
+                            Toast.LENGTH_SHORT).show();
         });
-        alertDialog.setNegativeButton(Html.fromHtml("<font color='#FF7F27'>Cancel</font>"),new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(final DialogInterface theDialog, final int theWhich) {
-            }
-        });
+        alertDialog.setNegativeButton(Html.fromHtml("<font color='#000000'>Cancel</font>"),
+                (dialog, which) -> {});
         alertDialog.show();
     }
-
 }

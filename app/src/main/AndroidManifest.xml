@@ -18,14 +18,17 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true"
-        android:theme="@style/AppTheme3">
-        <activity android:name="edu.uw.tcss450.group1project.MainActivity"></activity>
-        <activity android:name="edu.uw.tcss450.group1project.AuthActivity"
+        android:supportsRtl="true">
+        <activity
+            android:name="edu.uw.tcss450.group1project.MainActivity"
+            android:launchMode="singleInstance">
+        </activity>
+        <activity
+            android:name="edu.uw.tcss450.group1project.AuthActivity"
+            android:launchMode="singleInstance"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

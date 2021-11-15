@@ -25,4 +25,8 @@
         android:name="edu.uw.tcss450.group1project.ui.weather.WeatherFragment"
         android:label="@string/title_weather"
         tools:layout="@layout/fragment_weather" />
+    <fragment
+        android:id="@+id/navigation_settings"
+        android:name="edu.uw.tcss450.group1project.ui.settings.SettingsFragment"
+        android:label="@string/title_settings" />
 </navigation>
