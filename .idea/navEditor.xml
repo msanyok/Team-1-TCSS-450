@@ -155,7 +155,7 @@
                       </LayoutPositions>
                     </value>
                   </entry>
-                  <entry key="navigation_weather">
+                  <entry key="navigation_settings">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">
@@ -167,13 +167,13 @@
                       </LayoutPositions>
                     </value>
                   </entry>
-                  <entry key="settingsFragment">
+                  <entry key="navigation_weather">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="-613" />
-                            <option name="y" value="2" />
+                            <option name="x" value="12" />
+                            <option name="y" value="12" />
                           </Point>
                         </option>
                       </LayoutPositions>
