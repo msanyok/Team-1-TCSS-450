@@ -98,19 +98,19 @@ public class MainActivity extends AppCompatActivity {
     /**
      * function of warning for deleting a contact using alert dialog
      */
-    public void showAlertDialog(View v) {
+    public void showAlertDialog(final View theView) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
         alertDialog.setMessage(Html.fromHtml("<font color='#FF7F27'>Deleting this contact will be permanent, are you sure?</font>"));
         alertDialog.setPositiveButton(Html.fromHtml("<font color='#FF7F27'>Delete</font>"), new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onClick(final DialogInterface theDialog, final int which) {
                 //TODO add delete function in it
                 Toast.makeText(getApplicationContext(),"You have delete this Contact.", Toast.LENGTH_SHORT).show();
             }
         });
         alertDialog.setNegativeButton(Html.fromHtml("<font color='#FF7F27'>Cancel</font>"),new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onClick(final DialogInterface theDialog, final int which) {
             }
         });
         alertDialog.show();

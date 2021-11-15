@@ -102,9 +102,9 @@ public class ContactsRecyclerAdapter
          * the blog preview and switch the icon to the less state.  When the button
          * is clicked in the less state, shrink the card and switch the icon to the
          * more state.
-         * @param button the button that was clicked
+         * @param theButton the button that was clicked
          */
-        private void expandContactCard(View button){
+        private void expandContactCard(final View theButton){
             displayContactCardPreview();
         }
 
