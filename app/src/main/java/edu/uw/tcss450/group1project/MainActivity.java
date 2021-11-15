@@ -103,14 +103,14 @@ public class MainActivity extends AppCompatActivity {
         alertDialog.setMessage(Html.fromHtml("<font color='#FF7F27'>Deleting this contact will be permanent, are you sure?</font>"));
         alertDialog.setPositiveButton(Html.fromHtml("<font color='#FF7F27'>Delete</font>"), new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(final DialogInterface theDialog, final int which) {
+            public void onClick(final DialogInterface theDialog, final int theWhich) {
                 //TODO add delete function in it
                 Toast.makeText(getApplicationContext(),"You have delete this Contact.", Toast.LENGTH_SHORT).show();
             }
         });
         alertDialog.setNegativeButton(Html.fromHtml("<font color='#FF7F27'>Cancel</font>"),new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(final DialogInterface theDialog, final int which) {
+            public void onClick(final DialogInterface theDialog, final int theWhich) {
             }
         });
         alertDialog.show();
