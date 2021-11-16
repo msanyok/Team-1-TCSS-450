@@ -19,7 +19,14 @@
         android:id="@+id/navigation_messages"
         android:name="edu.uw.tcss450.group1project.ui.messages.MessagesFragment"
         android:label="@string/title_messages"
-        tools:layout="@layout/fragment_messages" />
+        tools:layout="@layout/fragment_messages" >
+        <action
+            android:id="@+id/action_navigation_messages_to_createChatroomFragment"
+            app:destination="@id/createChatroomFragment" />
+        <action
+            android:id="@+id/action_navigation_messages_to_chatroomFragment"
+            app:destination="@id/chatroomFragment" />
+    </fragment>
     <fragment
         android:id="@+id/navigation_weather"
         android:name="edu.uw.tcss450.group1project.ui.weather.WeatherFragment"
@@ -29,4 +36,14 @@
         android:id="@+id/navigation_settings"
         android:name="edu.uw.tcss450.group1project.ui.settings.SettingsFragment"
         android:label="@string/title_settings" />
+    <fragment
+        android:id="@+id/createChatroomFragment"
+        android:name="edu.uw.tcss450.group1project.ui.messages.CreateChatroomFragment"
+        android:label="fragment_create_chatroom"
+        tools:layout="@layout/fragment_create_chatroom" />
+    <fragment
+        android:id="@+id/chatroomFragment"
+        android:name="edu.uw.tcss450.group1project.ui.messages.ChatroomFragment"
+        android:label="fragment_chatroom"
+        tools:layout="@layout/fragment_chatroom" />
 </navigation>
