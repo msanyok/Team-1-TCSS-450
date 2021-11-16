@@ -15,8 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import edu.uw.tcss450.group1project.R;
-import edu.uw.tcss450.group1project.databinding.FragmentMessagesCardBinding;
-import edu.uw.tcss450.group1project.ui.contacts.Contact;
+import edu.uw.tcss450.group1project.databinding.FragmentChatRoomCardBinding;
 
 /**
  * ContactRecyclerAdapter provides an adapter for the ContactsFragment RecyclerView.
@@ -45,7 +44,7 @@ public class MessagesRecyclerAdapter
                                                  final int theViewType) {
         return new MessagesViewHolder(LayoutInflater
                 .from(theParent.getContext())
-                .inflate(R.layout.fragment_messages_card, theParent, false));
+                .inflate(R.layout.fragment_chat_room_card, theParent, false));
     }
 
     @Override
@@ -72,7 +71,7 @@ public class MessagesRecyclerAdapter
         private final View mView;
 
         /** The ViewBinding corresponded to a contact RecyclerView card */
-        private final FragmentMessagesCardBinding mBinding;
+        private final FragmentChatRoomCardBinding mBinding;
 
         /** The contact assigned to this ViewHolder */
         private ChatRoom mRoom;
@@ -85,7 +84,7 @@ public class MessagesRecyclerAdapter
         public MessagesViewHolder(@NonNull final View theItemView) {
             super(theItemView);
             mView = theItemView;
-            mBinding = FragmentMessagesCardBinding.bind(theItemView);
+            mBinding = FragmentChatRoomCardBinding.bind(theItemView);
         }
 
         /**
@@ -114,7 +113,7 @@ public class MessagesRecyclerAdapter
 //            }
 
 //            mBinding.participantNames.setText(builder.toString());
-            mBinding.participantNames.setText(mRoom.getChatName());
+            mBinding.chatName.setText(mRoom.getChatName());
             mBinding.currentMessage.setText(mRoom.getMostRecentMessage());
 
 //            mBinding.currentMessage.setText(MessageGenerator.getRandomMessage());

@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.uw.tcss450.group1project.R;
-import edu.uw.tcss450.group1project.databinding.FragmentMessagesBinding;
+import edu.uw.tcss450.group1project.databinding.FragmentChatRoomsBinding;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
 
 /**
@@ -36,7 +36,7 @@ import edu.uw.tcss450.group1project.model.UserInfoViewModel;
  */
 public class ChatsFragment extends Fragment {
 
-    private FragmentMessagesBinding mBinding;
+    private FragmentChatRoomsBinding mBinding;
 
     private ChatsListViewModel mChatListsModel;
 
@@ -53,7 +53,7 @@ public class ChatsFragment extends Fragment {
         mChatListsModel = new ViewModelProvider(getActivity()).get(ChatsListViewModel.class);
 
         // Inflate the layout for this fragment
-        return theInflater.inflate(R.layout.fragment_messages, theContainer, false);
+        return theInflater.inflate(R.layout.fragment_chat_rooms, theContainer, false);
 
     }
 
@@ -62,7 +62,7 @@ public class ChatsFragment extends Fragment {
                               @Nullable final Bundle theSavedInstanceState) {
         super.onViewCreated(theView, theSavedInstanceState);
 
-        mBinding = FragmentMessagesBinding.bind(getView());
+        mBinding = FragmentChatRoomsBinding.bind(getView());
 //        mBinding.listRoot.setAdapter(new MessagesRecyclerAdapter(ChatRoomGenerator.getChatRooms()));
 
         mChatListsModel.addResponseObserver(getViewLifecycleOwner(), this::observeResponse);
@@ -98,6 +98,7 @@ public class ChatsFragment extends Fragment {
     private void parseChatListData(JSONObject theResponse) {
         // here we need to parse the response data and put it into the
         // chat list recycler view on the UI
+
         List<ChatRoom> formattedChatList = new ArrayList<>();
 
         try {

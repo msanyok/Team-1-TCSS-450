@@ -116,7 +116,7 @@ public class MessagesNotificationsRecyclerAdapter extends
 //                    if (participants.size() == 2) builder.append(" ");
 //                }
 //            }
-            mBinding.participantNames.setText("Austn");
+            mBinding.chatName.setText("Austn");
             mBinding.currentMessage.setText(MessageGenerator.getRandomMessage());
             mBinding.arrowImage.setImageResource(R.drawable.ic_arrow_right__black_24dp);
             mBinding.participantImage.setImageResource(R.drawable.ic_messages_black_24dp);

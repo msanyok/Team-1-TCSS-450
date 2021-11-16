@@ -19,7 +19,7 @@
         android:id="@+id/navigation_messages"
         android:name="edu.uw.tcss450.group1project.ui.messages.ChatsFragment"
         android:label="@string/title_messages"
-        tools:layout="@layout/fragment_messages" />
+        tools:layout="@layout/fragment_chat_rooms" />
     <fragment
         android:id="@+id/navigation_weather"
         android:name="edu.uw.tcss450.group1project.ui.weather.WeatherFragment"

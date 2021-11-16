@@ -29,5 +29,5 @@
         app:layoutManager="LinearLayoutManager"
         app:layout_constraintTop_toBottomOf="@id/chat_room_start_button"
         tools:context="edu.uw.tcss450.group1project.ui.messages.ChatsFragment"
-        tools:listitem="@layout/fragment_messages_card" />
+        tools:listitem="@layout/fragment_chat_room_card" />
 </androidx.constraintlayout.widget.ConstraintLayout>
