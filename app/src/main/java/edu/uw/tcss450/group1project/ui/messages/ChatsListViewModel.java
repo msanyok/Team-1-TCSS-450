@@ -43,7 +43,6 @@ public class ChatsListViewModel extends AndroidViewModel {
     /** The live data that stores the chats/list/ JSON response. */
     private MutableLiveData<JSONObject> mResponse;
 
-    Application mApplication;
 
     /**
      * Creates a new Chats view model with default values
@@ -53,7 +52,6 @@ public class ChatsListViewModel extends AndroidViewModel {
      */
     public ChatsListViewModel(@NonNull final Application theApplication) {
         super(Objects.requireNonNull(theApplication, "theApplication can not be null."));
-        mApplication = theApplication;
         mResponse = new MutableLiveData<>();
         mResponse.setValue(new JSONObject());
     }

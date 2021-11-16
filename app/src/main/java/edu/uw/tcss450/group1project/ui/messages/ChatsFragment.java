@@ -75,7 +75,7 @@ public class ChatsFragment extends Fragment {
     }
 
     /**
-     * Observse the chat list view model data, does the desired actions when that data changes.
+     * Observe the chat list view model data, does the desired actions when that data changes.
      * @param theResponse the response object sent back from the http get request
      */
     private void observeResponse(final JSONObject theResponse) {
