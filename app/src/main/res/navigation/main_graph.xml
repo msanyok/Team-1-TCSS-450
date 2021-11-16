@@ -17,7 +17,7 @@
         tools:layout="@layout/fragment_contacts" />
     <fragment
         android:id="@+id/navigation_messages"
-        android:name="edu.uw.tcss450.group1project.ui.messages.MessagesFragment"
+        android:name="edu.uw.tcss450.group1project.ui.messages.ChatsFragment"
         android:label="@string/title_messages"
         tools:layout="@layout/fragment_messages" />
     <fragment

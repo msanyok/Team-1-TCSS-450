@@ -24,20 +24,20 @@ public class ChatRoomGenerator {
      *
      * @return the list of chat rooms
      */
-    public static List<ChatRoom> getChatRooms() {
-        List<ChatRoom> rooms = new ArrayList<>();
-        List<Contact> contacts = ContactGenerator.getContactList();
-        List<Contact[]> combinations = new ArrayList<>();
-        for (int i = 1; i <= 4; i++) { // generate all possible combinations
-            generateCombinations(combinations, 0, 0,
-                    contacts, new Contact[i]);
-        }
-        Collections.shuffle(combinations);
-        for (Contact[] arr : combinations) {
-            rooms.add(new ChatRoom(Arrays.asList(arr)));
-        }
-        return rooms;
-    }
+//    public static List<ChatRoom> getChatRooms() {
+//        List<ChatRoom> rooms = new ArrayList<>();
+//        List<Contact> contacts = ContactGenerator.getContactList();
+//        List<Contact[]> combinations = new ArrayList<>();
+//        for (int i = 1; i <= 4; i++) { // generate all possible combinations
+//            generateCombinations(combinations, 0, 0,
+//                    contacts, new Contact[i]);
+//        }
+//        Collections.shuffle(combinations);
+//        for (Contact[] arr : combinations) {
+//            rooms.add(new ChatRoom(Arrays.asList(arr)));
+//        }
+//        return rooms;
+//    }
 
     /**
      * A utility method to generate all combinations of size theCurrentCombo.length

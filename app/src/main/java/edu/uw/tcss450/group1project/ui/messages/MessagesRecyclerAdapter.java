@@ -100,20 +100,24 @@ public class MessagesRecyclerAdapter
 
         /** Displays all contact data and image views for a single contact card */
         private void display() {
-            StringBuilder builder = new StringBuilder();
-            List<Contact> participants = mRoom.getParticipants();
-            for (int i = 0; i < participants.size(); i++) {
-                if (participants.size() > 1 && i == participants.size() - 1) {
-                    builder.append(String.format("and %s", participants.get(i).getNickname()));
-                } else if (participants.size() > 2) {
-                    builder.append(String.format("%s, ", participants.get(i).getNickname()));
-                } else {
-                    builder.append(participants.get(i).getNickname());
-                    if (participants.size() == 2) builder.append(" ");
-                }
-            }
-            mBinding.participantNames.setText(builder.toString());
-            mBinding.currentMessage.setText(MessageGenerator.getRandomMessage());
+//            StringBuilder builder = new StringBuilder();
+//            List<Contact> participants = mRoom.getParticipants();
+//            for (int i = 0; i < participants.size(); i++) {
+//                if (participants.size() > 1 && i == participants.size() - 1) {
+//                    builder.append(String.format("and %s", participants.get(i).getNickname()));
+//                } else if (participants.size() > 2) {
+//                    builder.append(String.format("%s, ", participants.get(i).getNickname()));
+//                } else {
+//                    builder.append(participants.get(i).getNickname());
+//                    if (participants.size() == 2) builder.append(" ");
+//                }
+//            }
+
+//            mBinding.participantNames.setText(builder.toString());
+            mBinding.participantNames.setText(mRoom.getChatName());
+            mBinding.currentMessage.setText(mRoom.getMostRecentMessage());
+
+//            mBinding.currentMessage.setText(MessageGenerator.getRandomMessage());
             mBinding.arrowImage.setImageResource(R.drawable.ic_arrow_right__black_24dp);
             mBinding.participantImage.setImageResource(R.drawable.ic_messages_black_24dp);
         }

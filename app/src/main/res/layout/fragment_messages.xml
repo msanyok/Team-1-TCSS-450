@@ -6,7 +6,7 @@
     android:id="@+id/layout_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.messages.MessagesFragment">
+    tools:context=".ui.messages.ChatsFragment">
 
     <Button
         android:id="@+id/chat_room_start_button"
@@ -28,6 +28,6 @@
         android:orientation="vertical"
         app:layoutManager="LinearLayoutManager"
         app:layout_constraintTop_toBottomOf="@id/chat_room_start_button"
-        tools:context="edu.uw.tcss450.group1project.ui.messages.MessagesFragment"
+        tools:context="edu.uw.tcss450.group1project.ui.messages.ChatsFragment"
         tools:listitem="@layout/fragment_messages_card" />
 </androidx.constraintlayout.widget.ConstraintLayout>

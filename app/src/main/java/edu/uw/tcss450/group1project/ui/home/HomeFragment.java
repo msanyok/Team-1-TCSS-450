@@ -59,8 +59,8 @@ public class HomeFragment extends Fragment {
         binding.welcomeText.setText(String.format("Welcome, %s!", model.getEmail()));
         binding.weatherText.setText(String
                 .format("It is %d degrees with a %d percent chance of rain.", 50, 10));
-        binding.listNewMessages.setAdapter(
-                new MessagesNotificationsRecyclerAdapter(ChatRoomGenerator.getChatRooms()));
+//        binding.listNewMessages.setAdapter(
+//                new MessagesNotificationsRecyclerAdapter(ChatRoomGenerator.getChatRooms()));
         binding.listContactRequests.setAdapter(
                 new ContactRequestRecyclerAdapter(ContactGenerator.getContactList()));
     }

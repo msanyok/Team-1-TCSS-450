@@ -24,7 +24,6 @@ import org.json.JSONObject;
 import edu.uw.tcss450.group1project.databinding.FragmentSignInBinding;
 import edu.uw.tcss450.group1project.model.PushyTokenViewModel;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
-import edu.uw.tcss450.group1project.ui.auth.verification.RegisterVerificationFragmentDirections;
 import edu.uw.tcss450.group1project.utils.TextFieldHints;
 import edu.uw.tcss450.group1project.utils.TextFieldValidators;
 
@@ -112,7 +111,7 @@ public class SignInFragment extends Fragment {
      * Called after the webservice has returned a successful verification of credentials
      */
     private void sendPushyToken() {
-        mPushyTokenViewModel.sendTokenToWebservice(mUserViewModel.getmJwt());
+        mPushyTokenViewModel.sendTokenToWebservice(mUserViewModel.getJwt());
     }
 
     /**
@@ -130,7 +129,7 @@ public class SignInFragment extends Fragment {
             } else {
                 navigateToSuccess(
                         mBinding.editEmail.getText().toString(),
-                        mUserViewModel.getmJwt()
+                        mUserViewModel.getJwt()
                 );
             }
         }
