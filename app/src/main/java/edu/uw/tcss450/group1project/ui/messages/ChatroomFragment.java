@@ -11,14 +11,16 @@ import android.view.ViewGroup;
 import edu.uw.tcss450.group1project.R;
 
 /**
+ * ChatroomFragment navigate to rhe chatroom after clicking the massage card.
+ *
  * @author Chris Ding
- * create an instance of this fragment.
+ * @version Fall 2021
  */
 public class ChatroomFragment extends Fragment {
 
     @Override
-    public View onCreateView(LayoutInflater theInflater, ViewGroup theContainer,
-                             Bundle savedInstanceState) {
+    public View onCreateView(final LayoutInflater theInflater, final ViewGroup theContainer,
+                             final Bundle theSavedInstanceState) {
         // Inflate the layout for this fragment
         return theInflater.inflate(R.layout.fragment_chatroom, theContainer, false);
     }
