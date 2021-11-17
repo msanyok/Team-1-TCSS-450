@@ -5,13 +5,16 @@
 
 package edu.uw.tcss450.group1project.ui.contacts;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -36,13 +39,15 @@ import edu.uw.tcss450.group1project.utils.TextFieldValidators;
  *
  * @author Parker Rosengreen
  * @author Austn Attaway
+ * @author Steven Omegna
  * @version Fall 2021
  */
 public class ContactsFragment extends Fragment {
 
-    /** ViewBinding reference to the Sign in Fragment UI */
+    /** ViewBinding reference to the Contact Fragment UI */
     private FragmentContactsBinding mBinding;
 
+    /** ViewModel for registration */
     private ContactsViewModel mContactsModel;
 
     /**
@@ -89,11 +94,23 @@ public class ContactsFragment extends Fragment {
 
 
     }
-
+    /**
+     * Starts the chain of text field validation that attempts to validate
+     * the Nickname before sending the request.
+     *
+     * @param theButton the Button that was pressed to invoke this method.
+     */
     private void requestToBeSent(final View theButton) {
         validateNickname();
     }
 
+
+    /**
+     * Attempts to validate the text inputted for the user's nickname.
+     *
+     * If the validation succeeds, attempts send
+     * Else, sets an error text on the nickname field that requests they enter a valid nickname.
+     */
     private void validateNickname() {
         final String nickNameText = mBinding.addContactText.getText().toString().trim();
         TextFieldValidators.NAME_VALIDATOR.processResult(
@@ -101,18 +118,18 @@ public class ContactsFragment extends Fragment {
                 this::verifyNameWithServer,
                 result -> mBinding.addContactText.setError(TextFieldHints.getNameHint(nickNameText)));
     }
-
+    /**
+     * Attempts to validate the Nickname and Jwt that is provided.
+     *
+     * If the validation succeeds, attempts send
+     * Else, sets an error text on the nickname field that requests they enter a valid nickname.
+     */
     private void verifyNameWithServer() {
-        //populate the chat list when the fragment is shown
         UserInfoViewModel userInfo = new ViewModelProvider(this.getActivity())
                 .get(UserInfoViewModel.class);
         final String theJWT = userInfo.getmJwt();
         mContactsModel.connect(
                 mBinding.addContactText.getText().toString(), theJWT);
-
-
-        //This is an Asynchronous call. No statements after should rely on the
-        //result of connect().
     }
 
     /**
@@ -130,23 +147,33 @@ public class ContactsFragment extends Fragment {
                             theResponse.getJSONObject("data").get("message").toString();
 
                     if (message.equals("Nickname does not exist")) {
-                        mBinding.addContactText.setError(
-                                "Error requesting contact" +
-                                        theResponse.getJSONObject("data")
-                                                .getString("message"));
+                        mBinding.addContactText.setError("Nickname does not exist");
                     } else if (message.equals("Can not create contact with oneself")) {
                         mBinding.addContactText.setError("Cannot be friends with yourself");
+                    } else if (message.equals("Members are already contacts")) {
+                        mBinding.addContactText.setError("Members are already contacts");
+                    } else if (message.equals("Contact request already exists")) {
+                        mBinding.addContactText.setError("Contact request already exists");
                     } else {
-                        // a different registration error occurred that
-                        // was not a duplicate email or nickname
                         mBinding.addContactText.setError("Other error. Check logs.");
                     }
+
 
                 } catch (JSONException exception) {
                     Log.e("JSON Parse Error", exception.getMessage());
                 }
             } else {
-                //send a success message
+                //Not sure if try catch is needed.  I found it was suggested
+                try {
+                    InputMethodManager imm = (InputMethodManager)getActivity()
+                            .getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
+                            0);
+                    Toast.makeText(getContext(),"A contact request has been sent",
+                            Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    //need to do catch part
+                }
             }
         } else {
             Log.d("Registration JSON Response", "No Response");

@@ -23,6 +23,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * A view model class that stores information about how many new messages have been received and
+ * are unread.
+ *
+ * @author Steven Omegna
+ * @version Fall 2021
+ */
+
 public class ContactsViewModel extends AndroidViewModel {
 
         /**
@@ -58,18 +66,17 @@ public class ContactsViewModel extends AndroidViewModel {
             mResponse.observe(theOwner, theObserver);
         }
 
-        /**a
-         * Sends an HTTP POST request to the server attempting to register a new account
+        /**
+         * Sends an HTTP POST request to the server attempting to create a contact request
          * corresponding to the given information provided.
          *
          * @param theNickname the new account's nickname
+         * @param theJwt JWT token to be passed to server
          * @throws NullPointerException if theNickname is null
 
          */
         public void connect(@NonNull final String theNickname, @NonNull final String theJwt) {
-
             Objects.requireNonNull(theNickname, "theNickname can not be null");
-
             final String url = "https://team-1-tcss-450-server.herokuapp.com/contacts/requests";
 
             final JSONObject body = new JSONObject();
