@@ -16,19 +16,14 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentChatRoomsBinding;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
 
 /**
- * A {@link Fragment} subclass that is responsible for the chats page.
+ * A {@link Fragment} subclass that is responsible for the chats list page.
  *
  * @author Parker Rosengreen
  * @author Austn Attaway
@@ -36,8 +31,10 @@ import edu.uw.tcss450.group1project.model.UserInfoViewModel;
  */
 public class ChatsFragment extends Fragment {
 
+    /** View Binding to the Chat Rooms Fragment */
     private FragmentChatRoomsBinding mBinding;
 
+    /** ChatListViewModel that contains the state of the viewmodel */
     private ChatsListViewModel mChatListsModel;
 
     /**
@@ -62,16 +59,15 @@ public class ChatsFragment extends Fragment {
                               @Nullable final Bundle theSavedInstanceState) {
         super.onViewCreated(theView, theSavedInstanceState);
 
+
         mBinding = FragmentChatRoomsBinding.bind(getView());
-//        mBinding.listRoot.setAdapter(new MessagesRecyclerAdapter(ChatRoomGenerator.getChatRooms()));
 
         mChatListsModel.addResponseObserver(getViewLifecycleOwner(), this::observeResponse);
 
-        // populate the chat list when the fragment is shown
+        // populate the chat list when the fragment view is created
         UserInfoViewModel userInfo = new ViewModelProvider(this.getActivity())
                 .get(UserInfoViewModel.class);
-        mChatListsModel.getChatListData(userInfo.getJwt());
-
+        mChatListsModel.getChatListData(userInfo.getmJwt());
     }
 
     /**
@@ -81,12 +77,13 @@ public class ChatsFragment extends Fragment {
     private void observeResponse(final JSONObject theResponse) {
         if (theResponse.length() > 0) {
             if (theResponse.has("code")) {
-                // there is a 400 error, so check it and respond accordingly
-                Log.e("CHATS LIST 400", theResponse.toString());
+                // a 400 error occurred, so log it.
+                Log.e("CHATS LIST ERROR", theResponse.toString());
+                // TODO: Handle UI change when the chat list is not received properly?
             } else {
-                // the data was retrieved properly, so parse it
-                Log.e("PARSE CHAT LISTT", theResponse.toString());
-                parseChatListData(theResponse);
+                // the data was retrieved properly, so get the formatted data from the view model
+                // (will be up to date by the time this method is called from the observer)
+                mBinding.listRoot.setAdapter(new MessagesRecyclerAdapter(mChatListsModel.getChatList()));
             }
         } else {
             // no response from the request
@@ -95,25 +92,4 @@ public class ChatsFragment extends Fragment {
         }
     }
 
-    private void parseChatListData(JSONObject theResponse) {
-        // here we need to parse the response data and put it into the
-        // chat list recycler view on the UI
-
-        List<ChatRoom> formattedChatList = new ArrayList<>();
-
-        try {
-            JSONArray chats = theResponse.getJSONArray("data");
-            for (int i = 0; i < chats.length(); i++) {
-                JSONObject chat = (JSONObject) chats.get(i);
-                formattedChatList.add(new ChatRoom(chat.get("name").toString(),
-                        chat.get("chatId").toString(),
-                        "Most recent message"));
-            }
-        } catch (JSONException exception) {
-            exception.printStackTrace();
-        }
-
-        mBinding.listRoot.setAdapter(
-                new MessagesRecyclerAdapter(formattedChatList));
-    }
 }

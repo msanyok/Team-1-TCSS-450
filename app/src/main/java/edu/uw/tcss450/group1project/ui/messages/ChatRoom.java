@@ -5,74 +5,86 @@
 
 package edu.uw.tcss450.group1project.ui.messages;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import edu.uw.tcss450.group1project.ui.contacts.Contact;
+import java.util.Objects;
 
 /**
- * ChatRoom is a class to manage conversations between the user and a list of contact participants.
+ * Stores data about a particular chat room
  *
  * @author Parker Rosengreen
+ * @author Austn Attaway
  * @version Fall 2021
  */
 public class ChatRoom {
 
-//    /** The contacts participating in this chat room */
-//    private final List<Contact> mContacts;
-
+    /** The name of this chat room */
     private String mChatRoomName;
+
+    /** The unique id for this chat room */
     private String mChatRoomID;
+
+    /** The most recent message sent in this chat room */
     private String mChatRoomMessage;
+
+    /** The timestamp that corresponds to when the most recent message was sent in this chat room */
+    private String mTimestamp;
 
     /**
      * Creates a new chat room with the provided name, id, and most recent message.
      *
-     * @param theName
-     * @param theName
-     * @param theName
+     * @param theName the name of the chat
+     * @param theID the unique ID of the chat
+     * @param theMostRecentMessage the most recent message text sent in this chat.
+     * @param theTimestamp the timestamp that corresponds to when
+     *                     the most recent message in this chat was sent.
+     * @throws NullPointerException if theName is null
+     * @throws NullPointerException if theID is null
+     * @throws NullPointerException if theMostRecentMessage is null
+     * @throws NullPointerException if theTimestamp is null
      */
     public ChatRoom(final String theName,
                     final String theID,
-                    final String theMostRecentMessage) {
+                    final String theMostRecentMessage,
+                    final String theTimestamp) {
 
-        mChatRoomName = theName;
-        mChatRoomID = theID;
-        mChatRoomMessage = theMostRecentMessage;
+        mChatRoomName = Objects.requireNonNull(theName, "theName can not be null");
+        mChatRoomID = Objects.requireNonNull(theID, "theID can not be null");
+        mChatRoomMessage = Objects.requireNonNull(theMostRecentMessage,
+                "theMostRecentMessage can not be null");
+        mTimestamp = Objects.requireNonNull(theTimestamp, "theTimestamp can not be null");
 
     }
 
+    /**
+     * Returns this chat's name
+     * @return
+     */
     public String getChatName() {
         return mChatRoomName;
     }
 
+    /**
+     * Returns this chat's unique ID
+     * @return
+     */
     public String getChatID() {
         return mChatRoomID;
     }
 
+    /**
+     * Returns the most recent message sent in this chat
+     * @return
+     */
     public String getMostRecentMessage() {
         return mChatRoomMessage;
     }
 
-//    /**
-//     * Returns a defensive copy of the contacts participating in this chat room
-//     *
-//     * @return the list of contacts
-//     */
-//    public List<Contact> getParticipants() {
-//        List<Contact> copy = new ArrayList<>();
-//        for (final Contact c : mContacts) {
-//            copy.add(new Contact(c.getFirst(), c.getLast(), c.getNickname()));
-//        }
-//        return copy;
-//    }
+    /**
+     * Returns the timestamp corresponding to
+     * when the most recent message in this chat was sent
+     * @return
+     */
+    public String getTimestamp() {
+        return mTimestamp;
+    }
 
-//    /**
-//     * Adds a new participant to the chat room
-//     *
-//     * @param theContact the participant to be added
-//     */
-//    public void addParticipant(final Contact theContact) {
-//        mContacts.add(theContact);
-//    }
 }

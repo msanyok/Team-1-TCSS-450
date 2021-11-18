@@ -21,11 +21,15 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -43,6 +47,8 @@ public class ChatsListViewModel extends AndroidViewModel {
     /** The live data that stores the chats/list/ JSON response. */
     private MutableLiveData<JSONObject> mResponse;
 
+    /** The live data that stores the list of ChatRoom objects. This should be observed. */
+    private List<ChatRoom> mChatRoomList;
 
     /**
      * Creates a new Chats view model with default values
@@ -54,10 +60,11 @@ public class ChatsListViewModel extends AndroidViewModel {
         super(Objects.requireNonNull(theApplication, "theApplication can not be null."));
         mResponse = new MutableLiveData<>();
         mResponse.setValue(new JSONObject());
+        mChatRoomList = new ArrayList<>();
     }
 
     /**
-     * Adds the given observer to the response live data.
+     * Adds the given observer to the JSON response object.
      *
      * @param theOwner the lifecycle owner of the fragment that contains the observer
      * @param theObserver the observer that is used when the response data changes state
@@ -81,8 +88,8 @@ public class ChatsListViewModel extends AndroidViewModel {
         Request request = new JsonObjectRequest(
                 Request.Method.GET,
                 url,
-                null, //push token found in the JSONObject body
-                mResponse::setValue, // we get a response but do nothing with it
+                null,
+                this::handleSuccess,
                 this::handleError) {
 
             @Override
@@ -104,6 +111,45 @@ public class ChatsListViewModel extends AndroidViewModel {
     }
 
     /**
+     * Returns the current list of ChatRooms
+     * @return
+     */
+    public List<ChatRoom> getChatList() {
+        return mChatRoomList;
+    }
+
+    /**
+     * Handles the JSON response object that is sent back from a successful
+     * chat list endpoint request.
+     *
+     * @param theResponse the response sent back from the http request
+     * @throws NullPointerException if theResponse is null
+     */
+    private void handleSuccess(final JSONObject theResponse) {
+        Objects.requireNonNull(theResponse, "theResponse can not be null");
+
+        // parse the response and turn it into a new ChatRoom list
+        mChatRoomList = new ArrayList<>();
+
+        try {
+            JSONArray chats = theResponse.getJSONArray("data");
+            for (int i = 0; i < chats.length(); i++) {
+                JSONObject chat = (JSONObject) chats.get(i);
+                mChatRoomList.add(new ChatRoom(chat.get("name").toString(),
+                        chat.get("chatId").toString(),
+                        "hardcoded most recent message",
+                        "hardcoded timestamp"));
+            }
+        } catch (JSONException exception) {
+            // should we do something specific here if the json isn't parsed properly/
+            exception.printStackTrace();
+        }
+
+        // set the response value AFTER setting the new list of chat rooms
+        mResponse.setValue(theResponse);
+    }
+
+    /**
      * Completes the actions required when an error occurs during a HTTP request to the server.
      *
      * @param theError the error that occurred
@@ -111,7 +157,6 @@ public class ChatsListViewModel extends AndroidViewModel {
     private void handleError(final VolleyError theError) {
         if (Objects.isNull(theError.networkResponse)) {
             try {
-                Log.e("GETLISTS IF", theError.getMessage());
                 mResponse.setValue(new JSONObject("{" +
                         "error:\"" + theError.getMessage() +
                         "\"}"));
@@ -120,7 +165,6 @@ public class ChatsListViewModel extends AndroidViewModel {
             }
         }
         else {
-            Log.e("GETLISTS ELSE", theError.getMessage());
             String data = new String(theError.networkResponse.data, Charset.defaultCharset())
                     .replace('\"', '\'');
             try {
@@ -133,4 +177,5 @@ public class ChatsListViewModel extends AndroidViewModel {
             }
         }
     }
+
 }
