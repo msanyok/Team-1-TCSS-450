@@ -16,7 +16,6 @@ import java.util.List;
 
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentWeather24hrCardBinding;
-import edu.uw.tcss450.group1project.ui.contacts.Contact;
 
 /**
  * WeatherRecyclerAdapter24Hour provides an adapter for the WeatherFragment
@@ -25,8 +24,8 @@ import edu.uw.tcss450.group1project.ui.contacts.Contact;
  * @author Parker Rosengreen
  * @version Fall 2021
  */
-public class WeatherRecyclerAdapter24Hour
-        extends RecyclerView.Adapter<WeatherRecyclerAdapter24Hour.WeatherHourViewHolder> {
+public class WeatherRecyclerAdapterHourly
+        extends RecyclerView.Adapter<WeatherRecyclerAdapterHourly.WeatherHourViewHolder> {
 
     /** The list of weather data to be displayed */
     private final List<WeatherData> mForecast;
@@ -36,7 +35,7 @@ public class WeatherRecyclerAdapter24Hour
      *
      * @param theData the list of weather data
      */
-    public WeatherRecyclerAdapter24Hour(final List<WeatherData> theData) {
+    public WeatherRecyclerAdapterHourly(final List<WeatherData> theData) {
         mForecast = theData;
     }
 
@@ -103,8 +102,7 @@ public class WeatherRecyclerAdapter24Hour
         private void display() {
             mBinding.titleHour.setText(mData.getTimeDescriptor());
             mBinding.imageWeatherCondition.setImageResource(
-                    mData.getWeatherCondition() == 0 ? R.drawable.ic_sun_yellow_24dp :
-                            R.drawable.ic_cloud_grey_24dp
+                    WeatherUtils.getInstance().getIconResource(mData.getWeatherCondition())
             );
             mBinding.titleTemperature.setText(mData.getTemperature() + "\u2109");
         }

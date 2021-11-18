@@ -28,15 +28,11 @@
     <string name="title_contact_info">Contact Info</string>
     <string name="title_messages">Chat Rooms</string>
     <string name="title_weather">Weather</string>
-    <string name="title_city">Tacoma</string>
     <string name="title_settings">Settings</string>
     <string name="title_missed_messages">Missed messages</string>
     <string name="title_contact_requests">New contact requests</string>
-    <string name="title_feels_like">Feels like: </string>
-    <string name="title_humidity">Humidity: </string>
-    <string name="title_chance_rain">Chance of rain: </string>
     <string name="title_24hr_forecast">24-hour forecast</string>
-    <string name="title_10day_forecast">10-day forecast</string>
+    <string name="title_10day_forecast">7-day forecast</string>
     <string name="title_change_theme">Change Theme</string>
     <string name="title_theme_1">Slate Berry</string>
     <string name="title_theme_2">Burnt Cream</string>

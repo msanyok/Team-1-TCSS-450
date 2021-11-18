@@ -51,4 +51,13 @@ public class ThemedActivity extends AppCompatActivity {
         PreferenceManager.getDefaultSharedPreferences(this)
                 .edit().putInt(KEY_THEME, mTheme).apply();
     }
+
+    /**
+     * Return this ThemedActivity's theme id
+     *
+     * @return the theme id
+     */
+    public int getThemeId() {
+        return mTheme;
+    }
 }

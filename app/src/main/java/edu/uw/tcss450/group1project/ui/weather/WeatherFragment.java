@@ -6,7 +6,6 @@
 package edu.uw.tcss450.group1project.ui.weather;
 
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +18,7 @@ import androidx.lifecycle.ViewModelProvider;
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentWeatherBinding;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
+import edu.uw.tcss450.group1project.model.WeatherDataViewModel;
 
 /**
  * A {@link Fragment} subclass that is responsible for the weather page.
@@ -29,11 +29,22 @@ import edu.uw.tcss450.group1project.model.UserInfoViewModel;
  */
 public class WeatherFragment extends Fragment {
 
+    private WeatherDataViewModel mModel;
+
     /**
      * Empty public constructor. Does not provide any functionality.
      */
     public WeatherFragment() {
         // required empty constructor
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mModel = new ViewModelProvider(getActivity()).get(WeatherDataViewModel.class);
+        UserInfoViewModel userInfo = new ViewModelProvider(getActivity())
+                .get(UserInfoViewModel.class);
+        mModel.connectGet(userInfo.getmJwt());
     }
 
     @Override
@@ -51,15 +62,24 @@ public class WeatherFragment extends Fragment {
                 .get(UserInfoViewModel.class);
 
         FragmentWeatherBinding binding = FragmentWeatherBinding.bind(getView());
-        binding.titleWeatherIcon.setImageResource(R.drawable.ic_sun_yellow_24dp);
-        binding.titleTemperature.setText(String.valueOf(50) + "\u2109");
-        binding.titleFeelsLike.setText(binding.titleFeelsLike.getText() + " "
-                + String.valueOf(45) + "\u2109");
-        binding.titleChanceRain.setText(binding.titleChanceRain.getText() + " 10%");
-        binding.titleHumidity.setText(binding.titleHumidity.getText() + " 80%");
-        binding.list24hrForecast.setAdapter(
-                new WeatherRecyclerAdapter24Hour(WeatherDataGenerator.get24HrForecast()));
-        binding.list10dayForecast.setAdapter(
-                new WeatherRecyclerAdapter10Day(WeatherDataGenerator.get10DayForecast()));
+
+
+        mModel.addCurrentDataObserver(getViewLifecycleOwner(), currData -> {
+            binding.titleCity.setText(currData.getCity());
+            binding.titleWeatherIcon.setImageResource(
+                    WeatherUtils.getInstance().getIconResource(currData.getWeatherCondition()));
+            binding.titleTemperature.setText(String.valueOf(currData.getTemperature()) + "\u2109");
+            binding.titleFeelsLike.setText("Feels like: " + currData.getFeelsLike() + "\u2109");
+            binding.titleChanceRain.setText("Chance of rain: " + currData.getChanceRain() + "%");
+            binding.titleHumidity.setText("Humidity: " + currData.getHumidity() + "%");
+        });
+
+        mModel.addHourlyDataObserver(getViewLifecycleOwner(), hourlyData -> {
+            binding.listHourlyForecast.setAdapter(new WeatherRecyclerAdapterHourly(hourlyData));
+        });
+
+        mModel.addDailyDataObserver(getViewLifecycleOwner(), dailyData -> {
+            binding.listDailyForecast.setAdapter(new WeatherRecyclerAdapterDaily(dailyData));
+        });
     }
 }

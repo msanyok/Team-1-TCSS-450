@@ -24,8 +24,8 @@ import edu.uw.tcss450.group1project.databinding.FragmentWeather10dayCardBinding;
  * @author Parker Rosengreen
  * @version Fall 2021
  */
-public class WeatherRecyclerAdapter10Day
-        extends RecyclerView.Adapter<WeatherRecyclerAdapter10Day.WeatherDayViewHolder> {
+public class WeatherRecyclerAdapterDaily
+        extends RecyclerView.Adapter<WeatherRecyclerAdapterDaily.WeatherDayViewHolder> {
 
     /** The list of weather data to be displayed */
     private final List<WeatherData> mForecast;
@@ -35,7 +35,7 @@ public class WeatherRecyclerAdapter10Day
      *
      * @param theData the list of weather data
      */
-    public WeatherRecyclerAdapter10Day(final List<WeatherData> theData) {
+    public WeatherRecyclerAdapterDaily(final List<WeatherData> theData) {
         mForecast = theData;
     }
 
@@ -102,8 +102,7 @@ public class WeatherRecyclerAdapter10Day
         private void display() {
             mBinding.titleWeekday.setText(mData.getTimeDescriptor());
             mBinding.imageWeatherCondition.setImageResource(
-                    mData.getWeatherCondition() == 0 ? R.drawable.ic_sun_yellow_24dp :
-                            R.drawable.ic_cloud_grey_24dp
+                    WeatherUtils.getInstance().getIconResource(mData.getWeatherCondition())
             );
             mBinding.titleTemperature.setText(mData.getTemperature() + "\u2109");
         }

@@ -38,6 +38,7 @@
                     android:textColor="@color/black"
                     android:drawableTint="@color/black"
                     android:drawableStart="@drawable/ic_search_grey_24dp"
+                    android:textCursorDrawable="@drawable/text_cursor_black"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent">
                 </EditText>
@@ -79,7 +80,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="65dp"
                     android:textColor="@color/black"
-                    android:text="@string/title_city"
                     android:textAlignment="center"
                     android:textSize="25sp"
                     android:textStyle="bold"
@@ -129,7 +129,6 @@
                     android:layout_marginBottom="70dp"
                     android:layout_marginStart="15dp"
                     android:textColor="@color/black"
-                    android:text="@string/title_feels_like"
                     android:textSize="15sp"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
@@ -142,7 +141,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="15dp"
                     android:textColor="@color/black"
-                    android:text="@string/title_chance_rain"
                     android:textSize="15sp"
                     app:layout_constraintTop_toBottomOf="@id/title_feels_like"
                     app:layout_constraintLeft_toLeftOf="parent"
@@ -156,7 +154,6 @@
                     android:layout_marginTop="70dp"
                     android:layout_marginStart="15dp"
                     android:textSize="15sp"
-                    android:text="@string/title_humidity"
                     android:textColor="@color/black"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -178,7 +175,7 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/title_24hr_forecast"
+                android:id="@+id/title_hourly_forecast"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="15sp"
@@ -192,13 +189,13 @@
             </TextView>
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/list_24hr_forecast"
+                android:id="@+id/list_hourly_forecast"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:orientation="horizontal"
                 app:layoutManager="LinearLayoutManager"
-                app:layout_constraintTop_toBottomOf="@+id/title_24hr_forecast"
+                app:layout_constraintTop_toBottomOf="@+id/title_hourly_forecast"
                 app:layout_constraintBottom_toBottomOf="parent"
                 tools:listitem="@layout/fragment_weather_24hr_card">
             </androidx.recyclerview.widget.RecyclerView>
@@ -217,7 +214,7 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/title_10day_forecast"
+                android:id="@+id/title_daily_forecast"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="15sp"
@@ -231,13 +228,13 @@
             </TextView>
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/list_10day_forecast"
+                android:id="@+id/list_daily_forecast"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
                 android:layout_margin="5dp"
                 android:orientation="vertical"
                 app:layoutManager="LinearLayoutManager"
-                app:layout_constraintTop_toBottomOf="@+id/title_10day_forecast"
+                app:layout_constraintTop_toBottomOf="@+id/title_daily_forecast"
                 app:layout_constraintBottom_toBottomOf="parent"
                 tools:listitem="@layout/fragment_weather_10day_card">
             </androidx.recyclerview.widget.RecyclerView>
