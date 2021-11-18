@@ -6,3 +6,6 @@
 
 # exclude local.properties file
 local.properties
+
+# exclude .idea misc file
+.idea/misc.xml
