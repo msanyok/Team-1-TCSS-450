@@ -7,30 +7,23 @@ package edu.uw.tcss450.group1project.ui.contacts;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentContactsBinding;
-import edu.uw.tcss450.group1project.databinding.FragmentSignInBinding;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
-import edu.uw.tcss450.group1project.ui.auth.register.RegisterViewModel;
-import edu.uw.tcss450.group1project.ui.auth.verification.RegisterVerificationViewModel;
 import edu.uw.tcss450.group1project.utils.TextFieldHints;
 import edu.uw.tcss450.group1project.utils.TextFieldValidators;
 
@@ -85,6 +78,7 @@ public class ContactsFragment extends Fragment {
         mContactsModel.addResponseObserver(getViewLifecycleOwner(),
                 this::observeResponse);
 
+
     }
     /**
      * Starts the attempt to validate the Nickname before sending the request.
@@ -92,6 +86,11 @@ public class ContactsFragment extends Fragment {
      * @param theButton the Button that was pressed to invoke this method.
      */
     private void requestToBeSent(final View theButton) {
+        //hides keyboard
+        InputMethodManager imm = (InputMethodManager)getActivity()
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
+                0);
         validateNickname();
     }
 
@@ -156,11 +155,6 @@ public class ContactsFragment extends Fragment {
             } else {
                 //Not sure if try catch is needed.  I found it was suggested
                 try {
-                    //hides keyboard
-                    InputMethodManager imm = (InputMethodManager)getActivity()
-                            .getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
-                            0);
                     Toast.makeText(getContext(),"A contact request has been sent",
                             Toast.LENGTH_SHORT).show();
                 } catch (Exception e) {
