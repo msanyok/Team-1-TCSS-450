@@ -52,7 +52,8 @@ public class MessagesFragment extends Fragment {
         FragmentMessagesBinding binding = FragmentMessagesBinding.bind(getView());
         binding.listRoot.setAdapter(new MessagesRecyclerAdapter(ChatRoomGenerator.getChatRooms()));
         binding.chatRoomStartButton.setOnClickListener(button -> {
-            Navigation.findNavController(theView).navigate(R.id.action_navigation_messages_to_createChatroomFragment);
+            Navigation.findNavController(theView)
+                    .navigate(R.id.action_navigation_messages_to_createChatroomFragment);
 
         });
     }

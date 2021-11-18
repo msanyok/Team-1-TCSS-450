@@ -1,3 +1,8 @@
+/*
+ * TCSS450 Mobile Applications
+ * Fall 2021
+ */
+
 package edu.uw.tcss450.group1project.ui.messages;
 
 import android.os.Bundle;
@@ -14,9 +19,9 @@ import edu.uw.tcss450.group1project.R;
  * CreateChatroomFragment provides a new chatroom after clicking the create button.
  *
  * @author Chris Ding
- * @Version Fall 2021
+ * @version Fall 2021
  */
-public class CreateChatroomFragment extends Fragment {
+public class CreateChatRoomFragment extends Fragment {
 
     @Override
     public View onCreateView(final LayoutInflater theInflater, final ViewGroup theContainer,

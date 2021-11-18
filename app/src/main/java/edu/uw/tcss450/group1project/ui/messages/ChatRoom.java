@@ -21,6 +21,9 @@ public class ChatRoom {
     /** The contacts participating in this chat room */
     private final List<Contact> mContacts;
 
+    /** The chat room title */
+    private String mTitle;
+
     // IDEA : possibly a List of type Message
     // (message would store String message and Contact sender?
 
@@ -29,8 +32,9 @@ public class ChatRoom {
      *
      * @param theContacts the list of contacts
      */
-    public ChatRoom(final List<Contact> theContacts) {
+    public ChatRoom(final List<Contact> theContacts, final String theTitle) {
         mContacts = theContacts;
+        mTitle = theTitle;
     }
 
     /**
@@ -44,6 +48,19 @@ public class ChatRoom {
             copy.add(new Contact(c.getFirst(), c.getLast(), c.getNickname()));
         }
         return copy;
+    }
+
+    /**
+     * Supplies the title of this chat room
+     *
+     * @return the chat room title
+     */
+    public String getTitle() {
+        return mTitle;
+    }
+
+    public void setTitle(final String theTitle) {
+        mTitle = theTitle;
     }
 
     /**

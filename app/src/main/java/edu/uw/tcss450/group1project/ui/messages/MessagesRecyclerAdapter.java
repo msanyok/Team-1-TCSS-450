@@ -88,7 +88,10 @@ public class MessagesRecyclerAdapter
             mView = theItemView;
             mBinding = FragmentMessagesCardBinding.bind(theItemView);
             mBinding.chatroomNavigation.setOnClickListener(button -> {
-                Navigation.findNavController(theItemView).navigate(R.id.action_navigation_messages_to_chatroomFragment);
+                MessagesFragmentDirections.ActionNavigationMessagesToChatroomFragment action =
+                        MessagesFragmentDirections
+                                .actionNavigationMessagesToChatroomFragment(mRoom.getTitle());
+                Navigation.findNavController(theItemView).navigate(action);
             });
 
         }
@@ -117,10 +120,8 @@ public class MessagesRecyclerAdapter
                     if (participants.size() == 2) builder.append(" ");
                 }
             }
-            mBinding.participantNames.setText(builder.toString());
+            mBinding.chatRoomTitle.setText(mRoom.getTitle());
             mBinding.currentMessage.setText(MessageGenerator.getRandomMessage());
-            mBinding.arrowImage.setImageResource(R.drawable.ic_arrow_right__black_24dp);
-            mBinding.participantImage.setImageResource(R.drawable.ic_messages_black_24dp);
         }
     }
 }

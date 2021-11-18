@@ -11,11 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.navigation.Navigation;
-import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -143,7 +138,6 @@ public class ContactsRecyclerAdapter
             mBinding.contactName.setText(String.format("%s %s", mContact.getFirst(),
                                                                 mContact.getLast()));
             mBinding.contactNickname.setText(mContact.getNickname());
-            mBinding.contactImage.setImageResource(R.drawable.ic__android__black_24dp);
         }
     }
 }

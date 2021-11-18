@@ -33,7 +33,6 @@
                 android:layout_width="250dp"
                 android:layout_height="wrap_content"
                 android:textSize="18sp"
-                android:textStyle="bold"
                 android:textColor="?android:textColorPrimary"
                 android:maxLines="1"
                 android:ellipsize="end"
@@ -76,11 +75,11 @@
                 android:layout_height="wrap_content"
                 android:text="@string/title_missed_messages"
                 android:textSize="20sp"
-                android:textStyle="bold"
                 android:textColor="?android:textColorPrimary"
                 android:textAlignment="center"
                 app:layout_constraintTop_toTopOf="parent">
             </TextView>
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/list_new_messages"
                 android:layout_width="match_parent"
@@ -115,7 +114,6 @@
                 android:layout_height="wrap_content"
                 android:text="@string/title_contact_requests"
                 android:textSize="20sp"
-                android:textStyle="bold"
                 android:textColor="?android:textColorPrimary"
                 android:textAlignment="center"
                 app:layout_constraintTop_toTopOf="parent">

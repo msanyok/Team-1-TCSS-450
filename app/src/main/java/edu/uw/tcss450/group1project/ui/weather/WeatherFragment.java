@@ -15,6 +15,13 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentWeatherBinding;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
@@ -61,25 +68,39 @@ public class WeatherFragment extends Fragment {
         UserInfoViewModel model = new ViewModelProvider(getActivity())
                 .get(UserInfoViewModel.class);
 
+        mModel.addResponseObserver(getViewLifecycleOwner(), this::observeResponse);
+    }
+
+    /**
+     * Observes changes in the JSONObject response within the WeatherDataViewModel
+     *
+     * @param theResponse the changed JSONObject
+     */
+    private void observeResponse(final JSONObject theResponse) {
+        setViewComponents();
+    }
+
+    /**
+     * Sets up this fragment's view components with data from the WeatherDataViewModel
+     */
+    private void setViewComponents() {
         FragmentWeatherBinding binding = FragmentWeatherBinding.bind(getView());
+        binding.titleCity.setText(mModel.getCurrentData().getCity());
+        binding.titleWeatherIcon.setImageResource(
+                WeatherUtils.getInstance()
+                        .getIconResource(mModel.getCurrentData().getWeatherCondition()));
+        binding.titleTemperature
+                .setText(String.valueOf(mModel.getCurrentData().getTemperature()) + "\u2109");
+        binding.titleFeelsLike
+                .setText("Feels like: " + mModel.getCurrentData().getFeelsLike() + "\u2109");
+        binding.titleChanceRain
+                .setText("Chance of rain: " + mModel.getCurrentData().getChanceRain() + "%");
+        binding.titleHumidity
+                .setText("Humidity: " + mModel.getCurrentData().getHumidity() + "%");
 
-
-        mModel.addCurrentDataObserver(getViewLifecycleOwner(), currData -> {
-            binding.titleCity.setText(currData.getCity());
-            binding.titleWeatherIcon.setImageResource(
-                    WeatherUtils.getInstance().getIconResource(currData.getWeatherCondition()));
-            binding.titleTemperature.setText(String.valueOf(currData.getTemperature()) + "\u2109");
-            binding.titleFeelsLike.setText("Feels like: " + currData.getFeelsLike() + "\u2109");
-            binding.titleChanceRain.setText("Chance of rain: " + currData.getChanceRain() + "%");
-            binding.titleHumidity.setText("Humidity: " + currData.getHumidity() + "%");
-        });
-
-        mModel.addHourlyDataObserver(getViewLifecycleOwner(), hourlyData -> {
-            binding.listHourlyForecast.setAdapter(new WeatherRecyclerAdapterHourly(hourlyData));
-        });
-
-        mModel.addDailyDataObserver(getViewLifecycleOwner(), dailyData -> {
-            binding.listDailyForecast.setAdapter(new WeatherRecyclerAdapterDaily(dailyData));
-        });
+        binding.listHourlyForecast
+                .setAdapter(new WeatherRecyclerAdapterHourly(mModel.getHourlyData()));
+        binding.listDailyForecast
+                .setAdapter(new WeatherRecyclerAdapterDaily(mModel.getDailyData()));
     }
 }

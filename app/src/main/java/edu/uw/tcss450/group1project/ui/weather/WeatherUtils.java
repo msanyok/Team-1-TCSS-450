@@ -1,3 +1,8 @@
+/*
+ * TCSS450 Mobile Applications
+ * Fall 2021
+ */
+
 package edu.uw.tcss450.group1project.ui.weather;
 
 import java.util.HashMap;
@@ -5,16 +10,33 @@ import java.util.Map;
 
 import edu.uw.tcss450.group1project.R;
 
+/**
+ * WeatherUtils is a class storing weather icon mappings based on weather condition codes.
+ * WeatherUtils is a Singleton class.
+ *
+ * @author Parker Rosengreen
+ * @version Fall 2021
+ */
 public class WeatherUtils {
 
+    /** The singleton instance */
     private static WeatherUtils mInstance;
 
+    /** The weather icon resource mapping */
     private static Map<String, Integer> mResourceMap;
 
+    /**
+     * Creates a new WeatherUtils and assigns a weather icon mapping
+     */
     private WeatherUtils() {
         mResourceMap = getIconMapping();
     }
 
+    /**
+     * Provides the single WeatherUtils instance
+     *
+     * @return the WeatherUtils instance
+     */
     public static synchronized WeatherUtils getInstance() {
         if (mInstance == null) {
             mInstance = new WeatherUtils();
@@ -22,10 +44,21 @@ public class WeatherUtils {
         return mInstance;
     }
 
+    /**
+     * Provides the icon resource for a provided weather icon code.
+     *
+     * @param theIconCode the weather icon code
+     * @return the weather icon resource
+     */
     public int getIconResource(final String theIconCode) {
         return mResourceMap.get(theIconCode);
     }
 
+    /**
+     * Returns a mapping from weather icon String code to integer weather icon resources
+     *
+     * @return the code to icon mapping
+     */
     private static Map<String, Integer> getIconMapping() {
         Map<String, Integer> mapping = new HashMap<>();
         mapping.put("01d", R.drawable.clear_day);

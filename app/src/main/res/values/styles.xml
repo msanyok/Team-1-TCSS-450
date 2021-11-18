@@ -9,6 +9,7 @@
         <item name="android:textColorPrimary">@color/white</item>
         <item name="android:itemBackground">@color/white</item>
         <item name="android:textViewStyle">@style/TextViewStyleTheme1</item>
+        <item name="title_icon">@drawable/logo_theme_1</item>
         <item name="colorPrimary">@android:color/transparent</item>
         <item name="editTextStyle">@style/EditTextStyleTheme1</item>
         <item name="cardViewStyle">@style/CardStyleTheme1</item>
@@ -57,6 +58,7 @@
         <item name="android:textColorPrimary">@color/black</item>
         <item name="android:itemBackground">@color/maroon</item>
         <item name="android:textViewStyle">@style/TextViewStyleTheme2</item>
+        <item name="title_icon">@drawable/logo_theme_2</item>
         <item name="titleTextColor">@color/black</item>
         <item name="colorPrimary">@android:color/transparent</item>
         <item name="editTextStyle">@style/EditTextStyleTheme2</item>
@@ -98,16 +100,20 @@
     <style name="AppTheme3" parent="AppTheme1">
         <item name="android:windowBackground">@color/purple</item>
         <item name="android:textColorPrimary">@color/white</item>
-        <item name="android:itemBackground">@color/gray</item>
+        <item name="android:itemBackground">@color/gold</item>
         <item name="android:textViewStyle">@style/TextViewStyleTheme3</item>
+        <item name="title_icon">@drawable/logo_theme_3</item>
+        <item name="itemBackground">@color/gold</item>
         <item name="editTextStyle">@style/EditTextStyleTheme3</item>
         <item name="cardViewStyle">@style/CardStyleTheme3</item>
+        <item name="cardTextColor">@color/white</item>
+        <item name="cardImageColor">@color/white</item>
         <item name="buttonStyle">@style/ButtonStyleTheme3</item>
         <item name="bottomNavigationStyle">@style/BottomNavStyleTheme3</item>
     </style>
 
     <style name="CardStyleTheme3" parent="CardStyleTheme1">
-        <item name="cardBackgroundColor">@color/gray</item>
+        <item name="cardBackgroundColor">@color/gold</item>
     </style>
 
     <style name="BottomNavStyleTheme3" parent="BottomNavStyleTheme1">
@@ -119,13 +125,13 @@
     </style>
 
     <style name="TextViewStyleTheme3" parent="TextViewStyleTheme1">
-        <item name="android:textColor">@color/black</item>
+        <item name="android:textColor">@color/white</item>
     </style>
 
     <style name="ButtonStyleTheme3" parent="ButtonStyleTheme1">
-        <item name="backgroundTint">@color/gold</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="android:drawableTint">@color/white</item>
+        <item name="backgroundTint">@color/gray</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:drawableTint">@color/black</item>
     </style>
 
 </resources>

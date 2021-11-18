@@ -33,8 +33,10 @@ public class ChatRoomGenerator {
                     contacts, new Contact[i]);
         }
         Collections.shuffle(combinations);
+        int i = 1;
         for (Contact[] arr : combinations) {
-            rooms.add(new ChatRoom(Arrays.asList(arr)));
+            rooms.add(new ChatRoom(Arrays.asList(arr), "Chat Room #" + i));
+            i++;
         }
         return rooms;
     }

@@ -46,7 +46,6 @@ public class MainActivity extends ThemedActivity {
 
     @Override
     protected void onCreate(final Bundle theSavedInstanceState) {
-        Log.d("HELLO", "onCREATE CALLED");
         super.onCreate(theSavedInstanceState);
 
         MainActivityArgs args = MainActivityArgs.fromBundle(getIntent().getExtras());

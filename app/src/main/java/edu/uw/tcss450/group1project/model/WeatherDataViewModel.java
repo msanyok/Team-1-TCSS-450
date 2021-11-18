@@ -1,3 +1,8 @@
+/*
+ * TCSS450 Mobile Applications
+ * Fall 2021
+ */
+
 package edu.uw.tcss450.group1project.model;
 
 import android.app.Application;
@@ -28,48 +33,81 @@ import java.util.Map;
 import edu.uw.tcss450.group1project.ui.weather.WeatherData;
 import edu.uw.tcss450.group1project.ui.weather.WeatherDataCurrent;
 
+/**
+ * WeatherDataViewModel is a view model class storing live current, hourly, and daily weather
+ * data.
+ *
+ * @author Parker Rosengreen
+ * @version Fall 2021
+ */
 public class WeatherDataViewModel extends AndroidViewModel {
 
-    private final MutableLiveData<WeatherDataCurrent> mCurrentData;
+    /** The mutable live data JSONObject response */
+    private final MutableLiveData<JSONObject> mResponse;
 
-    private final MutableLiveData<List<WeatherData>> mHourlyData;
+    /** The current weather data */
+    private WeatherDataCurrent mCurrentData;
 
-    private final MutableLiveData<List<WeatherData>> mDailyData;
+    /** The list of hourly weather data */
+    private List<WeatherData> mHourlyData;
 
+    /** The list of daily weather data */
+    private List<WeatherData> mDailyData;
+
+    /**
+     * Creates a new WeatherDataViewModel
+     *
+     * @param theApplication the application to be assigned
+     */
     public WeatherDataViewModel(@NonNull Application theApplication) {
         super(theApplication);
-        mCurrentData = new MutableLiveData<>();
-        mHourlyData = new MutableLiveData<>();
-        mDailyData = new MutableLiveData<>();
+        mResponse = new MutableLiveData<>();
+        mResponse.setValue(new JSONObject());
     }
 
-    public void addCurrentDataObserver(@NonNull LifecycleOwner owner,
-                                       @NonNull Observer<? super WeatherDataCurrent> observer) {
-        mCurrentData.observe(owner, observer);
+    /**
+     * Adds an observer to this view model's mutable JSONObject response
+     *
+     * @param theOwner the lifecycle owner
+     * @param theObserver the observer to be assigned
+     */
+    public void addResponseObserver(@NonNull LifecycleOwner theOwner,
+                                    @NonNull Observer<? super JSONObject> theObserver) {
+        mResponse.observe(theOwner, theObserver);
     }
 
-    public void addHourlyDataObserver(@NonNull LifecycleOwner owner,
-                                      @NonNull Observer<? super List<WeatherData>> observer) {
-        mHourlyData.observe(owner, observer);
+    /**
+     * Supplies the current weather data of this view model
+     *
+     * @return the current weather data
+     */
+    public WeatherDataCurrent getCurrentData() {
+        return mCurrentData;
     }
 
-    public void addDailyDataObserver(@NonNull LifecycleOwner owner,
-                                     @NonNull Observer<? super List<WeatherData>> observer) {
-        mDailyData.observe(owner, observer);
+    /**
+     * Supplies the hourly weather data of this view model
+     *
+     * @return the hourly weather data
+     */
+    public List<WeatherData> getHourlyData() {
+        return mHourlyData;
     }
 
-    public void setCurrentData(final WeatherDataCurrent theCurrentData) {
-        mCurrentData.setValue(theCurrentData);
+    /**
+     * Supplies the daily weather data of this view model
+     *
+     * @return the daily weather data
+     */
+    public List<WeatherData> getDailyData() {
+        return mDailyData;
     }
 
-    public void setHourlyData(final List<WeatherData> theHourlyData) {
-        mHourlyData.setValue(theHourlyData);
-    }
-
-    public void setDailyData(final List<WeatherData> theDailyData) {
-        mDailyData.setValue(theDailyData);
-    }
-
+    /**
+     * Creates a weather endpoint get request to receive live weather data
+     *
+     * @param theJwt the user's JWT
+     */
     public void connectGet(final String theJwt) {
         String url = "https://team-1-tcss-450-server.herokuapp.com/weather/98423";
         Request request = new JsonObjectRequest(
@@ -95,6 +133,11 @@ public class WeatherDataViewModel extends AndroidViewModel {
                 .add(request);
     }
 
+    /**
+     * Handles a result returned from the web service weather endpoint and parses needed data
+     *
+     * @param theResult the result to be parsed
+     */
     private void handleResult(final JSONObject theResult) {
         WeatherDataCurrent currentData = null;
         List<WeatherData> hourlyData = new ArrayList<>();
@@ -128,14 +171,21 @@ public class WeatherDataViewModel extends AndroidViewModel {
                         dayData.get("dIcon").toString());
                 dailyData.add(newData);
             }
+            mCurrentData = currentData;
+            mHourlyData = hourlyData;
+            mDailyData = dailyData;
+            mResponse.setValue(theResult);
         } catch (JSONException ex) {
+            mResponse.setValue(new JSONObject()); // add error field here
             ex.printStackTrace();
         }
-        mCurrentData.setValue(currentData);
-        mHourlyData.setValue(hourlyData);
-        mDailyData.setValue(dailyData);
     }
 
+    /**
+     * Handles errors generated when requesting weather data from the server
+     *
+     * @param theError the resulting Volley error to be handled
+     */
     private void handleError(final VolleyError theError) {
         //you should add much better error handling in a production release.
         //i.e. YOUR PROJECT
