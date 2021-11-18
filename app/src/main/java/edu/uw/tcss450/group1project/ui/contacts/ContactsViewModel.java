@@ -35,12 +35,12 @@ public class ContactsViewModel extends AndroidViewModel {
 
         /**
          * The {@link MutableLiveData} that stores the JSON response from the server
-         * when the user tries to register an account.
+         * when the user gets contacts from the server.
          */
         private MutableLiveData<JSONObject> mResponse;
 
         /**
-         * Creates a new RegisterViewModel that is tied to the given application.
+         * Creates a new ContactViewModel that is tied to the given application.
          *
          * @param theApplication the Application this ViewModel belongs to
          * @throws NullPointerException if theApplication is null

@@ -68,11 +68,7 @@ public class ContactsFragment extends Fragment {
     public View onCreateView(final LayoutInflater theInflater, final ViewGroup theContainer,
                              final Bundle theSavedInstanceState) {
         // Inflate the layout for this fragment
-        //return theInflater.inflate(R.layout.fragment_contacts, theContainer, false);
-
         mBinding = FragmentContactsBinding.inflate(theInflater);
-
-        // Inflate the layout for this fragment
         return mBinding.getRoot();
 
     }
@@ -81,22 +77,17 @@ public class ContactsFragment extends Fragment {
     public void onViewCreated(@NonNull final View theView,
                               @Nullable final Bundle theSavedInstanceState) {
         super.onViewCreated(theView, theSavedInstanceState);
-        UserInfoViewModel model = new ViewModelProvider(getActivity())
-                                                        .get(UserInfoViewModel.class);
 
         FragmentContactsBinding binding = FragmentContactsBinding.bind(getView());
         binding.listRoot.setAdapter(new ContactsRecyclerAdapter(ContactGenerator.getContactList()));
-
 
         binding.contactRequestButton.setOnClickListener(this::requestToBeSent);
         mContactsModel.addResponseObserver(getViewLifecycleOwner(),
                 this::observeResponse);
 
-
     }
     /**
-     * Starts the chain of text field validation that attempts to validate
-     * the Nickname before sending the request.
+     * Starts the attempt to validate the Nickname before sending the request.
      *
      * @param theButton the Button that was pressed to invoke this method.
      */
@@ -134,7 +125,7 @@ public class ContactsFragment extends Fragment {
 
     /**
      * Observes the HTTP Response from the web server. If an error occurred, notify the user
-     * accordingly. If it was a success, navigate to the registration verification page.
+     * accordingly. If it was a success, minimize keyboard and send a toast notification.
      *
      * @param theResponse the Response from the server
      */
@@ -172,7 +163,7 @@ public class ContactsFragment extends Fragment {
                     Toast.makeText(getContext(),"A contact request has been sent",
                             Toast.LENGTH_SHORT).show();
                 } catch (Exception e) {
-                    //need to do catch part
+                    //do I need to do catch part
                 }
             }
         } else {
