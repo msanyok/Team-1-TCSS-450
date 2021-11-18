@@ -156,6 +156,7 @@ public class ContactsFragment extends Fragment {
             } else {
                 //Not sure if try catch is needed.  I found it was suggested
                 try {
+                    //hides keyboard
                     InputMethodManager imm = (InputMethodManager)getActivity()
                             .getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),

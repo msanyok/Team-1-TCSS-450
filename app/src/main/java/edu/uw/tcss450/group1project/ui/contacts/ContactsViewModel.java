@@ -24,8 +24,7 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * A view model class that stores information about how many new messages have been received and
- * are unread.
+ * A view model class that stores information about Contacts received from the server.
  *
  * @author Steven Omegna
  * @version Fall 2021
