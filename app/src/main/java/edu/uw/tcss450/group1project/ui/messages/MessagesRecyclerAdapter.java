@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -84,7 +85,12 @@ public class MessagesRecyclerAdapter
         public MessagesViewHolder(@NonNull final View theItemView) {
             super(theItemView);
             mView = theItemView;
+
             mBinding = FragmentChatRoomCardBinding.bind(theItemView);
+            mBinding.chatroomNavigation.setOnClickListener(button -> {
+                Navigation.findNavController(theItemView).navigate(R.id.action_navigation_chats_to_chatroomFragment);
+            });
+
         }
 
         /**

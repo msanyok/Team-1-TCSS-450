@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
 import org.json.JSONObject;
 
@@ -68,6 +69,11 @@ public class ChatsFragment extends Fragment {
         UserInfoViewModel userInfo = new ViewModelProvider(this.getActivity())
                 .get(UserInfoViewModel.class);
         mChatListsModel.getChatListData(userInfo.getmJwt());
+
+        mBinding.chatRoomStartButton.setOnClickListener(button -> {
+                    Navigation.findNavController(theView).
+                            navigate(R.id.action_navigation_chats_to_createChatroomFragment);
+        });
     }
 
     /**
