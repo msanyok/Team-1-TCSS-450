@@ -110,11 +110,6 @@
                                       </entry>
                                     </map>
                                   </option>
-                                  <option name="values">
-                                    <map>
-                                      <entry key="showSafeZone" value="false" />
-                                    </map>
-                                  </option>
                                 </PersistentState>
                               </value>
                             </entry>
@@ -276,11 +271,6 @@
                                           </PersistentState>
                                         </value>
                                       </entry>
-                                    </map>
-                                  </option>
-                                  <option name="values">
-                                    <map>
-                                      <entry key="showSafeZone" value="false" />
                                     </map>
                                   </option>
                                 </PersistentState>
