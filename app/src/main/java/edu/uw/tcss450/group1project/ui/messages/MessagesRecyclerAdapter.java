@@ -16,8 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import edu.uw.tcss450.group1project.R;
-import edu.uw.tcss450.group1project.databinding.FragmentMessagesCardBinding;
-import edu.uw.tcss450.group1project.ui.contacts.Contact;
+import edu.uw.tcss450.group1project.databinding.FragmentChatRoomCardBinding;
 
 /**
  * ContactRecyclerAdapter provides an adapter for the ContactsFragment RecyclerView.
@@ -46,7 +45,7 @@ public class MessagesRecyclerAdapter
                                                  final int theViewType) {
         return new MessagesViewHolder(LayoutInflater
                 .from(theParent.getContext())
-                .inflate(R.layout.fragment_messages_card, theParent, false));
+                .inflate(R.layout.fragment_chat_room_card, theParent, false));
     }
 
     @Override
@@ -73,7 +72,7 @@ public class MessagesRecyclerAdapter
         private final View mView;
 
         /** The ViewBinding corresponded to a contact RecyclerView card */
-        private final FragmentMessagesCardBinding mBinding;
+        private final FragmentChatRoomCardBinding mBinding;
 
         /** The contact assigned to this ViewHolder */
         private ChatRoom mRoom;
@@ -86,9 +85,10 @@ public class MessagesRecyclerAdapter
         public MessagesViewHolder(@NonNull final View theItemView) {
             super(theItemView);
             mView = theItemView;
-            mBinding = FragmentMessagesCardBinding.bind(theItemView);
+
+            mBinding = FragmentChatRoomCardBinding.bind(theItemView);
             mBinding.chatroomNavigation.setOnClickListener(button -> {
-                Navigation.findNavController(theItemView).navigate(R.id.action_navigation_messages_to_chatroomFragment);
+                Navigation.findNavController(theItemView).navigate(R.id.action_navigation_chats_to_chatroomFragment);
             });
 
         }
@@ -105,20 +105,24 @@ public class MessagesRecyclerAdapter
 
         /** Displays all contact data and image views for a single contact card */
         private void display() {
-            StringBuilder builder = new StringBuilder();
-            List<Contact> participants = mRoom.getParticipants();
-            for (int i = 0; i < participants.size(); i++) {
-                if (participants.size() > 1 && i == participants.size() - 1) {
-                    builder.append(String.format("and %s", participants.get(i).getNickname()));
-                } else if (participants.size() > 2) {
-                    builder.append(String.format("%s, ", participants.get(i).getNickname()));
-                } else {
-                    builder.append(participants.get(i).getNickname());
-                    if (participants.size() == 2) builder.append(" ");
-                }
-            }
-            mBinding.participantNames.setText(builder.toString());
-            mBinding.currentMessage.setText(MessageGenerator.getRandomMessage());
+//            StringBuilder builder = new StringBuilder();
+//            List<Contact> participants = mRoom.getParticipants();
+//            for (int i = 0; i < participants.size(); i++) {
+//                if (participants.size() > 1 && i == participants.size() - 1) {
+//                    builder.append(String.format("and %s", participants.get(i).getNickname()));
+//                } else if (participants.size() > 2) {
+//                    builder.append(String.format("%s, ", participants.get(i).getNickname()));
+//                } else {
+//                    builder.append(participants.get(i).getNickname());
+//                    if (participants.size() == 2) builder.append(" ");
+//                }
+//            }
+
+//            mBinding.participantNames.setText(builder.toString());
+            mBinding.chatName.setText(mRoom.getChatName());
+            mBinding.currentMessage.setText(mRoom.getMostRecentMessage());
+
+//            mBinding.currentMessage.setText(MessageGenerator.getRandomMessage());
             mBinding.arrowImage.setImageResource(R.drawable.ic_arrow_right__black_24dp);
             mBinding.participantImage.setImageResource(R.drawable.ic_messages_black_24dp);
         }

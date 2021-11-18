@@ -24,7 +24,6 @@ import org.json.JSONObject;
 import edu.uw.tcss450.group1project.databinding.FragmentSignInBinding;
 import edu.uw.tcss450.group1project.model.PushyTokenViewModel;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
-import edu.uw.tcss450.group1project.ui.auth.verification.RegisterVerificationFragmentDirections;
 import edu.uw.tcss450.group1project.utils.TextFieldHints;
 import edu.uw.tcss450.group1project.utils.TextFieldValidators;
 
