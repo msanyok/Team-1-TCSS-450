@@ -19,27 +19,27 @@ import edu.uw.tcss450.group1project.ui.contacts.ContactGenerator;
  */
 public class ChatRoomGenerator {
 
-    /**
-     * Returns a list of all combinations of chat rooms between registered contacts
-     *
-     * @return the list of chat rooms
-     */
-    public static List<ChatRoom> getChatRooms() {
-        List<ChatRoom> rooms = new ArrayList<>();
-        List<Contact> contacts = ContactGenerator.getContactList();
-        List<Contact[]> combinations = new ArrayList<>();
-        for (int i = 1; i <= 4; i++) { // generate all possible combinations
-            generateCombinations(combinations, 0, 0,
-                    contacts, new Contact[i]);
-        }
-        Collections.shuffle(combinations);
-        int i = 1;
-        for (Contact[] arr : combinations) {
-            rooms.add(new ChatRoom(Arrays.asList(arr), "Chat Room #" + i));
-            i++;
-        }
-        return rooms;
-    }
+//    /**
+//     * Returns a list of all combinations of chat rooms between registered contacts
+//     *
+//     * @return the list of chat rooms
+//     */
+//    public static List<ChatRoom> getChatRooms() {
+//        List<ChatRoom> rooms = new ArrayList<>();
+//        List<Contact> contacts = ContactGenerator.getContactList();
+//        List<Contact[]> combinations = new ArrayList<>();
+//        for (int i = 1; i <= 4; i++) { // generate all possible combinations
+//            generateCombinations(combinations, 0, 0,
+//                    contacts, new Contact[i]);
+//        }
+//        Collections.shuffle(combinations);
+//        int i = 1;
+//        for (Contact[] arr : combinations) {
+//            rooms.add(new ChatRoom(Arrays.asList(arr), "Chat Room #" + i));
+//            i++;
+//        }
+//        return rooms;
+//    }
 
     /**
      * A utility method to generate all combinations of size theCurrentCombo.length

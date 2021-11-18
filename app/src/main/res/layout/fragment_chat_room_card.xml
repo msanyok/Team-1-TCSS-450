@@ -35,7 +35,7 @@
         </ImageView>
 
         <TextView
-            android:id="@+id/chat_room_title"
+            android:id="@+id/chat_name"
             android:layout_width="270dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"

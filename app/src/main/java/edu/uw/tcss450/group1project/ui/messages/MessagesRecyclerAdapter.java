@@ -17,7 +17,7 @@ import java.util.List;
 
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentChatRoomCardBinding;
-import edu.uw.tcss450.group1project.ui.contacts.Contact;
+
 
 /**
  * ContactRecyclerAdapter provides an adapter for the ContactsFragment RecyclerView.
@@ -90,7 +90,7 @@ public class MessagesRecyclerAdapter
             mBinding.chatroomNavigation.setOnClickListener(button -> {
                 ChatsFragmentDirections.ActionNavigationChatsToChatroomFragment action =
                         ChatsFragmentDirections
-                                .actionNavigationChatsToChatroomFragment(mRoom.getTitle());
+                                .actionNavigationChatsToChatroomFragment(mRoom.getChatName());
                 Navigation.findNavController(theItemView).navigate(action);
             });
 
@@ -108,20 +108,40 @@ public class MessagesRecyclerAdapter
 
         /** Displays all contact data and image views for a single contact card */
         private void display() {
-            StringBuilder builder = new StringBuilder();
-            List<Contact> participants = mRoom.getParticipants();
-            for (int i = 0; i < participants.size(); i++) {
-                if (participants.size() > 1 && i == participants.size() - 1) {
-                    builder.append(String.format("and %s", participants.get(i).getNickname()));
-                } else if (participants.size() > 2) {
-                    builder.append(String.format("%s, ", participants.get(i).getNickname()));
-                } else {
-                    builder.append(participants.get(i).getNickname());
-                    if (participants.size() == 2) builder.append(" ");
-                }
-            }
-            mBinding.chatRoomTitle.setText(mRoom.getTitle());
-            mBinding.currentMessage.setText(MessageGenerator.getRandomMessage());
+//<<<<<<< HEAD
+//            StringBuilder builder = new StringBuilder();
+//            List<Contact> participants = mRoom.getParticipants();
+//            for (int i = 0; i < participants.size(); i++) {
+//                if (participants.size() > 1 && i == participants.size() - 1) {
+//                    builder.append(String.format("and %s", participants.get(i).getNickname()));
+//                } else if (participants.size() > 2) {
+//                    builder.append(String.format("%s, ", participants.get(i).getNickname()));
+//                } else {
+//                    builder.append(participants.get(i).getNickname());
+//                    if (participants.size() == 2) builder.append(" ");
+//                }
+//            }
+//            mBinding.chatRoomTitle.setText(mRoom.getTitle());
+//            mBinding.currentMessage.setText(MessageGenerator.getRandomMessage());
+//=======
+//            StringBuilder builder = new StringBuilder();
+//            List<Contact> participants = mRoom.getParticipants();
+//            for (int i = 0; i < participants.size(); i++) {
+//                if (participants.size() > 1 && i == participants.size() - 1) {
+//                    builder.append(String.format("and %s", participants.get(i).getNickname()));
+//                } else if (participants.size() > 2) {
+//                    builder.append(String.format("%s, ", participants.get(i).getNickname()));
+//                } else {
+//                    builder.append(participants.get(i).getNickname());
+//                    if (participants.size() == 2) builder.append(" ");
+//                }
+//            }
+
+//            mBinding.participantNames.setText(builder.toString());
+            mBinding.chatName.setText(mRoom.getChatName());
+            mBinding.currentMessage.setText(mRoom.getMostRecentMessage());
+
+//            mBinding.currentMessage.setText(MessageGenerator.getRandomMessage());
         }
     }
 }

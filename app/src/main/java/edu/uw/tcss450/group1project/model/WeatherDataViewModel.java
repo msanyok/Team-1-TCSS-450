@@ -7,6 +7,7 @@ package edu.uw.tcss450.group1project.model;
 
 import android.app.Application;
 import android.util.Log;
+import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -101,6 +102,15 @@ public class WeatherDataViewModel extends AndroidViewModel {
      */
     public List<WeatherData> getDailyData() {
         return mDailyData;
+    }
+
+    /**
+     * Determines if this view model's data components are readable (i.e. non-null)
+     *
+     * @return true if readable, false otherwise
+     */
+    public boolean containsReadableContents() {
+        return mCurrentData != null && mHourlyData != null && mDailyData != null;
     }
 
     /**

@@ -27,6 +27,7 @@
             android:id="@+id/action_navigation_chats_to_chatroomFragment"
             app:destination="@id/navigation_chat_room" />
     </fragment>
+
     <fragment
         android:id="@+id/navigation_weather"
         android:name="edu.uw.tcss450.group1project.ui.weather.WeatherFragment"

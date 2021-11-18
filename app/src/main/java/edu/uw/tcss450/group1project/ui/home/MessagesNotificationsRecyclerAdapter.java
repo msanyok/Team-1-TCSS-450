@@ -104,19 +104,34 @@ public class MessagesNotificationsRecyclerAdapter extends
 
         /** Displays all chat room data and image views for a single new message card */
         private void display() {
-            StringBuilder builder = new StringBuilder();
-            List<Contact> participants = mRoom.getParticipants();
-            for (int i = 0; i < participants.size(); i++) {
-                if (participants.size() > 1 && i == participants.size() - 1) {
-                    builder.append(String.format("and %s", participants.get(i).getNickname()));
-                } else if (participants.size() > 2) {
-                    builder.append(String.format("%s, ", participants.get(i).getNickname()));
-                } else {
-                    builder.append(participants.get(i).getNickname());
-                    if (participants.size() == 2) builder.append(" ");
-                }
-            }
-            mBinding.chatRoomTitle.setText(mRoom.getTitle());
+//<<<<<<< HEAD
+//            StringBuilder builder = new StringBuilder();
+//            List<Contact> participants = mRoom.getParticipants();
+//            for (int i = 0; i < participants.size(); i++) {
+//                if (participants.size() > 1 && i == participants.size() - 1) {
+//                    builder.append(String.format("and %s", participants.get(i).getNickname()));
+//                } else if (participants.size() > 2) {
+//                    builder.append(String.format("%s, ", participants.get(i).getNickname()));
+//                } else {
+//                    builder.append(participants.get(i).getNickname());
+//                    if (participants.size() == 2) builder.append(" ");
+//                }
+//            }
+//            mBinding.chatRoomTitle.setText(mRoom.getTitle());
+//=======
+//            StringBuilder builder = new StringBuilder();
+//            List<Contact> participants = mRoom.getParticipants();
+//            for (int i = 0; i < participants.size(); i++) {
+//                if (participants.size() > 1 && i == participants.size() - 1) {
+//                    builder.append(String.format("and %s", participants.get(i).getNickname()));
+//                } else if (participants.size() > 2) {
+//                    builder.append(String.format("%s, ", participants.get(i).getNickname()));
+//                } else {
+//                    builder.append(participants.get(i).getNickname());
+//                    if (participants.size() == 2) builder.append(" ");
+//                }
+//            }
+            mBinding.chatName.setText("Austn");
             mBinding.currentMessage.setText(MessageGenerator.getRandomMessage());
         }
     }

@@ -6,6 +6,7 @@
 package edu.uw.tcss450.group1project.ui.weather;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -84,23 +85,25 @@ public class WeatherFragment extends Fragment {
      * Sets up this fragment's view components with data from the WeatherDataViewModel
      */
     private void setViewComponents() {
-        FragmentWeatherBinding binding = FragmentWeatherBinding.bind(getView());
-        binding.titleCity.setText(mModel.getCurrentData().getCity());
-        binding.titleWeatherIcon.setImageResource(
-                WeatherUtils.getInstance()
-                        .getIconResource(mModel.getCurrentData().getWeatherCondition()));
-        binding.titleTemperature
-                .setText(String.valueOf(mModel.getCurrentData().getTemperature()) + "\u2109");
-        binding.titleFeelsLike
-                .setText("Feels like: " + mModel.getCurrentData().getFeelsLike() + "\u2109");
-        binding.titleChanceRain
-                .setText("Chance of rain: " + mModel.getCurrentData().getChanceRain() + "%");
-        binding.titleHumidity
-                .setText("Humidity: " + mModel.getCurrentData().getHumidity() + "%");
+        if (mModel.containsReadableContents()) {
+            FragmentWeatherBinding binding = FragmentWeatherBinding.bind(getView());
+            binding.titleCity.setText(mModel.getCurrentData().getCity());
+            binding.titleWeatherIcon.setImageResource(
+                    WeatherUtils.getInstance()
+                            .getIconResource(mModel.getCurrentData().getWeatherCondition()));
+            binding.titleTemperature
+                    .setText(String.valueOf(mModel.getCurrentData().getTemperature()) + "\u2109");
+            binding.titleFeelsLike
+                    .setText("Feels like: " + mModel.getCurrentData().getFeelsLike() + "\u2109");
+            binding.titleChanceRain
+                    .setText("Chance of rain: " + mModel.getCurrentData().getChanceRain() + "%");
+            binding.titleHumidity
+                    .setText("Humidity: " + mModel.getCurrentData().getHumidity() + "%");
 
-        binding.listHourlyForecast
-                .setAdapter(new WeatherRecyclerAdapterHourly(mModel.getHourlyData()));
-        binding.listDailyForecast
-                .setAdapter(new WeatherRecyclerAdapterDaily(mModel.getDailyData()));
+            binding.listHourlyForecast
+                    .setAdapter(new WeatherRecyclerAdapterHourly(mModel.getHourlyData()));
+            binding.listDailyForecast
+                    .setAdapter(new WeatherRecyclerAdapterDaily(mModel.getDailyData()));
+        }
     }
 }

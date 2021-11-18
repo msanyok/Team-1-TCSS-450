@@ -5,70 +5,89 @@
 
 package edu.uw.tcss450.group1project.ui.messages;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import edu.uw.tcss450.group1project.ui.contacts.Contact;
+import java.util.Objects;
 
 /**
- * ChatRoom is a class to manage conversations between the user and a list of contact participants.
+ * Stores data about a particular chat room
  *
  * @author Parker Rosengreen
+ * @author Austn Attaway
  * @version Fall 2021
  */
 public class ChatRoom {
 
-    /** The contacts participating in this chat room */
-    private final List<Contact> mContacts;
+    /** The name of this chat room */
+    private String mChatRoomName;
 
-    /** The chat room title */
-    private String mTitle;
+    /** The unique id for this chat room */
+    private String mChatRoomID;
 
-    // IDEA : possibly a List of type Message
-    // (message would store String message and Contact sender?
+    /** The most recent message sent in this chat room */
+    private String mChatRoomMessage;
 
-    /**
-     * Creates a new chat room with the provided list of contacts
-     *
-     * @param theContacts the list of contacts
-     */
-    public ChatRoom(final List<Contact> theContacts, final String theTitle) {
-        mContacts = theContacts;
-        mTitle = theTitle;
-    }
+    /** The timestamp that corresponds to when the most recent message was sent in this chat room */
+    private String mTimestamp;
 
     /**
-     * Returns a defensive copy of the contacts participating in this chat room
+     * Creates a new chat room with the provided name, id, and most recent message.
      *
-     * @return the list of contacts
+     * @param theName the name of the chat
+     * @param theID the unique ID of the chat
+     * @param theMostRecentMessage the most recent message text sent in this chat.
+     * @param theTimestamp the timestamp that corresponds to when
+     *                     the most recent message in this chat was sent.
+     * @throws NullPointerException if theName is null
+     * @throws NullPointerException if theID is null
+     * @throws NullPointerException if theMostRecentMessage is null
+     * @throws NullPointerException if theTimestamp is null
      */
-    public List<Contact> getParticipants() {
-        List<Contact> copy = new ArrayList<>();
-        for (final Contact c : mContacts) {
-            copy.add(new Contact(c.getFirst(), c.getLast(), c.getNickname()));
-        }
-        return copy;
-    }
+    public ChatRoom(final String theName,
+                    final String theID,
+                    final String theMostRecentMessage,
+                    final String theTimestamp) {
 
-    /**
-     * Supplies the title of this chat room
-     *
-     * @return the chat room title
-     */
-    public String getTitle() {
-        return mTitle;
-    }
-
-    public void setTitle(final String theTitle) {
-        mTitle = theTitle;
+        mChatRoomName = Objects.requireNonNull(theName, "theName can not be null");
+        mChatRoomID = Objects.requireNonNull(theID, "theID can not be null");
+        mChatRoomMessage = Objects.requireNonNull(theMostRecentMessage,
+                "theMostRecentMessage can not be null");
+        mTimestamp = Objects.requireNonNull(theTimestamp, "theTimestamp can not be null");
     }
 
     /**
-     * Adds a new participant to the chat room
+     * Returns this chat's name
      *
-     * @param theContact the participant to be added
+     * @return the chat name
      */
-    public void addParticipant(final Contact theContact) {
-        mContacts.add(theContact);
+    public String getChatName() {
+        return mChatRoomName;
     }
+
+    /**
+     * Returns this chat's unique ID
+     *
+     * @return the unique id
+     */
+    public String getChatID() {
+        return mChatRoomID;
+    }
+
+    /**
+     * Returns the most recent message sent in this chat
+     *
+     * @return the most recent message
+     */
+    public String getMostRecentMessage() {
+        return mChatRoomMessage;
+    }
+
+    /**
+     * Returns the timestamp corresponding to
+     * when the most recent message in this chat was sent
+     *
+     * @return the timestamp
+     */
+    public String getTimestamp() {
+        return mTimestamp;
+    }
+
 }
