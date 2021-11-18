@@ -104,9 +104,6 @@ public class ContactRequestRecyclerAdapter
             mBinding.contactName.setText(String.format("%s %s", mContact.getFirst(),
                     mContact.getLast()));
             mBinding.contactNickname.setText(mContact.getNickname());
-            mBinding.contactImage.setImageResource(R.drawable.ic__android__black_24dp);
-            mBinding.denyButton.setImageResource(R.drawable.ic_deny_red_24dp);
-            mBinding.acceptButton.setImageResource(R.drawable.ic_check_green_24dp);
         }
     }
 }

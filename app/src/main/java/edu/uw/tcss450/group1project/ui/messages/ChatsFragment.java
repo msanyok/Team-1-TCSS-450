@@ -24,7 +24,7 @@ import edu.uw.tcss450.group1project.databinding.FragmentChatRoomsBinding;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
 
 /**
- * A {@link Fragment} subclass that is responsible for the chats list page.
+ * A {@link Fragment} subclass that is responsible for the messages page.
  *
  * @author Parker Rosengreen
  * @author Austn Attaway
@@ -49,18 +49,14 @@ public class ChatsFragment extends Fragment {
     public View onCreateView(final LayoutInflater theInflater, final ViewGroup theContainer,
                              final Bundle theSavedInstanceState) {
         mChatListsModel = new ViewModelProvider(getActivity()).get(ChatsListViewModel.class);
-
         // Inflate the layout for this fragment
         return theInflater.inflate(R.layout.fragment_chat_rooms, theContainer, false);
-
     }
 
     @Override
     public void onViewCreated(@NonNull final View theView,
                               @Nullable final Bundle theSavedInstanceState) {
         super.onViewCreated(theView, theSavedInstanceState);
-
-
         mBinding = FragmentChatRoomsBinding.bind(getView());
 
         mChatListsModel.addResponseObserver(getViewLifecycleOwner(), this::observeResponse);
@@ -71,8 +67,8 @@ public class ChatsFragment extends Fragment {
         mChatListsModel.getChatListData(userInfo.getmJwt());
 
         mBinding.chatRoomStartButton.setOnClickListener(button -> {
-                    Navigation.findNavController(theView).
-                            navigate(R.id.action_navigation_chats_to_createChatroomFragment);
+            Navigation.findNavController(theView).
+                    navigate(R.id.action_navigation_chats_to_createChatroomFragment);
         });
     }
 
@@ -97,5 +93,4 @@ public class ChatsFragment extends Fragment {
                     + theResponse.toString());
         }
     }
-
 }

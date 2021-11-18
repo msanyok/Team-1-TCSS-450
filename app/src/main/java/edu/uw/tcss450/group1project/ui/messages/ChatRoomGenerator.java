@@ -19,11 +19,11 @@ import edu.uw.tcss450.group1project.ui.contacts.ContactGenerator;
  */
 public class ChatRoomGenerator {
 
-    /**
-     * Returns a list of all combinations of chat rooms between registered contacts
-     *
-     * @return the list of chat rooms
-     */
+//    /**
+//     * Returns a list of all combinations of chat rooms between registered contacts
+//     *
+//     * @return the list of chat rooms
+//     */
 //    public static List<ChatRoom> getChatRooms() {
 //        List<ChatRoom> rooms = new ArrayList<>();
 //        List<Contact> contacts = ContactGenerator.getContactList();
@@ -33,8 +33,10 @@ public class ChatRoomGenerator {
 //                    contacts, new Contact[i]);
 //        }
 //        Collections.shuffle(combinations);
+//        int i = 1;
 //        for (Contact[] arr : combinations) {
-//            rooms.add(new ChatRoom(Arrays.asList(arr)));
+//            rooms.add(new ChatRoom(Arrays.asList(arr), "Chat Room #" + i));
+//            i++;
 //        }
 //        return rooms;
 //    }

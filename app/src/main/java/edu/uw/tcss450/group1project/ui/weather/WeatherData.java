@@ -21,7 +21,7 @@ public class WeatherData {
     private final int myTemperature;
 
     /** An integer code mapped to the weather condition */
-    private final int myWeatherCondition;
+    private final String myWeatherCondition;
 
     /**
      * Creates a new WeatherData with the provided descriptor, temperature, and condition code
@@ -30,7 +30,7 @@ public class WeatherData {
      * @param theTemp the temperature
      * @param theCond the condition code
      */
-    public WeatherData(final String theDescriptor, final int theTemp, final int theCond) {
+    public WeatherData(final String theDescriptor, final int theTemp, final String theCond) {
         myTemperature = theTemp;
         myWeatherCondition = theCond;
         myTimeDescriptor = theDescriptor;
@@ -50,7 +50,7 @@ public class WeatherData {
      *
      * @return the weather condition code
      */
-    public int getWeatherCondition() {
+    public String getWeatherCondition() {
         return myWeatherCondition;
     }
 

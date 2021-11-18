@@ -1,3 +1,8 @@
+/*
+ * TCSS450 Mobile Applications
+ * Fall 2021
+ */
+
 package edu.uw.tcss450.group1project.ui.messages;
 
 import android.os.Bundle;
@@ -16,7 +21,7 @@ import edu.uw.tcss450.group1project.R;
  * @author Chris Ding
  * @version Fall 2021
  */
-public class ChatroomFragment extends Fragment {
+public class ChatRoomFragment extends Fragment {
 
     @Override
     public View onCreateView(final LayoutInflater theInflater, final ViewGroup theContainer,

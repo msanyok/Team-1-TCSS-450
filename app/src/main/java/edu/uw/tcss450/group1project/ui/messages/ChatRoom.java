@@ -51,12 +51,12 @@ public class ChatRoom {
         mChatRoomMessage = Objects.requireNonNull(theMostRecentMessage,
                 "theMostRecentMessage can not be null");
         mTimestamp = Objects.requireNonNull(theTimestamp, "theTimestamp can not be null");
-
     }
 
     /**
      * Returns this chat's name
-     * @return
+     *
+     * @return the chat name
      */
     public String getChatName() {
         return mChatRoomName;
@@ -64,7 +64,8 @@ public class ChatRoom {
 
     /**
      * Returns this chat's unique ID
-     * @return
+     *
+     * @return the unique id
      */
     public String getChatID() {
         return mChatRoomID;
@@ -72,7 +73,8 @@ public class ChatRoom {
 
     /**
      * Returns the most recent message sent in this chat
-     * @return
+     *
+     * @return the most recent message
      */
     public String getMostRecentMessage() {
         return mChatRoomMessage;
@@ -81,7 +83,8 @@ public class ChatRoom {
     /**
      * Returns the timestamp corresponding to
      * when the most recent message in this chat was sent
-     * @return
+     *
+     * @return the timestamp
      */
     public String getTimestamp() {
         return mTimestamp;

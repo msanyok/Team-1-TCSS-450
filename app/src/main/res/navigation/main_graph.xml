@@ -20,13 +20,12 @@
         android:name="edu.uw.tcss450.group1project.ui.messages.ChatsFragment"
         android:label="@string/title_messages"
         tools:layout="@layout/fragment_chat_rooms" >
-
         <action
             android:id="@+id/action_navigation_chats_to_createChatroomFragment"
-            app:destination="@id/createChatroomFragment" />
+            app:destination="@id/navigation_create_chat_room" />
         <action
             android:id="@+id/action_navigation_chats_to_chatroomFragment"
-            app:destination="@id/chatroomFragment" />
+            app:destination="@id/navigation_chat_room" />
     </fragment>
 
     <fragment
@@ -39,13 +38,19 @@
         android:name="edu.uw.tcss450.group1project.ui.settings.SettingsFragment"
         android:label="@string/title_settings" />
     <fragment
-        android:id="@+id/createChatroomFragment"
-        android:name="edu.uw.tcss450.group1project.ui.messages.CreateChatroomFragment"
-        android:label="fragment_create_chatroom"
+        android:id="@+id/navigation_create_chat_room"
+        android:name="edu.uw.tcss450.group1project.ui.messages.CreateChatRoomFragment"
+        android:label="@string/title_create_chat_room"
         tools:layout="@layout/fragment_create_chatroom" />
     <fragment
-        android:id="@+id/chatroomFragment"
-        android:name="edu.uw.tcss450.group1project.ui.messages.ChatroomFragment"
-        android:label="fragment_chatroom"
-        tools:layout="@layout/fragment_chatroom" />
+        android:id="@+id/navigation_chat_room"
+        android:name="edu.uw.tcss450.group1project.ui.messages.ChatRoomFragment"
+        android:label="{chat_room_name}"
+        tools:layout="@layout/fragment_chatroom" >
+        <argument
+            android:name="chat_room_name"
+            app:argType="string" />
+    </fragment>
+
+
 </navigation>
