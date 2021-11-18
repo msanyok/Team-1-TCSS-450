@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentMessagesBinding;
@@ -50,5 +51,9 @@ public class MessagesFragment extends Fragment {
                 .get(UserInfoViewModel.class);
         FragmentMessagesBinding binding = FragmentMessagesBinding.bind(getView());
         binding.listRoot.setAdapter(new MessagesRecyclerAdapter(ChatRoomGenerator.getChatRooms()));
+        binding.chatRoomStartButton.setOnClickListener(button -> {
+            Navigation.findNavController(theView).navigate(R.id.action_navigation_messages_to_createChatroomFragment);
+
+        });
     }
 }
