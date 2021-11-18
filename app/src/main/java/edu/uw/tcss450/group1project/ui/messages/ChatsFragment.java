@@ -17,7 +17,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
 import edu.uw.tcss450.group1project.R;
-import edu.uw.tcss450.group1project.databinding.FragmentMessagesBinding;
+import edu.uw.tcss450.group1project.databinding.FragmentChatRoomsBinding;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
 
 /**
@@ -27,12 +27,12 @@ import edu.uw.tcss450.group1project.model.UserInfoViewModel;
  * @author Austn Attaway
  * @version Fall 2021
  */
-public class MessagesFragment extends Fragment {
+public class ChatsFragment extends Fragment {
 
     /**
      * Empty public constructor. Does not provide any functionality.
      */
-    public MessagesFragment() {
+    public ChatsFragment() {
         // required empty constructor
     }
 
@@ -40,7 +40,7 @@ public class MessagesFragment extends Fragment {
     public View onCreateView(final LayoutInflater theInflater, final ViewGroup theContainer,
                              final Bundle theSavedInstanceState) {
         // Inflate the layout for this fragment
-        return theInflater.inflate(R.layout.fragment_messages, theContainer, false);
+        return theInflater.inflate(R.layout.fragment_chat_rooms, theContainer, false);
     }
 
     @Override
@@ -49,11 +49,11 @@ public class MessagesFragment extends Fragment {
         super.onViewCreated(theView, theSavedInstanceState);
         UserInfoViewModel model = new ViewModelProvider(getActivity())
                 .get(UserInfoViewModel.class);
-        FragmentMessagesBinding binding = FragmentMessagesBinding.bind(getView());
+        FragmentChatRoomsBinding binding = FragmentChatRoomsBinding.bind(getView());
         binding.listRoot.setAdapter(new MessagesRecyclerAdapter(ChatRoomGenerator.getChatRooms()));
         binding.chatRoomStartButton.setOnClickListener(button -> {
             Navigation.findNavController(theView)
-                    .navigate(R.id.action_navigation_messages_to_createChatroomFragment);
+                    .navigate(R.id.action_navigation_chats_to_createChatroomFragment);
 
         });
     }

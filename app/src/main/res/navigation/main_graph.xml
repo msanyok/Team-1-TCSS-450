@@ -17,14 +17,14 @@
         tools:layout="@layout/fragment_contacts" />
     <fragment
         android:id="@+id/navigation_messages"
-        android:name="edu.uw.tcss450.group1project.ui.messages.MessagesFragment"
+        android:name="edu.uw.tcss450.group1project.ui.messages.ChatsFragment"
         android:label="@string/title_messages"
-        tools:layout="@layout/fragment_messages" >
+        tools:layout="@layout/fragment_chat_rooms" >
         <action
-            android:id="@+id/action_navigation_messages_to_createChatroomFragment"
+            android:id="@+id/action_navigation_chats_to_createChatroomFragment"
             app:destination="@id/navigation_create_chat_room" />
         <action
-            android:id="@+id/action_navigation_messages_to_chatroomFragment"
+            android:id="@+id/action_navigation_chats_to_chatroomFragment"
             app:destination="@id/navigation_chat_room" />
     </fragment>
     <fragment
