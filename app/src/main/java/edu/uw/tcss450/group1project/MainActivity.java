@@ -5,7 +5,9 @@
 
 package edu.uw.tcss450.group1project;
 
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
@@ -25,6 +27,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import edu.uw.tcss450.group1project.model.PushyTokenViewModel;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
 
 /**
@@ -86,6 +89,9 @@ public class MainActivity extends ThemedActivity {
                     .navigate(R.id.navigation_settings);
             return true;
         }
+        if (id == R.id.action_sign_out){
+            signOut();
+        }
         return super.onOptionsItemSelected(theItem);
     }
 
@@ -115,5 +121,27 @@ public class MainActivity extends ThemedActivity {
         alertDialog.setNegativeButton(Html.fromHtml("<font color='#000000'>Cancel</font>"),
                 (dialog, which) -> {});
         alertDialog.show();
+    }
+
+    /**
+     * A helper method for signout function.
+     */
+    private void signOut() {
+        SharedPreferences prefs =
+                getSharedPreferences(
+                        getString(R.string.signIn_keys_shared_prefs),
+                        Context.MODE_PRIVATE);
+        prefs.edit().remove(getString(R.string.signIn_keys_prefs_jwt)).apply();
+        //End the app completely
+
+        PushyTokenViewModel model = new ViewModelProvider(this)
+                .get(PushyTokenViewModel.class);
+        //when we hear back from the web service quit
+        model.addResponseObserver(this, result -> finishAndRemoveTask());
+        model.deleteTokenFromWebservice(
+                new ViewModelProvider(this)
+                        .get(UserInfoViewModel.class)
+                        .getmJwt()
+        );
     }
 }

@@ -19,7 +19,8 @@
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" >
+    </TextView>
 
     <TextView
         android:id="@+id/message_verification_instructions"
@@ -33,7 +34,8 @@
         android:textColor="?android:textColorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/message_verification_greeting" />
+        app:layout_constraintTop_toBottomOf="@+id/message_verification_greeting" >
+    </TextView>
 
     <TextView
         android:id="@+id/message_resend_code_instructions"
@@ -47,7 +49,8 @@
         android:textColor="?android:textColorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_verification" />
+        app:layout_constraintTop_toBottomOf="@+id/button_verification" >
+    </TextView>
 
     <EditText
         android:id="@+id/edit_verification_code"

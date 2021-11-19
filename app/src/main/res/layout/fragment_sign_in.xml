@@ -31,14 +31,16 @@
         android:inputType="textEmailAddress"
         app:layout_constraintBottom_toTopOf="@+id/guideline_fifty"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent" >
+    </EditText>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_fifty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.5" />
+        app:layout_constraintGuide_percent="0.5" >
+    </androidx.constraintlayout.widget.Guideline>
 
     <EditText
         android:id="@+id/edit_password"
@@ -53,7 +55,8 @@
         android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline_fifty" />
+        app:layout_constraintTop_toTopOf="@+id/guideline_fifty" >
+    </EditText>
 
     <Button
         android:id="@+id/button_sign_in"
@@ -63,7 +66,8 @@
         android:layout_marginEnd="16dp"
         android:text="@string/action_sign_in_short"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_password" />
+        app:layout_constraintTop_toBottomOf="@+id/edit_password" >
+    </Button>
 
     <Button
         android:id="@+id/button_to_register"
@@ -75,5 +79,19 @@
         android:textColor="?buttonRegisterColor"
         android:background="@android:color/transparent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_password" />
+        app:layout_constraintTop_toBottomOf="@+id/edit_password" >
+    </Button>
+
+    <Switch
+        android:id="@+id/switch_signin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:checked="true"
+        android:text="@string/signIn_switch"
+        android:textColor="?buttonRegisterColor"
+        app:layout_constraintTop_toBottomOf="@+id/button_to_register"
+        app:layout_constraintEnd_toEndOf="@+id/button_sign_in"
+        tools:text="@string/signIn_switch" >
+    </Switch>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -26,7 +26,8 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toLeftOf="@+id/welcome_text"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="ImageContrastCheck" />
+                tools:ignore="ImageContrastCheck" >
+            </ImageView>
 
             <TextView
                 android:id="@+id/welcome_text"
@@ -91,7 +92,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 tools:context="edu.uw.tcss450.group1project.ui.contacts.HomeFragment"
-                tools:listitem="@layout/fragment_home_message_notification_card" />
+                tools:listitem="@layout/fragment_home_message_notification_card" >
+            </androidx.recyclerview.widget.RecyclerView>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -130,7 +132,9 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/contact_requests_text"
                 tools:context="edu.uw.tcss450.group1project.ui.contacts.HomeFragment"
-                tools:listitem="@layout/fragment_home_contact_request_card" />
+                tools:listitem="@layout/fragment_home_contact_request_card" >
+
+            </androidx.recyclerview.widget.RecyclerView>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
