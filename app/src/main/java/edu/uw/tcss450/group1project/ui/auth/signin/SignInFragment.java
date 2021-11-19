@@ -5,6 +5,8 @@
 
 package edu.uw.tcss450.group1project.ui.auth.signin;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -18,9 +20,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.auth0.android.jwt.JWT;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentSignInBinding;
 import edu.uw.tcss450.group1project.model.PushyTokenViewModel;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
@@ -68,7 +73,7 @@ public class SignInFragment extends Fragment {
 
     @Override
     public View onCreateView(final LayoutInflater theInflater, final ViewGroup theContainer,
-                             final Bundle savedInstanceState) {
+                             final Bundle theSavedInstanceState) {
         mBinding = FragmentSignInBinding.inflate(theInflater);
 
         // Inflate the layout for this fragment
@@ -77,8 +82,8 @@ public class SignInFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull final View theView,
-                              @Nullable final Bundle savedInstanceState) {
-        super.onViewCreated(theView, savedInstanceState);
+                              @Nullable final Bundle theSavedInstanceState) {
+        super.onViewCreated(theView, theSavedInstanceState);
 
         mBinding.buttonToRegister.setOnClickListener(button ->
             Navigation.findNavController(getView()).navigate(
@@ -104,6 +109,32 @@ public class SignInFragment extends Fragment {
         mPushyTokenViewModel.addResponseObserver(
                 getViewLifecycleOwner(),
                 this::observePushyPutResponse);
+    }
+
+    /**
+     * Check for the JWT and email in shared preferences.
+     * If they exist, check to see if the JWT is still valid.
+     * If it is, skip sign in with the server and navigate directly to MainActivity.
+     */
+    @Override
+    public void onStart() {
+        super.onStart();
+        SharedPreferences prefs =
+                getActivity().getSharedPreferences(
+                        getString(R.string.signIn_keys_shared_prefs),
+                        Context.MODE_PRIVATE);
+        if (prefs.contains(getString(R.string.signIn_keys_prefs_jwt))) {
+            String token = prefs.getString(getString(R.string.signIn_keys_prefs_jwt), "");
+            JWT jwt = new JWT(token);
+            // Check to see if the web token is still valid or not. To make a JWT expire after a
+            // longer or shorter time period, change the expiration time when the JWT is
+            // created on the web service.
+            if(!jwt.isExpired(0)) {
+                String email = jwt.getClaim("email").asString();
+                navigateToSuccess(email, token);
+                return;
+            }
+        }
     }
 
     /**
@@ -187,12 +218,23 @@ public class SignInFragment extends Fragment {
     }
 
     /**
-     * Helper to abstract the navigation to the Activity past Authentication.
+     * Helper to abstract the navigation to the Activity past Authentication,
+     * and save the JWT to Shared Preferences on successful sign in if switch is selected.
      *
      * @param theEmail the user's email
      * @param theJwt the JSON Web Token supplied by the server
      */
     private void navigateToSuccess(final String theEmail, final String theJwt) {
+        //Save the JWT to Shared Preferences on successful sign in if switch is selected.
+        if (mBinding.switchSignin.isChecked()) {
+            final SharedPreferences prefs =
+                    getActivity().getSharedPreferences(
+                            getString(R.string.signIn_keys_shared_prefs),
+                            Context.MODE_PRIVATE);
+            //Store the credentials in SharedPrefs
+            prefs.edit().putString(getString(R.string.signIn_keys_prefs_jwt), theJwt).apply();
+        }
+
         Navigation.findNavController(getView())
                         .navigate(SignInFragmentDirections
                         .actionLoginFragmentToMainActivity(theEmail, theJwt));
