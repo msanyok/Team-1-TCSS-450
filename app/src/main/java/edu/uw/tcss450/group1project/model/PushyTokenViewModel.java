@@ -36,6 +36,7 @@ import me.pushy.sdk.Pushy;
  *
  * @author Charles Bryan
  * @author Austn Attaway
+ * @author Chris Ding
  */
 public class PushyTokenViewModel extends AndroidViewModel{
 
@@ -220,6 +221,31 @@ public class PushyTokenViewModel extends AndroidViewModel{
                 Log.e("JSON PARSE", "JSON Parse Error in handleError");
             }
         }
+    }
+
+    public void deleteTokenFromWebservice(final String jwt) {
+        final String url = "https://team-1-tcss-450-server.herokuapp.com/auth";
+        Request request = new JsonObjectRequest(
+                Request.Method.DELETE,
+                url,
+                null,
+                mResponse::setValue,
+                this::handleError) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                // add headers <key,value>
+                headers.put("Authorization", jwt);
+                return headers;
+            }
+        };
+        request.setRetryPolicy(new DefaultRetryPolicy(
+                10_000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        //Instantiate the RequestQueue and add the request to the queue
+        RequestQueueSingleton.getInstance(getApplication().getApplicationContext())
+                .addToRequestQueue(request);
     }
 }
 

@@ -36,7 +36,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.121"
-        tools:ignore="TouchTargetSizeCheck" />
+        tools:ignore="TouchTargetSizeCheck" >
+    </EditText>
 
     <EditText
         android:id="@+id/edit_last"
@@ -53,7 +54,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_first"
-        tools:ignore="TouchTargetSizeCheck" />
+        tools:ignore="TouchTargetSizeCheck" >
+    </EditText>
 
     <EditText
         android:id="@+id/edit_nickname"
@@ -71,7 +73,8 @@
         app:layout_constraintHorizontal_bias="0.476"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_last"
-        tools:ignore="TouchTargetSizeCheck" />
+        tools:ignore="TouchTargetSizeCheck" >
+    </EditText>
 
     <EditText
         android:id="@+id/edit_email"
@@ -89,7 +92,8 @@
         app:layout_constraintHorizontal_bias="0.476"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_nickname"
-        tools:ignore="TouchTargetSizeCheck" />
+        tools:ignore="TouchTargetSizeCheck" >
+    </EditText>
 
     <EditText
         android:id="@+id/edit_password_1"
@@ -107,7 +111,8 @@
         app:layout_constraintHorizontal_bias="0.476"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_email"
-        tools:ignore="TouchTargetSizeCheck" />
+        tools:ignore="TouchTargetSizeCheck" >
+    </EditText>
 
     <EditText
         android:id="@+id/edit_password_2"
@@ -125,7 +130,8 @@
         app:layout_constraintHorizontal_bias="0.476"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_password_1"
-        tools:ignore="TouchTargetSizeCheck" />
+        tools:ignore="TouchTargetSizeCheck" >
+    </EditText>
 
     <Button
         android:id="@+id/button_register"
@@ -135,7 +141,8 @@
         android:layout_marginEnd="16dp"
         android:text="@string/action_register_short"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_password_2" />
+        app:layout_constraintTop_toBottomOf="@+id/edit_password_2" >
+    </Button>
 </androidx.constraintlayout.widget.ConstraintLayout>
 
 

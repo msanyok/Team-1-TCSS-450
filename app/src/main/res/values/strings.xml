@@ -43,4 +43,9 @@
     <string name="message_resend_code_instructions">Need a new code?</string>
     <string name="message_verification_instructions">
         Enter the code we sent you to register your account.</string>
+
+    <string name="signIn_switch">STAY SIGNED IN</string>
+    <string name="signIn_keys_shared_prefs">My Auth App Shared Prefs</string>
+    <string name="signIn_keys_prefs_jwt">Sharded Prefs JWT</string>
+    <string name="signIn_action_sign_out">Sign Out</string>
 </resources>
