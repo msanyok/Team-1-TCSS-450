@@ -10,25 +10,28 @@
         <item name="android:itemBackground">@color/white</item>
         <item name="android:textViewStyle">@style/TextViewStyleTheme1</item>
         <item name="android:switchStyle">@style/SwitchStyleTheme1</item>
+        <item name="colorAccent">@color/berry</item>
         <item name="title_icon">@drawable/logo_theme_1</item>
         <item name="colorPrimary">@android:color/transparent</item>
         <item name="editTextStyle">@style/EditTextStyleTheme1</item>
         <item name="cardViewStyle">@style/CardStyleTheme1</item>
         <item name="buttonStyle">@style/ButtonStyleTheme1</item>
+        <item name="buttonTextColor">@color/white</item>
         <item name="buttonRegisterColor">@color/white</item>
         <item name="cardTextColor">@color/black</item>
         <item name="cardImageColor">@color/black</item>
         <item name="bottomNavigationStyle">@style/BottomNavStyleTheme1</item>
     </style>
 
-    <style name="CardStyleTheme1" parent="CardView">
+    <style name="CardStyleTheme1" parent="Widget.MaterialComponents.CardView">
         <item name="cardCornerRadius">5dp</item>
         <item name="cardBackgroundColor">@color/white</item>
         <item name="cardElevation">0dp</item>
     </style>
 
-    <style name="BottomNavStyleTheme1" parent="Widget.Design.BottomNavigationView">
+    <style name="BottomNavStyleTheme1" parent="Widget.MaterialComponents.BottomNavigationView">
         <item name="itemIconTint">@color/white</item>
+        <item name="android:background">@android:color/transparent</item>
         <item name="itemTextColor">@color/white</item>
     </style>
 
@@ -45,10 +48,8 @@
     </style>
 
     <style name="ButtonStyleTheme1" parent="Widget.MaterialComponents.Button">
-        <item name="android:background">@color/berry</item>
-        <item name="android:textColor">@color/white</item>
         <item name="android:radius">5dp</item>
-        <item name="android:drawableTint">@color/white</item>
+        <item name="android:backgroundTint">@android:color/transparent</item>
     </style>
 
     <style name="SwitchStyleTheme1">
@@ -57,7 +58,7 @@
         <item name="colorSwitchThumbNormal">@color/white</item>
     </style>
 
-    <style name="AppTheme2" parent="Theme.AppCompat.Light">
+    <style name="AppTheme2" parent="Theme.MaterialComponents.Light">
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:fontFamily">@font/font_balsamiq_sans</item>
@@ -66,12 +67,14 @@
         <item name="android:itemBackground">@color/maroon</item>
         <item name="android:textViewStyle">@style/TextViewStyleTheme2</item>
         <item name="android:switchStyle">@style/SwitchStyleTheme2</item>
+        <item name="colorAccent">@color/stone</item>
         <item name="title_icon">@drawable/logo_theme_2</item>
         <item name="titleTextColor">@color/black</item>
         <item name="colorPrimary">@android:color/transparent</item>
         <item name="editTextStyle">@style/EditTextStyleTheme2</item>
         <item name="cardViewStyle">@style/CardStyleTheme2</item>
         <item name="buttonStyle">@style/ButtonStyleTheme2</item>
+        <item name="buttonTextColor">@color/white</item>
         <item name="buttonRegisterColor">@color/black</item>
         <item name="cardTextColor">@color/white</item>
         <item name="cardImageColor">@color/white</item>
@@ -99,10 +102,7 @@
         <item name="android:textColor">@color/white</item>
     </style>
 
-    <style name="ButtonStyleTheme2" parent="Widget.AppCompat.Button">
-        <item name="backgroundTint">@color/stone</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="android:drawableTint">@color/white</item>
+    <style name="ButtonStyleTheme2" parent="ButtonStyleTheme1">
     </style>
 
     <style name="SwitchStyleTheme2" parent="SwitchStyleTheme1">
@@ -116,11 +116,13 @@
         <item name="android:itemBackground">@color/gold</item>
         <item name="android:textViewStyle">@style/TextViewStyleTheme3</item>
         <item name="android:switchStyle">@style/SwitchStyleTheme3</item>
+        <item name="colorAccent">@color/gray</item>
         <item name="title_icon">@drawable/logo_theme_3</item>
         <item name="itemBackground">@color/gold</item>
         <item name="editTextStyle">@style/EditTextStyleTheme3</item>
         <item name="cardViewStyle">@style/CardStyleTheme3</item>
         <item name="buttonStyle">@style/ButtonStyleTheme3</item>
+        <item name="buttonTextColor">@color/black</item>
         <item name="bottomNavigationStyle">@style/BottomNavStyleTheme3</item>
     </style>
 
@@ -141,9 +143,6 @@
     </style>
 
     <style name="ButtonStyleTheme3" parent="ButtonStyleTheme1">
-        <item name="backgroundTint">@color/gray</item>
-        <item name="android:textColor">@color/black</item>
-        <item name="android:drawableTint">@color/black</item>
     </style>
 
     <style name="SwitchStyleTheme3" parent="SwitchStyleTheme1">

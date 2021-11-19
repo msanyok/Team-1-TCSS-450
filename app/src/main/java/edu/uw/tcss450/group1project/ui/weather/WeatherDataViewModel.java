@@ -158,6 +158,7 @@ public class WeatherDataViewModel extends AndroidViewModel {
         List<WeatherData> dailyData = new ArrayList<>();
         try {
             JSONObject curr = theResult.getJSONObject("currentData");
+            Log.d("TAG", "made it here 1\n " + theResult.toString());
             currentData = new WeatherDataCurrent(
                     "Tacoma",
                     (int) curr.get("curTemp"),
@@ -165,6 +166,7 @@ public class WeatherDataViewModel extends AndroidViewModel {
                     (int) Math.round(Double.valueOf(curr.get("curRain").toString()) * 100.0),
                     (int) curr.get("curHumidity"),
                     curr.get("ccurIcon").toString());
+            Log.d("TAG", "made it here 2");
             JSONArray hourArray = theResult.getJSONArray("hourData");
             for (int i = 0; i < hourArray.length(); i++) {
                 JSONObject hourData = (JSONObject) hourArray.get(i);

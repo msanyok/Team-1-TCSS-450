@@ -64,12 +64,13 @@
 
         <Button
             android:id="@+id/button_delete"
-            style="@style/Widget.AppCompat.Button.Borderless"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="showContactDeleteAlertDialog"
             android:text="@string/action_contact_delete"
             android:textColor="?cardTextColor"
+            android:backgroundTint="@android:color/transparent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
