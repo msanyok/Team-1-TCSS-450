@@ -10,7 +10,7 @@
     <string name="hint_verification_code">Verification Code</string>
     <string name="hint_weather_location">Enter a new location.</string>
     <string name="hint_add_new_contact">Send a request by nickname.</string>
-    <string name="hint_start_chat_room">Chat with a new set of contacts.</string>
+    <string name="hint_chat_room_name">Your chat room name.</string>
 
     <string name="action_sign_in_short">Sign in</string>
     <string name="action_register_short">Register</string>
@@ -21,12 +21,14 @@
     <string name="action_start_chat_room">New Chat Room</string>
     <string name="action_search_weather">Search</string>
     <string name="action_contact_delete">Delete</string>
+    <string name="action_create_chat_room">Create</string>
 
     <string name="title_home">Home</string>
     <string name="title_contacts">Contacts</string>
     <string name="title_contact_info">Contact Info</string>
     <string name="title_messages">Chat Rooms</string>
     <string name="title_create_chat_room">Create a Chat Room</string>
+    <string name="title_select_participants">Select participants</string>
     <string name="title_register">Register for TalkBox</string>
     <string name="title_weather">Weather</string>
     <string name="title_settings">Settings</string>

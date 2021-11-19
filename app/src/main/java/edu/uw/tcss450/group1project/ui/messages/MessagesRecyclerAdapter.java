@@ -93,7 +93,6 @@ public class MessagesRecyclerAdapter
                                 .actionNavigationChatsToChatroomFragment(mRoom.getChatName());
                 Navigation.findNavController(theItemView).navigate(action);
             });
-
         }
 
         /**

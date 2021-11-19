@@ -82,16 +82,16 @@
         app:layout_constraintTop_toBottomOf="@+id/edit_password" >
     </Button>
 
-    <Switch
+    <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/switch_signin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:checked="true"
         android:text="@string/signIn_switch"
-        android:textColor="?buttonRegisterColor"
+        android:theme="?android:switchStyle"
+        android:textColor="?android:textColorPrimary"
         app:layout_constraintTop_toBottomOf="@+id/button_to_register"
-        app:layout_constraintEnd_toEndOf="@+id/button_sign_in"
-        tools:text="@string/signIn_switch" >
-    </Switch>
+        app:layout_constraintEnd_toEndOf="@+id/button_sign_in">
+    </androidx.appcompat.widget.SwitchCompat>
 </androidx.constraintlayout.widget.ConstraintLayout>

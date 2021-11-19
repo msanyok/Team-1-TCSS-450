@@ -3,7 +3,7 @@
  * Fall 2021
  */
 
-package edu.uw.tcss450.group1project.model;
+package edu.uw.tcss450.group1project.ui.weather;
 
 import android.app.Application;
 import android.util.Log;
@@ -113,6 +113,10 @@ public class WeatherDataViewModel extends AndroidViewModel {
         return mCurrentData != null && mHourlyData != null && mDailyData != null;
     }
 
+    public void clearResponse() {
+        mResponse.setValue(new JSONObject());
+    }
+
     /**
      * Creates a weather endpoint get request to receive live weather data
      *
@@ -158,7 +162,7 @@ public class WeatherDataViewModel extends AndroidViewModel {
                     "Tacoma",
                     (int) curr.get("curTemp"),
                     (int) curr.get("curFeels_like"),
-                    (int) curr.get("curRain"),
+                    (int) Math.round(Double.valueOf(curr.get("curRain").toString()) * 100.0),
                     (int) curr.get("curHumidity"),
                     curr.get("ccurIcon").toString());
             JSONArray hourArray = theResult.getJSONArray("hourData");
@@ -186,7 +190,9 @@ public class WeatherDataViewModel extends AndroidViewModel {
             mDailyData = dailyData;
             mResponse.setValue(theResult);
         } catch (JSONException ex) {
-            mResponse.setValue(new JSONObject()); // add error field here
+            Map<String, String> map = new HashMap<>();
+            map.put("error", "JSON parse error");
+            mResponse.setValue(new JSONObject(map));
             ex.printStackTrace();
         }
     }
@@ -200,6 +206,8 @@ public class WeatherDataViewModel extends AndroidViewModel {
         //you should add much better error handling in a production release.
         //i.e. YOUR PROJECT
         Log.e("CONNECTION ERROR", theError.getLocalizedMessage());
-        throw new IllegalStateException(theError.getMessage());
+        Map<String, String> map = new HashMap<>();
+        map.put("error", "server error");
+        mResponse.setValue(new JSONObject(map));
     }
 }
