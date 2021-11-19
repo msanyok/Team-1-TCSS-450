@@ -61,7 +61,7 @@ public class HomeFragment extends Fragment {
                 .format("It is %d degrees with a %d percent chance of rain.", 50, 10));
 //        binding.listNewMessages.setAdapter(
 //                new MessagesNotificationsRecyclerAdapter(ChatRoomGenerator.getChatRooms()));
-        binding.listContactRequests.setAdapter(
-                new ContactRequestRecyclerAdapter(ContactGenerator.getContactList()));
+        //inding.listContactRequests.setAdapter(
+                //new ContactRequestRecyclerAdapter(ContactGenerator.getContactList()));
     }
 }

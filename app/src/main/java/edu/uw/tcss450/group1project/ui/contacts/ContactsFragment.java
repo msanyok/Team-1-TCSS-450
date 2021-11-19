@@ -21,11 +21,16 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import edu.uw.tcss450.group1project.databinding.FragmentContactsBinding;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
+import edu.uw.tcss450.group1project.ui.messages.MessagesRecyclerAdapter;
 import edu.uw.tcss450.group1project.utils.TextFieldHints;
 import edu.uw.tcss450.group1project.utils.TextFieldValidators;
 
@@ -73,15 +78,17 @@ public class ContactsFragment extends Fragment {
                               @Nullable final Bundle theSavedInstanceState) {
         super.onViewCreated(theView, theSavedInstanceState);
 
-        FragmentContactsBinding binding = FragmentContactsBinding.bind(getView());
-        binding.listRoot.setAdapter(new ContactsRecyclerAdapter(ContactGenerator.getContactList()));
+        UserInfoViewModel userInfo = new ViewModelProvider(this.getActivity())
+                .get(UserInfoViewModel.class);
+        mContactsModel.contactsConnect(userInfo.getmJwt());
+        mContactsModel.addContactListObserver(getViewLifecycleOwner(), this::observeContactResponse);
 
-        binding.contactRequestButton.setOnClickListener(this::requestToBeSent);
-        mContactsModel.addResponseObserver(getViewLifecycleOwner(),
+        mBinding.contactRequestButton.setOnClickListener(this::requestToBeSent);
+        mContactsModel.addContactRequestObserver(getViewLifecycleOwner(),
                 this::observeResponse);
 
-
     }
+
     /**
      * Starts the attempt to validate the Nickname before sending the request.
      *
@@ -95,7 +102,6 @@ public class ContactsFragment extends Fragment {
                 0);
         validateNickname();
     }
-
 
     /**
      * Attempts to validate the text inputted for the user's nickname.
@@ -120,7 +126,7 @@ public class ContactsFragment extends Fragment {
         UserInfoViewModel userInfo = new ViewModelProvider(this.getActivity())
                 .get(UserInfoViewModel.class);
         final String theJWT = userInfo.getmJwt();
-        mContactsModel.connect(
+        mContactsModel.requestConnect(
                 mBinding.addContactText.getText().toString(), theJWT);
     }
 
@@ -150,22 +156,41 @@ public class ContactsFragment extends Fragment {
                         mBinding.addContactText.setError("Other error. Check logs.");
                     }
 
-
                 } catch (JSONException exception) {
                     Log.e("JSON Parse Error", exception.getMessage());
                 }
             } else {
-                //Not sure if try catch is needed.  I found it was suggested
-                try {
                     Toast.makeText(getContext(),"A contact request has been sent",
                             Toast.LENGTH_SHORT).show();
-                } catch (Exception e) {
-                    //do I need to do catch part
-                }
             }
         } else {
             Log.d("Registration JSON Response", "No Response");
         }
     }
+
+    /**
+     * Observes the HTTP Response from the web server. If an error occurred, notify the user
+     * accordingly. If it was a success, add contacts to recycler view
+     *
+     * @param theResponse the Response from the server
+     */
+    private void observeContactResponse(final JSONObject theResponse) {
+        if (theResponse.length() > 0) {
+            if (theResponse.has("code")) {
+                // a 400 error occurred, so log it.
+                Log.e("CHATS LIST ERROR", theResponse.toString());
+                // TODO: Handle UI change when the chat list is not received properly?
+            } else {
+                mBinding.listRoot.setAdapter(new ContactsRecyclerAdapter(mContactsModel.getContactList()));
+                mContactsModel.removeData();
+                mBinding.addContactText.setError(null);
+            }
+        } else {
+            // no response from the request
+            Log.d("Chats List JSON Response", "No Response: "
+                    + theResponse.toString());
+        }
+    }
+
 
 }
