@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,6 +24,7 @@ import org.json.JSONObject;
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentWeatherBinding;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
+import edu.uw.tcss450.group1project.model.WeatherDataViewModel;
 
 /**
  * A {@link Fragment} subclass that is responsible for the weather page.
@@ -35,6 +35,7 @@ import edu.uw.tcss450.group1project.model.UserInfoViewModel;
  */
 public class WeatherFragment extends Fragment {
 
+    /** The weather data view model */
     private WeatherDataViewModel mModel;
 
     /**
@@ -45,8 +46,8 @@ public class WeatherFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onCreate(@Nullable final Bundle theSavedInstanceState) {
+        super.onCreate(theSavedInstanceState);
         mModel = new ViewModelProvider(getActivity()).get(WeatherDataViewModel.class);
         UserInfoViewModel userInfo = new ViewModelProvider(getActivity())
                 .get(UserInfoViewModel.class);
@@ -103,7 +104,8 @@ public class WeatherFragment extends Fragment {
             binding.titleFeelsLike
                     .setText("Feels like: " + mModel.getCurrentData().getFeelsLike() + "\u2109");
             binding.titleChanceRain
-                    .setText("Chance of rain: " + mModel.getCurrentData().getChanceRain() + "%");
+                    .setText("Precipitation: " +
+                            mModel.getCurrentData().getPrecipPercentage() + "%");
             binding.titleHumidity
                     .setText("Humidity: " + mModel.getCurrentData().getHumidity() + "%");
 

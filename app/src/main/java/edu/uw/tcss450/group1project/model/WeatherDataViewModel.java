@@ -3,7 +3,7 @@
  * Fall 2021
  */
 
-package edu.uw.tcss450.group1project.ui.weather;
+package edu.uw.tcss450.group1project.model;
 
 import android.app.Application;
 import android.util.Log;
@@ -178,15 +178,15 @@ public class WeatherDataViewModel extends AndroidViewModel {
                         hourData.get("hIcon").toString());
                 hourlyData.add(newData);
             }
-            JSONArray dailyArray = theResult.getJSONArray("dailyData");
-            for (int i = 0; i < dailyArray.length(); i++) {
-                JSONObject dayData = (JSONObject) dailyArray.get(i);
-                WeatherData newData = new WeatherData(
-                        i == 0 ? "Today" : dayData.get("dDay").toString(),
-                        (int) dayData.get("dTemp"),
-                        dayData.get("dIcon").toString());
-                dailyData.add(newData);
-            }
+//            JSONArray dailyArray = theResult.getJSONArray("dailyData");
+//            for (int i = 0; i < dailyArray.length(); i++) {
+//                JSONObject dayData = (JSONObject) dailyArray.get(i);
+//                WeatherData newData = new WeatherData(
+//                        i == 0 ? "Today" : dayData.get("dDay").toString(),
+//                        (int) dayData.get("dTemp"),
+//                        dayData.get("dIcon").toString());
+//                dailyData.add(newData);
+//            }
             mCurrentData = currentData;
             mHourlyData = hourlyData;
             mDailyData = dailyData;
@@ -205,8 +205,6 @@ public class WeatherDataViewModel extends AndroidViewModel {
      * @param theError the resulting Volley error to be handled
      */
     private void handleError(final VolleyError theError) {
-        //you should add much better error handling in a production release.
-        //i.e. YOUR PROJECT
         Log.e("CONNECTION ERROR", theError.getLocalizedMessage());
         Map<String, String> map = new HashMap<>();
         map.put("error", "server error");

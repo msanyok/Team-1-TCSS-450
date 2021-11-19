@@ -43,16 +43,8 @@ public class CreateChatRoomFragment extends Fragment {
         super.onViewCreated(theView, theSavedInstanceState);
         FragmentCreateChatroomBinding binding = FragmentCreateChatroomBinding.bind(getView());
         ChatRoomParticipantViewModel model =
-                new ViewModelProvider(getActivity()).get(ChatRoomParticipantViewModel.class);
+                new ViewModelProvider(this).get(ChatRoomParticipantViewModel.class);
         binding.listRoot.setAdapter(
                 new ParticipantSelectorRecyclerAdapter(ContactGenerator.getContactList(), model));
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        ChatRoomParticipantViewModel model =
-                new ViewModelProvider(getActivity()).get(ChatRoomParticipantViewModel.class);
-        model.clearParticipants();
     }
 }

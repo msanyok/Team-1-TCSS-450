@@ -17,7 +17,6 @@
         android:textSize="15sp"
         android:drawableStart="@drawable/ic_search_grey_24dp"
         android:layout_margin="5dp"
-        style="?editTextStyle"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/contact_request_button"
         app:layout_constraintLeft_toLeftOf="parent">

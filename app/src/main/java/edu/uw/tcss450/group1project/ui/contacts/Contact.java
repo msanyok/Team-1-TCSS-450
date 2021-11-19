@@ -122,7 +122,7 @@ public class Contact {
     @Override
     public boolean equals(final Object theOther) {
         boolean result = false;
-        if (theOther != null && theOther instanceof Contact) {
+        if (theOther instanceof Contact) {
             Contact other = (Contact) theOther;
             result = getNickname().equals(((Contact) theOther).getNickname());
         }
