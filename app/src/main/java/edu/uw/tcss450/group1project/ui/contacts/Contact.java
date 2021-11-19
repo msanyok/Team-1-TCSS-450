@@ -15,6 +15,9 @@ import androidx.annotation.NonNull;
  */
 public class Contact {
 
+    /** The Member ID */
+    private String mMemberid;
+
     /** The first name */
     private String mFirst;
 
@@ -31,7 +34,8 @@ public class Contact {
      * @param theLast the last name
      * @param theNickname the nickname
      */
-    public Contact(final String theFirst, final String theLast, final String theNickname) {
+    public Contact(final String theFirst, final String theLast, final String theNickname, final String theID) {
+        mMemberid = theID;
         mFirst = theFirst;
         mLast = theLast;
         mNickname = theNickname;
@@ -62,6 +66,22 @@ public class Contact {
      */
     public String getNickname() {
         return mNickname;
+    }
+
+    /**
+     * Provides the contact's nickname
+     *
+     * @return the nickname
+     */
+    public String getmMemberid() { return mMemberid; }
+
+    /**
+     * Sets the contact's nickname
+     *
+     * @param theMemberID the MemberID to be assigned
+     */
+    public void setmMemberid(final String theMemberID) {
+        this.mMemberid = theMemberID;
     }
 
     /**

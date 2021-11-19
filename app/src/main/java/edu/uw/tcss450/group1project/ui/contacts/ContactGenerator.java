@@ -34,7 +34,7 @@ public class ContactGenerator {
         };
         List<Contact> contacts = new ArrayList<>();
         for (String[] info : data) {
-            contacts.add(new Contact(info[0], info[1], info[2]));
+            contacts.add(new Contact(info[0], info[1], info[2], info[3]));
         }
         return contacts;
     }
