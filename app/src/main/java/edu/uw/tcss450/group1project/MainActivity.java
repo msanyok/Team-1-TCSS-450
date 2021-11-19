@@ -88,7 +88,8 @@ public class MainActivity extends ThemedActivity {
             Navigation.findNavController(this, R.id.nav_host_fragment)
                     .navigate(R.id.navigation_settings);
             return true;
-        } if (id == R.id.action_sign_out){
+        }
+        if (id == R.id.action_sign_out){
             signOut();
         }
         return super.onOptionsItemSelected(theItem);

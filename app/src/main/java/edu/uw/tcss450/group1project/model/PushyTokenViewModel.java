@@ -223,7 +223,7 @@ public class PushyTokenViewModel extends AndroidViewModel{
         }
     }
 
-    public void deleteTokenFromWebservice(final String jwt) {
+    public void deleteTokenFromWebservice(final String theJwt) {
         final String url = "https://team-1-tcss-450-server.herokuapp.com/auth";
         Request request = new JsonObjectRequest(
                 Request.Method.DELETE,
@@ -235,7 +235,7 @@ public class PushyTokenViewModel extends AndroidViewModel{
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
                 // add headers <key,value>
-                headers.put("Authorization", jwt);
+                headers.put("Authorization", theJwt);
                 return headers;
             }
         };

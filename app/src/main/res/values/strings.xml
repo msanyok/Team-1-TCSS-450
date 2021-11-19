@@ -46,6 +46,6 @@
 
     <string name="signIn_switch">STAY SIGNED IN</string>
     <string name="signIn_keys_shared_prefs">My Auth App Shared Prefs</string>
-    <string name="signIn_keys_prefs_jwt">Sharded Prefs JWT</string>
+    <string name="signIn_keys_prefs_jwt">Shared Prefs JWT</string>
     <string name="signIn_action_sign_out">Sign Out</string>
 </resources>
