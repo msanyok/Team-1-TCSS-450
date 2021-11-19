@@ -102,7 +102,7 @@ public class MainActivity extends ThemedActivity {
      *
      * @param theView the view to be assigned
      */
-    public void showAlertDialog(final View theView) {
+    public void showContactDeleteAlertDialog(final View theView) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
         alertDialog.setMessage(Html.fromHtml("<font color='#000000'>Deleting this contact " +
                 "will be permanent. Are you sure?</font>"));
