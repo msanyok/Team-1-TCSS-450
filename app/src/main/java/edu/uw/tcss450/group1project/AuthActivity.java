@@ -29,10 +29,9 @@ public class AuthActivity extends ThemedActivity {
     @Override
     protected void onCreate(final Bundle theSavedInstanceState) {
         super.onCreate(theSavedInstanceState);
-//        applyTheme();
+        applyTheme();   // todo: does this change anything?
 
         setContentView(R.layout.activity_auth);
-        Log.d("MAKE HERE?", "MAKE HERE");
 
         //If it is not already running, start the Pushy listening service
         Pushy.listen(this);

@@ -39,9 +39,10 @@ public class ChatRoomFragment extends Fragment {
 //    final int HARD_CODED_CHAT_ID = 1;
 
 
-    /** The View Model used to */
+    /** The View Model used to send messages */
     private ChatSendViewModel mSendModel;
 
+    /** The View Model used to store messages */
     private ChatViewModel mChatModel;
 
     /** The View Model that stores information about the user */
@@ -105,7 +106,7 @@ public class ChatRoomFragment extends Fragment {
 
         //When the user scrolls to the top of the RV, the swiper list will "refresh"
         //The user is out of messages, go out to the service and get more
-        // note: I think this makes the "duplicate messages found" error occur"
+// note: I think this makes the "duplicate messages found" error occur"
         binding.swipeContainer.setOnRefreshListener(() -> {
             mChatModel.getNextMessages(mChatId, mUserModel.getmJwt());
         });
