@@ -18,7 +18,7 @@ import androidx.core.graphics.ColorUtils;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
-import com.google.android.material.shape.CornerFamily;
+//import com.google.android.material.shape.CornerFamily;
 
 import java.util.List;
 
@@ -98,16 +98,16 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
                         200));
 
                 //Round the corners on the left side
-                card.setShapeAppearanceModel(
-                        card.getShapeAppearanceModel()
-                                .toBuilder()
-                                .setTopLeftCorner(CornerFamily.ROUNDED,standard * 2)
-                                .setBottomLeftCorner(CornerFamily.ROUNDED,standard * 2)
-                                .setBottomRightCornerSize(0)
-                                .setTopRightCornerSize(0)
-                                .build());
-
-                card.requestLayout();
+//                card.setShapeAppearanceModel(
+//                        card.getShapeAppearanceModel()
+//                                .toBuilder()
+//                                .setTopLeftCorner(CornerFamily.ROUNDED,standard * 2)
+//                                .setBottomLeftCorner(CornerFamily.ROUNDED,standard * 2)
+//                                .setBottomRightCornerSize(0)
+//                                .setTopRightCornerSize(0)
+//                                .build());
+//
+//                card.requestLayout();
             } else {
                 //This message is from another user. Format it as such
                 binding.textMessage.setText(message.getSender() +
@@ -123,27 +123,27 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
 
                 card.setCardBackgroundColor(
                         ColorUtils.setAlphaComponent(
-                                res.getColor(R.color.cardview_dark_background, null), // todo: set color properly
+                                res.getColor(R.color.slate_blue, null), // todo: set color properly
                                 16));
 
                 card.setStrokeWidth(standard / 5);
                 card.setStrokeColor(ColorUtils.setAlphaComponent(
-                        res.getColor(R.color.cardview_dark_background, null), // todo: set color properly
+                        res.getColor(R.color.gray, null), // todo: set color properly
                         200));
 
                 binding.textMessage.setTextColor(
-                        res.getColor(R.color.cardview_dark_background, null)); // todo: set color properly
+                        res.getColor(R.color.cream, null)); // todo: set color properly
 
                 //Round the corners on the right side
-                card.setShapeAppearanceModel(
-                        card.getShapeAppearanceModel()
-                                .toBuilder()
-                                .setTopRightCorner(CornerFamily.ROUNDED,standard * 2)
-                                .setBottomRightCorner(CornerFamily.ROUNDED,standard * 2)
-                                .setBottomLeftCornerSize(0)
-                                .setTopLeftCornerSize(0)
-                                .build());
-                card.requestLayout();
+//                card.setShapeAppearanceModel(
+//                        card.getShapeAppearanceModel()
+//                                .toBuilder()
+//                                .setTopRightCorner(CornerFamily.ROUNDED,standard * 2)
+//                                .setBottomRightCorner(CornerFamily.ROUNDED,standard * 2)
+//                                .setBottomLeftCornerSize(0)
+//                                .setTopLeftCornerSize(0)
+//                                .build());
+//                card.requestLayout();
             }
         }
     }

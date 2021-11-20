@@ -44,9 +44,9 @@ public class ContactsViewModel extends AndroidViewModel {
     private MutableLiveData<JSONObject> mRequestResponse;
 
     /**
-    * The {@link MutableLiveData} that stores the JSON response from the server
-    * when the user gets contacts from the server.
-    */
+     * The {@link MutableLiveData} that stores the JSON response from the server
+     * when the user gets contacts from the server.
+     */
     private MutableLiveData<JSONObject> mContactResponse;
 
     /** The live data that stores the list of Contact objects. This should be observed. */
