@@ -5,6 +5,8 @@
 
 package edu.uw.tcss450.group1project.ui.weather;
 
+import android.content.res.Resources;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,7 +57,7 @@ public class WeatherUtils {
     }
 
     /**
-     * Returns a mapping from weather icon String code to integer weather icon resources
+     * Returns a mapping from weather icon String code to black integer weather icon resources
      *
      * @return the code to icon mapping
      */

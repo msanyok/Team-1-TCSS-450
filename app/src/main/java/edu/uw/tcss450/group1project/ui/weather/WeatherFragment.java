@@ -51,7 +51,10 @@ public class WeatherFragment extends Fragment {
         mModel = new ViewModelProvider(getActivity()).get(WeatherDataViewModel.class);
         UserInfoViewModel userInfo = new ViewModelProvider(getActivity())
                 .get(UserInfoViewModel.class);
-        mModel.connectGet(userInfo.getmJwt());
+        if (!mModel.containsReadableContents()) {
+            Log.d("GET", "connect get called in weather");
+            mModel.connectGet(userInfo.getmJwt(), false);
+        }
     }
 
     @Override
@@ -77,6 +80,7 @@ public class WeatherFragment extends Fragment {
      * @param theResponse the changed JSONObject
      */
     private void observeResponse(final JSONObject theResponse) {
+        Log.d("OBS", "response observed in weather fragment");
         if (theResponse.has("error")) {
             try {
                 displayErrorDialog(theResponse.get("error").toString());
@@ -84,7 +88,7 @@ public class WeatherFragment extends Fragment {
                 Log.e("ERROR", "Could not parse error JSON");
             }
             mModel.clearResponse();
-        } else if (theResponse.length() != 0) {
+        } else if (theResponse.length() != 0 || mModel.containsReadableContents()) {
             setViewComponents();
         }
     }

@@ -70,7 +70,6 @@ public class ContactsFragment extends Fragment {
         // Inflate the layout for this fragment
         mBinding = FragmentContactsBinding.inflate(theInflater);
         return mBinding.getRoot();
-
     }
 
     @Override
