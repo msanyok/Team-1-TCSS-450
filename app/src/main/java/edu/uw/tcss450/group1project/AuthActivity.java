@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import edu.uw.tcss450.group1project.model.PushyTokenViewModel;
 import me.pushy.sdk.Pushy;
@@ -28,8 +29,10 @@ public class AuthActivity extends ThemedActivity {
     @Override
     protected void onCreate(final Bundle theSavedInstanceState) {
         super.onCreate(theSavedInstanceState);
-        applyTheme();
+//        applyTheme();
+
         setContentView(R.layout.activity_auth);
+        Log.d("MAKE HERE?", "MAKE HERE");
 
         //If it is not already running, start the Pushy listening service
         Pushy.listen(this);

@@ -17,8 +17,6 @@ import java.util.Objects;
 // NOTE: THIS CLASS WAS ADDED FROM LAB 5,
 //       IT IS USED IN THE PUSH RECIEVER JAVA CLASS.
 //       IT SHOULD BE USEFUL FOR STORING INDIVIDUAL CHAT MESSAGES.
-// test modification for pushing new local proj
-
 
 /**
  * Stores data about a particular chat message
