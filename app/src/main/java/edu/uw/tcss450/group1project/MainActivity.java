@@ -217,23 +217,27 @@ Log.d("DEST CHANGES", "DESTINATION CHANGED");
 
     /**
      * A BroadcastReceiver that listens for messages sent from PushReceiver
+     *
+     * @author Charles Bryan
+     * @version Fall 2021
      */
     private class MainPushMessageReceiver extends BroadcastReceiver {
 
+        /** View model that contains data about chat messages */
         private ChatViewModel mModel =
                 new ViewModelProvider(MainActivity.this)
                         .get(ChatViewModel.class);
 
         @Override
-        public void onReceive(Context context, Intent intent) {
-            NavController nc =
+        public void onReceive(final Context theContext, final Intent theIntent) {
+            NavController navController =
                     Navigation.findNavController(
                             MainActivity.this, R.id.nav_host_fragment);
-            NavDestination nd = nc.getCurrentDestination();
+            NavDestination nd = navController.getCurrentDestination();
 
-            if (intent.hasExtra("chatMessage")) {
+            if (theIntent.hasExtra("chatMessage")) {
 
-                ChatMessage cm = (ChatMessage) intent.getSerializableExtra("chatMessage");
+                ChatMessage cm = (ChatMessage) theIntent.getSerializableExtra("chatMessage");
 
                 //If the user is not on the chat screen, update the
                 // NewMessageCountView Model
@@ -242,7 +246,7 @@ Log.d("DEST CHANGES", "DESTINATION CHANGED");
                 }
                 //Inform the view model holding chatroom messages of the new
                 //message.
-                mModel.addMessage(intent.getIntExtra("chatid", -1), cm);
+                mModel.addMessage(theIntent.getIntExtra("chatid", -1), cm);
             }
         }
     }
