@@ -7,6 +7,8 @@ package edu.uw.tcss450.group1project.ui.contacts;
 
 import androidx.annotation.NonNull;
 
+import java.util.Objects;
+
 /**
  * Contact is a class that stores data for a registered contact.
  *
@@ -115,5 +117,20 @@ public class Contact {
     @Override
     public String toString() {
         return mNickname;
+    }
+
+    @Override
+    public boolean equals(final Object theOther) {
+        boolean result = false;
+        if (theOther instanceof Contact) {
+            Contact other = (Contact) theOther;
+            result = getNickname().equals(((Contact) theOther).getNickname());
+        }
+        return result;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(mNickname);
     }
 }

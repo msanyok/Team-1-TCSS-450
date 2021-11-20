@@ -23,14 +23,14 @@ public class ContactGenerator {
      */
     public static List<Contact> getContactList() {
         String[][] data = {
-                {"Charles", "Bryan", "Big C"},
-                {"Austn", "Attaway", "Attaboy"},
-                {"Steven", "Omegna", "The Fisherman"},
-                {"Alex", "Maistruk", "The Human Database"},
-                {"Parker", "Rosengreen", "Muscles"},
-                {"Chris", "Ding", "The Intern"},
-                {"Random", "Guy", "IDKWHATTOPUT"},
-                {"Harold", "LooooooooonnnnnngggggName", "The G.O.A.T"}
+                {"Charles", "Bryan", "Big C", "1"},
+                {"Austn", "Attaway", "Attaboy", "2"},
+                {"Steven", "Omegna", "The Fisherman", "3"},
+                {"Alex", "Maistruk", "The Human Database", "4"},
+                {"Parker", "Rosengreen", "Muscles", "5"},
+                {"Chris", "Ding", "The Intern", "6"},
+                {"Random", "Guy", "IDKWHATTOPUT", "7"},
+                {"Harold", "LooooooooonnnnnngggggName", "The G.O.A.T", "8"}
         };
         List<Contact> contacts = new ArrayList<>();
         for (String[] info : data) {

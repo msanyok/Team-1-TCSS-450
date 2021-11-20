@@ -118,7 +118,7 @@ public class ContactsRecyclerAdapter
                 mBinding.buttonMore.setImageIcon(
                         Icon.createWithResource(
                                 mView.getContext(),
-                                R.drawable.ic_more_grey_arrow_down_24));
+                                R.drawable.ic_more_grey_arrow_down_24dp));
             }
         }
 

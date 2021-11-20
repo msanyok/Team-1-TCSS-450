@@ -113,6 +113,10 @@ public class WeatherDataViewModel extends AndroidViewModel {
         return mCurrentData != null && mHourlyData != null && mDailyData != null;
     }
 
+    public void clearResponse() {
+        mResponse.setValue(new JSONObject());
+    }
+
     /**
      * Creates a weather endpoint get request to receive live weather data
      *
@@ -154,13 +158,15 @@ public class WeatherDataViewModel extends AndroidViewModel {
         List<WeatherData> dailyData = new ArrayList<>();
         try {
             JSONObject curr = theResult.getJSONObject("currentData");
+            Log.d("TAG", "made it here 1\n " + theResult.toString());
             currentData = new WeatherDataCurrent(
                     "Tacoma",
                     (int) curr.get("curTemp"),
                     (int) curr.get("curFeels_like"),
-                    (int) curr.get("curRain"),
+                    (int) Math.round(Double.valueOf(curr.get("curRain").toString()) * 100.0),
                     (int) curr.get("curHumidity"),
                     curr.get("ccurIcon").toString());
+            Log.d("TAG", "made it here 2");
             JSONArray hourArray = theResult.getJSONArray("hourData");
             for (int i = 0; i < hourArray.length(); i++) {
                 JSONObject hourData = (JSONObject) hourArray.get(i);
@@ -172,21 +178,23 @@ public class WeatherDataViewModel extends AndroidViewModel {
                         hourData.get("hIcon").toString());
                 hourlyData.add(newData);
             }
-            JSONArray dailyArray = theResult.getJSONArray("dailyData");
-            for (int i = 0; i < dailyArray.length(); i++) {
-                JSONObject dayData = (JSONObject) dailyArray.get(i);
-                WeatherData newData = new WeatherData(
-                        i == 0 ? "Today" : dayData.get("dDay").toString(),
-                        (int) dayData.get("dTemp"),
-                        dayData.get("dIcon").toString());
-                dailyData.add(newData);
-            }
+//            JSONArray dailyArray = theResult.getJSONArray("dailyData");
+//            for (int i = 0; i < dailyArray.length(); i++) {
+//                JSONObject dayData = (JSONObject) dailyArray.get(i);
+//                WeatherData newData = new WeatherData(
+//                        i == 0 ? "Today" : dayData.get("dDay").toString(),
+//                        (int) dayData.get("dTemp"),
+//                        dayData.get("dIcon").toString());
+//                dailyData.add(newData);
+//            }
             mCurrentData = currentData;
             mHourlyData = hourlyData;
             mDailyData = dailyData;
             mResponse.setValue(theResult);
         } catch (JSONException ex) {
-            mResponse.setValue(new JSONObject()); // add error field here
+            Map<String, String> map = new HashMap<>();
+            map.put("error", "JSON parse error");
+            mResponse.setValue(new JSONObject(map));
             ex.printStackTrace();
         }
     }
@@ -197,9 +205,9 @@ public class WeatherDataViewModel extends AndroidViewModel {
      * @param theError the resulting Volley error to be handled
      */
     private void handleError(final VolleyError theError) {
-        //you should add much better error handling in a production release.
-        //i.e. YOUR PROJECT
         Log.e("CONNECTION ERROR", theError.getLocalizedMessage());
-        throw new IllegalStateException(theError.getMessage());
+        Map<String, String> map = new HashMap<>();
+        map.put("error", "server error");
+        mResponse.setValue(new JSONObject(map));
     }
 }

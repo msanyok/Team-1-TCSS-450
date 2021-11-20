@@ -6,6 +6,7 @@
 package edu.uw.tcss450.group1project.ui.weather;
 
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,15 +14,12 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentWeatherBinding;
@@ -37,6 +35,7 @@ import edu.uw.tcss450.group1project.model.WeatherDataViewModel;
  */
 public class WeatherFragment extends Fragment {
 
+    /** The weather data view model */
     private WeatherDataViewModel mModel;
 
     /**
@@ -47,8 +46,8 @@ public class WeatherFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onCreate(@Nullable final Bundle theSavedInstanceState) {
+        super.onCreate(theSavedInstanceState);
         mModel = new ViewModelProvider(getActivity()).get(WeatherDataViewModel.class);
         UserInfoViewModel userInfo = new ViewModelProvider(getActivity())
                 .get(UserInfoViewModel.class);
@@ -78,7 +77,16 @@ public class WeatherFragment extends Fragment {
      * @param theResponse the changed JSONObject
      */
     private void observeResponse(final JSONObject theResponse) {
-        setViewComponents();
+        if (theResponse.has("error")) {
+            try {
+                displayErrorDialog(theResponse.get("error").toString());
+            } catch (JSONException ex) {
+                Log.e("ERROR", "Could not parse error JSON");
+            }
+            mModel.clearResponse();
+        } else if (theResponse.length() != 0) {
+            setViewComponents();
+        }
     }
 
     /**
@@ -96,7 +104,8 @@ public class WeatherFragment extends Fragment {
             binding.titleFeelsLike
                     .setText("Feels like: " + mModel.getCurrentData().getFeelsLike() + "\u2109");
             binding.titleChanceRain
-                    .setText("Chance of rain: " + mModel.getCurrentData().getChanceRain() + "%");
+                    .setText("Precipitation: " +
+                            mModel.getCurrentData().getPrecipPercentage() + "%");
             binding.titleHumidity
                     .setText("Humidity: " + mModel.getCurrentData().getHumidity() + "%");
 
@@ -105,5 +114,14 @@ public class WeatherFragment extends Fragment {
             binding.listDailyForecast
                     .setAdapter(new WeatherRecyclerAdapterDaily(mModel.getDailyData()));
         }
+    }
+
+    private void displayErrorDialog(final String theError) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+        alertDialog.setMessage(Html.fromHtml("<font color='#000000'>Unexpected " +
+                        theError + " when loading weather." + " Please try again.</font>"));
+        alertDialog.setPositiveButton(Html.fromHtml("<font color='000000'>Ok</font>"),
+                (dialog, which) -> {});
+        alertDialog.show();
     }
 }

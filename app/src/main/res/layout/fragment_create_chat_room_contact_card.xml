@@ -2,16 +2,15 @@
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/fragment_contacts_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="2dp"
-    app:contentPadding="10dp">
+    android:layout_margin="2dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="10dp">
 
         <ImageView
             android:id="@+id/contact_image"
@@ -23,21 +22,20 @@
             app:tint="?cardImageColor">
         </ImageView>
 
-        <ImageButton
-            android:id="@+id/button_more"
+        <ImageView
+            android:id="@+id/selection_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:background="@android:color/transparent"
+            android:layout_marginEnd="25dp"
             app:tint="?cardImageColor"
             app:layout_constraintBottom_toBottomOf="@+id/contact_nickname"
-            app:layout_constraintEnd_toEndOf="parent"
-            tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" >
-        </ImageButton>
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+        </ImageView>
 
         <TextView
             android:id="@+id/contact_name"
-            android:layout_width="275dp"
+            android:layout_width="245dp"
             android:layout_height="30dp"
             android:layout_marginStart="10dp"
             android:ellipsize="end"
@@ -50,7 +48,7 @@
 
         <TextView
             android:id="@+id/contact_nickname"
-            android:layout_width="275dp"
+            android:layout_width="245dp"
             android:layout_height="20dp"
             android:layout_marginStart="10dp"
             android:ellipsize="end"
@@ -63,20 +61,15 @@
         </TextView>
 
         <Button
-            android:id="@+id/button_delete"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="showContactDeleteAlertDialog"
-            android:text="@string/action_contact_delete"
-            android:textColor="?cardTextColor"
+            android:id="@+id/toggle_button"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
             android:backgroundTint="@android:color/transparent"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/contact_nickname"
-            tools:ignore="TouchTargetSizeCheck"
-            tools:visibility="visible" >
+            app:layout_constraintRight_toRightOf="parent">
         </Button>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
