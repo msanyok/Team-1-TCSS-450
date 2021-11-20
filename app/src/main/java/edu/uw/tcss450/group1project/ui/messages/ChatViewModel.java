@@ -134,9 +134,9 @@ public class ChatViewModel extends AndroidViewModel {
      * @param theJwt the users signed JWT
      */
     public void getNextMessages(final int theChatId, final String theJwt) {
-        String url = "https://team-1-tcss-450-server.herokuapp.com/"
-                + theChatId + "/" + mMessages.get(theChatId).getValue().get(0).getMessageId();
 
+        final String url = "https://team-1-tcss-450-server.herokuapp.com/messages/"
+                + theChatId + "/" + mMessages.get(theChatId).getValue().get(0).getMessageId();
         Request request = new JsonObjectRequest(
                 Request.Method.GET,
                 url,
@@ -213,6 +213,7 @@ public class ChatViewModel extends AndroidViewModel {
     }
 
     private void handleError(final VolleyError error) {
+        Log.d("GET NEXT MESSAGES", "HANDLE ERROR");
         if (Objects.isNull(error.networkResponse)) {
             Log.e("NETWORK ERROR", error.getMessage());
         }
