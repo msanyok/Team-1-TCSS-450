@@ -27,37 +27,61 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import edu.uw.tcss450.group1project.R;
-import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.io.RequestQueueSingleton;
 
+/**
+ * A View Model that contains state and functionality helpful for sending a chat message.
+ *
+ * @author Charles Bryan
+ * @author Austn Attaway
+ * @version Fall 2021
+ */
 public class ChatSendViewModel extends AndroidViewModel {
 
+    /** The response data from a send chat http request */
     private final MutableLiveData<JSONObject> mResponse;
 
-    public ChatSendViewModel(@NonNull Application application) {
-        super(application);
+    /**
+     * Creates a new ChatSendViewModel with default data
+     *
+     * @param theApplication this View Model's app
+     */
+    public ChatSendViewModel(@NonNull Application theApplication) {
+        super(theApplication);
         mResponse = new MutableLiveData<>();
         mResponse.setValue(new JSONObject());
     }
 
-    public void addResponseObserver(@NonNull LifecycleOwner owner,
-                                    @NonNull Observer<? super JSONObject> observer) {
-        mResponse.observe(owner, observer);
+    /**
+     * Adds the given observer to the response data that comes back from a send chat request.
+     *
+     * @param theOwner the LifecycleOwner of the observer
+     * @param theObserver the Observer
+     */
+    public void addResponseObserver(@NonNull LifecycleOwner theOwner,
+                                    @NonNull Observer<? super JSONObject> theObserver) {
+        mResponse.observe(theOwner, theObserver);
     }
 
-    public void sendMessage(final int chatId, final String jwt, final String message) {
+    /**
+     * Sends the given message from the given account and chat ID.
+     *
+     * @param theChatId the id of the chat the message is coming from
+     * @param theJwt the JWT String that represents the sender of the message
+     * @param theMessage the message text to be sent
+     */
+    public void sendMessage(final int theChatId, final String theJwt, final String theMessage) {
         final String url = "https://team-1-tcss-450-server.herokuapp.com/messages/";
 
-        JSONObject body = new JSONObject();
+        final JSONObject body = new JSONObject();
         try {
-            body.put("message", message);
-            body.put("chatId", chatId);
+            body.put("message", theMessage);
+            body.put("chatId", theChatId);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        Request request = new JsonObjectRequest(
+        final Request request = new JsonObjectRequest(
                 Request.Method.POST,
                 url,
                 body, //push token found in the JSONObject body
@@ -68,7 +92,7 @@ public class ChatSendViewModel extends AndroidViewModel {
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
                 // add headers <key,value>
-                headers.put("Authorization", jwt);
+                headers.put("Authorization", theJwt);
                 return headers;
             }
         };
@@ -82,16 +106,19 @@ public class ChatSendViewModel extends AndroidViewModel {
                 .addToRequestQueue(request);
     }
 
-
-
-    private void handleError(final VolleyError error) {
-        if (Objects.isNull(error.networkResponse)) {
-            Log.e("NETWORK ERROR", error.getMessage());
+    /**
+     * Handles an error that occurred when trying to send a chat message
+     *
+     * @param theError the error that occurred
+     */
+    private void handleError(final VolleyError theError) {
+        if (Objects.isNull(theError.networkResponse)) {
+            Log.e("NETWORK ERROR", theError.getMessage());
         }
         else {
-            String data = new String(error.networkResponse.data, Charset.defaultCharset());
+            String data = new String(theError.networkResponse.data, Charset.defaultCharset());
             Log.e("CLIENT ERROR",
-                    error.networkResponse.statusCode +
+                    theError.networkResponse.statusCode +
                             " " +
                             data);
         }

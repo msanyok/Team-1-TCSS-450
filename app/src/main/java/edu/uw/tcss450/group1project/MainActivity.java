@@ -7,7 +7,6 @@ package edu.uw.tcss450.group1project;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -22,7 +21,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
@@ -57,6 +55,9 @@ public class MainActivity extends ThemedActivity {
     /** Keeps track of the new messages */
     private NewMessageCountViewModel mNewMessageModel;
 
+// todo: might need for navigation badges
+//    private ActivityMainBinding mBinding;
+
     /**
      * The configuration for the bottom navigation displayed
      * on fragments in this activity
@@ -69,12 +70,13 @@ public class MainActivity extends ThemedActivity {
 
         mNewMessageModel = new ViewModelProvider(this).get(NewMessageCountViewModel.class);
 
-        MainActivityArgs args = MainActivityArgs.fromBundle(getIntent().getExtras());
+
 
 // todo: see if this is OK
-//        binding = ActivityMainBinding.inflate(getLayoutInflater());
-//        setContentView(binding.getRoot());
+//        mBinding = ActivityMainBinding.inflate(getLayoutInflater());
+//        setContentView(mBinding.getRoot());
 
+        MainActivityArgs args = MainActivityArgs.fromBundle(getIntent().getExtras());
         new ViewModelProvider(this,
                 new UserInfoViewModel.UserInfoViewModelFactory(args.getEmail(), args.getJwt()))
                         .get(UserInfoViewModel.class);
@@ -97,20 +99,19 @@ public class MainActivity extends ThemedActivity {
 
         // handles the destination changes that occur in the app and what
         // should happen when it occurs
+// todo: need to modify the if statement body so it works for different chat rooms.
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
-            if (destination.getId() == R.id.navigation_chat_room) { // todo: check location
-                //When the user navigates to the chats page, reset the new message count.
-                //This will need some extra logic for your project as it should have
-                //multiple chat rooms.
-Log.d("DEST CHANGES", "DESTINATION CHANGED");
+            if (destination.getId() == R.id.navigation_chat_room) {
+
                 mNewMessageModel.reset();
             }
         });
 
-        // Handles the badge drawing
-        // todo: check to see if binding is OK
-//        mNewMessageModel.addMessageCountObserver(this, count -> {
-//            BadgeDrawable badge = binding.navView.getOrCreateBadge(R.id.navigation_chat);
+        // Handles the notification badge drawing
+
+        mNewMessageModel.addMessageCountObserver(this, count -> {
+Log.d("NEW MESSAGE CHANGE", "Count is: " + count);
+//            BadgeDrawable badge = mBinding.navView.getOrCreateBadge(R.id.navigation_chat);
 //            badge.setMaxCharacterCount(2);
 //            if (count > 0) {
 //                //new messages! update and show the notification badge.
@@ -121,8 +122,7 @@ Log.d("DEST CHANGES", "DESTINATION CHANGED");
 //                badge.clearNumber();
 //                badge.setVisible(false);
 //            }
-//        });
-
+        });
 
     }
 
@@ -233,21 +233,23 @@ Log.d("DEST CHANGES", "DESTINATION CHANGED");
             NavController navController =
                     Navigation.findNavController(
                             MainActivity.this, R.id.nav_host_fragment);
-            NavDestination nd = navController.getCurrentDestination();
+            NavDestination navDestination = navController.getCurrentDestination();
 
+            // figure out what kind of pushy notification was sent, then do the corresponding tasks.
             if (theIntent.hasExtra("chatMessage")) {
 
-                ChatMessage cm = (ChatMessage) theIntent.getSerializableExtra("chatMessage");
+                ChatMessage chatMessage = (ChatMessage) theIntent.getSerializableExtra("chatMessage");
 
                 //If the user is not on the chat screen, update the
                 // NewMessageCountView Model
-                if (nd.getId() != R.id.navigation_chat_room) {
+                if (navDestination.getId() != R.id.navigation_chat_room) {
                     mNewMessageModel.increment();
                 }
                 //Inform the view model holding chatroom messages of the new
                 //message.
-                mModel.addMessage(theIntent.getIntExtra("chatid", -1), cm);
+                mModel.addMessage(theIntent.getIntExtra("chatid", -1), chatMessage);
             }
+            // todo: add other kinds of pushy messages (more else if () options)
         }
     }
 

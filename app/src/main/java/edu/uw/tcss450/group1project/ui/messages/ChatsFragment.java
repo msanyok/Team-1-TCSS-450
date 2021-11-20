@@ -24,7 +24,7 @@ import edu.uw.tcss450.group1project.databinding.FragmentChatRoomsBinding;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
 
 /**
- * A {@link Fragment} subclass that is responsible for the messages page.
+ * A {@link Fragment} subclass that is responsible for the showing a user's available chats.
  *
  * @author Parker Rosengreen
  * @author Austn Attaway
@@ -81,8 +81,9 @@ public class ChatsFragment extends Fragment {
             if (theResponse.has("code")) {
                 // a 400 error occurred, so log it.
                 Log.e("CHATS LIST ERROR", theResponse.toString());
-                // TODO: Handle UI change when the chat list is not received properly?
+ // TODO: Handle UI change when the chat list is not received properly?
             } else {
+
                 // the data was retrieved properly, so get the formatted data from the view model
                 // (will be up to date by the time this method is called from the observer)
                 mBinding.listRoot.setAdapter(new MessagesRecyclerAdapter(mChatListsModel.getChatList()));
