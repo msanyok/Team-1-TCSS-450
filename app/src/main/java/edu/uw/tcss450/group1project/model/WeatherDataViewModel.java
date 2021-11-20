@@ -49,6 +49,8 @@ public class WeatherDataViewModel extends AndroidViewModel {
     /** The current weather data */
     private WeatherDataCurrent mCurrentData;
 
+    private WeatherDataCurrent mCurrentDataHome;
+
     /** The list of hourly weather data */
     private List<WeatherData> mHourlyData;
 
@@ -86,6 +88,10 @@ public class WeatherDataViewModel extends AndroidViewModel {
         return mCurrentData;
     }
 
+    public WeatherDataCurrent getCurrentDataHome() {
+        return mCurrentDataHome;
+    }
+
     /**
      * Supplies the hourly weather data of this view model
      *
@@ -105,14 +111,26 @@ public class WeatherDataViewModel extends AndroidViewModel {
     }
 
     /**
-     * Determines if this view model's data components are readable (i.e. non-null)
+     * Determines if this view model's data home fields are readable (i.e. non-null)
      *
      * @return true if readable, false otherwise
      */
-    public boolean containsReadableContents() {
+    public boolean containsReadableHomeData() {
+        return mCurrentDataHome != null;
+    }
+
+    /**
+     * Determines if this view model's data fields are readable (i.e. non-null)
+     *
+     * @return true if readable, false otherwise
+     */
+    public boolean containsReadableData() {
         return mCurrentData != null && mHourlyData != null && mDailyData != null;
     }
 
+    /**
+     * Clears the JSON response associated with this view model
+     */
     public void clearResponse() {
         mResponse.setValue(new JSONObject());
     }
@@ -122,13 +140,13 @@ public class WeatherDataViewModel extends AndroidViewModel {
      *
      * @param theJwt the user's JWT
      */
-    public void connectGet(final String theJwt) {
+    public void connectGet(final String theJwt, final boolean theCalledFromHome) {
         String url = "https://team-1-tcss-450-server.herokuapp.com/weather/98423";
         Request request = new JsonObjectRequest(
                 Request.Method.GET,
                 url,
                 null, //no body for this get request
-                this::handleResult,
+                result -> handleResult(result, theCalledFromHome),
                 this::handleError) {
             @Override
             public Map<String, String> getHeaders() {
@@ -152,13 +170,12 @@ public class WeatherDataViewModel extends AndroidViewModel {
      *
      * @param theResult the result to be parsed
      */
-    private void handleResult(final JSONObject theResult) {
+    private void handleResult(final JSONObject theResult, final boolean theCalledFromHome) {
         WeatherDataCurrent currentData = null;
         List<WeatherData> hourlyData = new ArrayList<>();
         List<WeatherData> dailyData = new ArrayList<>();
         try {
             JSONObject curr = theResult.getJSONObject("currentData");
-            Log.d("TAG", "made it here 1\n " + theResult.toString());
             currentData = new WeatherDataCurrent(
                     "Tacoma",
                     (int) curr.get("curTemp"),
@@ -166,7 +183,6 @@ public class WeatherDataViewModel extends AndroidViewModel {
                     (int) Math.round(Double.valueOf(curr.get("curRain").toString()) * 100.0),
                     (int) curr.get("curHumidity"),
                     curr.get("ccurIcon").toString());
-            Log.d("TAG", "made it here 2");
             JSONArray hourArray = theResult.getJSONArray("hourData");
             for (int i = 0; i < hourArray.length(); i++) {
                 JSONObject hourData = (JSONObject) hourArray.get(i);
@@ -178,18 +194,22 @@ public class WeatherDataViewModel extends AndroidViewModel {
                         hourData.get("hIcon").toString());
                 hourlyData.add(newData);
             }
-//            JSONArray dailyArray = theResult.getJSONArray("dailyData");
-//            for (int i = 0; i < dailyArray.length(); i++) {
-//                JSONObject dayData = (JSONObject) dailyArray.get(i);
-//                WeatherData newData = new WeatherData(
-//                        i == 0 ? "Today" : dayData.get("dDay").toString(),
-//                        (int) dayData.get("dTemp"),
-//                        dayData.get("dIcon").toString());
-//                dailyData.add(newData);
-//            }
-            mCurrentData = currentData;
-            mHourlyData = hourlyData;
-            mDailyData = dailyData;
+            JSONArray dailyArray = theResult.getJSONArray("dailyData");
+            for (int i = 0; i < dailyArray.length(); i++) {
+                JSONObject dayData = (JSONObject) dailyArray.get(i);
+                WeatherData newData = new WeatherData(
+                        i == 0 ? "Today" : dayData.get("dDay").toString(),
+                        (int) dayData.get("dTemp"),
+                        dayData.get("dIcon").toString());
+                dailyData.add(newData);
+            }
+            if (theCalledFromHome) {
+                mCurrentDataHome = currentData;
+            } else {
+                mCurrentData = currentData;
+                mHourlyData = hourlyData;
+                mDailyData = dailyData;
+            }
             mResponse.setValue(theResult);
         } catch (JSONException ex) {
             Map<String, String> map = new HashMap<>();
