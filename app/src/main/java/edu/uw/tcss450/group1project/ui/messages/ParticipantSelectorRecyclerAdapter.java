@@ -1,3 +1,8 @@
+/*
+ * TCSS450 Mobile Applications
+ * Fall 2021
+ */
+
 package edu.uw.tcss450.group1project.ui.messages;
 
 import android.graphics.drawable.Icon;
@@ -15,19 +20,34 @@ import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentCreateChatRoomContactCardBinding;
 import edu.uw.tcss450.group1project.ui.contacts.Contact;
 
+/**
+ * ParticipantSelectorRecyclerAdapter is a class for displaying possible participants
+ * when starting a new chat room.
+ *
+ * @author Parker Rosengreen
+ * @version Fall 2021
+ */
 public class ParticipantSelectorRecyclerAdapter
         extends RecyclerView.Adapter<ParticipantSelectorRecyclerAdapter.ParticipantViewHolder> {
 
+    /** The list of contacts to be displayed */
     private final List<Contact> mContactList;
 
+    /** The participant view model storing participant selections */
     private final ChatRoomParticipantViewModel mModel;
 
+    /**
+     * Creates a new ParticipantSelectorRecyclerAdapter with a provided contact list and
+     * participant view model
+     *
+     * @param theContacts the list of contacts
+     * @param theModel the participant view model
+     */
     public ParticipantSelectorRecyclerAdapter(final List<Contact> theContacts,
                                               final ChatRoomParticipantViewModel theModel) {
         mContactList = theContacts;
         mModel = theModel;
     }
-
 
     @NonNull
     @Override
@@ -50,14 +70,29 @@ public class ParticipantSelectorRecyclerAdapter
         return mContactList.size();
     }
 
+    /**
+     * ParticipantViewHolder is a class for displaying a single contact and their selection
+     * status.
+     *
+     * @author Parker Rosengreen
+     * @version Fall 2021
+     */
     public class ParticipantViewHolder extends RecyclerView.ViewHolder {
 
+        /** The assigned view */
         private final View mView;
 
+        /** The corresponding view binding */
         private final FragmentCreateChatRoomContactCardBinding mBinding;
 
+        /** The assigned contact */
         private Contact mContact;
 
+        /**
+         * Creates a new ParticipantViewHolder with a provided item view
+         *
+         * @param theItemView the view to be assigned
+         */
         public ParticipantViewHolder(@NonNull final View theItemView) {
             super(theItemView);
             mView = theItemView;
@@ -77,11 +112,19 @@ public class ParticipantSelectorRecyclerAdapter
             });
         }
 
+        /**
+         * Sets this view holder's assigned contact
+         *
+         * @param theContact the contact to be assigned
+         */
         public void setContact(final Contact theContact) {
             mContact = theContact;
             display();
         }
 
+        /**
+         * Displays all components on this view holder
+         */
         private void display() {
             mBinding.contactName.setText(String.format("%s %s", mContact.getFirst(),
                     mContact.getLast()));
