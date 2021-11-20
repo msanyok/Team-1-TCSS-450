@@ -111,11 +111,20 @@ public class WeatherDataViewModel extends AndroidViewModel {
     }
 
     /**
-     * Determines if this view model's data components are readable (i.e. non-null)
+     * Determines if this view model's data home fields are readable (i.e. non-null)
      *
      * @return true if readable, false otherwise
      */
-    public boolean containsReadableContents() {
+    public boolean containsReadableHomeData() {
+        return mCurrentDataHome != null;
+    }
+
+    /**
+     * Determines if this view model's data fields are readable (i.e. non-null)
+     *
+     * @return true if readable, false otherwise
+     */
+    public boolean containsReadableData() {
         return mCurrentData != null && mHourlyData != null && mDailyData != null;
     }
 

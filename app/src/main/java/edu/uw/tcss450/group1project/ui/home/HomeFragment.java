@@ -58,7 +58,9 @@ public class HomeFragment extends Fragment {
         super.onCreate(theSavedInstanceState);
         mWeatherModel = new ViewModelProvider(getActivity()).get(WeatherDataViewModel.class);
         mUserModel = new ViewModelProvider(getActivity()).get(UserInfoViewModel.class);
-        mWeatherModel.connectGet(mUserModel.getmJwt(), true);
+        if (!mWeatherModel.containsReadableHomeData()) {
+            mWeatherModel.connectGet(mUserModel.getmJwt(), true);
+        }
     }
 
 

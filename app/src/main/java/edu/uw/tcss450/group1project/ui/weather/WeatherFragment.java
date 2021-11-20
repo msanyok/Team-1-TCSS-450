@@ -51,8 +51,7 @@ public class WeatherFragment extends Fragment {
         mModel = new ViewModelProvider(getActivity()).get(WeatherDataViewModel.class);
         UserInfoViewModel userInfo = new ViewModelProvider(getActivity())
                 .get(UserInfoViewModel.class);
-        if (!mModel.containsReadableContents()) {
-            Log.d("GET", "connect get called in weather");
+        if (!mModel.containsReadableData()) {
             mModel.connectGet(userInfo.getmJwt(), false);
         }
     }
@@ -88,7 +87,7 @@ public class WeatherFragment extends Fragment {
                 Log.e("ERROR", "Could not parse error JSON");
             }
             mModel.clearResponse();
-        } else if (theResponse.length() != 0 || mModel.containsReadableContents()) {
+        } else if (theResponse.length() != 0 || mModel.containsReadableData()) {
             setViewComponents();
         }
     }
@@ -97,7 +96,7 @@ public class WeatherFragment extends Fragment {
      * Sets up this fragment's view components with data from the WeatherDataViewModel
      */
     private void setViewComponents() {
-        if (mModel.containsReadableContents()) {
+        if (mModel.containsReadableData()) {
             FragmentWeatherBinding binding = FragmentWeatherBinding.bind(getView());
             binding.titleCity.setText(mModel.getCurrentData().getCity());
             binding.titleWeatherIcon.setImageResource(
