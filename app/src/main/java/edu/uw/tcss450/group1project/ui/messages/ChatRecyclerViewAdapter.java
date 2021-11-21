@@ -6,7 +6,6 @@
 package edu.uw.tcss450.group1project.ui.messages;
 
 import android.content.res.Resources;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,10 +17,8 @@ import androidx.core.graphics.ColorUtils;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
-//import com.google.android.material.shape.CornerFamily;
 
 import java.util.List;
-
 
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentChatMessageBinding;
@@ -39,14 +36,14 @@ public class ChatRecyclerViewAdapter extends
     /** The list of messages to show */
     private final List<ChatMessage> mMessages;
 
-    /** T
-     * he unique identifier (currently email) that determines if
+    /**
+     * The unique identifier (currently email) that determines if
      * a chat messages should be displayed as a sent or recieved message.
      */
     private final String mPersonalIdentifier;
 
     /**
-     * Creates a new ChatRecyclerViewAdapter that shows the given messages for a particular chat
+     * Creates a new ChatRecyclerViewAdapter that shows the given messages for a particular chat.
      * The account's (email) thePersonalIdentifier is used to determine how certain messages should display
      *
      * @param theMessages the list of messages to show
@@ -88,7 +85,7 @@ public class ChatRecyclerViewAdapter extends
         /** The current view */
         private final View mView;
 
-        /** */
+        /** The View Binding the the chat message card */
         private FragmentChatMessageBinding mBinding;
 
         /**

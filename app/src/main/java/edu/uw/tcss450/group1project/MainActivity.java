@@ -71,8 +71,7 @@ public class MainActivity extends ThemedActivity {
         mNewMessageModel = new ViewModelProvider(this).get(NewMessageCountViewModel.class);
 
 
-
-// todo: see if this is OK
+// todo: may need this for navigation badges
 //        mBinding = ActivityMainBinding.inflate(getLayoutInflater());
 //        setContentView(mBinding.getRoot());
 
@@ -85,6 +84,7 @@ public class MainActivity extends ThemedActivity {
         setContentView(R.layout.activity_main);
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
+
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
@@ -102,13 +102,12 @@ public class MainActivity extends ThemedActivity {
 // todo: need to modify the if statement body so it works for different chat rooms.
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             if (destination.getId() == R.id.navigation_chat_room) {
-
                 mNewMessageModel.reset();
             }
         });
 
+// todo: need to research and see if it will work with our theme
         // Handles the notification badge drawing
-
         mNewMessageModel.addMessageCountObserver(this, count -> {
 Log.d("NEW MESSAGE CHANGE", "Count is: " + count);
 //            BadgeDrawable badge = mBinding.navView.getOrCreateBadge(R.id.navigation_chat);
@@ -174,6 +173,24 @@ Log.d("NEW MESSAGE CHANGE", "Count is: " + count);
         alertDialog.show();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mPushMessageReceiver == null) {
+            mPushMessageReceiver = new MainPushMessageReceiver();
+        }
+        IntentFilter iFilter = new IntentFilter(PushReceiver.RECEIVED_NEW_MESSAGE);
+        registerReceiver(mPushMessageReceiver, iFilter);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (mPushMessageReceiver != null){
+            unregisterReceiver(mPushMessageReceiver);
+        }
+    }
+
     /**
      * A helper method for signout function.
      */
@@ -194,24 +211,6 @@ Log.d("NEW MESSAGE CHANGE", "Count is: " + count);
                         .get(UserInfoViewModel.class)
                         .getmJwt()
         );
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (mPushMessageReceiver == null) {
-            mPushMessageReceiver = new MainPushMessageReceiver();
-        }
-        IntentFilter iFilter = new IntentFilter(PushReceiver.RECEIVED_NEW_MESSAGE);
-        registerReceiver(mPushMessageReceiver, iFilter);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        if (mPushMessageReceiver != null){
-            unregisterReceiver(mPushMessageReceiver);
-        }
     }
 
 

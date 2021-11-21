@@ -80,13 +80,14 @@ public class ChatsFragment extends Fragment {
         if (theResponse.length() > 0) {
             if (theResponse.has("code")) {
                 // a 400 error occurred, so log it.
-                Log.e("CHATS LIST ERROR", theResponse.toString());
- // TODO: Handle UI change when the chat list is not received properly?
-            } else {
+                Log.e("CHATS LIST 400", theResponse.toString());
+                // TODO: Handle UI change when the chat list is not received properly, potentailly show DialogBox?
 
+            } else {
                 // the data was retrieved properly, so get the formatted data from the view model
                 // (will be up to date by the time this method is called from the observer)
                 mBinding.listRoot.setAdapter(new MessagesRecyclerAdapter(mChatListsModel.getChatList()));
+
             }
         } else {
             // no response from the request

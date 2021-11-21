@@ -77,7 +77,6 @@ public class ChatRoomFragment extends Fragment {
         return theInflater.inflate(R.layout.fragment_chatroom, theContainer, false);
     }
 
-
     @Override
     public void onViewCreated(@NonNull final View theView,
                               @Nullable final Bundle theSavedInstanceState) {
@@ -124,7 +123,6 @@ public class ChatRoomFragment extends Fragment {
         });
 
         // when we get the response back from the server, clear the edit text
-        // todo: ensure this is working once the pushy isn't fckd up!
         mSendModel.addResponseObserver(getViewLifecycleOwner(), response ->
                 binding.editMessage.setText(""));
     }
