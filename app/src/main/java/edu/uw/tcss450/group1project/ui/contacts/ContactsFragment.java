@@ -7,7 +7,6 @@ package edu.uw.tcss450.group1project.ui.contacts;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,20 +16,14 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import edu.uw.tcss450.group1project.databinding.FragmentContactsBinding;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
-import edu.uw.tcss450.group1project.ui.messages.MessagesRecyclerAdapter;
 import edu.uw.tcss450.group1project.utils.TextFieldHints;
 import edu.uw.tcss450.group1project.utils.TextFieldValidators;
 
@@ -77,6 +70,7 @@ public class ContactsFragment extends Fragment {
                               @Nullable final Bundle theSavedInstanceState) {
         super.onViewCreated(theView, theSavedInstanceState);
 
+        // get the contacts for the current user and put them on the screen
         UserInfoViewModel userInfo = new ViewModelProvider(this.getActivity())
                 .get(UserInfoViewModel.class);
         mContactsModel.contactsConnect(userInfo.getmJwt());
@@ -115,6 +109,7 @@ public class ContactsFragment extends Fragment {
                 this::verifyNameWithServer,
                 result -> mBinding.addContactText.setError(TextFieldHints.getNameHint(nickNameText)));
     }
+
     /**
      * Attempts to validate the Nickname and Jwt that is provided.
      *

@@ -179,79 +179,78 @@ public class ContactsViewModel extends AndroidViewModel {
     }
 
 
-        /**
-         * Sends an HTTP POST request to the server attempting to create a contact request
-         * corresponding to the given information provided.
-         *
-         * @param theNickname the new account's nickname
-         * @param theJwt JWT token to be passed to server
-         * @throws NullPointerException if theNickname is null
+    /**
+     * Sends an HTTP POST request to the server attempting to create a contact request
+     * corresponding to the given information provided.
+     *
+     * @param theNickname the new account's nickname
+     * @param theJwt JWT token to be passed to server
+     * @throws NullPointerException if theNickname is null
+     */
+    public void requestConnect(@NonNull final String theNickname, @NonNull final String theJwt) {
+        Objects.requireNonNull(theNickname, "theNickname can not be null");
+        final String url = "https://team-1-tcss-450-server.herokuapp.com/contacts/requests";
 
-         */
-        public void requestConnect(@NonNull final String theNickname, @NonNull final String theJwt) {
-            Objects.requireNonNull(theNickname, "theNickname can not be null");
-            final String url = "https://team-1-tcss-450-server.herokuapp.com/contacts/requests";
+        final JSONObject body = new JSONObject();
+        try {
+            body.put("nickname", theNickname);
+        } catch (JSONException exception) {
+            exception.printStackTrace();
+        }
 
-            final JSONObject body = new JSONObject();
+        final Request request = new JsonObjectRequest(
+                Request.Method.POST,
+                url,
+                body,
+                mRequestResponse::setValue,
+                this::handleRequestError){
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", theJwt);
+
+                return headers;
+            }
+        };
+
+        request.setRetryPolicy(new DefaultRetryPolicy(
+                10_000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        //Instantiate the RequestQueue and add the request to the queue
+        Volley.newRequestQueue(getApplication().getApplicationContext())
+                .add(request);
+    }
+
+    /**
+     * Completes the actions required when an error occurs during a HTTP request to the server
+     * for contacts.
+     *
+     * @param theError the error that occurred
+     */
+    private void handleContactError(final VolleyError theError) {
+        if (Objects.isNull(theError.networkResponse)) {
             try {
-                body.put("nickname", theNickname);
-            } catch (JSONException exception) {
-                exception.printStackTrace();
+                mContactResponse.setValue(new JSONObject("{" +
+                        "error:\"" + theError.getMessage() +
+                        "\"}"));
+            } catch (JSONException e) {
+                Log.e("JSON PARSE", "JSON Parse Error in handleError");
             }
-
-            final Request request = new JsonObjectRequest(
-                    Request.Method.POST,
-                    url,
-                    body,
-                    mRequestResponse::setValue,
-                    this::handleRequestError){
-                @Override
-                public Map<String, String> getHeaders() {
-                    Map<String, String> headers = new HashMap<>();
-                    headers.put("Authorization", theJwt);
-
-                    return headers;
-                }
-            };
-
-            request.setRetryPolicy(new DefaultRetryPolicy(
-                    10_000,
-                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-            //Instantiate the RequestQueue and add the request to the queue
-            Volley.newRequestQueue(getApplication().getApplicationContext())
-                    .add(request);
+        } else {
+            String data = new String(theError.networkResponse.data, Charset.defaultCharset())
+                    .replace('\"', '\'');
+            try {
+                JSONObject response = new JSONObject();
+                response.put("code", theError.networkResponse.statusCode);
+                response.put("data", new JSONObject(data));
+                mContactResponse.setValue(response);
+            } catch (JSONException e) {
+                Log.e("JSON PARSE", "JSON Parse Error in handleError");
+            }
         }
 
-        /**
-         * Completes the actions required when an error occurs during a HTTP request to the server
-         * for contacts.
-         *
-         * @param theError the error that occurred
-         */
-        private void handleContactError(final VolleyError theError) {
-            if (Objects.isNull(theError.networkResponse)) {
-                try {
-                    mContactResponse.setValue(new JSONObject("{" +
-                            "error:\"" + theError.getMessage() +
-                            "\"}"));
-                } catch (JSONException e) {
-                    Log.e("JSON PARSE", "JSON Parse Error in handleError");
-                }
-            } else {
-                String data = new String(theError.networkResponse.data, Charset.defaultCharset())
-                        .replace('\"', '\'');
-                try {
-                    JSONObject response = new JSONObject();
-                    response.put("code", theError.networkResponse.statusCode);
-                    response.put("data", new JSONObject(data));
-                    mContactResponse.setValue(response);
-                } catch (JSONException e) {
-                    Log.e("JSON PARSE", "JSON Parse Error in handleError");
-                }
-            }
-
-        }
+    }
 
     /**
      * Completes the actions required when an error occurs during a HTTP request to the server
