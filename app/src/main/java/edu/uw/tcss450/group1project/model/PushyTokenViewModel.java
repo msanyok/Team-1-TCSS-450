@@ -160,14 +160,14 @@ public class PushyTokenViewModel extends AndroidViewModel{
         final String url = "https://team-1-tcss-450-server.herokuapp.com/auth";
 //                getApplication().getResources().getString(R.string.base_url) + "auth";
 
-        JSONObject body = new JSONObject();
+        final JSONObject body = new JSONObject();
         try {
             body.put("token", mPushyToken.getValue());
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        Request request = new JsonObjectRequest(
+        final Request request = new JsonObjectRequest(
                 Request.Method.PUT,
                 url,
                 body, //push token found in the JSONObject body
@@ -223,6 +223,11 @@ public class PushyTokenViewModel extends AndroidViewModel{
         }
     }
 
+    /**
+     * Deletes the pushy token for this user from the database so push messages are not received
+     *
+     * @param theJwt the user's jwt
+     */
     public void deleteTokenFromWebservice(final String theJwt) {
         final String url = "https://team-1-tcss-450-server.herokuapp.com/auth";
         Request request = new JsonObjectRequest(
@@ -248,4 +253,3 @@ public class PushyTokenViewModel extends AndroidViewModel{
                 .addToRequestQueue(request);
     }
 }
-

@@ -43,6 +43,7 @@ public class ContactsRecyclerAdapter
     @Override
     public ContactsViewHolder onCreateViewHolder(@NonNull final ViewGroup theParent,
                                                  final int theViewType) {
+
         return new ContactsViewHolder(LayoutInflater
                                       .from(theParent.getContext())
                                       .inflate(R.layout.fragment_contacts_card,
