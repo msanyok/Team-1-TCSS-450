@@ -14,7 +14,7 @@ import java.util.Objects;
  * @author Austn Attaway
  * @version Fall 2021
  */
-public class ChatRoom implements Comparable {
+public class ChatRoom implements Comparable<ChatRoom> {
 
     /** The name of this chat room */
     private String mChatRoomName;
@@ -90,15 +90,8 @@ public class ChatRoom implements Comparable {
         return mTimestamp;
     }
 
-
-    // todo: test this method
     @Override
-    public int compareTo(final Object theObject) {
-        if (theObject != null && theObject.getClass().equals(ChatRoom.class)) {
-            // confirmed given object is a ChatRoom
-            return ((ChatRoom) theObject).getTimestamp().compareTo(this.getTimestamp());
-        } else {
-            return 0;
-        }
+    public int compareTo(final ChatRoom theChatRoom) {
+        return theChatRoom.getTimestamp().compareTo(this.getTimestamp());
     }
 }
