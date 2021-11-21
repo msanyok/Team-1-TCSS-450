@@ -77,6 +77,8 @@ public class CreateChatRoomFragment extends Fragment {
         mBinding = FragmentCreateChatroomBinding.bind(getView());
         mContactsModel.addContactListObserver(
                 getViewLifecycleOwner(), this::observeContactResponse);
+        mParticipantsModel.addChatRoomCreationResponseObserver(
+                getViewLifecycleOwner(), this::observeCreationResponse);
         mBinding.createButton.setOnClickListener(this::processCreateRequest);
 
     }
