@@ -87,12 +87,18 @@ public class MessagesRecyclerAdapter
             super(theItemView);
             mView = theItemView;
             mBinding = FragmentChatRoomCardBinding.bind(theItemView);
+
+            // navigate to a chat room fragment when the chat room card is pressed.
+            // send the chat name and the chat ID through action params, important state the
+            // fragment needs.
             mBinding.chatroomNavigation.setOnClickListener(button -> {
                 ChatsFragmentDirections.ActionNavigationChatsToChatroomFragment action =
                         ChatsFragmentDirections
-                                .actionNavigationChatsToChatroomFragment(mRoom.getChatName());
+                                .actionNavigationChatsToChatroomFragment(mRoom.getChatName(),
+                                        mRoom.getChatID());
                 Navigation.findNavController(theItemView).navigate(action);
             });
+
         }
 
         /**

@@ -50,6 +50,9 @@
         <argument
             android:name="chat_room_name"
             app:argType="string" />
+        <argument
+            android:name="chat_room_id"
+            app:argType="string" />
     </fragment>
 
 
