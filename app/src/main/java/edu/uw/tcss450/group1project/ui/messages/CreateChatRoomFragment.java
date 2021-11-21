@@ -108,7 +108,8 @@ public class CreateChatRoomFragment extends Fragment {
     }
 
     private void initiateChatRoomCreation(final String theRoomName) {
-        mParticipantsModel.createChatRoom(mUserModel.getJwt(), theRoomName, mParticipants);
+        mParticipantsModel.createChatRoom(mUserModel.getJwt(), mUserModel.getEmail(),
+                theRoomName, mParticipants);
     }
 
     private void observeContactResponse(final JSONObject theResponse) {

@@ -98,7 +98,6 @@ public class ParticipantSelectorRecyclerAdapter
             mView = theItemView;
             mBinding = FragmentCreateChatRoomContactCardBinding.bind(theItemView);
             mBinding.toggleButton.setOnClickListener(button -> {
-                Log.d("TAG", "FIRED");
                 if (mParticipants.contains(mContact)) {
                     mParticipants.remove(mContact);
                 } else {

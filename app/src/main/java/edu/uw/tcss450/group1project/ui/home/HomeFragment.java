@@ -79,7 +79,7 @@ public class HomeFragment extends Fragment {
 
         UserInfoViewModel userInfo = new ViewModelProvider(this.getActivity())
                 .get(UserInfoViewModel.class);
-        mRequestModel.allContactRequests(userInfo.getmJwt());
+        mRequestModel.allContactRequests(userInfo.getJwt());
 
         mWeatherModel.addResponseObserver(getViewLifecycleOwner(), this::observeWeatherResponse);
         mRequestModel.addRequestObserver(getViewLifecycleOwner(), this::observeRequestResponse);

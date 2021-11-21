@@ -12,6 +12,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -27,6 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import edu.uw.tcss450.group1project.model.UserInfoViewModel;
 import edu.uw.tcss450.group1project.ui.contacts.Contact;
 
 /**
@@ -62,13 +64,13 @@ public class ChatRoomParticipantViewModel extends AndroidViewModel {
         mAddParticipantsResponse.observe(theOwner, theObserver);
     }
 
-    public void createChatRoom(final String theJwt, final String theRoomName,
+    public void createChatRoom(final String theJwt, final String theEmail, final String theRoomName,
                                final Set<Contact> theParticipants) {
         String url = "https://team-1-tcss-450-server.herokuapp.com/chats";
-
         Map<String, Object> bodyMap = new HashMap<>();
         bodyMap.put("name", theRoomName);
         bodyMap.put("memberIds", createMemberIdArray(theParticipants));
+        bodyMap.put("firstMessage", constructFirstMessage(theParticipants, theEmail));
         JSONObject body = new JSONObject(bodyMap);
 
         Request request = new JsonObjectRequest(
@@ -107,48 +109,29 @@ public class ChatRoomParticipantViewModel extends AndroidViewModel {
         return array;
     }
 
+    private String constructFirstMessage(final Set<Contact> theParticipants,
+                                         final String theEmail) {
+        StringBuilder builder = new StringBuilder();
+        int size = theParticipants.size();
+        if (size == 0) {
+            builder.append("Hey! You have created an empty TalkBox chat room.");
+        } else {
+            builder.append("Hey! " + theEmail + " has created a TalkBox chat room with ");
+            int i = 0;
+            for (Contact cont : theParticipants) {
+                if (i < size - 1) {
+                    builder.append(cont.getNickname() + (size == 2 ? " and " : ", "));
+                } else {
+                    builder.append((size > 2 ? "and " : "") + cont.getNickname());
+                }
+                i++;
+            }
+            builder.append(".");
+        }
+        return builder.toString();
+    }
+
     private void handleRoomCreationError(final VolleyError theError) {
 
     }
-
-
-
-//    /** The set of added participants */
-//    private final MutableLiveData<Set<Contact>> mParticipants;
-//
-//    /**
-//     * Creates a new ChatRoomParticipantViewModel
-//     */
-//    public ChatRoomParticipantViewModel() {
-//        mParticipants = new MutableLiveData<>();
-//        mParticipants.setValue(new HashSet<>());
-//    }
-//
-//    /**
-//     * Adds a new participant to this view model
-//     *
-//     * @param theContact the participant to be added
-//     */
-//    public void addParticipant(final Contact theContact) {
-//        mParticipants.getValue().add(theContact);
-//    }
-//
-//    /**
-//     * Removes a new participant to this view model
-//     *
-//     * @param theContact the participant to be removed
-//     */
-//    public void removeParticipant(final Contact theContact) {
-//        mParticipants.getValue().remove(theContact);
-//    }
-//
-//    /**
-//     * Returns whether this view model contains a provided participant
-//     *
-//     * @param theContact the participant in question
-//     * @return true if the participant is found, false otherwise
-//     */
-//    public boolean containsParticipant(final Contact theContact) {
-//        return mParticipants.getValue().contains(theContact);
-//    }
 }

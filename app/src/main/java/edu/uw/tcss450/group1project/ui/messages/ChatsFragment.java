@@ -77,6 +77,7 @@ public class ChatsFragment extends Fragment {
      * @param theResponse the response object sent back from the http get request
      */
     private void observeResponse(final JSONObject theResponse) {
+        System.out.println(theResponse);
         if (theResponse.length() > 0) {
             if (theResponse.has("code")) {
                 // a 400 error occurred, so log it.
