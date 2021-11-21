@@ -80,7 +80,7 @@ public class ContactRequestViewModel extends AndroidViewModel {
      * @throws NullPointerException if theObserver is null
      */
     public void addRequestObserver(@NonNull final LifecycleOwner theOwner,
-                                          @NonNull final Observer<? super JSONObject> theObserver) {
+                                   @NonNull final Observer<? super JSONObject> theObserver) {
         Objects.requireNonNull(theOwner, "theOwner can not be null");
         Objects.requireNonNull(theObserver, "theObserver can not be null");
         mRequestResponse.observe(theOwner, theObserver);
