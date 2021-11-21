@@ -41,7 +41,11 @@
         android:id="@+id/navigation_create_chat_room"
         android:name="edu.uw.tcss450.group1project.ui.messages.CreateChatRoomFragment"
         android:label="@string/title_create_chat_room"
-        tools:layout="@layout/fragment_create_chatroom" />
+        tools:layout="@layout/fragment_create_chatroom" >
+        <action
+            android:id="@+id/action_navigation_create_chat_room_to_navigation_chat_room"
+            app:destination="@id/navigation_chat_room" />
+    </fragment>
     <fragment
         android:id="@+id/navigation_chat_room"
         android:name="edu.uw.tcss450.group1project.ui.messages.ChatRoomFragment"
@@ -49,6 +53,9 @@
         tools:layout="@layout/fragment_chatroom" >
         <argument
             android:name="chat_room_name"
+            app:argType="string" />
+        <argument
+            android:name="chat_room_id"
             app:argType="string" />
     </fragment>
 

@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -20,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashSet;
@@ -113,6 +115,25 @@ public class CreateChatRoomFragment extends Fragment {
         }
         if (mContactsModel.containsReadableContacts()) {
             displayParticipantOptions();
+        }
+    }
+
+    private void observeCreationResponse(final JSONObject theResponse) {
+        if (theResponse.has("error")) {
+
+        } else if (theResponse.length() != 0) {
+            try {
+                int roomId = theResponse.getInt("chatID");
+                String roomName = theResponse.getString("chatName");
+                CreateChatRoomFragmentDirections
+                        .ActionNavigationCreateChatRoomToNavigationChatRoom action =
+                        CreateChatRoomFragmentDirections
+                                .actionNavigationCreateChatRoomToNavigationChatRoom(roomName,
+                                        String.valueOf(roomId));
+                Navigation.findNavController(getView()).navigate(action);
+            } catch (JSONException ex) {
+
+            }
         }
     }
 

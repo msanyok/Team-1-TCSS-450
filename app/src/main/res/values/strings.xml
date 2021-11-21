@@ -50,4 +50,6 @@
     <string name="signIn_keys_shared_prefs">My Auth App Shared Prefs</string>
     <string name="signIn_keys_prefs_jwt">Shared Prefs JWT</string>
     <string name="signIn_action_sign_out">Sign Out</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

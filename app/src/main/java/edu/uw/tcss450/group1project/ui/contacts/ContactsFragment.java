@@ -69,6 +69,7 @@ public class ContactsFragment extends Fragment {
     public void onViewCreated(@NonNull final View theView,
                               @Nullable final Bundle theSavedInstanceState) {
         super.onViewCreated(theView, theSavedInstanceState);
+        // get the contacts for the current user and put them on the screen
         UserInfoViewModel userInfo = new ViewModelProvider(this.getActivity())
                 .get(UserInfoViewModel.class);
         mContactsModel.contactsConnect(userInfo.getJwt());
@@ -108,6 +109,7 @@ public class ContactsFragment extends Fragment {
                 this::verifyNameWithServer,
                 result -> mBinding.addContactText.setError(TextFieldHints.getNameHint(nickNameText)));
     }
+
     /**
      * Attempts to validate the Nickname and Jwt that is provided.
      *

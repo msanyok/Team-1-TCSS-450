@@ -13,14 +13,11 @@ import org.json.JSONObject;
 import java.io.Serializable;
 import java.util.Objects;
 
-
-// NOTE: THIS CLASS WAS ADDED FROM LAB 5,
-//       IT IS USED IN THE PUSH RECIEVER JAVA CLASS.
-//       IT SHOULD BE USEFUL FOR STORING INDIVIDUAL CHAT MESSAGES.
-
-
 /**
  * Stores data about a particular chat message
+ *
+ * @author Austn Attaway
+ * @version Fall 2021
  */
 public final class ChatMessage implements Serializable {
 

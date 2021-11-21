@@ -171,29 +171,29 @@ public class WeatherDataViewModel extends AndroidViewModel {
             JSONObject curr = theResult.getJSONObject("currentData");
             currentData = new WeatherDataCurrent(
                     "Tacoma",
-                    (int) curr.get("curTemp"),
-                    (int) curr.get("curFeels_like"),
-                    (int) Math.round(Double.valueOf(curr.get("curRain").toString()) * 100.0),
-                    (int) curr.get("curHumidity"),
-                    curr.get("ccurIcon").toString());
+                    curr.getInt("curTemp"),
+                    curr.getInt("curFeels_like"),
+                    (int) Math.round(curr.getDouble("curRain") * 100),
+                    curr.getInt("curHumidity"),
+                    curr.getString("ccurIcon"));
             JSONArray hourArray = theResult.getJSONArray("hourData");
             for (int i = 0; i < hourArray.length(); i++) {
                 JSONObject hourData = (JSONObject) hourArray.get(i);
-                int hour = (int) hourData.get("hHours");
+                int hour = hourData.getInt("hHours");
                 WeatherData newData = new WeatherData(
                         i == 0 ? "Now" :
                                 (hour % 12 == 0 ? 12 : hour % 12) + (hour < 12 ? "AM" : "PM"),
-                        (int) hourData.get("hTemp"),
-                        hourData.get("hIcon").toString());
+                        hourData.getInt("hTemp"),
+                        hourData.getString("hIcon"));
                 hourlyData.add(newData);
             }
             JSONArray dailyArray = theResult.getJSONArray("dailyData");
             for (int i = 0; i < dailyArray.length(); i++) {
                 JSONObject dayData = (JSONObject) dailyArray.get(i);
                 WeatherData newData = new WeatherData(
-                        i == 0 ? "Today" : dayData.get("dDay").toString(),
-                        (int) dayData.get("dTemp"),
-                        dayData.get("dIcon").toString());
+                        i == 0 ? "Today" : dayData.getString("dDay"),
+                        dayData.getInt("dTemp"),
+                        dayData.getString("dIcon"));
                 dailyData.add(newData);
             }
             if (theCalledFromHome) {

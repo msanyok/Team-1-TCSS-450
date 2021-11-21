@@ -31,12 +31,16 @@ import static android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_VISIB
  */
 public class PushReceiver extends BroadcastReceiver {
 
-    /** The String that notifies a new message has been recieved from pushy  */
+    /** The String that notifies a new message has been received from pushy  */
     public static final String RECEIVED_NEW_MESSAGE = "new message from pushy";
 
     /** The ID for the channel used for notifications */
     private static final String CHANNEL_ID = "1";
 
+
+
+    // TODO: NOTE: this method is work in progress,
+    //             should consider refactoring into smaller methods?
     /**
      * Handles what should occur when this device receives a Pushy payload.
      *
@@ -46,15 +50,12 @@ public class PushReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(final Context theContext, final Intent theIntent) {
 
-        //the following variables are used to store the information sent from Pushy
-        //In the WS, you define what gets sent. You can change it there to suit your needs
-        //Then here on the Android side, decide what to do with the message you got
-
         // todo: we will likely have different types here (will need different actions for
         //       each type, consider making methods below)
         final String typeOfMessage = theIntent.getStringExtra("type");
         ChatMessage message = null;
         int chatId = -1;
+
         try{
             message = ChatMessage.createFromJsonString(theIntent.getStringExtra("message"));
             chatId = theIntent.getIntExtra("chatid", -1);
@@ -66,6 +67,8 @@ public class PushReceiver extends BroadcastReceiver {
         ActivityManager.RunningAppProcessInfo appProcessInfo = new ActivityManager.RunningAppProcessInfo();
         ActivityManager.getMyMemoryState(appProcessInfo);
 
+        // todo: may have multiple methods down here that accept each different type of message,
+        //      will be using the typeOfMessage for this
         if (appProcessInfo.importance == IMPORTANCE_FOREGROUND || appProcessInfo.importance == IMPORTANCE_VISIBLE) {
             //app is in the foreground so send the message to the active Activities
             Log.d("PUSHY", "Message received in foreground: " + message);
@@ -111,7 +114,5 @@ public class PushReceiver extends BroadcastReceiver {
 
     }
 
-
-    // todo: may have multiple methods down here that accept each different type of message
 }
 

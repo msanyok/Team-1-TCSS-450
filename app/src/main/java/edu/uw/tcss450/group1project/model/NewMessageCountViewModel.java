@@ -22,6 +22,7 @@ import java.util.Objects;
  * @version Fall 2021
  */
 public class NewMessageCountViewModel extends ViewModel {
+
     /** The live data that stores the number of new messages received. */
     private MutableLiveData<Integer> mNewMessageCount;
 
