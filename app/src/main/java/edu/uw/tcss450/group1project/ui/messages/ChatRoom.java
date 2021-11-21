@@ -96,7 +96,7 @@ public class ChatRoom implements Comparable {
     public int compareTo(final Object theObject) {
         if (theObject != null && theObject.getClass().equals(ChatRoom.class)) {
             // confirmed given object is a ChatRoom
-            return this.mTimestamp.compareTo(((ChatRoom) theObject).getTimestamp());
+            return ((ChatRoom) theObject).getTimestamp().compareTo(this.getTimestamp());
         } else {
             return 0;
         }
