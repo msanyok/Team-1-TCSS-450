@@ -99,7 +99,6 @@ public class HomeFragment extends Fragment {
      *
      * @param theResponse from the server
      */
-
     private void observeWeatherResponse(final JSONObject theResponse) {
         if (theResponse.has("error")) {
             try {

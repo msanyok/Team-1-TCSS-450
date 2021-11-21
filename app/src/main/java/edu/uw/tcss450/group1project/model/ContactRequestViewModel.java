@@ -36,7 +36,6 @@ import edu.uw.tcss450.group1project.ui.contacts.Contact;
  * @author Steven Omegna
  * @version Fall 2021
  */
-
 public class ContactRequestViewModel extends AndroidViewModel {
     /**
      * The {@link MutableLiveData} that stores the JSON response from the server
@@ -51,7 +50,7 @@ public class ContactRequestViewModel extends AndroidViewModel {
     private MutableLiveData<JSONObject> mContactRequestResponse;
 
 
-    /** The live data that stores the list of request objects. This should be observed. */
+    /** The list of request objects. */
     private List<Contact> mRequestList;
 
     /**
@@ -92,7 +91,6 @@ public class ContactRequestViewModel extends AndroidViewModel {
      *
      * @param theJwt JWT token to be passed to server
      * @throws NullPointerException if theNickname is null
-
      */
     public void allContactRequests(@NonNull final String theJwt) {
         final String url = "https://team-1-tcss-450-server.herokuapp.com/contacts/requests";
@@ -168,7 +166,6 @@ public class ContactRequestViewModel extends AndroidViewModel {
      * @param theChoice the new account's nickname
      * @param theJwt JWT token to be passed to server
      * @throws NullPointerException if theNickname is null
-
      */
     public void sendContactResponse(final boolean theChoice, final String theMemberId, @NonNull final String theJwt) {
         Objects.requireNonNull(theJwt, "JWT can not be null");
