@@ -83,6 +83,20 @@
         app:layout_constraintTop_toBottomOf="@+id/edit_password" >
     </Button>
 
+    <Button
+        android:id="@+id/button_reset_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/signIn_reset_password"
+        android:textColor="?buttonRegisterColor"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" >
+    </Button>
+
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/switch_signin"
         android:layout_width="wrap_content"

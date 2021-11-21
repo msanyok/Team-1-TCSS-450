@@ -27,6 +27,9 @@
         <action
             android:id="@+id/action_SignInFragment_to_registerVerificationFragment"
             app:destination="@id/registerVerificationFragment" />
+        <action
+            android:id="@+id/action_SignInFragment_to_enterEmailFragment"
+            app:destination="@id/enterEmailFragment" />
 
     </fragment>
     <fragment
@@ -61,6 +64,24 @@
             app:argType="string" />
         <argument
             android:name="password"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/enterEmailFragment"
+        android:name="edu.uw.tcss450.group1project.ui.auth.signin.EnterEmailFragment"
+        android:label="fragment_enter_email"
+        tools:layout="@layout/fragment_enter_email" >
+        <action
+            android:id="@+id/action_enterEmailFragment_to_passwordResetFragment"
+            app:destination="@id/passwordResetFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/passwordResetFragment"
+        android:name="edu.uw.tcss450.group1project.ui.auth.signin.PasswordResetFragment"
+        android:label="fragment_password_reset"
+        tools:layout="@layout/fragment_password_reset" >
+        <argument
+            android:name="email"
             app:argType="string" />
     </fragment>
 </navigation>
