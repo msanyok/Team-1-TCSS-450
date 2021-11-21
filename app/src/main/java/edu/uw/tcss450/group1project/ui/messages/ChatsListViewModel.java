@@ -26,6 +26,7 @@ import org.json.JSONObject;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -128,15 +129,25 @@ public class ChatsListViewModel extends AndroidViewModel {
         // parse the response and turn it into a new ChatRoom list
         mChatRoomList = new ArrayList<>();
 
+
         try {
             JSONArray chats = theResponse.getJSONArray("data");
             for (int i = 0; i < chats.length(); i++) {
+
+                // the names of the get(...) fields are determined
+                // by the server and can be found in the documentation
                 JSONObject chat = (JSONObject) chats.get(i);
-                mChatRoomList.add(new ChatRoom(chat.get("name").toString(),
-                        chat.get("chatId").toString(),
-                        "hardcoded most recent message",
-                        "hardcoded timestamp"));
+                mChatRoomList.add(new ChatRoom(chat.get("chat_name").toString(),
+                        chat.get("chatid").toString(),
+                        chat.get("message").toString(),
+                        chat.get("timestamp").toString()));
             }
+
+            // once the list has been repopulated, sort the chat rooms based on the timestamp
+            // of the most recent message sent
+            Collections.sort(mChatRoomList);
+
+
         } catch (JSONException exception) {
             // should we do something specific here if the json isn't parsed properly/
             exception.printStackTrace();

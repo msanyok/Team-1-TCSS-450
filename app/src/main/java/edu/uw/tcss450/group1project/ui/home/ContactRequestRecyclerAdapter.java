@@ -16,7 +16,10 @@ import java.util.List;
 
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentHomeContactRequestCardBinding;
+import edu.uw.tcss450.group1project.model.ContactRequestViewModel;
+import edu.uw.tcss450.group1project.model.UserInfoViewModel;
 import edu.uw.tcss450.group1project.ui.contacts.Contact;
+
 
 /**
  * ContactRequestRecyclerAdapter provides an adapter for the HomeFragment contact request
@@ -31,13 +34,22 @@ public class ContactRequestRecyclerAdapter
     /** The list of potential contacts to be displayed */
     private final List<Contact> mContacts;
 
+    /** The Contact request view model  */
+    private final ContactRequestViewModel mContactRequests;
+    /** The UserInfoView Model for Jwt */
+    private final UserInfoViewModel mUserInfo;
+
     /**
      * Creates a new ContactRequestRecyclerAdapter with a provided list of potential contacts
      *
      * @param theContacts the list of potential contacts
      */
-    public ContactRequestRecyclerAdapter(final List<Contact> theContacts) {
+    public ContactRequestRecyclerAdapter(final List<Contact> theContacts,
+                                         final ContactRequestViewModel theViewModel,
+                                         final UserInfoViewModel theUserModel) {
         mContacts = theContacts;
+        mContactRequests = theViewModel;
+        mUserInfo = theUserModel;
     }
 
     @NonNull
@@ -87,6 +99,16 @@ public class ContactRequestRecyclerAdapter
             super(theItemView);
             mView = theItemView;
             mBinding = FragmentHomeContactRequestCardBinding.bind(theItemView);
+            mBinding.acceptButton.setOnClickListener(button -> {
+                    mContactRequests.sendContactResponse(
+                            true, mContact.getmMemberid(), mUserInfo.getmJwt());
+            });
+
+
+            mBinding.denyButton.setOnClickListener(button -> {
+                mContactRequests.sendContactResponse(
+                        false, mContact.getmMemberid(), mUserInfo.getmJwt());
+            });
         }
 
         /**
