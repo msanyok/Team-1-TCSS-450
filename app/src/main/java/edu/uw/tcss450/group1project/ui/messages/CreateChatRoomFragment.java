@@ -32,7 +32,6 @@ public class CreateChatRoomFragment extends Fragment {
     @Override
     public View onCreateView(final LayoutInflater theInflater, final ViewGroup theContainer,
                              final Bundle theSavedInstanceState) {
-        Log.d("TAG", "CREATING");
         // Inflate the layout for this fragment
         return theInflater.inflate(R.layout.fragment_create_chatroom, theContainer, false);
     }

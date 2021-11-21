@@ -109,7 +109,6 @@ public class MainActivity extends ThemedActivity {
 // todo: need to research and see if it will work with our theme
         // Handles the notification badge drawing
         mNewMessageModel.addMessageCountObserver(this, count -> {
-Log.d("NEW MESSAGE CHANGE", "Count is: " + count);
 //            BadgeDrawable badge = mBinding.navView.getOrCreateBadge(R.id.navigation_chat);
 //            badge.setMaxCharacterCount(2);
 //            if (count > 0) {

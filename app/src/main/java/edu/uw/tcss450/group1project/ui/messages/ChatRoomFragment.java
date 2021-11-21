@@ -13,7 +13,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,10 +60,6 @@ public class ChatRoomFragment extends Fragment {
 
         // get the most recent messages for this chat
         mChatModel.getFirstMessages(mChatId, mUserModel.getmJwt());
-
-
-        Log.d("CHAT ID", args.getChatRoomId());
-        Log.d("CHAT NAME", args.getChatRoomName());
 
         mSendModel = provider.get(ChatSendViewModel.class);
     }

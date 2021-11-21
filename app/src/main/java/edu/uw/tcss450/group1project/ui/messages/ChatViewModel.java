@@ -204,7 +204,6 @@ public class ChatViewModel extends AndroidViewModel {
 
             }
             //inform observers of the change (setValue)
-            Log.wtf("SETTING CHATS", "For id:" + response.getInt("chatId") + " Chat size: " + list.size());
             getOrCreateMapEntry(response.getInt("chatId")).setValue(list);
         }catch (JSONException e) {
             Log.e("JSON PARSE ERROR", "Found in handle Success ChatViewModel");
