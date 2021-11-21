@@ -80,6 +80,7 @@ public class ContactsFragment extends Fragment {
         UserInfoViewModel userInfo = new ViewModelProvider(this.getActivity())
                 .get(UserInfoViewModel.class);
         mContactsModel.contactsConnect(userInfo.getmJwt());
+        System.out.println(userInfo.getmJwt());
         mContactsModel.addContactListObserver(getViewLifecycleOwner(), this::observeContactResponse);
 
         mBinding.contactRequestButton.setOnClickListener(this::requestToBeSent);
