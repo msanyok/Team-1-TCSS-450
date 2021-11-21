@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
+import java.util.Set;
 
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentCreateChatRoomContactCardBinding;
@@ -33,20 +34,20 @@ public class ParticipantSelectorRecyclerAdapter
     /** The list of contacts to be displayed */
     private final List<Contact> mContactList;
 
-    /** The participant view model storing participant selections */
-    private final ChatRoomParticipantViewModel mModel;
+    /** The set of participants added to the chat room */
+    private final Set<Contact> mParticipants;
 
     /**
      * Creates a new ParticipantSelectorRecyclerAdapter with a provided contact list and
      * participant view model
      *
      * @param theContacts the list of contacts
-     * @param theModel the participant view model
+     * @param theParticipants the set of added participants
      */
     public ParticipantSelectorRecyclerAdapter(final List<Contact> theContacts,
-                                              final ChatRoomParticipantViewModel theModel) {
+                                              final Set<Contact> theParticipants) {
         mContactList = theContacts;
-        mModel = theModel;
+        mParticipants = theParticipants;
     }
 
     @NonNull
@@ -66,7 +67,6 @@ public class ParticipantSelectorRecyclerAdapter
 
     @Override
     public int getItemCount() {
-        Log.d("SIZE", String.valueOf(mContactList.size()));
         return mContactList.size();
     }
 
@@ -99,12 +99,12 @@ public class ParticipantSelectorRecyclerAdapter
             mBinding = FragmentCreateChatRoomContactCardBinding.bind(theItemView);
             mBinding.toggleButton.setOnClickListener(button -> {
                 Log.d("TAG", "FIRED");
-                if (mModel.containsParticipant(mContact)) {
-                    mModel.removeParticipant(mContact);
+                if (mParticipants.contains(mContact)) {
+                    mParticipants.remove(mContact);
                 } else {
-                    mModel.addParticipant(mContact);
+                    mParticipants.add(mContact);
                 }
-                mBinding.selectionImage.setImageIcon(!mModel.containsParticipant(mContact) ?
+                mBinding.selectionImage.setImageIcon(!mParticipants.contains(mContact) ?
                         Icon.createWithResource(mView.getContext(),
                                 R.drawable.ic_plus_black_24dp) :
                         Icon.createWithResource(mView.getContext(),
@@ -130,7 +130,7 @@ public class ParticipantSelectorRecyclerAdapter
                     mContact.getLast()));
             mBinding.contactNickname.setText(mContact.getNickname());
             mBinding.selectionImage.setImageResource(
-                    !mModel.containsParticipant(mContact) ? R.drawable.ic_plus_black_24dp :
+                    !mParticipants.contains(mContact) ? R.drawable.ic_plus_black_24dp :
                     R.drawable.ic_remove_black_24dp);
         }
     }

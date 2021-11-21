@@ -38,6 +38,8 @@ public class WeatherFragment extends Fragment {
     /** The weather data view model */
     private WeatherDataViewModel mModel;
 
+    private FragmentWeatherBinding mBinding;
+
     /**
      * Empty public constructor. Does not provide any functionality.
      */
@@ -51,9 +53,7 @@ public class WeatherFragment extends Fragment {
         mModel = new ViewModelProvider(getActivity()).get(WeatherDataViewModel.class);
         UserInfoViewModel userInfo = new ViewModelProvider(getActivity())
                 .get(UserInfoViewModel.class);
-        if (!mModel.containsReadableData()) {
-            mModel.connectGet(userInfo.getmJwt(), false);
-        }
+        mModel.connectGet(userInfo.getJwt(), false);
     }
 
     @Override
@@ -67,6 +67,7 @@ public class WeatherFragment extends Fragment {
     public void onViewCreated(@NonNull final View theView,
                               @Nullable final Bundle theSavedInstanceState) {
         super.onViewCreated(theView, theSavedInstanceState);
+        mBinding = FragmentWeatherBinding.bind(getView());
         UserInfoViewModel model = new ViewModelProvider(getActivity())
                 .get(UserInfoViewModel.class);
 
@@ -79,15 +80,15 @@ public class WeatherFragment extends Fragment {
      * @param theResponse the changed JSONObject
      */
     private void observeResponse(final JSONObject theResponse) {
-        Log.d("OBS", "response observed in weather fragment");
+        System.out.println(theResponse);
         if (theResponse.has("error")) {
             try {
                 displayErrorDialog(theResponse.get("error").toString());
             } catch (JSONException ex) {
                 Log.e("ERROR", "Could not parse error JSON");
             }
-            mModel.clearResponse();
-        } else if (theResponse.length() != 0 || mModel.containsReadableData()) {
+        }
+        if (mModel.containsReadableData()) {
             setViewComponents();
         }
     }
@@ -96,27 +97,24 @@ public class WeatherFragment extends Fragment {
      * Sets up this fragment's view components with data from the WeatherDataViewModel
      */
     private void setViewComponents() {
-        if (mModel.containsReadableData()) {
-            FragmentWeatherBinding binding = FragmentWeatherBinding.bind(getView());
-            binding.titleCity.setText(mModel.getCurrentData().getCity());
-            binding.titleWeatherIcon.setImageResource(
-                    WeatherUtils.getInstance()
-                            .getIconResource(mModel.getCurrentData().getWeatherCondition()));
-            binding.titleTemperature
-                    .setText(String.valueOf(mModel.getCurrentData().getTemperature()) + "\u2109");
-            binding.titleFeelsLike
-                    .setText("Feels like: " + mModel.getCurrentData().getFeelsLike() + "\u2109");
-            binding.titleChanceRain
-                    .setText("Precipitation: " +
-                            mModel.getCurrentData().getPrecipPercentage() + "%");
-            binding.titleHumidity
-                    .setText("Humidity: " + mModel.getCurrentData().getHumidity() + "%");
+        mBinding.titleCity.setText(mModel.getCurrentData().getCity());
+        mBinding.titleWeatherIcon.setImageResource(
+                WeatherUtils.getInstance()
+                        .getIconResource(mModel.getCurrentData().getWeatherCondition()));
+        mBinding.titleTemperature
+                .setText(String.valueOf(mModel.getCurrentData().getTemperature()) + "\u2109");
+        mBinding.titleFeelsLike
+                .setText("Feels like: " + mModel.getCurrentData().getFeelsLike() + "\u2109");
+        mBinding.titleChanceRain
+                .setText("Precipitation: " +
+                        mModel.getCurrentData().getPrecipPercentage() + "%");
+        mBinding.titleHumidity
+                .setText("Humidity: " + mModel.getCurrentData().getHumidity() + "%");
 
-            binding.listHourlyForecast
-                    .setAdapter(new WeatherRecyclerAdapterHourly(mModel.getHourlyData()));
-            binding.listDailyForecast
-                    .setAdapter(new WeatherRecyclerAdapterDaily(mModel.getDailyData()));
-        }
+        mBinding.listHourlyForecast
+                .setAdapter(new WeatherRecyclerAdapterHourly(mModel.getHourlyData()));
+        mBinding.listDailyForecast
+                .setAdapter(new WeatherRecyclerAdapterDaily(mModel.getDailyData()));
     }
 
     private void displayErrorDialog(final String theError) {

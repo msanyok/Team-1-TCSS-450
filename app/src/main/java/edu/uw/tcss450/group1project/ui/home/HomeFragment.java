@@ -22,14 +22,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import edu.uw.tcss450.group1project.R;
-import edu.uw.tcss450.group1project.databinding.FragmentContactsBinding;
 import edu.uw.tcss450.group1project.databinding.FragmentHomeBinding;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
 import edu.uw.tcss450.group1project.model.WeatherDataViewModel;
-import edu.uw.tcss450.group1project.ui.contacts.ContactGenerator;
-import edu.uw.tcss450.group1project.ui.contacts.ContactsRecyclerAdapter;
-import edu.uw.tcss450.group1project.ui.messages.ChatRoomGenerator;
-import edu.uw.tcss450.group1project.ui.messages.MessagesRecyclerAdapter;
 import edu.uw.tcss450.group1project.ui.weather.WeatherDataCurrent;
 import edu.uw.tcss450.group1project.ui.weather.WeatherUtils;
 
@@ -46,6 +41,8 @@ public class HomeFragment extends Fragment {
 
     private UserInfoViewModel mUserModel;
 
+    private FragmentHomeBinding mBinding;
+
     /**
      * Empty public constructor. Does not provide any functionality.
      */
@@ -58,9 +55,7 @@ public class HomeFragment extends Fragment {
         super.onCreate(theSavedInstanceState);
         mWeatherModel = new ViewModelProvider(getActivity()).get(WeatherDataViewModel.class);
         mUserModel = new ViewModelProvider(getActivity()).get(UserInfoViewModel.class);
-        if (!mWeatherModel.containsReadableHomeData()) {
-            mWeatherModel.connectGet(mUserModel.getmJwt(), true);
-        }
+        mWeatherModel.connectGet(mUserModel.getJwt(), true);
     }
 
 
@@ -78,8 +73,8 @@ public class HomeFragment extends Fragment {
 
         mWeatherModel.addResponseObserver(getViewLifecycleOwner(), this::observeWeatherResponse);
 
-        FragmentHomeBinding binding = FragmentHomeBinding.bind(getView());
-        binding.welcomeText.setText(String.format("Welcome, %s!", mUserModel.getEmail()));
+        mBinding = FragmentHomeBinding.bind(getView());
+        mBinding.welcomeText.setText(String.format("Welcome, %s!", mUserModel.getEmail()));
     }
 
     private void observeWeatherResponse(final JSONObject theResponse) {
@@ -89,18 +84,17 @@ public class HomeFragment extends Fragment {
             } catch (JSONException ex) {
                 Log.e("ERROR", "Could not parse error JSON");
             }
-            mWeatherModel.clearResponse();
-        } else if (theResponse.length() != 0) {
+        }
+        if (mWeatherModel.containsReadableHomeData()) {
             setWeatherViewComponents();
         }
     }
 
     private void setWeatherViewComponents() {
-        FragmentHomeBinding binding = FragmentHomeBinding.bind(getView());
         WeatherDataCurrent weatherData = mWeatherModel.getCurrentDataHome();
-        binding.weatherImage.setImageResource(
+        mBinding.weatherImage.setImageResource(
                 WeatherUtils.getInstance().getIconResource(weatherData.getWeatherCondition()));
-        binding.weatherText.setText(String
+        mBinding.weatherText.setText(String
                 .format("It is %d degrees with a %d percent chance of rain.",
                         weatherData.getTemperature(), weatherData.getPrecipPercentage()));
     }

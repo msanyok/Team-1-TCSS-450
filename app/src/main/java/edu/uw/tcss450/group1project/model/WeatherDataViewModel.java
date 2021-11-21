@@ -74,8 +74,8 @@ public class WeatherDataViewModel extends AndroidViewModel {
      * @param theOwner the lifecycle owner
      * @param theObserver the observer to be assigned
      */
-    public void addResponseObserver(@NonNull LifecycleOwner theOwner,
-                                    @NonNull Observer<? super JSONObject> theObserver) {
+    public void addResponseObserver(@NonNull final LifecycleOwner theOwner,
+                                    @NonNull final Observer<? super JSONObject> theObserver) {
         mResponse.observe(theOwner, theObserver);
     }
 
@@ -126,13 +126,6 @@ public class WeatherDataViewModel extends AndroidViewModel {
      */
     public boolean containsReadableData() {
         return mCurrentData != null && mHourlyData != null && mDailyData != null;
-    }
-
-    /**
-     * Clears the JSON response associated with this view model
-     */
-    public void clearResponse() {
-        mResponse.setValue(new JSONObject());
     }
 
     /**

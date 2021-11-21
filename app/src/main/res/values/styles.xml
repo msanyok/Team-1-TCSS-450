@@ -150,4 +150,8 @@
         <item name="colorSwitchThumbNormal">@color/gold</item>
     </style>
 
+    <style name="AppThemePlain" parent="AppTheme1">
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
 </resources>
