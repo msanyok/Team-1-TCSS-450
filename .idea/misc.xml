@@ -23,11 +23,13 @@
         <entry key="..\:/Users/Chris Ding/AndroidStudioProjects/project_repo_client/Team-1-TCSS-450/app/src/main/res/layout/fragment_contacts.xml" value="0.11367753623188406" />
         <entry key="..\:/Users/Chris Ding/AndroidStudioProjects/project_repo_client/Team-1-TCSS-450/app/src/main/res/layout/fragment_contacts_card.xml" value="0.5" />
         <entry key="..\:/Users/Chris Ding/AndroidStudioProjects/project_repo_client/Team-1-TCSS-450/app/src/main/res/layout/fragment_create_chatroom.xml" value="0.10643115942028986" />
+        <entry key="..\:/Users/Chris Ding/AndroidStudioProjects/project_repo_client/Team-1-TCSS-450/app/src/main/res/layout/fragment_enter_email.xml" value="0.28804347826086957" />
         <entry key="..\:/Users/Chris Ding/AndroidStudioProjects/project_repo_client/Team-1-TCSS-450/app/src/main/res/layout/fragment_home.xml" value="0.11367753623188406" />
         <entry key="..\:/Users/Chris Ding/AndroidStudioProjects/project_repo_client/Team-1-TCSS-450/app/src/main/res/layout/fragment_home_contact_request_card.xml" value="0.11367753623188406" />
         <entry key="..\:/Users/Chris Ding/AndroidStudioProjects/project_repo_client/Team-1-TCSS-450/app/src/main/res/layout/fragment_home_message_notification_card.xml" value="0.11367753623188406" />
         <entry key="..\:/Users/Chris Ding/AndroidStudioProjects/project_repo_client/Team-1-TCSS-450/app/src/main/res/layout/fragment_messages.xml" value="0.10643115942028986" />
         <entry key="..\:/Users/Chris Ding/AndroidStudioProjects/project_repo_client/Team-1-TCSS-450/app/src/main/res/layout/fragment_messages_card.xml" value="0.5" />
+        <entry key="..\:/Users/Chris Ding/AndroidStudioProjects/project_repo_client/Team-1-TCSS-450/app/src/main/res/layout/fragment_password_reset.xml" value="0.29846014492753625" />
         <entry key="..\:/Users/Chris Ding/AndroidStudioProjects/project_repo_client/Team-1-TCSS-450/app/src/main/res/layout/fragment_register.xml" value="0.10790273556231003" />
         <entry key="..\:/Users/Chris Ding/AndroidStudioProjects/project_repo_client/Team-1-TCSS-450/app/src/main/res/layout/fragment_settings.xml" value="0.221875" />
         <entry key="..\:/Users/Chris Ding/AndroidStudioProjects/project_repo_client/Team-1-TCSS-450/app/src/main/res/layout/fragment_sign_in.xml" value="1.25" />
