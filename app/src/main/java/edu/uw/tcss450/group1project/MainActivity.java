@@ -220,7 +220,7 @@ public class MainActivity extends ThemedActivity {
         model.deleteTokenFromWebservice(
                 new ViewModelProvider(this)
                         .get(UserInfoViewModel.class)
-                        .getJwt()
+                        .getmJwt()
         );
     }
 

@@ -142,7 +142,7 @@ public class SignInFragment extends Fragment {
      * Called after the webservice has returned a successful verification of credentials
      */
     private void sendPushyToken() {
-        mPushyTokenViewModel.sendTokenToWebservice(mUserViewModel.getJwt());
+        mPushyTokenViewModel.sendTokenToWebservice(mUserViewModel.getmJwt());
     }
 
     /**
@@ -160,7 +160,7 @@ public class SignInFragment extends Fragment {
             } else {
                 navigateToSuccess(
                         mBinding.editEmail.getText().toString(),
-                        mUserViewModel.getJwt()
+                        mUserViewModel.getmJwt()
                 );
             }
         }

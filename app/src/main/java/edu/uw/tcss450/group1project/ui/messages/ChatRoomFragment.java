@@ -58,7 +58,7 @@ public class ChatRoomFragment extends Fragment {
         mChatModel = provider.get(ChatViewModel.class);
 
         // get the most recent messages for this chat
-        mChatModel.getFirstMessages(mChatId, mUserModel.getJwt());
+        mChatModel.getFirstMessages(mChatId, mUserModel.getmJwt());
 
         mSendModel = provider.get(ChatSendViewModel.class);
     }
@@ -92,7 +92,7 @@ public class ChatRoomFragment extends Fragment {
         //When the user scrolls to the top of the RV, the swiper list will "refresh"
         //The user is out of messages, go out to the service and get more
         binding.swipeContainer.setOnRefreshListener(() -> {
-            mChatModel.getNextMessages(mChatId, mUserModel.getJwt());
+            mChatModel.getNextMessages(mChatId, mUserModel.getmJwt());
         });
 
         mChatModel.addMessageObserver(mChatId, getViewLifecycleOwner(),
@@ -112,7 +112,7 @@ public class ChatRoomFragment extends Fragment {
         //Send button was clicked. Send the message via the SendViewModel
         binding.buttonSend.setOnClickListener(button -> {
             mSendModel.sendMessage(mChatId,
-                    mUserModel.getJwt(),
+                    mUserModel.getmJwt(),
                     binding.editMessage.getText().toString());
         });
 

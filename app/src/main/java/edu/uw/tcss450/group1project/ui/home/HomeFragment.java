@@ -6,7 +6,6 @@
 package edu.uw.tcss450.group1project.ui.home;
 
 import android.os.Bundle;
-import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,11 +13,9 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import edu.uw.tcss450.group1project.MainActivity;
@@ -62,7 +59,7 @@ public class HomeFragment extends Fragment {
         mWeatherModel = new ViewModelProvider(getActivity()).get(WeatherDataViewModel.class);
         mRequestModel = new ViewModelProvider(getActivity()).get(ContactRequestViewModel.class);
         mUserModel = new ViewModelProvider(getActivity()).get(UserInfoViewModel.class);
-        mWeatherModel.connectGet(mUserModel.getJwt(), true);
+        mWeatherModel.connectGet(mUserModel.getmJwt(), true);
     }
 
 
@@ -80,7 +77,7 @@ public class HomeFragment extends Fragment {
 
         UserInfoViewModel userInfo = new ViewModelProvider(this.getActivity())
                 .get(UserInfoViewModel.class);
-        mRequestModel.allContactRequests(userInfo.getJwt());
+        mRequestModel.allContactRequests(userInfo.getmJwt());
 
         mWeatherModel.addResponseObserver(getViewLifecycleOwner(), this::observeWeatherResponse);
         mRequestModel.addRequestObserver(getViewLifecycleOwner(), this::observeRequestResponse);

@@ -64,7 +64,7 @@ public class ChatsFragment extends Fragment {
         // populate the chat list when the fragment view is created
         UserInfoViewModel userInfo = new ViewModelProvider(this.getActivity())
                 .get(UserInfoViewModel.class);
-        mChatListsModel.getChatListData(userInfo.getJwt());
+        mChatListsModel.getChatListData(userInfo.getmJwt());
 
         mBinding.chatRoomStartButton.setOnClickListener(button -> {
             Navigation.findNavController(theView).

@@ -54,7 +54,7 @@ public class UserInfoViewModel extends ViewModel {
      *
      * @return the jwt string
      */
-    public String getJwt() {
+    public String getmJwt() {
         return mJwt;
     }
 

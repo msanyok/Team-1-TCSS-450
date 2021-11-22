@@ -72,7 +72,7 @@ public class ContactsFragment extends Fragment {
         // get the contacts for the current user and put them on the screen
         UserInfoViewModel userInfo = new ViewModelProvider(this.getActivity())
                 .get(UserInfoViewModel.class);
-        mContactsModel.contactsConnect(userInfo.getJwt());
+        mContactsModel.contactsConnect(userInfo.getmJwt());
         mContactsModel.addContactListObserver(getViewLifecycleOwner(), this::observeContactResponse);
 
         mBinding.contactRequestButton.setOnClickListener(this::requestToBeSent);
@@ -119,7 +119,7 @@ public class ContactsFragment extends Fragment {
     private void verifyNameWithServer() {
         UserInfoViewModel userInfo = new ViewModelProvider(this.getActivity())
                 .get(UserInfoViewModel.class);
-        final String theJWT = userInfo.getJwt();
+        final String theJWT = userInfo.getmJwt();
         mContactsModel.requestConnect(
                 mBinding.addContactText.getText().toString(), theJWT);
     }

@@ -6,19 +6,15 @@
 package edu.uw.tcss450.group1project.ui.weather;
 
 import android.os.Bundle;
-import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import edu.uw.tcss450.group1project.MainActivity;
@@ -55,7 +51,7 @@ public class WeatherFragment extends Fragment {
         mModel = new ViewModelProvider(getActivity()).get(WeatherDataViewModel.class);
         UserInfoViewModel userInfo = new ViewModelProvider(getActivity())
                 .get(UserInfoViewModel.class);
-        mModel.connectGet(userInfo.getJwt(), false);
+        mModel.connectGet(userInfo.getmJwt(), false);
     }
 
     @Override
