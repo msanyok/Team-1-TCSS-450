@@ -42,7 +42,7 @@
     <string name="title_10day_forecast">7-day forecast</string>
     <string name="title_change_theme">Change Theme</string>
     <string name="title_theme_1">Slate Berry</string>
-    <string name="title_theme_2">Warm Rust</string>
+    <string name="title_theme_2">Cherry Stone</string>
     <string name="title_theme_3">Husky Pride</string>
     <string name="title_reset_password">Enter your account email:</string>
     <string name="title_code_comfirm">Send us the code we sent your email to reset your password!</string>
@@ -56,8 +56,7 @@
     <string name="signIn_keys_shared_prefs">My Auth App Shared Prefs</string>
     <string name="signIn_keys_prefs_jwt">Shared Prefs JWT</string>
     <string name="signIn_action_sign_out">Sign Out</string>
-    <string name="signIn_reset_password">Forget Password?</string>
-
+    <string name="signIn_reset_password">Forgot Password?</string>
     <string name="reset_button">Send Email</string>
     <string name="reset_password_done">Reset Password</string>
 </resources>

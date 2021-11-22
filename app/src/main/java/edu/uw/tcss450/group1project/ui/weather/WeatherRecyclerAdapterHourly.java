@@ -16,6 +16,7 @@ import java.util.List;
 
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentWeather24hrCardBinding;
+import edu.uw.tcss450.group1project.utils.WeatherUtils;
 
 /**
  * WeatherRecyclerAdapter24Hour provides an adapter for the WeatherFragment

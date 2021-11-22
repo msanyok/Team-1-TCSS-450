@@ -14,7 +14,7 @@ import java.util.Objects;
  * @author Austn Attaway
  * @version Fall 2021
  */
-public class ChatRoom {
+public class ChatRoom implements Comparable<ChatRoom> {
 
     /** The name of this chat room */
     private String mChatRoomName;
@@ -90,4 +90,8 @@ public class ChatRoom {
         return mTimestamp;
     }
 
+    @Override
+    public int compareTo(final ChatRoom theChatRoom) {
+        return theChatRoom.getTimestamp().compareTo(this.getTimestamp());
+    }
 }
