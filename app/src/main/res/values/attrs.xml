@@ -5,6 +5,5 @@
     <attr name="cardColor" format="reference" />
     <attr name="cardImageColor" format="reference" />
     <attr name="buttonTextColor" format="reference" />
-    <attr name="buttonRegisterColor" format="reference" />
     <attr name="title_icon" format="reference" />
 </resources>

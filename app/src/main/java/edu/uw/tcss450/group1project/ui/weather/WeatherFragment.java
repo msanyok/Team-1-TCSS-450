@@ -51,7 +51,7 @@ public class WeatherFragment extends Fragment {
         mModel = new ViewModelProvider(getActivity()).get(WeatherDataViewModel.class);
         UserInfoViewModel userInfo = new ViewModelProvider(getActivity())
                 .get(UserInfoViewModel.class);
-        mModel.connectGet(userInfo.getmJwt(), false);
+        mModel.connectGet(userInfo.getJwt(), false);
     }
 
     @Override

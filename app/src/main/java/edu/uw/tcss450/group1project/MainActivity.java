@@ -14,8 +14,6 @@ import android.os.Bundle;
 import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -200,7 +198,7 @@ public class MainActivity extends ThemedActivity {
         model.deleteTokenFromWebservice(
                 new ViewModelProvider(this)
                         .get(UserInfoViewModel.class)
-                        .getmJwt()
+                        .getJwt()
         );
     }
 
