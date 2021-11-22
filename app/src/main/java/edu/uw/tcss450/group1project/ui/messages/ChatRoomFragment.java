@@ -24,7 +24,7 @@ import edu.uw.tcss450.group1project.model.UserInfoViewModel;
  * The Fragment that stores the chat threads for a particular chat
  *
  * @author Chris Ding
- * @author Austn Attawau
+ * @author Austn Attaway
  * @version Fall 2021
  */
 public class ChatRoomFragment extends Fragment {

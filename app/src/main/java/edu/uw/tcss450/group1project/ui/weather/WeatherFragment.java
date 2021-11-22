@@ -21,10 +21,12 @@ import androidx.lifecycle.ViewModelProvider;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import edu.uw.tcss450.group1project.MainActivity;
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentWeatherBinding;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
 import edu.uw.tcss450.group1project.model.WeatherDataViewModel;
+import edu.uw.tcss450.group1project.utils.WeatherUtils;
 
 /**
  * A {@link Fragment} subclass that is responsible for the weather page.
@@ -81,12 +83,9 @@ public class WeatherFragment extends Fragment {
      */
     private void observeResponse(final JSONObject theResponse) {
         System.out.println(theResponse);
-        if (theResponse.has("error")) {
-            try {
-                displayErrorDialog(theResponse.get("error").toString());
-            } catch (JSONException ex) {
-                Log.e("ERROR", "Could not parse error JSON");
-            }
+        if (theResponse.has("code")) {
+            displayErrorDialog();
+            mModel.clearResponse();
         }
         if (mModel.containsReadableData()) {
             setViewComponents();
@@ -117,12 +116,11 @@ public class WeatherFragment extends Fragment {
                 .setAdapter(new WeatherRecyclerAdapterDaily(mModel.getDailyData()));
     }
 
-    private void displayErrorDialog(final String theError) {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
-        alertDialog.setMessage(Html.fromHtml("<font color='#000000'>Unexpected " +
-                        theError + " when loading weather." + " Please try again.</font>"));
-        alertDialog.setPositiveButton(Html.fromHtml("<font color='000000'>Ok</font>"),
-                (dialog, which) -> {});
-        alertDialog.show();
+    /**
+     * Displays an error dialog when an error occurs in retrieving weather data
+     */
+    private void displayErrorDialog() {
+        String message = "Unexpected error when loading weather. Please try again.";
+        ((MainActivity) getActivity()).displayErrorDialog(message);
     }
 }

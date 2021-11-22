@@ -49,6 +49,7 @@ public class WeatherDataViewModel extends AndroidViewModel {
     /** The current weather data */
     private WeatherDataCurrent mCurrentData;
 
+    /** The current home weather data */
     private WeatherDataCurrent mCurrentDataHome;
 
     /** The list of hourly weather data */
@@ -129,6 +130,13 @@ public class WeatherDataViewModel extends AndroidViewModel {
     }
 
     /**
+     * Clears the JSONObject response of this view model
+     */
+    public void clearResponse() {
+        mResponse.setValue(new JSONObject());
+    }
+
+    /**
      * Creates a weather endpoint get request to receive live weather data
      *
      * @param theJwt the user's JWT
@@ -206,7 +214,7 @@ public class WeatherDataViewModel extends AndroidViewModel {
             mResponse.setValue(theResult);
         } catch (JSONException ex) {
             Map<String, String> map = new HashMap<>();
-            map.put("error", "JSON parse error");
+            map.put("code", "JSON parse error");
             mResponse.setValue(new JSONObject(map));
             ex.printStackTrace();
         }
@@ -218,9 +226,9 @@ public class WeatherDataViewModel extends AndroidViewModel {
      * @param theError the resulting Volley error to be handled
      */
     private void handleError(final VolleyError theError) {
-        Log.e("CONNECTION ERROR", theError.getLocalizedMessage());
+        Log.e("WEATHER REQUEST ERROR", theError.getLocalizedMessage());
         Map<String, String> map = new HashMap<>();
-        map.put("error", "server error");
+        map.put("code", "server error");
         mResponse.setValue(new JSONObject(map));
     }
 }

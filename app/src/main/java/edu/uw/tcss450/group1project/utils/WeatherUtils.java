@@ -3,9 +3,7 @@
  * Fall 2021
  */
 
-package edu.uw.tcss450.group1project.ui.weather;
-
-import android.content.res.Resources;
+package edu.uw.tcss450.group1project.utils;
 
 import java.util.HashMap;
 import java.util.Map;

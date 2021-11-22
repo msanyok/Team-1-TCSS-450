@@ -21,13 +21,14 @@ import androidx.lifecycle.ViewModelProvider;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import edu.uw.tcss450.group1project.MainActivity;
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentHomeBinding;
 import edu.uw.tcss450.group1project.model.ContactRequestViewModel;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
 import edu.uw.tcss450.group1project.model.WeatherDataViewModel;
 import edu.uw.tcss450.group1project.ui.weather.WeatherDataCurrent;
-import edu.uw.tcss450.group1project.ui.weather.WeatherUtils;
+import edu.uw.tcss450.group1project.utils.WeatherUtils;
 
 /**
  * A {@link Fragment} subclass that is responsible for the home page.
@@ -95,12 +96,9 @@ public class HomeFragment extends Fragment {
      * @param theResponse from the server
      */
     private void observeWeatherResponse(final JSONObject theResponse) {
-        if (theResponse.has("error")) {
-            try {
-                displayWeatherErrorDialog(theResponse.get("error").toString());
-            } catch (JSONException ex) {
-                Log.e("ERROR", "Could not parse error JSON");
-            }
+        if (theResponse.has("code")) {
+            displayWeatherErrorDialog();
+            mWeatherModel.clearResponse();
         }
         if (mWeatherModel.containsReadableHomeData()) {
             setWeatherViewComponents();
@@ -138,7 +136,6 @@ public class HomeFragment extends Fragment {
                 .get(UserInfoViewModel.class);
         binding.listContactRequests.setAdapter(new ContactRequestRecyclerAdapter(
                 mRequestModel.getContactList(), mRequestModel, userInfo));
-
     }
 
     /**
@@ -155,14 +152,9 @@ public class HomeFragment extends Fragment {
 
     /**
      * Displays error dialog box when error occurs with weather
-     * @param theError to be thrown
      */
-    private void displayWeatherErrorDialog(final String theError) {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
-        alertDialog.setMessage(Html.fromHtml("<font color='#000000'>Unexpected " +
-                theError + " when loading local weather." + " Please try again.</font>"));
-        alertDialog.setPositiveButton(Html.fromHtml("<font color='000000'>Ok</font>"),
-                (dialog, which) -> {});
-        alertDialog.show();
+    private void displayWeatherErrorDialog() {
+        String message = "Unexpected error when loading weather. Please try again.";
+        ((MainActivity) getActivity()).displayErrorDialog(message);
     }
 }

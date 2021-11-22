@@ -102,8 +102,6 @@ public class ContactsViewModel extends AndroidViewModel {
         mRequestResponse.observe(theOwner, theObserver);
     }
 
-
-
     /**
      * Sends an HTTP POST request to the server attempting to get all contacts
      *
@@ -186,7 +184,6 @@ public class ContactsViewModel extends AndroidViewModel {
             Log.d("Registration JSON Response", "No Response");
         }
     }
-
 
     /**
      * Sends an HTTP POST request to the server attempting to create a contact request
