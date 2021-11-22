@@ -49,6 +49,7 @@ public class WeatherDataViewModel extends AndroidViewModel {
     /** The current weather data */
     private WeatherDataCurrent mCurrentData;
 
+    /** The current home weather data */
     private WeatherDataCurrent mCurrentDataHome;
 
     /** The list of hourly weather data */
@@ -74,8 +75,8 @@ public class WeatherDataViewModel extends AndroidViewModel {
      * @param theOwner the lifecycle owner
      * @param theObserver the observer to be assigned
      */
-    public void addResponseObserver(@NonNull LifecycleOwner theOwner,
-                                    @NonNull Observer<? super JSONObject> theObserver) {
+    public void addResponseObserver(@NonNull final LifecycleOwner theOwner,
+                                    @NonNull final Observer<? super JSONObject> theObserver) {
         mResponse.observe(theOwner, theObserver);
     }
 
@@ -129,7 +130,7 @@ public class WeatherDataViewModel extends AndroidViewModel {
     }
 
     /**
-     * Clears the JSON response associated with this view model
+     * Clears the JSONObject response of this view model
      */
     public void clearResponse() {
         mResponse.setValue(new JSONObject());
@@ -178,29 +179,29 @@ public class WeatherDataViewModel extends AndroidViewModel {
             JSONObject curr = theResult.getJSONObject("currentData");
             currentData = new WeatherDataCurrent(
                     "Tacoma",
-                    (int) curr.get("curTemp"),
-                    (int) curr.get("curFeels_like"),
-                    (int) Math.round(Double.valueOf(curr.get("curRain").toString()) * 100.0),
-                    (int) curr.get("curHumidity"),
-                    curr.get("ccurIcon").toString());
+                    curr.getInt("curTemp"),
+                    curr.getInt("curFeels_like"),
+                    (int) Math.round(curr.getDouble("curRain") * 100),
+                    curr.getInt("curHumidity"),
+                    curr.getString("ccurIcon"));
             JSONArray hourArray = theResult.getJSONArray("hourData");
             for (int i = 0; i < hourArray.length(); i++) {
                 JSONObject hourData = (JSONObject) hourArray.get(i);
-                int hour = (int) hourData.get("hHours");
+                int hour = hourData.getInt("hHours");
                 WeatherData newData = new WeatherData(
                         i == 0 ? "Now" :
                                 (hour % 12 == 0 ? 12 : hour % 12) + (hour < 12 ? "AM" : "PM"),
-                        (int) hourData.get("hTemp"),
-                        hourData.get("hIcon").toString());
+                        hourData.getInt("hTemp"),
+                        hourData.getString("hIcon"));
                 hourlyData.add(newData);
             }
             JSONArray dailyArray = theResult.getJSONArray("dailyData");
             for (int i = 0; i < dailyArray.length(); i++) {
                 JSONObject dayData = (JSONObject) dailyArray.get(i);
                 WeatherData newData = new WeatherData(
-                        i == 0 ? "Today" : dayData.get("dDay").toString(),
-                        (int) dayData.get("dTemp"),
-                        dayData.get("dIcon").toString());
+                        i == 0 ? "Today" : dayData.getString("dDay"),
+                        dayData.getInt("dTemp"),
+                        dayData.getString("dIcon"));
                 dailyData.add(newData);
             }
             if (theCalledFromHome) {
@@ -213,7 +214,7 @@ public class WeatherDataViewModel extends AndroidViewModel {
             mResponse.setValue(theResult);
         } catch (JSONException ex) {
             Map<String, String> map = new HashMap<>();
-            map.put("error", "JSON parse error");
+            map.put("code", "JSON parse error");
             mResponse.setValue(new JSONObject(map));
             ex.printStackTrace();
         }
@@ -225,9 +226,9 @@ public class WeatherDataViewModel extends AndroidViewModel {
      * @param theError the resulting Volley error to be handled
      */
     private void handleError(final VolleyError theError) {
-        Log.e("CONNECTION ERROR", theError.getLocalizedMessage());
+        Log.e("WEATHER REQUEST ERROR", theError.getLocalizedMessage());
         Map<String, String> map = new HashMap<>();
-        map.put("error", "server error");
+        map.put("code", "server error");
         mResponse.setValue(new JSONObject(map));
     }
 }

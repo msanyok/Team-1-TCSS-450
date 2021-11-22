@@ -6,6 +6,7 @@
 package edu.uw.tcss450.group1project.ui.messages;
 
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.StyleableRes;
 import androidx.core.graphics.ColorUtils;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -108,6 +110,15 @@ public class ChatRecyclerViewAdapter extends
             final Resources res = mView.getContext().getResources();
             final MaterialCardView card = mBinding.cardRoot;
 
+            int[] attr = {R.attr.cardColor,
+                    R.attr.colorAccent, R.attr.cardTextColor, R.attr.buttonTextColor};
+            TypedArray typedArray = mView.getContext().obtainStyledAttributes(attr);
+            int sendCardColor = typedArray.getResourceId(0, R.color.white);
+            int receiveCardColor = typedArray.getResourceId(1, R.color.white);
+            int sendTextColor = typedArray.getResourceId(2, R.color.black);
+            int receiveTextColor = typedArray.getResourceId(3, R.color.black);
+            typedArray.recycle();
+
             int standard = (int) res.getDimension(R.dimen.chat_margin);
             int extended = (int) res.getDimension(R.dimen.chat_margin_sided);
 
@@ -124,15 +135,8 @@ public class ChatRecyclerViewAdapter extends
 
                 card.setCardBackgroundColor(
                         ColorUtils.setAlphaComponent(
-                                res.getColor(R.color.cardview_light_background, null), // todo: set color properly
-                                16));
-                mBinding.textMessage.setTextColor(
-                        res.getColor(R.color.cardview_dark_background, null)); // todo: set color properly
-
-                card.setStrokeWidth(standard / 5);
-                card.setStrokeColor(ColorUtils.setAlphaComponent(
-                        res.getColor(R.color.cardview_dark_background, null), // todo: set color properly
-                        200));
+                                res.getColor(sendCardColor, null),255));
+                mBinding.textMessage.setTextColor(res.getColor(sendTextColor, null));
 
                 card.requestLayout();
 
@@ -152,16 +156,10 @@ public class ChatRecyclerViewAdapter extends
 
                 card.setCardBackgroundColor(
                         ColorUtils.setAlphaComponent(
-                                res.getColor(R.color.slate_blue, null), // todo: set color properly
-                                16));
-
-                card.setStrokeWidth(standard / 5);
-                card.setStrokeColor(ColorUtils.setAlphaComponent(
-                        res.getColor(R.color.gray, null), // todo: set color properly
-                        200));
+                                res.getColor(receiveCardColor, null),255));
 
                 mBinding.textMessage.setTextColor(
-                        res.getColor(R.color.cream, null)); // todo: set color properly
+                        res.getColor(receiveTextColor, null)); // todo: set color properly
 
                 card.requestLayout();
             }

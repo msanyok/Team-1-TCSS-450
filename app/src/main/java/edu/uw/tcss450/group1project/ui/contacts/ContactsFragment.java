@@ -75,10 +75,8 @@ public class ContactsFragment extends Fragment {
     public void onViewCreated(@NonNull final View theView,
                               @Nullable final Bundle theSavedInstanceState) {
         super.onViewCreated(theView, theSavedInstanceState);
-
         mContactsModel.contactsConnect(mUserInfo.getmJwt());
         mContactsModel.addContactListObserver(getViewLifecycleOwner(), this::observeContactResponse);
-
         mBinding.contactRequestButton.setOnClickListener(this::requestToBeSent);
         mContactsModel.addContactRequestObserver(getViewLifecycleOwner(),
                 this::observeResponse);
@@ -94,8 +92,9 @@ public class ContactsFragment extends Fragment {
         //hides keyboard
         InputMethodManager imm = (InputMethodManager)getActivity()
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
-                0);
+        if (getActivity().getCurrentFocus() != null) {
+            imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),0);
+        }
         validateNickname();
     }
 
@@ -176,7 +175,6 @@ public class ContactsFragment extends Fragment {
                 Log.e("Contact List Error", theResponse.toString());
                 // TODO: Handle UI change when the chat list is not received properly?
             } else {
-
                 mBinding.listRoot.setAdapter(new ContactsRecyclerAdapter(
                         mContactsModel.getContactList(), this::showContactDeleteAlertDialog));
                 mContactsModel.removeData();

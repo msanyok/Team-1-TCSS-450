@@ -18,6 +18,7 @@
         <item name="buttonStyle">@style/ButtonStyleTheme1</item>
         <item name="buttonTextColor">@color/white</item>
         <item name="buttonRegisterColor">@color/white</item>
+        <item name="cardColor">@color/white</item>
         <item name="cardTextColor">@color/black</item>
         <item name="cardImageColor">@color/black</item>
         <item name="bottomNavigationStyle">@style/BottomNavStyleTheme1</item>
@@ -25,7 +26,7 @@
 
     <style name="CardStyleTheme1" parent="Widget.MaterialComponents.CardView">
         <item name="cardCornerRadius">5dp</item>
-        <item name="cardBackgroundColor">@color/white</item>
+        <item name="cardBackgroundColor">?cardColor</item>
         <item name="cardElevation">0dp</item>
     </style>
 
@@ -72,18 +73,15 @@
         <item name="titleTextColor">@color/black</item>
         <item name="colorPrimary">@android:color/transparent</item>
         <item name="editTextStyle">@style/EditTextStyleTheme2</item>
-        <item name="cardViewStyle">@style/CardStyleTheme2</item>
-        <item name="buttonStyle">@style/ButtonStyleTheme2</item>
+        <item name="cardViewStyle">@style/CardStyleTheme1</item>
+        <item name="buttonStyle">@style/ButtonStyleTheme1</item>
         <item name="buttonTextColor">@color/white</item>
         <item name="buttonRegisterColor">@color/black</item>
+        <item name="cardColor">@color/maroon</item>
         <item name="cardTextColor">@color/white</item>
         <item name="cardImageColor">@color/white</item>
         <item name="bottomNavigationStyle">@style/BottomNavStyleTheme2</item>
     </style>\
-
-    <style name="CardStyleTheme2" parent="CardStyleTheme1">
-        <item name="cardBackgroundColor">@color/maroon</item>
-    </style>
 
     <style name="BottomNavStyleTheme2" parent="BottomNavStyleTheme1">
         <item name="itemIconTint">@color/black</item>
@@ -102,9 +100,6 @@
         <item name="android:textColor">@color/white</item>
     </style>
 
-    <style name="ButtonStyleTheme2" parent="ButtonStyleTheme1">
-    </style>
-
     <style name="SwitchStyleTheme2" parent="SwitchStyleTheme1">
         <item name="colorControlActivated">@color/maroon</item>
         <item name="colorSwitchThumbNormal">@color/maroon</item>
@@ -119,30 +114,16 @@
         <item name="colorAccent">@color/gray</item>
         <item name="title_icon">@drawable/logo_theme_3</item>
         <item name="itemBackground">@color/gold</item>
-        <item name="editTextStyle">@style/EditTextStyleTheme3</item>
-        <item name="cardViewStyle">@style/CardStyleTheme3</item>
-        <item name="buttonStyle">@style/ButtonStyleTheme3</item>
+        <item name="editTextStyle">@style/EditTextStyleTheme1</item>
+        <item name="cardViewStyle">@style/CardStyleTheme1</item>
+        <item name="cardColor">@color/gold</item>
+        <item name="buttonStyle">@style/ButtonStyleTheme1</item>
         <item name="buttonTextColor">@color/black</item>
-        <item name="bottomNavigationStyle">@style/BottomNavStyleTheme3</item>
-    </style>
-
-    <style name="CardStyleTheme3" parent="CardStyleTheme1">
-        <item name="cardBackgroundColor">@color/gold</item>
-    </style>
-
-    <style name="BottomNavStyleTheme3" parent="BottomNavStyleTheme1">
-
-    </style>
-
-    <style name="EditTextStyleTheme3" parent="EditTextStyleTheme1">
-
+        <item name="bottomNavigationStyle">@style/BottomNavStyleTheme1</item>
     </style>
 
     <style name="TextViewStyleTheme3" parent="TextViewStyleTheme1">
         <item name="android:textColor">@color/black</item>
-    </style>
-
-    <style name="ButtonStyleTheme3" parent="ButtonStyleTheme1">
     </style>
 
     <style name="SwitchStyleTheme3" parent="SwitchStyleTheme1">
@@ -150,7 +131,12 @@
         <item name="colorSwitchThumbNormal">@color/gold</item>
     </style>
 
-    <style name="Widget.App.Button.OutlinedButton.IconOnly" parent="Widget.MaterialComponents.Button.OutlinedButton">
+    <style name="AppThemePlain" parent="AppTheme1">
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <style name="Widget.App.Button.OutlinedButton.IconOnly"
+        parent="Widget.MaterialComponents.Button.OutlinedButton">
         <item name="iconPadding">0dp</item>
         <item name="android:insetTop">0dp</item>
         <item name="android:insetBottom">0dp</item>
