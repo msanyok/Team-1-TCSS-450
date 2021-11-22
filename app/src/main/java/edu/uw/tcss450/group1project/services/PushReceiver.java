@@ -26,8 +26,11 @@ import static android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREG
 import static android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_VISIBLE;
 
 /**
+ * PushReceiver is a class for accepting push notifications from Pushy
+ *
  * @author Charles Bryan
  * @author Austn Attaway
+ * @version Fall 2021
  */
 public class PushReceiver extends BroadcastReceiver {
 
@@ -64,12 +67,14 @@ public class PushReceiver extends BroadcastReceiver {
             throw new IllegalStateException("Error from Web Service. Contact Dev Support");
         }
 
-        ActivityManager.RunningAppProcessInfo appProcessInfo = new ActivityManager.RunningAppProcessInfo();
+        ActivityManager.RunningAppProcessInfo appProcessInfo =
+                new ActivityManager.RunningAppProcessInfo();
         ActivityManager.getMyMemoryState(appProcessInfo);
 
         // todo: may have multiple methods down here that accept each different type of message,
         //      will be using the typeOfMessage for this
-        if (appProcessInfo.importance == IMPORTANCE_FOREGROUND || appProcessInfo.importance == IMPORTANCE_VISIBLE) {
+        if (appProcessInfo.importance == IMPORTANCE_FOREGROUND ||
+                appProcessInfo.importance == IMPORTANCE_VISIBLE) {
             //app is in the foreground so send the message to the active Activities
             Log.d("PUSHY", "Message received in foreground: " + message);
 
@@ -93,7 +98,8 @@ public class PushReceiver extends BroadcastReceiver {
 
             //research more on notifications the how to display them
             //https://developer.android.com/guide/topics/ui/notifiers/notifications
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(theContext, CHANNEL_ID)
+            NotificationCompat.Builder builder =
+                    new NotificationCompat.Builder(theContext, CHANNEL_ID)
                     .setAutoCancel(true)
                     .setSmallIcon(R.drawable.ic_messages_black_24dp)
                     .setContentTitle("Message from: " + message.getSender())
@@ -106,7 +112,8 @@ public class PushReceiver extends BroadcastReceiver {
 
             // Get an instance of the NotificationManager service
             NotificationManager notificationManager =
-                    (NotificationManager) theContext.getSystemService(theContext.NOTIFICATION_SERVICE);
+                    (NotificationManager)
+                            theContext.getSystemService(theContext.NOTIFICATION_SERVICE);
 
             // Build the notification and display it
             notificationManager.notify(1, builder.build());

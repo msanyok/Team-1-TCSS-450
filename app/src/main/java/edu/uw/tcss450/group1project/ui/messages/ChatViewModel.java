@@ -32,6 +32,12 @@ import java.util.Objects;
 
 import edu.uw.tcss450.group1project.io.RequestQueueSingleton;
 
+/**
+ * ChatViewModel is a class containing all messages for all chat rooms.
+ *
+ * @author Austn Attaway
+ * @version Fall 2021
+ */
 public class ChatViewModel extends AndroidViewModel {
 
     /**
@@ -41,21 +47,26 @@ public class ChatViewModel extends AndroidViewModel {
      */
     private Map<Integer, MutableLiveData<List<ChatMessage>>> mMessages;
 
-    public ChatViewModel(@NonNull Application application) {
-        super(application);
+    /**
+     * Creates a new ChatViewModel with the provided application
+     *
+     * @param theApplication the application to be assigned
+     */
+    public ChatViewModel(@NonNull final Application theApplication) {
+        super(theApplication);
         mMessages = new HashMap<>();
     }
 
     /**
      * Register as an observer to listen to a specific chat room's list of messages.
-     * @param chatId the chatid of the chat to observer
-     * @param owner the fragments lifecycle owner
-     * @param observer the observer
+     * @param theChatId the chatid of the chat to observer
+     * @param theOwner the fragments lifecycle owner
+     * @param theObserver the observer
      */
-    public void addMessageObserver(int chatId,
-                                   @NonNull LifecycleOwner owner,
-                                   @NonNull Observer<? super List<ChatMessage>> observer) {
-        getOrCreateMapEntry(chatId).observe(owner, observer);
+    public void addMessageObserver(final int theChatId,
+                                   @NonNull final LifecycleOwner theOwner,
+                                   @NonNull final Observer<? super List<ChatMessage>> theObserver) {
+        getOrCreateMapEntry(theChatId).observe(theOwner, theObserver);
     }
 
     /**
@@ -66,18 +77,25 @@ public class ChatViewModel extends AndroidViewModel {
      * mutated externally in client code. Use public methods available in this class as
      * needed.
      *
-     * @param chatId the id of the chat room List to retrieve
+     * @param theChatId the id of the chat room List to retrieve
      * @return a reference to the list of messages
      */
-    public List<ChatMessage> getMessageListByChatId(final int chatId) {
-        return getOrCreateMapEntry(chatId).getValue();
+    public List<ChatMessage> getMessageListByChatId(final int theChatId) {
+        return getOrCreateMapEntry(theChatId).getValue();
     }
 
-    private MutableLiveData<List<ChatMessage>> getOrCreateMapEntry(final int chatId) {
-        if(!mMessages.containsKey(chatId)) {
-            mMessages.put(chatId, new MutableLiveData<>(new ArrayList<>()));
+    /**
+     * Provides the chat list for a provided chat id. If a chat does not exist, a new one is
+     * created.
+     *
+     * @param theChatId the chat id
+     * @return the corresponding chat list
+     */
+    private MutableLiveData<List<ChatMessage>> getOrCreateMapEntry(final int theChatId) {
+        if(!mMessages.containsKey(theChatId)) {
+            mMessages.put(theChatId, new MutableLiveData<>(new ArrayList<>()));
         }
-        return mMessages.get(chatId);
+        return mMessages.get(theChatId);
     }
 
     /**
@@ -88,11 +106,11 @@ public class ChatViewModel extends AndroidViewModel {
      * Subsequent requests to the web service for a given chat room should be made from
      * getNextMessages()
      *
-     * @param chatId the chatroom id to request messages of
-     * @param jwt the users signed JWT
+     * @param theChatId the chatroom id to request messages of
+     * @param theJwt the users signed JWT
      */
-    public void getFirstMessages(final int chatId, final String jwt) {
-        final String url = "https://team-1-tcss-450-server.herokuapp.com/messages/" + chatId;
+    public void getFirstMessages(final int theChatId, final String theJwt) {
+        final String url = "https://team-1-tcss-450-server.herokuapp.com/messages/" + theChatId;
 
         final Request request = new JsonObjectRequest(
                 Request.Method.GET,
@@ -105,7 +123,7 @@ public class ChatViewModel extends AndroidViewModel {
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
                 // add headers <key,value>
-                headers.put("Authorization", jwt);
+                headers.put("Authorization", theJwt);
                 return headers;
             }
         };
@@ -167,23 +185,29 @@ public class ChatViewModel extends AndroidViewModel {
     /**
      * When a chat message is received externally to this ViewModel, add it
      * with this method.
-     * @param chatId
-     * @param message
+     *
+     * @param theChatId the chat id
+     * @param theMessage the message to be added
      */
-    public void addMessage(final int chatId, final ChatMessage message) {
-        List<ChatMessage> list = getMessageListByChatId(chatId);
-        list.add(message);
-        getOrCreateMapEntry(chatId).setValue(list);
+    public void addMessage(final int theChatId, final ChatMessage theMessage) {
+        List<ChatMessage> list = getMessageListByChatId(theChatId);
+        list.add(theMessage);
+        getOrCreateMapEntry(theChatId).setValue(list);
     }
 
-    private void handleSuccess(final JSONObject response) {
+    /**
+     * Handles a successful response from hitting the chat list server endpoint
+     *
+     * @param theResponse the JSONObject response
+     */
+    private void handleSuccess(final JSONObject theResponse) {
         List<ChatMessage> list;
-        if (!response.has("chatId")) {
-            throw new IllegalStateException("Unexpected response in ChatViewModel: " + response);
+        if (!theResponse.has("chatId")) {
+            throw new IllegalStateException("Unexpected response in ChatViewModel: " + theResponse);
         }
         try {
-            list = getMessageListByChatId(response.getInt("chatId"));
-            JSONArray messages = response.getJSONArray("rows");
+            list = getMessageListByChatId(theResponse.getInt("chatId"));
+            JSONArray messages = theResponse.getJSONArray("rows");
             for(int i = 0; i < messages.length(); i++) {
                 JSONObject message = messages.getJSONObject(i);
                 ChatMessage cMessage = new ChatMessage(
@@ -204,22 +228,27 @@ public class ChatViewModel extends AndroidViewModel {
 
             }
             //inform observers of the change (setValue)
-            getOrCreateMapEntry(response.getInt("chatId")).setValue(list);
+            getOrCreateMapEntry(theResponse.getInt("chatId")).setValue(list);
         }catch (JSONException e) {
             Log.e("JSON PARSE ERROR", "Found in handle Success ChatViewModel");
             Log.e("JSON PARSE ERROR", "Error: " + e.getMessage());
         }
     }
 
-    private void handleError(final VolleyError error) {
+    /**
+     * Handles unsuccessful requests to the chat list server endpoint
+     *
+     * @param theError the returned error
+     */
+    private void handleError(final VolleyError theError) {
         Log.d("GET NEXT MESSAGES", "HANDLE ERROR");
-        if (Objects.isNull(error.networkResponse)) {
-            Log.e("NETWORK ERROR", error.getMessage());
+        if (Objects.isNull(theError.networkResponse)) {
+            Log.e("NETWORK ERROR", theError.getMessage());
         }
         else {
-            String data = new String(error.networkResponse.data, Charset.defaultCharset());
+            String data = new String(theError.networkResponse.data, Charset.defaultCharset());
             Log.e("CLIENT ERROR",
-                    error.networkResponse.statusCode +
+                    theError.networkResponse.statusCode +
                             " " +
                             data);
         }

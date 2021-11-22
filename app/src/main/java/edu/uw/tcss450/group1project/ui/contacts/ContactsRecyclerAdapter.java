@@ -18,9 +18,6 @@ import java.util.function.Consumer;
 
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentContactsCardBinding;
-import edu.uw.tcss450.group1project.databinding.FragmentHomeContactRequestCardBinding;
-import edu.uw.tcss450.group1project.model.ContactRequestViewModel;
-import edu.uw.tcss450.group1project.model.UserInfoViewModel;
 
 /**
  * ContactRecyclerAdapter provides an adapter for the ContactsFragment RecyclerView.
@@ -43,7 +40,8 @@ public class ContactsRecyclerAdapter
      * @param theContacts the list of contacts
      * @param theConsumer the method to be passed
      */
-    public ContactsRecyclerAdapter(final List<Contact> theContacts, final Consumer<Contact> theConsumer) {
+    public ContactsRecyclerAdapter(final List<Contact> theContacts,
+                                   final Consumer<Contact> theConsumer) {
         mContacts = theContacts;
         mConsumer = theConsumer;
 

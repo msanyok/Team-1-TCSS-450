@@ -5,12 +5,10 @@
 
 package edu.uw.tcss450.group1project;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.os.Bundle;
-import android.util.Log;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import edu.uw.tcss450.group1project.model.PushyTokenViewModel;
 import me.pushy.sdk.Pushy;
