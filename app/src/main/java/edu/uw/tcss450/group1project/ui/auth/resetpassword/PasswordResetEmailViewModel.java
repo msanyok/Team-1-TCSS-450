@@ -21,6 +21,14 @@ import org.json.JSONObject;
 import java.nio.charset.Charset;
 import java.util.Objects;
 
+/**
+ * An {@link AndroidViewModel} child class that handles the data related to
+ * verifying a user's account.
+ *
+ * @author Chris Ding
+ * @author Austn Attaway
+ * @version Fall 2021
+ */
 public class PasswordResetEmailViewModel extends AndroidViewModel {
 
     /**

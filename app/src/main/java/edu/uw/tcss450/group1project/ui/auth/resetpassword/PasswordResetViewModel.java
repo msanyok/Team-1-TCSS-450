@@ -21,6 +21,14 @@ import org.json.JSONObject;
 import java.nio.charset.Charset;
 import java.util.Objects;
 
+/**
+ * An {@link AndroidViewModel} child class that handles the data related to
+ * verifying a user's account.
+ *
+ * @author Chris Ding
+ * @author Austn Attaway
+ * @version Fall 2021
+ */
 public class PasswordResetViewModel extends AndroidViewModel {
 
     /**
@@ -33,7 +41,6 @@ public class PasswordResetViewModel extends AndroidViewModel {
      * Creates a new RegisterVerificationViewModel that is tied to the given application.
      *
      * @param theApplication the Application this ViewModel belongs to
-     * @throws NullPointerException if theApplication is null
      */
     public PasswordResetViewModel(@NonNull final Application theApplication) {
         super(Objects.requireNonNull(theApplication, "theApplication can not be null."));
@@ -41,6 +48,14 @@ public class PasswordResetViewModel extends AndroidViewModel {
         mResponse.setValue(new JSONObject());
     }
 
+    /**
+     * Adds the given observer to the response live data.
+     *
+     * @param theOwner the lifecycle owner of the fragment that contains the observer
+     * @param theObserver the observer that is used when the response data changes state
+     * @throws NullPointerException if theOwner is null
+     * @throws NullPointerException if theObserver is null
+     */
     public void addResponseObserver(@NonNull final LifecycleOwner theOwner,
                                     @NonNull final Observer<? super JSONObject> theObserver) {
         Objects.requireNonNull(theOwner, "theOwner can not be null");
@@ -48,6 +63,17 @@ public class PasswordResetViewModel extends AndroidViewModel {
         mResponse.observe(theOwner, theObserver);
     }
 
+    /**
+     * Sends an HTTP POST request to the server attempting to validate
+     * the account that corresponds to the given email using the
+     * given verification code, and reset the password.
+     *
+     * @param theEmail the user's email attatched to their account
+     * @param theCode  the user's inputted verification code
+     * @throws NullPointerException if theEmail is null
+     * @throws NullPointerException if thePassword is null
+     * @throws NullPointerException if theCode is null
+     */
     public void connect(@NonNull final String theEmail,
                         @NonNull final String thePassword,
                         @NonNull final String theCode) {
@@ -57,18 +83,19 @@ public class PasswordResetViewModel extends AndroidViewModel {
         Objects.requireNonNull(theCode, "theCode can not be null");
 
 
-        final String url = "https://team-1-tcss-450-server.herokuapp.com/auth/verify";
+        final String url = "https://team-1-tcss-450-server.herokuapp.com/password/reset";
 
         final JSONObject body = new JSONObject();
         try {
             body.put("email", theEmail);
-            body.put("password", thePassword);
+            body.put("newPassword", thePassword);
+            body.put("code", theCode);
         } catch (JSONException exception) {
             exception.printStackTrace();
         }
 
         final Request request = new JsonObjectRequest(
-                Request.Method.POST,
+                Request.Method.PUT,
                 url,
                 body,
                 mResponse::setValue,

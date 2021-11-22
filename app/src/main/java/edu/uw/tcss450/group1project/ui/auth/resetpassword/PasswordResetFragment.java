@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
@@ -28,9 +29,8 @@ import edu.uw.tcss450.group1project.utils.TextFieldHints;
 import edu.uw.tcss450.group1project.utils.TextFieldValidators;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link PasswordResetFragment#} factory method to
- * create an instance of this fragment.
+ * An {@link AndroidViewModel} child class that handles the data related to
+ * verifying a user's account.
  *
  * @author Chris Ding
  * @author Austn Attaway
@@ -38,20 +38,26 @@ import edu.uw.tcss450.group1project.utils.TextFieldValidators;
  */
 public class PasswordResetFragment extends Fragment {
 
+    /** ViewBinding reference to the email entry Fragment UI */
     private FragmentPasswordResetBinding mBinding;
 
+    /** ViewModel used for Password Reset */
     private PasswordResetViewModel mPasswordResetModel;
 
-    private final PasswordValidator mCodeValidator = PasswordValidator.checkPwdLength(5)
-            .and(PasswordValidator.checkExcludeWhiteSpace());
+    /**Space checker helper for code*/
+    private final PasswordValidator mCodeValidator = PasswordValidator
+            .checkPwdLength(5).and(PasswordValidator.checkExcludeWhiteSpace());
 
+    /**
+     * Empty public constructor. Does not provide any functionality.
+     */
     public PasswordResetFragment() {
         // Required empty public constructor
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onCreate(Bundle theSavedInstanceState) {
+        super.onCreate(theSavedInstanceState);
 
     }
 
@@ -102,12 +108,6 @@ public class PasswordResetFragment extends Fragment {
     }
 
     /**
-     * Attempts to validate that the inputted password is valid.
-     *
-     * If the validation succeeds, verify all of the credentials with the server.
-     * Else, sets an error on the first password field asking the user to input a valid password.
-     */
-    /**
      * Attempts to validate that the inputted passwords are the same.
      *
      * If the validation succeeds, attempts to validate the password itself.
@@ -124,6 +124,10 @@ public class PasswordResetFragment extends Fragment {
                 result -> mBinding.resetPassword.setError("Passwords must match."));
     }
 
+    /**
+     * Asynchronously attempts to verify the account in the server with the verification
+     * code entered on the verification fragment.
+     */
     private void verifyWithServer() {
         final PasswordResetFragmentArgs args =
                 PasswordResetFragmentArgs.fromBundle(getArguments());
@@ -135,7 +139,7 @@ public class PasswordResetFragment extends Fragment {
     }
 
     /**
-     * Navigates to the registration verification page.
+     * Navigates back to the sign in page with email and new password.
      */
     private void navigateToSignInFragment() {
         final PasswordResetFragmentArgs args =
