@@ -202,7 +202,7 @@ public class ContactsFragment extends Fragment {
                     Toast.makeText(getContext(),"You have deleted " + theContact.getNickname()
                                     + " from contacts.",
                             Toast.LENGTH_SHORT).show();
-                    mContactsModel.sendDeleteResponse(mUserInfo.getmJwt(), theContact.getmMemberid());
+                    mContactsModel.sendDeleteResponse(mUserInfo.getmJwt(), theContact.getMemberId());
                 });
         alertDialog.setNegativeButton(Html.fromHtml("<font color='#000000'>Cancel</font>"),
                 (dialog, which) -> {});
