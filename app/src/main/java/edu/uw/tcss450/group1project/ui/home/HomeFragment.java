@@ -88,6 +88,7 @@ public class HomeFragment extends Fragment {
 
         mWeatherModel.addResponseObserver(getViewLifecycleOwner(), this::observeWeatherResponse);
         mRequestModel.addRequestObserver(getViewLifecycleOwner(), this::observeRequestResponse);
+        mRequestModel.addRequestResponseObserver(getViewLifecycleOwner(), this::observeRequestResponse);
 
         FragmentHomeBinding binding = FragmentHomeBinding.bind(getView());
         binding.welcomeText.setText(String.format("Welcome, %s!", mUserModel.getEmail()));
@@ -125,6 +126,7 @@ public class HomeFragment extends Fragment {
                 Log.e("REQUEST ERROR", theResponse.toString());
             } else if (theResponse.length() != 0) {
                 setContactListComponents();
+
             }
         } else {
             // no response from the request
@@ -143,7 +145,6 @@ public class HomeFragment extends Fragment {
                 .get(UserInfoViewModel.class);
         binding.listContactRequests.setAdapter(new ContactRequestRecyclerAdapter(
                 mRequestModel.getContactList(), mRequestModel, userInfo));
-
     }
 
     /**

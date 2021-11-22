@@ -2,9 +2,13 @@ package edu.uw.tcss450.group1project.model;
 
 
 import android.app.Application;
+import android.text.Html;
 import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
@@ -83,6 +87,22 @@ public class ContactRequestViewModel extends AndroidViewModel {
                                    @NonNull final Observer<? super JSONObject> theObserver) {
         Objects.requireNonNull(theOwner, "theOwner can not be null");
         Objects.requireNonNull(theObserver, "theObserver can not be null");
+        mContactRequestResponse.observe(theOwner, theObserver);
+    }
+
+
+    /**
+     * Adds the given observer to the contact request response live data.
+     *
+     * @param theOwner the lifecycle owner of the fragment that contains the observer
+     * @param theObserver the observer that is used when the response data changes state
+     * @throws NullPointerException if theOwner is null
+     * @throws NullPointerException if theObserver is null
+     */
+    public void addRequestResponseObserver(@NonNull final LifecycleOwner theOwner,
+                                   @NonNull final Observer<? super JSONObject> theObserver) {
+        Objects.requireNonNull(theOwner, "theOwner can not be null");
+        Objects.requireNonNull(theObserver, "theObserver can not be null");
         mRequestResponse.observe(theOwner, theObserver);
     }
 
@@ -121,7 +141,7 @@ public class ContactRequestViewModel extends AndroidViewModel {
 
     /**
      * Returns the current list of contacts
-     * @return
+     * @return mRequestList List<Contacts>
      */
     public List<Contact> getContactList() {
         return mRequestList;

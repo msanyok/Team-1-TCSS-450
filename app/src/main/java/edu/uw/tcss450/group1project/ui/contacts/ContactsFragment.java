@@ -7,6 +7,7 @@ package edu.uw.tcss450.group1project.ui.contacts;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -43,6 +45,8 @@ public class ContactsFragment extends Fragment {
     /** ViewModel for registration */
     private ContactsViewModel mContactsModel;
 
+    private UserInfoViewModel mUserInfo;
+
     /**
      * Empty public constructor. Does not provide any functionality.
      */
@@ -55,6 +59,8 @@ public class ContactsFragment extends Fragment {
         super.onCreate(theSavedInstanceState);
         mContactsModel = new ViewModelProvider(getActivity())
                 .get(ContactsViewModel.class);
+
+        mUserInfo = new ViewModelProvider(getActivity()).get(UserInfoViewModel.class);
     }
 
     @Override
@@ -172,10 +178,14 @@ public class ContactsFragment extends Fragment {
         if (theResponse.length() > 0) {
             if (theResponse.has("code")) {
                 // a 400 error occurred, so log it.
-                Log.e("CHATS LIST ERROR", theResponse.toString());
+                Log.e("Contact List Error", theResponse.toString());
                 // TODO: Handle UI change when the chat list is not received properly?
             } else {
-                mBinding.listRoot.setAdapter(new ContactsRecyclerAdapter(mContactsModel.getContactList()));
+
+                UserInfoViewModel userInfo = new ViewModelProvider(this.getActivity())
+                        .get(UserInfoViewModel.class);
+                mBinding.listRoot.setAdapter(new ContactsRecyclerAdapter(
+                        mContactsModel.getContactList(), this::showContactDeleteAlertDialog));
                 mContactsModel.removeData();
                 mBinding.addContactText.setError(null);
             }
@@ -184,6 +194,28 @@ public class ContactsFragment extends Fragment {
             Log.d("Chats List JSON Response", "No Response: "
                     + theResponse.toString());
         }
+    }
+
+    /**
+     * Function of warning for deleting a contact using alert dialog
+     *
+     * @param theContact theContact to be deleted
+     */
+    public void showContactDeleteAlertDialog(final Contact theContact) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
+        alertDialog.setMessage(Html.fromHtml("<font color='#000000'>Deleting this contact " +
+                "will be permanent. Are you sure?</font>"));
+        alertDialog.setPositiveButton(Html.fromHtml("<font color='000000'>Delete</font>"),
+                (dialog, which) -> {
+                    //TODO add delete function in it
+                    Toast.makeText(getContext(),"You have deleted " + theContact.getNickname()
+                                    + " from contacts.",
+                            Toast.LENGTH_SHORT).show();
+                    mContactsModel.sendDeleteResponse(mUserInfo.getmJwt(), theContact.getmMemberid());
+                });
+        alertDialog.setNegativeButton(Html.fromHtml("<font color='#000000'>Cancel</font>"),
+                (dialog, which) -> {});
+        alertDialog.show();
     }
 
 

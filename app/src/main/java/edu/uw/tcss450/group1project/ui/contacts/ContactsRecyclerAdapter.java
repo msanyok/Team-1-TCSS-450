@@ -14,9 +14,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentContactsCardBinding;
+import edu.uw.tcss450.group1project.databinding.FragmentHomeContactRequestCardBinding;
+import edu.uw.tcss450.group1project.model.ContactRequestViewModel;
+import edu.uw.tcss450.group1project.model.UserInfoViewModel;
 
 /**
  * ContactRecyclerAdapter provides an adapter for the ContactsFragment RecyclerView.
@@ -30,13 +34,19 @@ public class ContactsRecyclerAdapter
     /** The list of contacts to be displayed */
     private final List<Contact> mContacts;
 
+    /** The Consumer responsible for contact deletion*/
+    private final Consumer<Contact> mConsumer;
+
     /**
      * Creates a new ContactsRecyclerAdapter with a provided list of contacts
      *
      * @param theContacts the list of contacts
+     * @param theConsumer the method to be passed
      */
-    public ContactsRecyclerAdapter(final List<Contact> theContacts) {
+    public ContactsRecyclerAdapter(final List<Contact> theContacts, final Consumer<Contact> theConsumer) {
         mContacts = theContacts;
+        mConsumer = theConsumer;
+
     }
 
     @NonNull
@@ -49,9 +59,7 @@ public class ContactsRecyclerAdapter
                                       .inflate(R.layout.fragment_contacts_card,
                                               theParent, false));
 
-
     }
-
     @Override
     public void onBindViewHolder(@NonNull final ContactsViewHolder holder, final int position) {
         holder.setContact(mContacts.get(position));
@@ -68,6 +76,7 @@ public class ContactsRecyclerAdapter
      *
      * @author Parker Rosengreen
      * @author Chris Ding
+     * @author Steven Omegna
      * @version Fall 2021
      */
     public class ContactsViewHolder extends RecyclerView.ViewHolder {
@@ -106,6 +115,8 @@ public class ContactsRecyclerAdapter
 
         /**
          * Helper used to determine if the preview should be displayed or not.
+         *
+         * Adds onClickListener to send the contact for deletion
          */
         private void displayContactCardPreview() {
             if (mBinding.buttonDelete.getVisibility() == View.GONE) {
@@ -121,6 +132,10 @@ public class ContactsRecyclerAdapter
                                 mView.getContext(),
                                 R.drawable.ic_more_grey_arrow_down_24dp));
             }
+
+            mBinding.buttonDelete.setOnClickListener(button -> {
+                mConsumer.accept(mContact);
+            });
         }
 
         /**

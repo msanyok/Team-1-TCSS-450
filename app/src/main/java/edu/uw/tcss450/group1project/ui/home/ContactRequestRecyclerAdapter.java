@@ -36,6 +36,7 @@ public class ContactRequestRecyclerAdapter
 
     /** The Contact request view model  */
     private final ContactRequestViewModel mContactRequests;
+
     /** The UserInfoView Model for Jwt */
     private final UserInfoViewModel mUserInfo;
 

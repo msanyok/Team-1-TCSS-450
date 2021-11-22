@@ -152,26 +152,6 @@ public class MainActivity extends ThemedActivity {
                 || super.onSupportNavigateUp();
     }
 
-    /**
-     * Function of warning for deleting a contact using alert dialog
-     *
-     * @param theView the view to be assigned
-     */
-    public void showContactDeleteAlertDialog(final View theView) {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
-        alertDialog.setMessage(Html.fromHtml("<font color='#000000'>Deleting this contact " +
-                "will be permanent. Are you sure?</font>"));
-        alertDialog.setPositiveButton(Html.fromHtml("<font color='000000'>Delete</font>"),
-                (dialog, which) -> {
-                    //TODO add delete function in it
-                    Toast.makeText(getApplicationContext(),"You have deleted this contact.",
-                            Toast.LENGTH_SHORT).show();
-        });
-        alertDialog.setNegativeButton(Html.fromHtml("<font color='#000000'>Cancel</font>"),
-                (dialog, which) -> {});
-        alertDialog.show();
-    }
-
     @Override
     public void onResume() {
         super.onResume();

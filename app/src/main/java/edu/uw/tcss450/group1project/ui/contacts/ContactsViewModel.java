@@ -49,6 +49,13 @@ public class ContactsViewModel extends AndroidViewModel {
      */
     private MutableLiveData<JSONObject> mContactResponse;
 
+
+    /**
+     * The {@link MutableLiveData} that stores the JSON response from the server
+     * when the user gets contacts from the server.
+     */
+    private MutableLiveData<JSONObject> mDeleteResponse;
+
     /** The live data that stores the list of Contact objects. This should be observed. */
     private List<Contact> mContactList;
 
@@ -68,8 +75,12 @@ public class ContactsViewModel extends AndroidViewModel {
         mContactResponse = new MutableLiveData<>();
         mContactResponse.setValue(new JSONObject());
 
+        mDeleteResponse = new MutableLiveData<>();
+        mDeleteResponse.setValue(new JSONObject());
 
     }
+
+
 
     /**
      * Adds the given observer to the Contact list live data.
@@ -137,6 +148,49 @@ public class ContactsViewModel extends AndroidViewModel {
         Volley.newRequestQueue(getApplication().getApplicationContext())
                 .add(request);
     }
+
+    /**
+     * Sends an HTTP DELETE request to the server attempting to delete contact
+     *
+     * @param theMemberId the Id of the contact to be deleted
+     * @param theJwt JWT token to be passed to server
+     * @throws NullPointerException if theNickname is null
+     */
+    public void sendDeleteResponse(final String theJwt, final String theMemberId) {
+        System.out.println(theMemberId);
+        Objects.requireNonNull(theMemberId, "theMemberId can not be null");
+        final String url = "https://team-1-tcss-450-server.herokuapp.com/contacts/" + theMemberId;
+
+        final JSONObject body = new JSONObject();
+        try {
+            body.put("memberId", theMemberId);
+        } catch (JSONException exception) {
+            exception.printStackTrace();
+        }
+
+        final Request request = new JsonObjectRequest(
+                Request.Method.DELETE,
+                url,
+                null,
+                mRequestResponse::setValue,
+                this::handleRequestError){
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", theJwt);
+                return headers;
+            }
+        };
+
+        request.setRetryPolicy(new DefaultRetryPolicy(
+                10_000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        //Instantiate the RequestQueue and add the request to the queue
+        Volley.newRequestQueue(getApplication().getApplicationContext())
+                .add(request);
+    }
+
 
     /**
      * Returns the current list of contacts
