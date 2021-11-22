@@ -1,3 +1,7 @@
+/*
+ * TCSS450 Mobile Applications
+ * Fall 2021
+ */
 package edu.uw.tcss450.group1project.ui.auth.resetpassword;
 
 import android.app.Application;
@@ -23,7 +27,7 @@ import java.util.Objects;
 
 /**
  * An {@link AndroidViewModel} child class that handles the data related to
- * verifying a user's account.
+ * verify code and reset password.
  *
  * @author Chris Ding
  * @author Austn Attaway
@@ -33,12 +37,12 @@ public class PasswordResetViewModel extends AndroidViewModel {
 
     /**
      * The {@link MutableLiveData} that stores the JSON response from the server
-     * when the user tries to verify their account.
+     * when the user tries to reset their password.
      */
     private MutableLiveData<JSONObject> mResponse;
 
     /**
-     * Creates a new RegisterVerificationViewModel that is tied to the given application.
+     * Creates a new PasswordResetViewModel that is tied to the given application.
      *
      * @param theApplication the Application this ViewModel belongs to
      */
@@ -64,11 +68,12 @@ public class PasswordResetViewModel extends AndroidViewModel {
     }
 
     /**
-     * Sends an HTTP POST request to the server attempting to validate
+     * Sends an HTTP PUT request to the server attempting to validate
      * the account that corresponds to the given email using the
      * given verification code, and reset the password.
      *
-     * @param theEmail the user's email attatched to their account
+     * @param theEmail the user's email attached to their account
+     * @param thePassword the user's password attached to their account
      * @param theCode  the user's inputted verification code
      * @throws NullPointerException if theEmail is null
      * @throws NullPointerException if thePassword is null

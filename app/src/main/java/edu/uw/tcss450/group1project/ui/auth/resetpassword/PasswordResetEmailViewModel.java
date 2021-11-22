@@ -1,3 +1,7 @@
+/*
+ * TCSS450 Mobile Applications
+ * Fall 2021
+ */
 package edu.uw.tcss450.group1project.ui.auth.resetpassword;
 
 import android.app.Application;
@@ -23,7 +27,7 @@ import java.util.Objects;
 
 /**
  * An {@link AndroidViewModel} child class that handles the data related to
- * verifying a user's account.
+ * enter the email and resend a code.
  *
  * @author Chris Ding
  * @author Austn Attaway
@@ -59,6 +63,13 @@ public class PasswordResetEmailViewModel extends AndroidViewModel {
         mResponse.observe(theOwner, theObserver);
     }
 
+    /**
+     * Sends an HTTP POST request to the server attempting to validate
+     * the email that match user's account.
+     *
+     * @param theEmail the user's email attatched to their account
+     * @throws NullPointerException if theEmail is null
+     */
     public void connect(@NonNull final String theEmail){
         Objects.requireNonNull(theEmail, "theEmail can not be null");
 

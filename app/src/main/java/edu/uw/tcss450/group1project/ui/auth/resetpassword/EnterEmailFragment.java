@@ -1,3 +1,7 @@
+/*
+ * TCSS450 Mobile Applications
+ * Fall 2021
+ */
 package edu.uw.tcss450.group1project.ui.auth.resetpassword;
 
 import android.os.Bundle;
@@ -58,8 +62,7 @@ public class EnterEmailFragment extends Fragment {
     }
 
     /**
-     * Starts the chain of text field validation that attempts to validate
-     * all registration text input fields.
+     * Starts the chain of text field validation that attempts to validate email input field.
      *
      * @param theButton the Button that was pressed to invoke this method.
      */
