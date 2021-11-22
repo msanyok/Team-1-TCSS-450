@@ -16,6 +16,7 @@ import java.util.List;
 
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentWeather10dayCardBinding;
+import edu.uw.tcss450.group1project.utils.WeatherUtils;
 
 /**
  * WeatherRecyclerAdapter10Day provides an adapter for the WeatherFragment 10-day forecast

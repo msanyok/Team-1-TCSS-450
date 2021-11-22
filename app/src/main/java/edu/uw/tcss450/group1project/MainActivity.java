@@ -12,7 +12,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Html;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,7 +28,6 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import edu.uw.tcss450.group1project.databinding.ActivityMainBinding;
 import edu.uw.tcss450.group1project.model.NewMessageCountViewModel;
 import edu.uw.tcss450.group1project.model.PushyTokenViewModel;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
@@ -172,6 +170,20 @@ public class MainActivity extends ThemedActivity {
         alertDialog.show();
     }
 
+    /**
+     * Displays an error dialog with a custom message to the user
+     *
+     * @param theMessage the custom message
+     */
+    public void displayErrorDialog(final String theMessage) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+        alertDialog.setMessage(Html.fromHtml("<font color='#000000'>" +
+                theMessage + "</font>"));
+        alertDialog.setPositiveButton(Html.fromHtml("<font color='000000'>Ok</font>"),
+                (dialog, which) -> {});
+        alertDialog.show();
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -236,7 +248,8 @@ public class MainActivity extends ThemedActivity {
             // figure out what kind of pushy notification was sent, then do the corresponding tasks.
             if (theIntent.hasExtra("chatMessage")) {
 
-                ChatMessage chatMessage = (ChatMessage) theIntent.getSerializableExtra("chatMessage");
+                ChatMessage chatMessage =
+                        (ChatMessage) theIntent.getSerializableExtra("chatMessage");
 
                 //If the user is not on the chat screen, update the
                 // NewMessageCountView Model

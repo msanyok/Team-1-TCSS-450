@@ -18,16 +18,16 @@ import java.util.Objects;
 public class Contact {
 
     /** The Member ID */
-    private String mMemberid;
+    private final String mMemberId;
 
     /** The first name */
-    private String mFirst;
+    private final String mFirst;
 
     /** The last name */
-    private String mLast;
+    private final String mLast;
 
     /** The nickname */
-    private String mNickname;
+    private final String mNickname;
 
     /**
      * Creates a new contact with provided data values
@@ -36,8 +36,9 @@ public class Contact {
      * @param theLast the last name
      * @param theNickname the nickname
      */
-    public Contact(final String theFirst, final String theLast, final String theNickname, final String theID) {
-        mMemberid = theID;
+    public Contact(final String theFirst, final String theLast,
+                   final String theNickname, final String theID) {
+        mMemberId = theID;
         mFirst = theFirst;
         mLast = theLast;
         mNickname = theNickname;
@@ -75,43 +76,7 @@ public class Contact {
      *
      * @return the nickname
      */
-    public String getmMemberid() { return mMemberid; }
-
-    /**
-     * Sets the contact's nickname
-     *
-     * @param theMemberID the MemberID to be assigned
-     */
-    public void setmMemberid(final String theMemberID) {
-        this.mMemberid = theMemberID;
-    }
-
-    /**
-     * Sets the contact's nickname
-     *
-     * @param theNickname the nickname to be assigned
-     */
-    public void setNickname(final String theNickname) {
-        mNickname = theNickname;
-    }
-
-    /**
-     * Sets the contact's first name
-     *
-     * @param theFirst the first name to be assigned
-     */
-    public void setFirstName(final String theFirst) {
-        mFirst = theFirst;
-    }
-
-    /**
-     * Sets the contact's last name
-     *
-     * @param theLast the last name to be assigned
-     */
-    public void setLastName(final String theLast) {
-        mLast = theLast;
-    }
+    public String getMemberId() { return mMemberId; }
 
     @NonNull
     @Override
@@ -123,14 +88,13 @@ public class Contact {
     public boolean equals(final Object theOther) {
         boolean result = false;
         if (theOther instanceof Contact) {
-            Contact other = (Contact) theOther;
-            result = getNickname().equals(((Contact) theOther).getNickname());
+            result = mMemberId.equals(((Contact) theOther).getMemberId());
         }
         return result;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(mNickname);
+        return Objects.hash(mMemberId);
     }
 }

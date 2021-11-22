@@ -69,7 +69,6 @@ public class ContactsFragment extends Fragment {
     public void onViewCreated(@NonNull final View theView,
                               @Nullable final Bundle theSavedInstanceState) {
         super.onViewCreated(theView, theSavedInstanceState);
-
         // get the contacts for the current user and put them on the screen
         UserInfoViewModel userInfo = new ViewModelProvider(this.getActivity())
                 .get(UserInfoViewModel.class);
@@ -91,8 +90,9 @@ public class ContactsFragment extends Fragment {
         //hides keyboard
         InputMethodManager imm = (InputMethodManager)getActivity()
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
-                0);
+        if (getActivity().getCurrentFocus() != null) {
+            imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),0);
+        }
         validateNickname();
     }
 
@@ -175,7 +175,8 @@ public class ContactsFragment extends Fragment {
                 Log.e("CHATS LIST ERROR", theResponse.toString());
                 // TODO: Handle UI change when the chat list is not received properly?
             } else {
-                mBinding.listRoot.setAdapter(new ContactsRecyclerAdapter(mContactsModel.getContactList()));
+                mBinding.listRoot.setAdapter(
+                        new ContactsRecyclerAdapter(mContactsModel.getContactList()));
                 mContactsModel.removeData();
                 mBinding.addContactText.setError(null);
             }

@@ -2,6 +2,7 @@
 <resources>
     <!-- This file holds attributes for themed components -->
     <attr name="cardTextColor" format="reference" />
+    <attr name="cardColor" format="reference" />
     <attr name="cardImageColor" format="reference" />
     <attr name="buttonTextColor" format="reference" />
     <attr name="buttonRegisterColor" format="reference" />

@@ -6,25 +6,23 @@
 package edu.uw.tcss450.group1project.ui.weather;
 
 import android.os.Bundle;
-import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
+import edu.uw.tcss450.group1project.MainActivity;
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentWeatherBinding;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
 import edu.uw.tcss450.group1project.model.WeatherDataViewModel;
+import edu.uw.tcss450.group1project.utils.WeatherUtils;
 
 /**
  * A {@link Fragment} subclass that is responsible for the weather page.
@@ -37,6 +35,8 @@ public class WeatherFragment extends Fragment {
 
     /** The weather data view model */
     private WeatherDataViewModel mModel;
+
+    private FragmentWeatherBinding mBinding;
 
     /**
      * Empty public constructor. Does not provide any functionality.
@@ -51,9 +51,7 @@ public class WeatherFragment extends Fragment {
         mModel = new ViewModelProvider(getActivity()).get(WeatherDataViewModel.class);
         UserInfoViewModel userInfo = new ViewModelProvider(getActivity())
                 .get(UserInfoViewModel.class);
-        if (!mModel.containsReadableData()) {
-            mModel.connectGet(userInfo.getmJwt(), false);
-        }
+        mModel.connectGet(userInfo.getmJwt(), false);
     }
 
     @Override
@@ -67,6 +65,7 @@ public class WeatherFragment extends Fragment {
     public void onViewCreated(@NonNull final View theView,
                               @Nullable final Bundle theSavedInstanceState) {
         super.onViewCreated(theView, theSavedInstanceState);
+        mBinding = FragmentWeatherBinding.bind(getView());
         UserInfoViewModel model = new ViewModelProvider(getActivity())
                 .get(UserInfoViewModel.class);
 
@@ -79,15 +78,12 @@ public class WeatherFragment extends Fragment {
      * @param theResponse the changed JSONObject
      */
     private void observeResponse(final JSONObject theResponse) {
-        Log.d("OBS", "response observed in weather fragment");
-        if (theResponse.has("error")) {
-            try {
-                displayErrorDialog(theResponse.get("error").toString());
-            } catch (JSONException ex) {
-                Log.e("ERROR", "Could not parse error JSON");
-            }
+        System.out.println(theResponse);
+        if (theResponse.has("code")) {
+            displayErrorDialog();
             mModel.clearResponse();
-        } else if (theResponse.length() != 0 || mModel.containsReadableData()) {
+        }
+        if (mModel.containsReadableData()) {
             setViewComponents();
         }
     }
@@ -96,35 +92,31 @@ public class WeatherFragment extends Fragment {
      * Sets up this fragment's view components with data from the WeatherDataViewModel
      */
     private void setViewComponents() {
-        if (mModel.containsReadableData()) {
-            FragmentWeatherBinding binding = FragmentWeatherBinding.bind(getView());
-            binding.titleCity.setText(mModel.getCurrentData().getCity());
-            binding.titleWeatherIcon.setImageResource(
-                    WeatherUtils.getInstance()
-                            .getIconResource(mModel.getCurrentData().getWeatherCondition()));
-            binding.titleTemperature
-                    .setText(String.valueOf(mModel.getCurrentData().getTemperature()) + "\u2109");
-            binding.titleFeelsLike
-                    .setText("Feels like: " + mModel.getCurrentData().getFeelsLike() + "\u2109");
-            binding.titleChanceRain
-                    .setText("Precipitation: " +
-                            mModel.getCurrentData().getPrecipPercentage() + "%");
-            binding.titleHumidity
-                    .setText("Humidity: " + mModel.getCurrentData().getHumidity() + "%");
+        mBinding.titleCity.setText(mModel.getCurrentData().getCity());
+        mBinding.titleWeatherIcon.setImageResource(
+                WeatherUtils.getInstance()
+                        .getIconResource(mModel.getCurrentData().getWeatherCondition()));
+        mBinding.titleTemperature
+                .setText(String.valueOf(mModel.getCurrentData().getTemperature()) + "\u2109");
+        mBinding.titleFeelsLike
+                .setText("Feels like: " + mModel.getCurrentData().getFeelsLike() + "\u2109");
+        mBinding.titleChanceRain
+                .setText("Precipitation: " +
+                        mModel.getCurrentData().getPrecipPercentage() + "%");
+        mBinding.titleHumidity
+                .setText("Humidity: " + mModel.getCurrentData().getHumidity() + "%");
 
-            binding.listHourlyForecast
-                    .setAdapter(new WeatherRecyclerAdapterHourly(mModel.getHourlyData()));
-            binding.listDailyForecast
-                    .setAdapter(new WeatherRecyclerAdapterDaily(mModel.getDailyData()));
-        }
+        mBinding.listHourlyForecast
+                .setAdapter(new WeatherRecyclerAdapterHourly(mModel.getHourlyData()));
+        mBinding.listDailyForecast
+                .setAdapter(new WeatherRecyclerAdapterDaily(mModel.getDailyData()));
     }
 
-    private void displayErrorDialog(final String theError) {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
-        alertDialog.setMessage(Html.fromHtml("<font color='#000000'>Unexpected " +
-                        theError + " when loading weather." + " Please try again.</font>"));
-        alertDialog.setPositiveButton(Html.fromHtml("<font color='000000'>Ok</font>"),
-                (dialog, which) -> {});
-        alertDialog.show();
+    /**
+     * Displays an error dialog when an error occurs in retrieving weather data
+     */
+    private void displayErrorDialog() {
+        String message = "Unexpected error when loading weather. Please try again.";
+        ((MainActivity) getActivity()).displayErrorDialog(message);
     }
 }

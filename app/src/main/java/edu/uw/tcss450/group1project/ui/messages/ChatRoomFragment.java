@@ -6,16 +6,15 @@
 package edu.uw.tcss450.group1project.ui.messages;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentChatroomBinding;
@@ -25,7 +24,7 @@ import edu.uw.tcss450.group1project.model.UserInfoViewModel;
  * The Fragment that stores the chat threads for a particular chat
  *
  * @author Chris Ding
- * @author Austn Attawau
+ * @author Austn Attaway
  * @version Fall 2021
  */
 public class ChatRoomFragment extends Fragment {
