@@ -92,8 +92,10 @@ public class SignInFragment extends Fragment {
 
         mBinding.buttonResetPassword.setOnClickListener(button ->
                 Navigation.findNavController(getView()).navigate(
-                        SignInFragmentDirections.actionSignInFragmentToEnterEmailFragment()
-                ));
+                        SignInFragmentDirections.actionSignInFragmentToEnterEmailFragment(
+                        mBinding.editEmail.getText().toString()
+                        )));
+
 
         mBinding.buttonSignIn.setOnClickListener(this::attemptSignIn);
 

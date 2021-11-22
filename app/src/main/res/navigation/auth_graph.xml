@@ -68,20 +68,26 @@
     </fragment>
     <fragment
         android:id="@+id/enterEmailFragment"
-        android:name="edu.uw.tcss450.group1project.ui.auth.signin.EnterEmailFragment"
+        android:name="edu.uw.tcss450.group1project.ui.auth.resetpassword.EnterEmailFragment"
         android:label="fragment_enter_email"
         tools:layout="@layout/fragment_enter_email" >
         <action
             android:id="@+id/action_enterEmailFragment_to_passwordResetFragment"
             app:destination="@id/passwordResetFragment" />
+        <argument
+            android:name="email"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/passwordResetFragment"
-        android:name="edu.uw.tcss450.group1project.ui.auth.signin.PasswordResetFragment"
+        android:name="edu.uw.tcss450.group1project.ui.auth.resetpassword.PasswordResetFragment"
         android:label="fragment_password_reset"
         tools:layout="@layout/fragment_password_reset" >
         <argument
             android:name="email"
             app:argType="string" />
+        <action
+            android:id="@+id/action_passwordResetFragment_to_SignInFragment"
+            app:destination="@id/SignInFragment" />
     </fragment>
 </navigation>

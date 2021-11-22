@@ -1,4 +1,4 @@
-package edu.uw.tcss450.group1project.ui.auth.signin;
+package edu.uw.tcss450.group1project.ui.auth.resetpassword;
 
 import android.os.Bundle;
 
@@ -13,26 +13,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Objects;
-
-import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentEnterEmailBinding;
-import edu.uw.tcss450.group1project.databinding.FragmentSignInBinding;
-import edu.uw.tcss450.group1project.ui.auth.register.RegisterFragmentDirections;
-import edu.uw.tcss450.group1project.ui.auth.register.RegisterViewModel;
 import edu.uw.tcss450.group1project.utils.TextFieldHints;
 import edu.uw.tcss450.group1project.utils.TextFieldValidators;
 
 /**
+ * A {@link Fragment} subclass that handles input and output
+ * when the user is attempting to reset password by input email.
  *
+ * @author Chris Ding
+ * @author Austn Attaway
+ * @version Fall 2021
  */
 public class EnterEmailFragment extends Fragment {
 
+    /** ViewBinding reference to the email entry Fragment UI */
     private FragmentEnterEmailBinding mBinding;
-    private EnterEmailViewModel mEnterEmailModel;
+
+    /** ViewModel for the password reset */
+    private PasswordResetEmailViewModel mEnterEmailModel;
 
     public EnterEmailFragment() {
         // Required empty public constructor
@@ -52,25 +53,42 @@ public class EnterEmailFragment extends Fragment {
         super.onViewCreated(theView, theSavedInstanceState);
         mBinding.buttonSentEmail.setOnClickListener(this::attemptSentEmail);
         mEnterEmailModel =
-                new ViewModelProvider(this).get(EnterEmailViewModel.class);
+                new ViewModelProvider(this).get(PasswordResetEmailViewModel.class);
         mEnterEmailModel.addResponseObserver(getViewLifecycleOwner(), this::observeResponse);
     }
 
+    /**
+     * Starts the chain of text field validation that attempts to validate
+     * all registration text input fields.
+     *
+     * @param theButton the Button that was pressed to invoke this method.
+     */
     private void attemptSentEmail(final View theButton){validateResetEmail();}
 
+    /**
+     * Attempts to validate the text inputted for the user's email.
+     *
+     * If the validation succeeds, verify the credentials with the server
+     * Else, sets an error text on the email field that requests they enter a vaild email.
+     */
     private void validateResetEmail() {
         final String emailText = mBinding.editResetEmail.getText().toString().trim();
         TextFieldValidators.EMAIL_VALIDATOR.processResult(
                 TextFieldValidators.EMAIL_VALIDATOR.apply(emailText),
-                this::verifyResetEmailWithServer,
+                this::sendResetPasswordCode,
                 result -> mBinding.editResetEmail.setError(TextFieldHints.getEmailHint(emailText)));
     }
 
-    private void verifyResetEmailWithServer(){
+    /**
+     * Ask for a verify code.
+     */
+    private void sendResetPasswordCode(){
         mEnterEmailModel.connect(mBinding.editResetEmail.getText().toString());
     }
 
-
+    /**
+     * Navigates to the password reset page.
+     */
     private void navigateToPasswordReset() {
         Navigation.findNavController(getView()).navigate(
                 EnterEmailFragmentDirections.actionEnterEmailFragmentToPasswordResetFragment(

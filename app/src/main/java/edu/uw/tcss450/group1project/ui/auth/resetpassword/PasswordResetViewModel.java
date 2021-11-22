@@ -1,4 +1,4 @@
-package edu.uw.tcss450.group1project.ui.auth.signin;
+package edu.uw.tcss450.group1project.ui.auth.resetpassword;
 
 import android.app.Application;
 import android.util.Log;
@@ -21,29 +21,26 @@ import org.json.JSONObject;
 import java.nio.charset.Charset;
 import java.util.Objects;
 
-public class EnterEmailViewModel extends AndroidViewModel {
+public class PasswordResetViewModel extends AndroidViewModel {
 
     /**
      * The {@link MutableLiveData} that stores the JSON response from the server
-     * when the user tries to register an account.
+     * when the user tries to verify their account.
      */
     private MutableLiveData<JSONObject> mResponse;
 
-
-    public EnterEmailViewModel(@NonNull final Application theApplication) {
-        super(Objects.requireNonNull(theApplication, "theApplication can not be null"));
+    /**
+     * Creates a new RegisterVerificationViewModel that is tied to the given application.
+     *
+     * @param theApplication the Application this ViewModel belongs to
+     * @throws NullPointerException if theApplication is null
+     */
+    public PasswordResetViewModel(@NonNull final Application theApplication) {
+        super(Objects.requireNonNull(theApplication, "theApplication can not be null."));
         mResponse = new MutableLiveData<>();
         mResponse.setValue(new JSONObject());
     }
 
-    /**
-     * Adds the given observer to the response live data.
-     *
-     * @param theOwner the lifecycle owner of the fragment that contains the observer
-     * @param theObserver the observer that is used when the response data changes state
-     * @throws NullPointerException if theOwner is null
-     * @throws NullPointerException if theObserver is null
-     */
     public void addResponseObserver(@NonNull final LifecycleOwner theOwner,
                                     @NonNull final Observer<? super JSONObject> theObserver) {
         Objects.requireNonNull(theOwner, "theOwner can not be null");
@@ -51,14 +48,21 @@ public class EnterEmailViewModel extends AndroidViewModel {
         mResponse.observe(theOwner, theObserver);
     }
 
-    public void connect(@NonNull final String theEmail){
-        Objects.requireNonNull(theEmail, "theEmail can not be null");
+    public void connect(@NonNull final String theEmail,
+                        @NonNull final String thePassword,
+                        @NonNull final String theCode) {
 
-        final String url = "https://team-1-tcss-450-server.herokuapp.com/auth";
+        Objects.requireNonNull(theEmail, "theEmail can not be null");
+        Objects.requireNonNull(thePassword, "thePassword can not be null");
+        Objects.requireNonNull(theCode, "theCode can not be null");
+
+
+        final String url = "https://team-1-tcss-450-server.herokuapp.com/auth/verify";
 
         final JSONObject body = new JSONObject();
         try {
             body.put("email", theEmail);
+            body.put("password", thePassword);
         } catch (JSONException exception) {
             exception.printStackTrace();
         }
@@ -77,7 +81,6 @@ public class EnterEmailViewModel extends AndroidViewModel {
         //Instantiate the RequestQueue and add the request to the queue
         Volley.newRequestQueue(getApplication().getApplicationContext())
                 .add(request);
-
     }
 
     /**
@@ -115,6 +118,4 @@ public class EnterEmailViewModel extends AndroidViewModel {
     public void removeData() {
         mResponse.setValue(new JSONObject());
     }
-
-
 }
