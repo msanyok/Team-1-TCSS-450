@@ -76,10 +76,7 @@ public class ContactsFragment extends Fragment {
                               @Nullable final Bundle theSavedInstanceState) {
         super.onViewCreated(theView, theSavedInstanceState);
 
-        // get the contacts for the current user and put them on the screen
-        UserInfoViewModel userInfo = new ViewModelProvider(this.getActivity())
-                .get(UserInfoViewModel.class);
-        mContactsModel.contactsConnect(userInfo.getmJwt());
+        mContactsModel.contactsConnect(mUserInfo.getmJwt());
         mContactsModel.addContactListObserver(getViewLifecycleOwner(), this::observeContactResponse);
 
         mBinding.contactRequestButton.setOnClickListener(this::requestToBeSent);
@@ -123,11 +120,9 @@ public class ContactsFragment extends Fragment {
      * Else, sets an error text on the nickname field that requests they enter a valid nickname.
      */
     private void verifyNameWithServer() {
-        UserInfoViewModel userInfo = new ViewModelProvider(this.getActivity())
-                .get(UserInfoViewModel.class);
-        final String theJWT = userInfo.getmJwt();
+
         mContactsModel.requestConnect(
-                mBinding.addContactText.getText().toString(), theJWT);
+                mBinding.addContactText.getText().toString(), mUserInfo.getmJwt());
     }
 
     /**
@@ -182,8 +177,6 @@ public class ContactsFragment extends Fragment {
                 // TODO: Handle UI change when the chat list is not received properly?
             } else {
 
-                UserInfoViewModel userInfo = new ViewModelProvider(this.getActivity())
-                        .get(UserInfoViewModel.class);
                 mBinding.listRoot.setAdapter(new ContactsRecyclerAdapter(
                         mContactsModel.getContactList(), this::showContactDeleteAlertDialog));
                 mContactsModel.removeData();
