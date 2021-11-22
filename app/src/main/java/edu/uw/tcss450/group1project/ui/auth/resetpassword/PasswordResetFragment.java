@@ -60,13 +60,13 @@ public class PasswordResetFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(Bundle theSavedInstanceState) {
+    public void onCreate(final Bundle theSavedInstanceState) {
         super.onCreate(theSavedInstanceState);
 
     }
 
     @Override
-    public View onCreateView(LayoutInflater theInflater, ViewGroup theContainer,
+    public View onCreateView(final LayoutInflater theInflater, final ViewGroup theContainer,
                              Bundle theSavedInstanceState) {
         final PasswordResetFragmentArgs args =
                 PasswordResetFragmentArgs.fromBundle(getArguments());

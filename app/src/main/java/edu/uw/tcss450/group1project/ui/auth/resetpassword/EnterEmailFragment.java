@@ -44,8 +44,8 @@ public class EnterEmailFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater theInflater, ViewGroup theContainer,
-                             Bundle theSavedInstanceState) {
+    public View onCreateView(final LayoutInflater theInflater, final ViewGroup theContainer,
+                             final Bundle theSavedInstanceState) {
         mBinding = FragmentEnterEmailBinding.inflate(theInflater);
 
         return mBinding.getRoot();
