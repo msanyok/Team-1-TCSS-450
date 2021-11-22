@@ -17,7 +17,6 @@
         <item name="cardViewStyle">@style/CardStyleTheme1</item>
         <item name="buttonStyle">@style/ButtonStyleTheme1</item>
         <item name="buttonTextColor">@color/white</item>
-        <item name="buttonRegisterColor">@color/white</item>
         <item name="cardColor">@color/white</item>
         <item name="cardTextColor">@color/black</item>
         <item name="cardImageColor">@color/black</item>
@@ -76,7 +75,6 @@
         <item name="cardViewStyle">@style/CardStyleTheme1</item>
         <item name="buttonStyle">@style/ButtonStyleTheme1</item>
         <item name="buttonTextColor">@color/white</item>
-        <item name="buttonRegisterColor">@color/black</item>
         <item name="cardColor">@color/maroon</item>
         <item name="cardTextColor">@color/white</item>
         <item name="cardImageColor">@color/white</item>

@@ -64,7 +64,7 @@ public class CreateChatRoomFragment extends Fragment {
         mParticipantsModel = new ViewModelProvider(this).get(ChatRoomParticipantViewModel.class);
         mContactsModel = new ViewModelProvider(getActivity()).get(ContactsViewModel.class);
         mUserModel = new ViewModelProvider(getActivity()).get(UserInfoViewModel.class);
-        mContactsModel.contactsConnect(mUserModel.getmJwt());
+        mContactsModel.contactsConnect(mUserModel.getJwt());
     }
 
     @Override
@@ -126,7 +126,7 @@ public class CreateChatRoomFragment extends Fragment {
      * @param theRoomName the name of the chat room to be created
      */
     private void initiateChatRoomCreation(final String theRoomName) {
-        mParticipantsModel.createChatRoom(mUserModel.getmJwt(), mUserModel.getEmail(),
+        mParticipantsModel.createChatRoom(mUserModel.getJwt(), mUserModel.getEmail(),
                 theRoomName, mParticipants);
     }
 
