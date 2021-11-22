@@ -52,7 +52,8 @@ public class TextFieldValidators {
      * does not include whitespace, includes at least one digit, and contains at least one
      * uppercase or lowercase letter.
      */
-    public static final PasswordValidator PASSWORD_VALIDATOR = checkPwdLength(PASSWORD_MIN_LENGTH - 1)
+    public static final PasswordValidator PASSWORD_VALIDATOR =
+            checkPwdLength(PASSWORD_MIN_LENGTH - 1)
                     .and(checkPwdSpecialChar())
                     .and(checkExcludeWhiteSpace())
                     .and(checkPwdDigit())

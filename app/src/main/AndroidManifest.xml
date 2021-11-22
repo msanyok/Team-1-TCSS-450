@@ -39,7 +39,8 @@
 
         <!-- Pushy Notification Receiver -->
         <!-- Incoming push notifications will invoke the following BroadcastReceiver -->
-        <receiver android:name="edu.uw.tcss450.group1project.services.PushReceiver" android:exported="false">
+        <receiver android:name="edu.uw.tcss450.group1project.services.PushReceiver"
+            android:exported="false">
             <intent-filter>
                 <!-- Do not modify this -->
                 <action android:name="pushy.me" />
@@ -48,7 +49,8 @@
 
         <!-- Pushy Update Receiver -->
         <!-- Do not modify - internal BroadcastReceiver that restarts the listener service -->
-        <receiver android:name="me.pushy.sdk.receivers.PushyUpdateReceiver" android:exported="false">
+        <receiver android:name="me.pushy.sdk.receivers.PushyUpdateReceiver"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>

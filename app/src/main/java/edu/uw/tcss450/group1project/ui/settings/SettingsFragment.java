@@ -13,13 +13,10 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 import edu.uw.tcss450.group1project.MainActivity;
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentSettingsBinding;
-import edu.uw.tcss450.group1project.ui.contacts.ContactGenerator;
-import edu.uw.tcss450.group1project.ui.contacts.ContactsRecyclerAdapter;
 
 /**
  * SettingsFragment is a fragment for settings display including theme changing.

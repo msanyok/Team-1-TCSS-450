@@ -7,7 +7,6 @@ package edu.uw.tcss450.group1project.model;
 
 import android.app.Application;
 import android.util.Log;
-import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -25,7 +24,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -63,7 +61,7 @@ public class WeatherDataViewModel extends AndroidViewModel {
      *
      * @param theApplication the application to be assigned
      */
-    public WeatherDataViewModel(@NonNull Application theApplication) {
+    public WeatherDataViewModel(@NonNull final Application theApplication) {
         super(theApplication);
         mResponse = new MutableLiveData<>();
         mResponse.setValue(new JSONObject());

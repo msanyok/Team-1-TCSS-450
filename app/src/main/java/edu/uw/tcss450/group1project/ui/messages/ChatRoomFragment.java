@@ -105,7 +105,8 @@ public class ChatRoomFragment extends Fragment {
                      */
                     //inform the RV that the underlying list has (possibly) changed
                     messagesRecyclerView.getAdapter().notifyDataSetChanged();
-                    messagesRecyclerView.scrollToPosition(messagesRecyclerView.getAdapter().getItemCount() - 1);
+                    messagesRecyclerView.scrollToPosition(
+                            messagesRecyclerView.getAdapter().getItemCount() - 1);
                     binding.swipeContainer.setRefreshing(false);
                 });
 

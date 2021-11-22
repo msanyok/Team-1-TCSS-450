@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.StyleableRes;
 import androidx.core.graphics.ColorUtils;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -40,18 +39,20 @@ public class ChatRecyclerViewAdapter extends
 
     /**
      * The unique identifier (currently email) that determines if
-     * a chat messages should be displayed as a sent or recieved message.
+     * a chat messages should be displayed as a sent or received message.
      */
     private final String mPersonalIdentifier;
 
     /**
      * Creates a new ChatRecyclerViewAdapter that shows the given messages for a particular chat.
-     * The account's (email) thePersonalIdentifier is used to determine how certain messages should display
+     * The account's (email) thePersonalIdentifier is
+     * used to determine how certain messages should display
      *
      * @param theMessages the list of messages to show
      * @param thePersonalIdentifier this user's email that helps identify which messages they sent
      */
-    public ChatRecyclerViewAdapter(final List<ChatMessage> theMessages, final String thePersonalIdentifier) {
+    public ChatRecyclerViewAdapter(final List<ChatMessage> theMessages,
+                                   final String thePersonalIdentifier) {
         this.mMessages = theMessages;
         mPersonalIdentifier = thePersonalIdentifier;
     }

@@ -169,7 +169,8 @@ public class RegisterFragment extends Fragment {
         TextFieldValidators.PASSWORD_VALIDATOR.processResult(
                 TextFieldValidators.PASSWORD_VALIDATOR.apply(passwordText),
                 this::verifyAuthWithServer,
-                result -> mBinding.editPassword1.setError(TextFieldHints.getPasswordHint(passwordText)));
+                result -> mBinding.editPassword1.setError(
+                        TextFieldHints.getPasswordHint(passwordText)));
     }
 
     /**

@@ -7,27 +7,20 @@ package edu.uw.tcss450.group1project.ui.auth.resetpassword;
 import static edu.uw.tcss450.group1project.utils.PasswordValidator.checkClientPredicate;
 
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.Navigation;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.json.JSONException;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
+
 import org.json.JSONObject;
 
-import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentPasswordResetBinding;
-import edu.uw.tcss450.group1project.databinding.FragmentVerificationBinding;
-import edu.uw.tcss450.group1project.ui.auth.register.RegisterFragmentDirections;
-import edu.uw.tcss450.group1project.ui.auth.verification.RegisterVerificationFragmentArgs;
 import edu.uw.tcss450.group1project.utils.PasswordValidator;
 import edu.uw.tcss450.group1project.utils.TextFieldHints;
 import edu.uw.tcss450.group1project.utils.TextFieldValidators;
@@ -110,7 +103,8 @@ public class PasswordResetFragment extends Fragment {
         TextFieldValidators.PASSWORD_VALIDATOR.processResult(
                 TextFieldValidators.PASSWORD_VALIDATOR.apply(passwordText),
                 this::newPasswordMatch,
-                result -> mBinding.resetPassword.setError(TextFieldHints.getPasswordHint(passwordText)));
+                result -> mBinding.resetPassword.setError(
+                        TextFieldHints.getPasswordHint(passwordText)));
     }
 
     /**
@@ -122,7 +116,8 @@ public class PasswordResetFragment extends Fragment {
     private void newPasswordMatch() {
         PasswordValidator matchValidator =
                 checkClientPredicate(
-                        pwd -> pwd.equals(mBinding.retypeResetPassword.getText().toString().trim()));
+                        pwd -> pwd.equals(
+                                mBinding.retypeResetPassword.getText().toString().trim()));
 
         TextFieldValidators.EMAIL_VALIDATOR.processResult(
                 matchValidator.apply(mBinding.resetPassword.getText().toString().trim()),
@@ -131,7 +126,8 @@ public class PasswordResetFragment extends Fragment {
     }
 
     /**
-     * Asynchronously attempts to verify the account and reset the password with the data on the server.
+     * Asynchronously attempts to verify the account
+     * and reset the password with the data on the server.
      */
     private void verifyWithServer() {
         final PasswordResetFragmentArgs args =

@@ -5,27 +5,21 @@
 
 package edu.uw.tcss450.group1project.ui.auth.verification;
 
-import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.Navigation;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
+
 import org.json.JSONObject;
 
 import edu.uw.tcss450.group1project.databinding.FragmentVerificationBinding;
-import edu.uw.tcss450.group1project.ui.auth.signin.SignInFragmentArgs;
-import edu.uw.tcss450.group1project.ui.auth.signin.SignInFragmentDirections;
 import edu.uw.tcss450.group1project.utils.PasswordValidator;
 
 /**

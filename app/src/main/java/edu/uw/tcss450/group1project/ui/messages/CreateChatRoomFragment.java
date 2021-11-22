@@ -61,7 +61,8 @@ public class CreateChatRoomFragment extends Fragment {
     public void onCreate(@Nullable final Bundle theSavedInstanceState) {
         super.onCreate(theSavedInstanceState);
         mParticipants = new HashSet<>();
-        mParticipantsModel = new ViewModelProvider(this).get(ChatRoomParticipantViewModel.class);
+        mParticipantsModel =
+                new ViewModelProvider(this).get(ChatRoomParticipantViewModel.class);
         mContactsModel = new ViewModelProvider(getActivity()).get(ContactsViewModel.class);
         mUserModel = new ViewModelProvider(getActivity()).get(UserInfoViewModel.class);
         mContactsModel.contactsConnect(mUserModel.getJwt());
