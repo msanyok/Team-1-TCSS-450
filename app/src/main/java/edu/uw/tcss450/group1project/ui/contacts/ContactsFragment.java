@@ -75,7 +75,7 @@ public class ContactsFragment extends Fragment {
     public void onViewCreated(@NonNull final View theView,
                               @Nullable final Bundle theSavedInstanceState) {
         super.onViewCreated(theView, theSavedInstanceState);
-        mContactsModel.contactsConnect(mUserInfo.getmJwt());
+        mContactsModel.contactsConnect(mUserInfo.getJwt());
         mContactsModel.addContactListObserver(getViewLifecycleOwner(), this::observeContactResponse);
         mBinding.contactRequestButton.setOnClickListener(this::requestToBeSent);
         mContactsModel.addContactRequestObserver(getViewLifecycleOwner(),
@@ -121,7 +121,7 @@ public class ContactsFragment extends Fragment {
     private void verifyNameWithServer() {
 
         mContactsModel.requestConnect(
-                mBinding.addContactText.getText().toString(), mUserInfo.getmJwt());
+                mBinding.addContactText.getText().toString(), mUserInfo.getJwt());
     }
 
     /**
@@ -202,7 +202,7 @@ public class ContactsFragment extends Fragment {
                     Toast.makeText(getContext(),"You have deleted " + theContact.getNickname()
                                     + " from contacts.",
                             Toast.LENGTH_SHORT).show();
-                    mContactsModel.sendDeleteResponse(mUserInfo.getmJwt(), theContact.getmMemberid());
+                    mContactsModel.sendDeleteResponse(mUserInfo.getJwt(), theContact.getMemberId());
                 });
         alertDialog.setNegativeButton(Html.fromHtml("<font color='#000000'>Cancel</font>"),
                 (dialog, which) -> {});

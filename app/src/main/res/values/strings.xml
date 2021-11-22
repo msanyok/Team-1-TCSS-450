@@ -45,7 +45,8 @@
     <string name="title_theme_2">Cherry Stone</string>
     <string name="title_theme_3">Husky Pride</string>
     <string name="title_reset_password">Enter your account email:</string>
-    <string name="title_code_comfirm">Send us the code we sent your email to reset your password!</string>
+    <string name="title_code_comfirm">
+        Enter the code sent to your email and choose a new password!</string>
 
     <string name="message_verification_greeting">Hey! We sent you an email.</string>
     <string name="message_resend_code_instructions">Need a new code?</string>

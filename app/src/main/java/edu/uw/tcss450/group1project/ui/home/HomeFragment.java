@@ -59,7 +59,7 @@ public class HomeFragment extends Fragment {
         mWeatherModel = new ViewModelProvider(getActivity()).get(WeatherDataViewModel.class);
         mRequestModel = new ViewModelProvider(getActivity()).get(ContactRequestViewModel.class);
         mUserModel = new ViewModelProvider(getActivity()).get(UserInfoViewModel.class);
-        mWeatherModel.connectGet(mUserModel.getmJwt(), true);
+        mWeatherModel.connectGet(mUserModel.getJwt(), true);
     }
 
 
@@ -77,7 +77,7 @@ public class HomeFragment extends Fragment {
 
         UserInfoViewModel userInfo = new ViewModelProvider(this.getActivity())
                 .get(UserInfoViewModel.class);
-        mRequestModel.allContactRequests(userInfo.getmJwt());
+        mRequestModel.allContactRequests(userInfo.getJwt());
 
         mWeatherModel.addResponseObserver(getViewLifecycleOwner(), this::observeWeatherResponse);
         mRequestModel.addRequestObserver(getViewLifecycleOwner(), this::observeRequestResponse);

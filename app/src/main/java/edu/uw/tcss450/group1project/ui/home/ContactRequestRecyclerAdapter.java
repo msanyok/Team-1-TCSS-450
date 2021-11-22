@@ -102,13 +102,13 @@ public class ContactRequestRecyclerAdapter
             mBinding = FragmentHomeContactRequestCardBinding.bind(theItemView);
             mBinding.acceptButton.setOnClickListener(button -> {
                     mContactRequests.sendContactResponse(
-                            true, mContact.getMemberId(), mUserInfo.getmJwt());
+                            true, mContact.getMemberId(), mUserInfo.getJwt());
             });
 
 
             mBinding.denyButton.setOnClickListener(button -> {
                 mContactRequests.sendContactResponse(
-                        false, mContact.getMemberId(), mUserInfo.getmJwt());
+                        false, mContact.getMemberId(), mUserInfo.getJwt());
             });
         }
 
