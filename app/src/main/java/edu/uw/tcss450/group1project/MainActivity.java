@@ -73,7 +73,7 @@ public class MainActivity extends ThemedActivity {
 
         MainActivityArgs args = MainActivityArgs.fromBundle(getIntent().getExtras());
         new ViewModelProvider(this,
-                new UserInfoViewModel.UserInfoViewModelFactory(args.getEmail(), args.getJwt()))
+                new UserInfoViewModel.UserInfoViewModelFactory(args.getJwt()))
                         .get(UserInfoViewModel.class);
 
         applyTheme();
