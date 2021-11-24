@@ -78,6 +78,7 @@ public class PasswordResetEmailViewModel extends AndroidViewModel {
         final JSONObject body = new JSONObject();
         try {
             body.put("email", theEmail);
+            body.put("codeType", "ForgotPassword");
         } catch (JSONException exception) {
             exception.printStackTrace();
         }
