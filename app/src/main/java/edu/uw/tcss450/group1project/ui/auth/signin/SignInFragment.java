@@ -209,7 +209,8 @@ public class SignInFragment extends Fragment {
         TextFieldValidators.PASSWORD_VALIDATOR.processResult(
                 TextFieldValidators.PASSWORD_VALIDATOR.apply(passwordText),
                 this::verifyAuthWithServer,
-                result -> mBinding.editPassword.setError(TextFieldHints.getPasswordHint(passwordText)));
+                result -> mBinding.editPassword.setError(
+                        TextFieldHints.getPasswordHint(passwordText)));
     }
 
     /**
@@ -254,7 +255,8 @@ public class SignInFragment extends Fragment {
      * @param theEmail the user's email
      * @param thePassword the user's password
      */
-    private void navigateToRegistrationVerification(final String theEmail, final String thePassword) {
+    private void navigateToRegistrationVerification(final String theEmail,
+                                                    final String thePassword) {
         Navigation.findNavController(getView())
                 .navigate(SignInFragmentDirections
                 .actionSignInFragmentToRegisterVerificationFragment(theEmail, thePassword));
@@ -271,7 +273,8 @@ public class SignInFragment extends Fragment {
             if (theResponse.has("code")) {
                 try {
 
-                    final String message = theResponse.getJSONObject("data").getString("message");
+                    final String message =
+                            theResponse.getJSONObject("data").getString("message");
                     if (message.equals("Email is not verified")) {
                         // received message that the given account exists,
                         // but is not registered yet. Therefore navigate to the

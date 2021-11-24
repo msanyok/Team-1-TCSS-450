@@ -26,8 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import edu.uw.tcss450.group1project.ui.messages.ChatRoom;
-
 /**
  * A view model class that stores information about Contacts received from the server.
  *

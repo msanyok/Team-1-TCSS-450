@@ -7,7 +7,6 @@ package edu.uw.tcss450.group1project;
 
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 

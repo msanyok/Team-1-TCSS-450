@@ -16,9 +16,7 @@ import java.util.List;
 
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentHomeMessageNotificationCardBinding;
-import edu.uw.tcss450.group1project.ui.contacts.Contact;
 import edu.uw.tcss450.group1project.ui.messages.ChatRoom;
-import edu.uw.tcss450.group1project.ui.messages.MessageGenerator;
 
 /**
  * MessagesNotificationsRecyclerAdapter provides an adapter for the HomeFragment
@@ -104,35 +102,7 @@ public class MessagesNotificationsRecyclerAdapter extends
 
         /** Displays all chat room data and image views for a single new message card */
         private void display() {
-//<<<<<<< HEAD
-//            StringBuilder builder = new StringBuilder();
-//            List<Contact> participants = mRoom.getParticipants();
-//            for (int i = 0; i < participants.size(); i++) {
-//                if (participants.size() > 1 && i == participants.size() - 1) {
-//                    builder.append(String.format("and %s", participants.get(i).getNickname()));
-//                } else if (participants.size() > 2) {
-//                    builder.append(String.format("%s, ", participants.get(i).getNickname()));
-//                } else {
-//                    builder.append(participants.get(i).getNickname());
-//                    if (participants.size() == 2) builder.append(" ");
-//                }
-//            }
-//            mBinding.chatRoomTitle.setText(mRoom.getTitle());
-//=======
-//            StringBuilder builder = new StringBuilder();
-//            List<Contact> participants = mRoom.getParticipants();
-//            for (int i = 0; i < participants.size(); i++) {
-//                if (participants.size() > 1 && i == participants.size() - 1) {
-//                    builder.append(String.format("and %s", participants.get(i).getNickname()));
-//                } else if (participants.size() > 2) {
-//                    builder.append(String.format("%s, ", participants.get(i).getNickname()));
-//                } else {
-//                    builder.append(participants.get(i).getNickname());
-//                    if (participants.size() == 2) builder.append(" ");
-//                }
-//            }
-            mBinding.chatName.setText("Austn");
-            mBinding.currentMessage.setText(MessageGenerator.getRandomMessage());
+            // TODO implement code for live chat room data
         }
     }
 }

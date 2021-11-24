@@ -2,13 +2,9 @@ package edu.uw.tcss450.group1project.model;
 
 
 import android.app.Application;
-import android.text.Html;
 import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
@@ -187,7 +183,8 @@ public class ContactRequestViewModel extends AndroidViewModel {
      * @param theJwt JWT token to be passed to server
      * @throws NullPointerException if theNickname is null
      */
-    public void sendContactResponse(final boolean theChoice, final String theMemberId, @NonNull final String theJwt) {
+    public void sendContactResponse(final boolean theChoice, final String theMemberId,
+                                    @NonNull final String theJwt) {
         Objects.requireNonNull(theJwt, "JWT can not be null");
         final String url = "https://team-1-tcss-450-server.herokuapp.com/contacts/requests";
 
