@@ -36,9 +36,10 @@
 
         <TextView
             android:id="@+id/chat_name"
-            android:layout_width="270dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             android:textStyle="bold"
             android:textSize="14sp"
             android:textColor="?cardTextColor"
@@ -46,21 +47,24 @@
             android:ellipsize="end"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@id/current_message"
-            app:layout_constraintLeft_toRightOf="@+id/participant_image">
+            app:layout_constraintLeft_toRightOf="@+id/participant_image"
+            app:layout_constraintRight_toLeftOf="@id/arrow_image">
         </TextView>
 
         <TextView
             android:id="@+id/current_message"
-            android:layout_width="270dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             android:textSize="12sp"
             android:textColor="?cardTextColor"
             android:maxLines="2"
             android:ellipsize="end"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/chat_name"
-            app:layout_constraintLeft_toRightOf="@+id/participant_image">
+            app:layout_constraintLeft_toRightOf="@+id/participant_image"
+            app:layout_constraintRight_toLeftOf="@id/arrow_image">
         </TextView>
 
         <Button

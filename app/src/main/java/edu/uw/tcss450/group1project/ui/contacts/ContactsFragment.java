@@ -66,6 +66,8 @@ public class ContactsFragment extends Fragment {
     @Override
     public View onCreateView(final LayoutInflater theInflater, final ViewGroup theContainer,
                              final Bundle theSavedInstanceState) {
+
+
         // Inflate the layout for this fragment
         mBinding = FragmentContactsBinding.inflate(theInflater);
         return mBinding.getRoot();

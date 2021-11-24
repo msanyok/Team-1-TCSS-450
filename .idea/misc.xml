@@ -53,6 +53,7 @@
         <entry key="..\:/Users/parke/OneDrive/Documents/TCSS450/projectrepo_client/Team-1-TCSS-450/app/src/main/res/layout/fragment_contact_info.xml" value="0.33125" />
         <entry key="..\:/Users/parke/OneDrive/Documents/TCSS450/projectrepo_client/Team-1-TCSS-450/app/src/main/res/layout/fragment_contacts.xml" value="0.34479166666666666" />
         <entry key="..\:/Users/parke/OneDrive/Documents/TCSS450/projectrepo_client/Team-1-TCSS-450/app/src/main/res/layout/fragment_contacts_card.xml" value="0.40942028985507245" />
+        <entry key="..\:/Users/parke/OneDrive/Documents/TCSS450/projectrepo_client/Team-1-TCSS-450/app/src/main/res/layout/fragment_contacts_top.xml" value="0.5572916666666666" />
         <entry key="..\:/Users/parke/OneDrive/Documents/TCSS450/projectrepo_client/Team-1-TCSS-450/app/src/main/res/layout/fragment_create_chatroom.xml" value="0.4107789855072464" />
         <entry key="..\:/Users/parke/OneDrive/Documents/TCSS450/projectrepo_client/Team-1-TCSS-450/app/src/main/res/layout/fragment_enter_email.xml" value="0.428125" />
         <entry key="..\:/Users/parke/OneDrive/Documents/TCSS450/projectrepo_client/Team-1-TCSS-450/app/src/main/res/layout/fragment_home.xml" value="0.3151515151515151" />
@@ -67,6 +68,7 @@
         <entry key="..\:/Users/parke/OneDrive/Documents/TCSS450/projectrepo_client/Team-1-TCSS-450/app/src/main/res/layout/fragment_weather.xml" value="0.34479166666666666" />
         <entry key="..\:/Users/parke/OneDrive/Documents/TCSS450/projectrepo_client/Team-1-TCSS-450/app/src/main/res/layout/fragment_weather_10day_card.xml" value="0.5572916666666666" />
         <entry key="..\:/Users/parke/OneDrive/Documents/TCSS450/projectrepo_client/Team-1-TCSS-450/app/src/main/res/layout/fragment_weather_24hr_card.xml" value="0.5572916666666666" />
+        <entry key="..\:/Users/parke/OneDrive/Documents/TCSS450/projectrepo_client/Team-1-TCSS-450/app/src/main/res/layout/fragment_weather_7day_card.xml" value="0.4875" />
         <entry key="..\:/Users/parke/OneDrive/Documents/TCSS450/projectrepo_client/Team-1-TCSS-450/app/src/main/res/menu/bottom_nav_menu.xml" value="0.34479166666666666" />
         <entry key="..\:/Users/parke/OneDrive/Documents/TCSS450/projectrepo_client/Team-1-TCSS-450/app/src/main/res/menu/menu.xml" value="0.34479166666666666" />
         <entry key="..\:/Users/parke/OneDrive/Documents/TCSS450/projectrepo_client/Team-1-TCSS-450/app/src/main/res/menu/toolbar.xml" value="0.34479166666666666" />

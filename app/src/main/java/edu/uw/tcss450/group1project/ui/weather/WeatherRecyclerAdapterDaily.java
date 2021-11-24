@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import edu.uw.tcss450.group1project.R;
-import edu.uw.tcss450.group1project.databinding.FragmentWeather10dayCardBinding;
+import edu.uw.tcss450.group1project.databinding.FragmentWeather7dayCardBinding;
 import edu.uw.tcss450.group1project.utils.WeatherUtils;
 
 /**
@@ -46,7 +46,7 @@ public class WeatherRecyclerAdapterDaily
                                                    final int theViewType) {
         return new WeatherDayViewHolder(LayoutInflater
                 .from(theParent.getContext())
-                .inflate(R.layout.fragment_weather_10day_card, theParent, false));
+                .inflate(R.layout.fragment_weather_7day_card, theParent, false));
     }
 
     @Override
@@ -73,7 +73,7 @@ public class WeatherRecyclerAdapterDaily
         private final View mView;
 
         /** The ViewBinding corresponded to a daily forecast RecyclerView card */
-        private final FragmentWeather10dayCardBinding mBinding;
+        private final FragmentWeather7dayCardBinding mBinding;
 
         /** The weather data assigned to this ViewHolder */
         private WeatherData mData;
@@ -86,7 +86,7 @@ public class WeatherRecyclerAdapterDaily
         public WeatherDayViewHolder(@NonNull View theItemView) {
             super(theItemView);
             mView = theItemView;
-            mBinding = FragmentWeather10dayCardBinding.bind(theItemView);
+            mBinding = FragmentWeather7dayCardBinding.bind(theItemView);
         }
 
         /**
