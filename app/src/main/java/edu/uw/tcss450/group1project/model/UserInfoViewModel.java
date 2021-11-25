@@ -28,18 +28,18 @@ public class UserInfoViewModel extends ViewModel {
     /** The user's email */
     private final String mEmail;
 
-    /** The user's email */
+    /** The user's nickname */
     private final String mNickname;
 
-    /** The user's email */
+    /** The user's first name */
     private final String mFirstName;
 
-    /** The user's email */
+    /** The user's last name */
     private final String mLastName;
 
 
     /**
-     * Private constructor that creates a new UserInfoViewModel with the given email and JWT.
+     * Private constructor that creates a new UserInfoViewModel with the given JWT.
      *
      * @param theJwt the Jwt token that corresponds to the user
      * @throws NullPointerException if theJwt is null
@@ -96,7 +96,7 @@ public class UserInfoViewModel extends ViewModel {
 
         /**
          * Constructor that creates a new UserInfoViewModelFactory with the user's
-         * given email and password.
+         * jwt token
          *
          * @param theJwt the user's JWT
          * @throws NullPointerException if theEmail is null
@@ -119,4 +119,3 @@ public class UserInfoViewModel extends ViewModel {
     }
 
 }
-
