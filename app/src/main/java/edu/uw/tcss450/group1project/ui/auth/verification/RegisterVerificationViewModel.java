@@ -163,6 +163,7 @@ public class RegisterVerificationViewModel extends AndroidViewModel {
         final JSONObject body = new JSONObject();
         try {
             body.put("email", theEmail);
+            body.put("codeType", "register");
         } catch (JSONException exception) {
             exception.printStackTrace();
         }
