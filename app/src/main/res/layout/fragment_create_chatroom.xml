@@ -26,6 +26,7 @@
         android:layout_marginTop="30dp"
         android:text="@string/action_create_chat_room"
         android:textColor="?buttonTextColor"
+        android:backgroundTint="?android:colorAccent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toRightOf="@id/chat_room_name_text"
         app:layout_constraintRight_toRightOf="parent">

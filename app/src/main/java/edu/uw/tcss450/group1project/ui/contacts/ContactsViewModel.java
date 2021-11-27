@@ -1,3 +1,8 @@
+/*
+ * TCSS450 Mobile Applications
+ * Fall 2021
+ */
+
 package edu.uw.tcss450.group1project.ui.contacts;
 
 import android.app.Application;
@@ -32,7 +37,6 @@ import java.util.Objects;
  * @author Steven Omegna
  * @version Fall 2021
  */
-
 public class ContactsViewModel extends AndroidViewModel {
 
     /**

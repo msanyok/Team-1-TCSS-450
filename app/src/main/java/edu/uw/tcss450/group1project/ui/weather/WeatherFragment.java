@@ -6,6 +6,7 @@
 package edu.uw.tcss450.group1project.ui.weather;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,20 +39,19 @@ public class WeatherFragment extends Fragment {
 
     private FragmentWeatherBinding mBinding;
 
-    /**
-     * Empty public constructor. Does not provide any functionality.
-     */
-    public WeatherFragment() {
-        // required empty constructor
+    private final LatLong mLatLong;
+
+    public WeatherFragment(final LatLong theLatLong) {
+        mLatLong = theLatLong;
     }
 
     @Override
     public void onCreate(@Nullable final Bundle theSavedInstanceState) {
         super.onCreate(theSavedInstanceState);
-        mModel = new ViewModelProvider(getActivity()).get(WeatherDataViewModel.class);
+        mModel = new ViewModelProvider(this).get(WeatherDataViewModel.class);
         UserInfoViewModel userInfo = new ViewModelProvider(getActivity())
                 .get(UserInfoViewModel.class);
-        mModel.connectGet(userInfo.getJwt(), false);
+        mModel.connectGet(userInfo.getJwt(), mLatLong.getLat(), mLatLong.getLong());
     }
 
     @Override
@@ -78,8 +78,8 @@ public class WeatherFragment extends Fragment {
      * @param theResponse the changed JSONObject
      */
     private void observeResponse(final JSONObject theResponse) {
-        System.out.println(theResponse);
         if (theResponse.has("code")) {
+            Log.e("WEATHER REQUEST ERROR", theResponse.toString());
             displayErrorDialog();
             mModel.clearResponse();
         }

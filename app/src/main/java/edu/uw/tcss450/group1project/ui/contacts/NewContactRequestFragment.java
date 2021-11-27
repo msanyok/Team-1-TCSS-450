@@ -1,3 +1,8 @@
+/*
+ * TCSS450 Mobile Applications
+ * Fall 2021
+ */
+
 package edu.uw.tcss450.group1project.ui.contacts;
 
 import android.os.Bundle;
@@ -10,8 +15,17 @@ import android.view.ViewGroup;
 
 import edu.uw.tcss450.group1project.R;
 
+/**
+ * NewContactRequestFragment is a class for searching new TalkBox members to add as contacts.
+ *
+ * @author Parker Rosengreen
+ * @version Fall 2021
+ */
 public class NewContactRequestFragment extends Fragment {
 
+    /**
+     * Required empty constructor
+     */
     public NewContactRequestFragment() {
         // Required empty public constructor
     }

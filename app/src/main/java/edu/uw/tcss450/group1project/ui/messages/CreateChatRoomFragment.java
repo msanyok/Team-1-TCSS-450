@@ -7,6 +7,7 @@ package edu.uw.tcss450.group1project.ui.messages;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -138,6 +139,7 @@ public class CreateChatRoomFragment extends Fragment {
      */
     private void observeContactResponse(final JSONObject theResponse) {
         if (theResponse.has("code") || theResponse.has("error")) {
+            Log.e("CONTACT LIST REQUEST ERROR", theResponse.toString());
             displayContactLoadErrorDialog();
         }
         if (mContactsModel.containsReadableContacts()) {
@@ -152,6 +154,7 @@ public class CreateChatRoomFragment extends Fragment {
      */
     private void observeCreationResponse(final JSONObject theResponse) {
         if (theResponse.has("code")) {
+            Log.e("CHAT ROOM CREATION REQUEST ERROR", theResponse.toString());
             displayChatRoomCreationErrorDialog();
         } else if (theResponse.length() != 0) {
             try {

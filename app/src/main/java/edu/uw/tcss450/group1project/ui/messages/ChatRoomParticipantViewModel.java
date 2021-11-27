@@ -183,7 +183,6 @@ public class ChatRoomParticipantViewModel extends AndroidViewModel {
      * @param theError the returned volley error
      */
     private void handleRoomCreationError(final VolleyError theError) {
-        Log.e("CONTACT CONNECTION ERROR", theError.getLocalizedMessage());
         Map<String, String> map = new HashMap<>();
         map.put("code", "server error");
         mCreateRoomResponse.setValue(new JSONObject(map));

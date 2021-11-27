@@ -41,7 +41,7 @@ import edu.uw.tcss450.group1project.utils.TextFieldValidators;
  * @author Steven Omegna
  * @version Fall 2021
  */
-public class ContactsFragment extends Fragment implements AdapterView.OnItemSelectedListener {
+public class ContactsFragment extends Fragment {
 
     /** ViewBinding reference to the Contact Fragment UI */
     private FragmentContactsBinding mBinding;
@@ -49,6 +49,7 @@ public class ContactsFragment extends Fragment implements AdapterView.OnItemSele
     /** ViewModel for registration */
     private ContactsViewModel mContactsModel;
 
+    /** The user info view model */
     private UserInfoViewModel mUserInfo;
 
     /**
@@ -63,17 +64,12 @@ public class ContactsFragment extends Fragment implements AdapterView.OnItemSele
         super.onCreate(theSavedInstanceState);
         mContactsModel = new ViewModelProvider(getActivity())
                 .get(ContactsViewModel.class);
-
         mUserInfo = new ViewModelProvider(getActivity()).get(UserInfoViewModel.class);
-
-
     }
 
     @Override
     public View onCreateView(final LayoutInflater theInflater, final ViewGroup theContainer,
                              final Bundle theSavedInstanceState) {
-
-
         // Inflate the layout for this fragment
         mBinding = FragmentContactsBinding.inflate(theInflater);
         return mBinding.getRoot();
@@ -94,23 +90,6 @@ public class ContactsFragment extends Fragment implements AdapterView.OnItemSele
                 R.array.contact_search_array, R.layout.fragment_contacts_spinner);
         adapter.setDropDownViewResource(R.layout.fragment_contacts_spinner_dropdown);
         spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(this);
-//        Spinner spinner = (Spinner) getView().findViewById(R.id.contact_search_spinner);
-//        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
-//                R.array.contact_search_array, android.R.layout.simple_spinner_item);
-//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-//        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-//
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> adapterView) {
-//
-//            }
-//        });
     }
 
     /**
@@ -237,17 +216,5 @@ public class ContactsFragment extends Fragment implements AdapterView.OnItemSele
         alertDialog.setNegativeButton(Html.fromHtml("<font color='#000000'>Cancel</font>"),
                 (dialog, which) -> {});
         alertDialog.show();
-    }
-
-
-    @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        String text = adapterView.getItemAtPosition(i).toString();
-        Toast.makeText(adapterView.getContext(), text, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
-
     }
 }

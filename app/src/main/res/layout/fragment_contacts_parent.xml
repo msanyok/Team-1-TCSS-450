@@ -24,5 +24,4 @@
         app:tabIndicatorColor="?android:textColorPrimary"
         app:layout_constraintTop_toTopOf="parent">
     </com.google.android.material.tabs.TabLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

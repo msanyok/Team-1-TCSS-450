@@ -39,11 +39,14 @@ public class HomeFragment extends Fragment {
 
     /** Weather View Model */
     private WeatherDataViewModel mWeatherModel;
+
     /** Contact Requests view Model*/
     private ContactRequestViewModel mRequestModel;
+
     /** User View Model for Jwt*/
     private UserInfoViewModel mUserModel;
 
+    /** The view binding */
     private FragmentHomeBinding mBinding;
 
     /**
@@ -59,7 +62,7 @@ public class HomeFragment extends Fragment {
         mWeatherModel = new ViewModelProvider(getActivity()).get(WeatherDataViewModel.class);
         mRequestModel = new ViewModelProvider(getActivity()).get(ContactRequestViewModel.class);
         mUserModel = new ViewModelProvider(getActivity()).get(UserInfoViewModel.class);
-        mWeatherModel.connectGet(mUserModel.getJwt(), true);
+        mWeatherModel.connectGet(mUserModel.getJwt(), 47.2529, -122.4443);
     }
 
 
@@ -96,10 +99,11 @@ public class HomeFragment extends Fragment {
      */
     private void observeWeatherResponse(final JSONObject theResponse) {
         if (theResponse.has("code")) {
+            Log.e("WEATHER REQUEST ERROR", theResponse.toString());
             displayWeatherErrorDialog();
             mWeatherModel.clearResponse();
         }
-        if (mWeatherModel.containsReadableHomeData()) {
+        if (mWeatherModel.containsReadableData()) {
             setWeatherViewComponents();
         }
     }
@@ -142,7 +146,7 @@ public class HomeFragment extends Fragment {
      * Binds the weather data to the homepage
      */
     private void setWeatherViewComponents() {
-        WeatherDataCurrent weatherData = mWeatherModel.getCurrentDataHome();
+        WeatherDataCurrent weatherData = mWeatherModel.getCurrentData();
         mBinding.weatherImage.setImageResource(
                 WeatherUtils.getInstance().getIconResource(weatherData.getWeatherCondition()));
         mBinding.weatherText.setText(String
@@ -154,7 +158,7 @@ public class HomeFragment extends Fragment {
      * Displays error dialog box when error occurs with weather
      */
     private void displayWeatherErrorDialog() {
-        String message = "Unexpected error when loading weather. Please try again.";
+        String message = "Unexpected error when loading local weather. Please try again.";
         ((MainActivity) getActivity()).displayErrorDialog(message);
     }
 }

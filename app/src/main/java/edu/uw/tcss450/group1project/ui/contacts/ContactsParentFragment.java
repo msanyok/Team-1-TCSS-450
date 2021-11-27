@@ -1,3 +1,8 @@
+/*
+ * TCSS450 Mobile Applications
+ * Fall 2021
+ */
+
 package edu.uw.tcss450.group1project.ui.contacts;
 
 import android.os.Bundle;
@@ -19,9 +24,19 @@ import java.util.List;
 
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.ui.home.HomeFragment;
+import edu.uw.tcss450.group1project.ui.weather.WeatherFragment;
 
+/**
+ * ContactsParentFragment is a class for containing child data fragments via a view pager.
+ *
+ * @author Parker Rosengreen
+ * @version Fall 2021
+ */
 public class ContactsParentFragment extends Fragment {
 
+    /**
+     * Required empty constructor
+     */
     public ContactsParentFragment() {
         // Required empty public constructor
     }
@@ -38,24 +53,18 @@ public class ContactsParentFragment extends Fragment {
                               @Nullable final Bundle theSavedInstanceState) {
         super.onViewCreated(theView, theSavedInstanceState);
         ViewPager viewPager = (ViewPager) getView().findViewById(R.id.view_pager);
-
-
         List<Fragment> frags = new ArrayList<>();
         frags.add(new ContactsFragment());
         frags.add(new ContactRequestsFragment());
         frags.add(new NewContactRequestFragment());
-
-
         ContactFragmentPagerAdapter pagerAdapter =
                 new ContactFragmentPagerAdapter(getChildFragmentManager(), frags);
         viewPager.setAdapter(pagerAdapter);
         TabLayout tabLayout = (TabLayout) getView().findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(viewPager);
 
-
-
 //         THIS IS USEFUL
-        viewPager.setCurrentItem(2);
+//        viewPager.setCurrentItem(2);
 //        frags.add(new HomeFragment());
 //        frags.remove(0);
 //        pagerAdapter.notifyDataSetChanged();

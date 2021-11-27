@@ -5,7 +5,6 @@
 
 package edu.uw.tcss450.group1project.ui.contacts;
 
-import android.graphics.drawable.Icon;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -98,57 +97,21 @@ public class ContactsRecyclerAdapter
             mView = theItemView;
             mBinding = FragmentContactsCardBinding.bind(theItemView);
             mBinding.buttonDelete.setOnClickListener(button -> mConsumer.accept(mContact));
-//            mBinding.buttonMore.setOnClickListener(this::expandContactCard);
         }
-
-//        /**
-//         * When the button is clicked in the more state, expand the card to display
-//         * the blog preview and switch the icon to the less state.  When the button
-//         * is clicked in the less state, shrink the card and switch the icon to the
-//         * more state.
-//         * @param theButton the button that was clicked
-//         */
-//        private void expandContactCard(final View theButton){
-//            displayContactCardPreview();
-//        }
-
-//        /**
-//         * Helper used to determine if the preview should be displayed or not.
-//         *
-//         * Adds onClickListener to send the contact for deletion
-//         */
-//        private void displayContactCardPreview() {
-//            if (mBinding.buttonDelete.getVisibility() == View.GONE) {
-//                mBinding.buttonDelete.setVisibility(View.VISIBLE);
-//                mBinding.buttonMore.setImageIcon(
-//                        Icon.createWithResource(
-//                                mView.getContext(),
-//                                R.drawable.ic_less_grey_arrow_up_24));
-//            } else {
-//                mBinding.buttonDelete.setVisibility(View.GONE);
-//                mBinding.buttonMore.setImageIcon(
-//                        Icon.createWithResource(
-//                                mView.getContext(),
-//                                R.drawable.ic_more_grey_arrow_down_24dp));
-//            }
-//
-//            mBinding.buttonDelete.setOnClickListener(button -> {
-//                mConsumer.accept(mContact);
-//            });
-//        }
 
         /**
          * Assigns a contact to this view holder
          *
          * @param theContact the contact to be assigned
          */
-        void setContact(final Contact theContact) {
+        public void setContact(final Contact theContact) {
             mContact = theContact;
-//            displayContactCardPreview();
             display();
         }
 
-        /** Displays all contact data and image views for a single contact card */
+        /**
+         * Displays all contact data and image views for a single contact card
+         */
         private void display() {
             mBinding.contactName.setText(String.format("%s %s", mContact.getFirst(),
                                                                 mContact.getLast()));
