@@ -9,7 +9,7 @@
     <string name="hint_password_again">Retype Password</string>
     <string name="hint_verification_code">Verification Code</string>
     <string name="hint_weather_location">Enter a new location.</string>
-    <string name="hint_add_new_contact">Search for contacts by filter type.</string>
+    <string name="hint_add_new_contact">Filter existing contacts.</string>
     <string name="hint_chat_room_name">Your chat room name.</string>
     <string name="hint_reset_email">Enter email</string>
     <string name="hint_reset_code">Enter code</string>

@@ -6,5 +6,6 @@
     android:ellipsize="marquee"
     android:singleLine="true"
     android:textColor="?buttonTextColor"
+    android:textSize="16sp"
     android:background="?android:colorAccent">
 </TextView>

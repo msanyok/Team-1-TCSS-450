@@ -5,5 +5,6 @@
     style="?attr/spinnerDropDownItemStyle"
     android:ellipsize="marquee"
     android:singleLine="true"
+    android:textSize="16sp"
     android:textColor="?android:textColorPrimary">
 </TextView>
