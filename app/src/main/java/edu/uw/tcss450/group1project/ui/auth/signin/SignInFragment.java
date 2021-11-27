@@ -137,8 +137,7 @@ public class SignInFragment extends Fragment {
             // longer or shorter time period, change the expiration time when the JWT is
             // created on the web service.
             if(!jwt.isExpired(0)) {
-                String email = jwt.getClaim("email").asString();
-                navigateToSuccess(email, token);
+                navigateToSuccess(token);
                 return;
             }
         }
@@ -165,10 +164,7 @@ public class SignInFragment extends Fragment {
                 mBinding.editEmail.setError(
                         "Error Authenticating on Push Token. Please contact support");
             } else {
-                navigateToSuccess(
-                        mBinding.editEmail.getText().toString(),
-                        mUserViewModel.getJwt()
-                );
+                navigateToSuccess(mUserViewModel.getJwt());
             }
         }
     }
@@ -229,10 +225,9 @@ public class SignInFragment extends Fragment {
      * Helper to abstract the navigation to the Activity past Authentication,
      * and save the JWT to Shared Preferences on successful sign in if switch is selected.
      *
-     * @param theEmail the user's email
      * @param theJwt the JSON Web Token supplied by the server
      */
-    private void navigateToSuccess(final String theEmail, final String theJwt) {
+    private void navigateToSuccess(final String theJwt) {
         //Save the JWT to Shared Preferences on successful sign in if switch is selected.
         if (mBinding.switchSignin.isChecked()) {
             final SharedPreferences prefs =
@@ -245,7 +240,7 @@ public class SignInFragment extends Fragment {
 
         Navigation.findNavController(getView())
                         .navigate(SignInFragmentDirections
-                        .actionLoginFragmentToMainActivity(theEmail, theJwt));
+                        .actionLoginFragmentToMainActivity(theJwt));
         getActivity().finish();
     }
 
@@ -299,16 +294,13 @@ public class SignInFragment extends Fragment {
                     // and navigate to the home page.
                     mUserViewModel = new ViewModelProvider(getActivity(),
                             new UserInfoViewModel.UserInfoViewModelFactory(
-                                    mBinding.editEmail.getText().toString(),
                                     theResponse.getString("token")
                             )).get(UserInfoViewModel.class);
 
                     this.sendPushyToken();
 
-                    navigateToSuccess(
-                            mBinding.editEmail.getText().toString(),
-                            theResponse.getString("token")
-                    );
+                    navigateToSuccess(theResponse.getString("token"));
+
                 } catch (JSONException e) {
                     Log.e("JSON Parse Error", e.getMessage());
                 }
