@@ -3,6 +3,8 @@
 
   <color name="black">#000000</color>
   <color name="white">#ffffff</color>
+  <color name="white_transparent">#80ffffff</color>
+  <color name="black_transparent">#80000000</color>
 
   <!-- Theme 1 Colors -->
   <color name="slate_blue">#4e687f</color>

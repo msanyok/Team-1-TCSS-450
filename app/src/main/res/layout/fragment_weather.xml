@@ -230,6 +230,7 @@
                 android:id="@+id/title_daily_forecast"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_margin="5dp"
                 android:textSize="15sp"
                 android:textStyle="bold"
                 android:textAlignment="center"

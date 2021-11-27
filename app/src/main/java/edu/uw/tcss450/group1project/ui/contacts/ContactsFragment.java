@@ -13,6 +13,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -24,6 +27,7 @@ import androidx.lifecycle.ViewModelProvider;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentContactsBinding;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
 import edu.uw.tcss450.group1project.utils.TextFieldHints;
@@ -37,7 +41,7 @@ import edu.uw.tcss450.group1project.utils.TextFieldValidators;
  * @author Steven Omegna
  * @version Fall 2021
  */
-public class ContactsFragment extends Fragment {
+public class ContactsFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
     /** ViewBinding reference to the Contact Fragment UI */
     private FragmentContactsBinding mBinding;
@@ -61,6 +65,8 @@ public class ContactsFragment extends Fragment {
                 .get(ContactsViewModel.class);
 
         mUserInfo = new ViewModelProvider(getActivity()).get(UserInfoViewModel.class);
+
+
     }
 
     @Override
@@ -83,6 +89,28 @@ public class ContactsFragment extends Fragment {
         mContactsModel.addContactRequestObserver(getViewLifecycleOwner(),
                 this::observeResponse);
 
+        Spinner spinner = (Spinner) getView().findViewById(R.id.contact_search_spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
+                R.array.contact_search_array, R.layout.fragment_contacts_spinner);
+        adapter.setDropDownViewResource(R.layout.fragment_contacts_spinner_dropdown);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(this);
+//        Spinner spinner = (Spinner) getView().findViewById(R.id.contact_search_spinner);
+//        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
+//                R.array.contact_search_array, android.R.layout.simple_spinner_item);
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+//        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+//
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> adapterView) {
+//
+//            }
+//        });
     }
 
     /**
@@ -212,4 +240,14 @@ public class ContactsFragment extends Fragment {
     }
 
 
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        String text = adapterView.getItemAtPosition(i).toString();
+        Toast.makeText(adapterView.getContext(), text, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
+    }
 }

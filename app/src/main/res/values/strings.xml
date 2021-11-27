@@ -9,7 +9,7 @@
     <string name="hint_password_again">Retype Password</string>
     <string name="hint_verification_code">Verification Code</string>
     <string name="hint_weather_location">Enter a new location.</string>
-    <string name="hint_add_new_contact">Send a request by nickname.</string>
+    <string name="hint_add_new_contact">Search for contacts by filter type.</string>
     <string name="hint_chat_room_name">Your chat room name.</string>
     <string name="hint_reset_email">Enter email</string>
     <string name="hint_reset_code">Enter code</string>
@@ -47,6 +47,7 @@
     <string name="title_reset_password">Enter your account email:</string>
     <string name="title_code_comfirm">
         Enter the code sent to your email and choose a new password!</string>
+    <string name="title_search_by">Search by:</string>
 
     <string name="message_verification_greeting">Hey! We sent you an email.</string>
     <string name="message_resend_code_instructions">Need a new code?</string>
@@ -60,4 +61,13 @@
     <string name="signIn_reset_password">Forgot Password?</string>
     <string name="reset_button">Send Email</string>
     <string name="reset_password_done">Reset Password</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string-array name="contact_search_array">
+        <item>Nickname</item>
+        <item>First Name</item>
+        <item>Last Name</item>
+        <item>Email</item>
+    </string-array>
 </resources>

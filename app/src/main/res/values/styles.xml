@@ -20,6 +20,7 @@
         <item name="cardColor">@color/white</item>
         <item name="cardTextColor">@color/black</item>
         <item name="cardImageColor">@color/black</item>
+        <item name="tabDeselectedColor">@color/white_transparent</item>
         <item name="bottomNavigationStyle">@style/BottomNavStyleTheme1</item>
     </style>
 
@@ -78,6 +79,7 @@
         <item name="cardColor">@color/maroon</item>
         <item name="cardTextColor">@color/white</item>
         <item name="cardImageColor">@color/white</item>
+        <item name="tabDeselectedColor">@color/black_transparent</item>
         <item name="bottomNavigationStyle">@style/BottomNavStyleTheme2</item>
     </style>\
 

@@ -84,7 +84,7 @@ public class MainActivity extends ThemedActivity {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_home, R.id.navigation_contacts,
+                R.id.navigation_home, R.id.navigation_contacts_parent,
                 R.id.navigation_messages, R.id.navigation_weather)
                 .build();
         NavController navController = Navigation.findNavController(
