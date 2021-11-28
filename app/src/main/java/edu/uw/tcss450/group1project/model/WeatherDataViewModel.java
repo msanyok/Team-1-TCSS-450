@@ -47,9 +47,6 @@ public class WeatherDataViewModel extends AndroidViewModel {
     /** The current weather data */
     private WeatherDataCurrent mCurrentData;
 
-    /** The current home weather data */
-    private WeatherDataCurrent mCurrentDataHome;
-
     /** The list of hourly weather data */
     private List<WeatherData> mHourlyData;
 
@@ -87,10 +84,6 @@ public class WeatherDataViewModel extends AndroidViewModel {
         return mCurrentData;
     }
 
-    public WeatherDataCurrent getCurrentDataHome() {
-        return mCurrentDataHome;
-    }
-
     /**
      * Supplies the hourly weather data of this view model
      *
@@ -107,15 +100,6 @@ public class WeatherDataViewModel extends AndroidViewModel {
      */
     public List<WeatherData> getDailyData() {
         return mDailyData;
-    }
-
-    /**
-     * Determines if this view model's data home fields are readable (i.e. non-null)
-     *
-     * @return true if readable, false otherwise
-     */
-    public boolean containsReadableHomeData() {
-        return mCurrentDataHome != null;
     }
 
     /**
@@ -139,13 +123,15 @@ public class WeatherDataViewModel extends AndroidViewModel {
      *
      * @param theJwt the user's JWT
      */
-    public void connectGet(final String theJwt, final boolean theCalledFromHome) {
-        String url = "https://team-1-tcss-450-server.herokuapp.com/weather/98423";
+    public void connectGet(final String theJwt, final double theLat, final double theLon,
+                           final boolean theCurrentLoc) {
+        String url = "https://team-1-tcss-450-server.herokuapp.com/weather/" +
+                theLat + ":" + theLon;
         Request request = new JsonObjectRequest(
                 Request.Method.GET,
                 url,
                 null, //no body for this get request
-                result -> handleResult(result, theCalledFromHome),
+                result -> handleResult(result, theCurrentLoc),
                 this::handleError) {
             @Override
             public Map<String, String> getHeaders() {
@@ -169,14 +155,15 @@ public class WeatherDataViewModel extends AndroidViewModel {
      *
      * @param theResult the result to be parsed
      */
-    private void handleResult(final JSONObject theResult, final boolean theCalledFromHome) {
+    private void handleResult(final JSONObject theResult, final boolean theCurrentLoc) {
+        System.out.println(theResult);
         WeatherDataCurrent currentData = null;
         List<WeatherData> hourlyData = new ArrayList<>();
         List<WeatherData> dailyData = new ArrayList<>();
         try {
             JSONObject curr = theResult.getJSONObject("currentData");
             currentData = new WeatherDataCurrent(
-                    "Tacoma",
+                    theCurrentLoc ? "My Location" : theResult.getString("location"),
                     curr.getInt("curTemp"),
                     curr.getInt("curFeels_like"),
                     (int) Math.round(curr.getDouble("curRain") * 100),
@@ -202,17 +189,13 @@ public class WeatherDataViewModel extends AndroidViewModel {
                         dayData.getString("dIcon"));
                 dailyData.add(newData);
             }
-            if (theCalledFromHome) {
-                mCurrentDataHome = currentData;
-            } else {
-                mCurrentData = currentData;
-                mHourlyData = hourlyData;
-                mDailyData = dailyData;
-            }
+            mCurrentData = currentData;
+            mHourlyData = hourlyData;
+            mDailyData = dailyData;
             mResponse.setValue(theResult);
         } catch (JSONException ex) {
             Map<String, String> map = new HashMap<>();
-            map.put("code", "JSON parse error");
+            map.put("code", "JSON parse error: " + ex.getMessage());
             mResponse.setValue(new JSONObject(map));
             ex.printStackTrace();
         }
@@ -224,9 +207,8 @@ public class WeatherDataViewModel extends AndroidViewModel {
      * @param theError the resulting Volley error to be handled
      */
     private void handleError(final VolleyError theError) {
-        Log.e("WEATHER REQUEST ERROR", theError.getLocalizedMessage());
         Map<String, String> map = new HashMap<>();
-        map.put("code", "server error");
+        map.put("code", "Server error: " + theError.getMessage());
         mResponse.setValue(new JSONObject(map));
     }
 }

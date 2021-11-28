@@ -5,6 +5,7 @@
 
 package edu.uw.tcss450.group1project.ui.home;
 
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,6 +23,7 @@ import edu.uw.tcss450.group1project.MainActivity;
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentHomeBinding;
 import edu.uw.tcss450.group1project.model.ContactRequestViewModel;
+import edu.uw.tcss450.group1project.model.LocationViewModel;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
 import edu.uw.tcss450.group1project.model.WeatherDataViewModel;
 import edu.uw.tcss450.group1project.ui.weather.WeatherDataCurrent;
@@ -39,11 +41,14 @@ public class HomeFragment extends Fragment {
 
     /** Weather View Model */
     private WeatherDataViewModel mWeatherModel;
+
     /** Contact Requests view Model*/
     private ContactRequestViewModel mRequestModel;
+
     /** User View Model for Jwt*/
     private UserInfoViewModel mUserModel;
 
+    /** The view binding */
     private FragmentHomeBinding mBinding;
 
     /**
@@ -59,7 +64,17 @@ public class HomeFragment extends Fragment {
         mWeatherModel = new ViewModelProvider(getActivity()).get(WeatherDataViewModel.class);
         mRequestModel = new ViewModelProvider(getActivity()).get(ContactRequestViewModel.class);
         mUserModel = new ViewModelProvider(getActivity()).get(UserInfoViewModel.class);
-        mWeatherModel.connectGet(mUserModel.getJwt(), true);
+//        LocationViewModel locModel =
+//                new ViewModelProvider(getActivity()).get(LocationViewModel.class);
+//        locModel.addLocationObserver(getViewLifecycleOwner(), (location) -> {
+//            if (location != null) {
+//                mWeatherModel.connectGet(
+//                        mUserModel.getJwt(), location.getLatitude(), location.getLongitude());
+//            }
+//        });
+//        Location currLoc = locModel.getCurrentLocation();
+//        mWeatherModel.connectGet(
+//                mUserModel.getJwt(), currLoc.getLatitude(), currLoc.getLongitude());
     }
 
 
@@ -74,7 +89,12 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull final View theView,
                               @Nullable final Bundle theSavedInstanceState) {
         super.onViewCreated(theView, theSavedInstanceState);
-
+        LocationViewModel locModel =
+                new ViewModelProvider(getActivity()).get(LocationViewModel.class);
+        locModel.addLocationObserver(getViewLifecycleOwner(), (location) -> {
+                mWeatherModel.connectGet(
+                        mUserModel.getJwt(), location.getLatitude(), location.getLongitude(), true);
+        });
         UserInfoViewModel userInfo = new ViewModelProvider(this.getActivity())
                 .get(UserInfoViewModel.class);
         mRequestModel.allContactRequests(userInfo.getJwt());
@@ -85,7 +105,7 @@ public class HomeFragment extends Fragment {
                 this::observeRequestResponse);
 
         mBinding = FragmentHomeBinding.bind(getView());
-        mBinding.welcomeText.setText(String.format("Welcome, %s!", mUserModel.getEmail()));
+        mBinding.welcomeText.setText(String.format("Welcome, %s!", mUserModel.getNickname()));
     }
 
     /**
@@ -96,10 +116,11 @@ public class HomeFragment extends Fragment {
      */
     private void observeWeatherResponse(final JSONObject theResponse) {
         if (theResponse.has("code")) {
+            Log.e("WEATHER REQUEST ERROR", theResponse.toString());
             displayWeatherErrorDialog();
             mWeatherModel.clearResponse();
         }
-        if (mWeatherModel.containsReadableHomeData()) {
+        if (mWeatherModel.containsReadableData()) {
             setWeatherViewComponents();
         }
     }
@@ -142,7 +163,7 @@ public class HomeFragment extends Fragment {
      * Binds the weather data to the homepage
      */
     private void setWeatherViewComponents() {
-        WeatherDataCurrent weatherData = mWeatherModel.getCurrentDataHome();
+        WeatherDataCurrent weatherData = mWeatherModel.getCurrentData();
         mBinding.weatherImage.setImageResource(
                 WeatherUtils.getInstance().getIconResource(weatherData.getWeatherCondition()));
         mBinding.weatherText.setText(String
@@ -154,7 +175,7 @@ public class HomeFragment extends Fragment {
      * Displays error dialog box when error occurs with weather
      */
     private void displayWeatherErrorDialog() {
-        String message = "Unexpected error when loading weather. Please try again.";
+        String message = "Unexpected error when loading local weather. Please try again.";
         ((MainActivity) getActivity()).displayErrorDialog(message);
     }
 }

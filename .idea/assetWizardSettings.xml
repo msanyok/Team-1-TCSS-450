@@ -301,7 +301,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="file:$USER_HOME$/Library/Android/sdk/icons/material/materialicons/send/baseline_send_24.xml" />
+                                      <entry key="url" value="file:/$USER_HOME$/AppData/Local/Android/Sdk/icons/material/materialicons/circle/baseline_circle_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -311,8 +311,8 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="ic_send_black_24dp" />
-                            <entry key="sourceFile" value="/C:\Users\parke\OneDrive\Documents\TCSS450\projectrepo_client\Team-1-TCSS-450" />
+                            <entry key="outputName" value="ic_circle_black_15dp" />
+                            <entry key="sourceFile" value="C:\Users\parke\OneDrive\Documents\TCSS450\projectrepo_client\Team-1-TCSS-450" />
                           </map>
                         </option>
                       </PersistentState>

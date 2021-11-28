@@ -6,6 +6,7 @@
 package edu.uw.tcss450.group1project.ui.weather;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,22 +37,33 @@ public class WeatherFragment extends Fragment {
     /** The weather data view model */
     private WeatherDataViewModel mModel;
 
+    /** The view binding */
     private FragmentWeatherBinding mBinding;
 
+    /** The latitude and longitude object */
+    private final LatLong mLatLong;
+
+    /** Indicates whether or not this fragment is displaying weather for the user's location */
+    private final boolean mCurrentLocation;
+
     /**
-     * Empty public constructor. Does not provide any functionality.
+     * Constructs a new WeatherFragment with a provided LatLong
+     *
+     * @param theLatLong the latitude longitude object to be assigned
      */
-    public WeatherFragment() {
-        // required empty constructor
+    public WeatherFragment(final LatLong theLatLong, final boolean theCurrentLoc) {
+        mLatLong = theLatLong;
+        mCurrentLocation = theCurrentLoc;
     }
 
     @Override
     public void onCreate(@Nullable final Bundle theSavedInstanceState) {
         super.onCreate(theSavedInstanceState);
-        mModel = new ViewModelProvider(getActivity()).get(WeatherDataViewModel.class);
+        mModel = new ViewModelProvider(this).get(WeatherDataViewModel.class);
         UserInfoViewModel userInfo = new ViewModelProvider(getActivity())
                 .get(UserInfoViewModel.class);
-        mModel.connectGet(userInfo.getJwt(), false);
+        mModel.connectGet(
+                userInfo.getJwt(), mLatLong.getLat(), mLatLong.getLong(), mCurrentLocation);
     }
 
     @Override
@@ -68,8 +80,10 @@ public class WeatherFragment extends Fragment {
         mBinding = FragmentWeatherBinding.bind(getView());
         UserInfoViewModel model = new ViewModelProvider(getActivity())
                 .get(UserInfoViewModel.class);
-
         mModel.addResponseObserver(getViewLifecycleOwner(), this::observeResponse);
+        if (mCurrentLocation) {
+            mBinding.locationDeleteButton.setVisibility(View.GONE);
+        }
     }
 
     /**
@@ -78,8 +92,8 @@ public class WeatherFragment extends Fragment {
      * @param theResponse the changed JSONObject
      */
     private void observeResponse(final JSONObject theResponse) {
-        System.out.println(theResponse);
         if (theResponse.has("code")) {
+            Log.e("WEATHER REQUEST ERROR", theResponse.toString());
             displayErrorDialog();
             mModel.clearResponse();
         }

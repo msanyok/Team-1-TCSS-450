@@ -13,6 +13,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -24,6 +27,7 @@ import androidx.lifecycle.ViewModelProvider;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentContactsBinding;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
 import edu.uw.tcss450.group1project.utils.TextFieldHints;
@@ -45,6 +49,7 @@ public class ContactsFragment extends Fragment {
     /** ViewModel for registration */
     private ContactsViewModel mContactsModel;
 
+    /** The user info view model */
     private UserInfoViewModel mUserInfo;
 
     /**
@@ -59,7 +64,6 @@ public class ContactsFragment extends Fragment {
         super.onCreate(theSavedInstanceState);
         mContactsModel = new ViewModelProvider(getActivity())
                 .get(ContactsViewModel.class);
-
         mUserInfo = new ViewModelProvider(getActivity()).get(UserInfoViewModel.class);
     }
 
@@ -81,6 +85,11 @@ public class ContactsFragment extends Fragment {
         mContactsModel.addContactRequestObserver(getViewLifecycleOwner(),
                 this::observeResponse);
 
+        Spinner spinner = (Spinner) getView().findViewById(R.id.contact_search_spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
+                R.array.contact_search_array, R.layout.fragment_contacts_spinner);
+        adapter.setDropDownViewResource(R.layout.fragment_contacts_spinner_dropdown);
+        spinner.setAdapter(adapter);
     }
 
     /**
@@ -208,6 +217,4 @@ public class ContactsFragment extends Fragment {
                 (dialog, which) -> {});
         alertDialog.show();
     }
-
-
 }

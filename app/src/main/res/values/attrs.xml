@@ -6,4 +6,5 @@
     <attr name="cardImageColor" format="reference" />
     <attr name="buttonTextColor" format="reference" />
     <attr name="title_icon" format="reference" />
+    <attr name="tabDeselectedColor" format="reference" />
 </resources>
