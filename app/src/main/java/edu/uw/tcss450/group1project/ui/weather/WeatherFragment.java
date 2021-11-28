@@ -43,13 +43,17 @@ public class WeatherFragment extends Fragment {
     /** The latitude and longitude object */
     private final LatLong mLatLong;
 
+    /** Indicates whether or not this fragment is displaying weather for the user's location */
+    private final boolean mCurrentLocation;
+
     /**
      * Constructs a new WeatherFragment with a provided LatLong
      *
      * @param theLatLong the latitude longitude object to be assigned
      */
-    public WeatherFragment(final LatLong theLatLong) {
+    public WeatherFragment(final LatLong theLatLong, final boolean theCurrentLoc) {
         mLatLong = theLatLong;
+        mCurrentLocation = theCurrentLoc;
     }
 
     @Override
@@ -58,7 +62,8 @@ public class WeatherFragment extends Fragment {
         mModel = new ViewModelProvider(this).get(WeatherDataViewModel.class);
         UserInfoViewModel userInfo = new ViewModelProvider(getActivity())
                 .get(UserInfoViewModel.class);
-        mModel.connectGet(userInfo.getJwt(), mLatLong.getLat(), mLatLong.getLong());
+        mModel.connectGet(
+                userInfo.getJwt(), mLatLong.getLat(), mLatLong.getLong(), mCurrentLocation);
     }
 
     @Override
@@ -75,8 +80,10 @@ public class WeatherFragment extends Fragment {
         mBinding = FragmentWeatherBinding.bind(getView());
         UserInfoViewModel model = new ViewModelProvider(getActivity())
                 .get(UserInfoViewModel.class);
-
         mModel.addResponseObserver(getViewLifecycleOwner(), this::observeResponse);
+        if (mCurrentLocation) {
+            mBinding.locationDeleteButton.setVisibility(View.GONE);
+        }
     }
 
     /**

@@ -5,6 +5,7 @@
 
 package edu.uw.tcss450.group1project.ui.weather;
 
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,6 +27,7 @@ import java.util.List;
 
 import edu.uw.tcss450.group1project.MainActivity;
 import edu.uw.tcss450.group1project.R;
+import edu.uw.tcss450.group1project.model.LocationViewModel;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
 
 /**
@@ -102,8 +104,15 @@ public class WeatherParentFragment extends Fragment {
      */
     private void setViewComponents() {
         List<Fragment> frags = new ArrayList<>();
+        LocationViewModel locModel =
+                new ViewModelProvider(getActivity()).get(LocationViewModel.class);
+        locModel.addLocationObserver(getViewLifecycleOwner(), loc -> {
+                Fragment myLocFrag = new WeatherFragment(
+                        new LatLong(loc.getLatitude(), loc.getLongitude()), true);
+                frags.add(myLocFrag);
+        });
         for (final LatLong ltlng : mLocationModel.getLocations()) {
-            frags.add(new WeatherFragment(ltlng));
+            frags.add(new WeatherFragment(ltlng, false));
         }
         WeatherFragmentPagerAdapter pagerAdapter =
                 new WeatherFragmentPagerAdapter(getChildFragmentManager(), frags);

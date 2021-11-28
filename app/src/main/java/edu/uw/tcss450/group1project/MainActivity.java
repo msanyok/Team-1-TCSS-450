@@ -5,18 +5,25 @@
 
 package edu.uw.tcss450.group1project;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
@@ -24,8 +31,15 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import edu.uw.tcss450.group1project.model.LocationViewModel;
 import edu.uw.tcss450.group1project.model.NewMessageCountViewModel;
 import edu.uw.tcss450.group1project.model.PushyTokenViewModel;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
@@ -45,6 +59,33 @@ import edu.uw.tcss450.group1project.ui.messages.ChatViewModel;
  */
 public class MainActivity extends ThemedActivity {
 
+    /**
+     * The desired interval for location updates. Inexact. Updates may be more or less frequent.
+     */
+    public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
+
+    /**
+     * The fastest rate for active location updates. Exact. Updates will never be more frequent
+     * than this value.
+     */
+    public static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS =
+            UPDATE_INTERVAL_IN_MILLISECONDS / 2;
+
+    /** A constant int for the permissions request code. Must be a 16 bit number. */
+    private static final int MY_PERMISSIONS_LOCATIONS = 8414;
+
+    /** The location request */
+    private LocationRequest mLocationRequest;
+
+    /** Use a FusedLocationProviderClient to request the location */
+    private FusedLocationProviderClient mFusedLocationClient;
+
+    /** Will use this call back to decide what to do when a location change is detected */
+    private LocationCallback mLocationCallback;
+
+    /** The ViewModel that will store the current location */
+    private LocationViewModel mLocationModel;
+
     /** Used to receive push notifications from PUSHY */
     private MainPushMessageReceiver mPushMessageReceiver;
 
@@ -63,7 +104,8 @@ public class MainActivity extends ThemedActivity {
     @Override
     protected void onCreate(final Bundle theSavedInstanceState) {
         super.onCreate(theSavedInstanceState);
-
+        mLocationModel =
+                new ViewModelProvider(MainActivity.this).get(LocationViewModel.class);
         mNewMessageModel = new ViewModelProvider(this).get(NewMessageCountViewModel.class);
 
 
@@ -118,7 +160,104 @@ public class MainActivity extends ThemedActivity {
 //            }
         });
 
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+        if (ActivityCompat.checkSelfPermission(
+                this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(
+                        this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION
+                            , Manifest.permission.ACCESS_FINE_LOCATION},
+                    MY_PERMISSIONS_LOCATIONS);
+        } else {
+            requestLocation();
+        }
+
+        mLocationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(@NonNull final LocationResult theLocResult) {
+                for (Location location : theLocResult.getLocations()) {
+                    mLocationModel.setLocation(location);
+                }
+            };
+        };
+        createLocationRequest();
     }
+
+    @Override
+    public void onRequestPermissionsResult(final int requestCode,
+                                           @NonNull final String[] thePermissions,
+                                           @NonNull final int[] theGrantResults) {
+        super.onRequestPermissionsResult(requestCode, thePermissions, theGrantResults);
+        switch (requestCode) {
+            case MY_PERMISSIONS_LOCATIONS: {
+                if (theGrantResults.length > 0
+                        && theGrantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    requestLocation();
+                }
+            }
+        }
+    }
+
+    private void requestLocation() {
+        if (ActivityCompat.checkSelfPermission(
+                this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(
+                        this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            Log.d("REQUEST LOCATION",
+                    "User did NOT allow permission to request location!");
+        } else {
+            mFusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(final Location theLoc) {
+                            if (theLoc != null) {
+                                mLocationModel.setLocation(theLoc);
+                            }
+                        }
+                    });
+        }
+    }
+
+    /**
+     * Create and configure a Location Request used when retrieving location updates
+     */
+    private void createLocationRequest() {
+        mLocationRequest = LocationRequest.create();
+        mLocationRequest.setInterval(UPDATE_INTERVAL_IN_MILLISECONDS);
+        mLocationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+    }
+
+    /**
+     * Requests location updates from the FusedLocationApi.
+     */
+    private void startLocationUpdates() {
+        if (ActivityCompat.checkSelfPermission(
+                this, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(
+                        this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+
+            mFusedLocationClient.requestLocationUpdates(mLocationRequest,
+                    mLocationCallback,
+                    null /* Looper */);
+        }
+    }
+
+    /**
+     * Removes location updates from the FusedLocationApi.
+     */
+    private void stopLocationUpdates() {
+        mFusedLocationClient.removeLocationUpdates(mLocationCallback);
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(final Menu theMenu) {
@@ -170,6 +309,7 @@ public class MainActivity extends ThemedActivity {
         }
         IntentFilter iFilter = new IntentFilter(PushReceiver.RECEIVED_NEW_MESSAGE);
         registerReceiver(mPushMessageReceiver, iFilter);
+        stopLocationUpdates();
     }
 
     @Override
@@ -178,6 +318,7 @@ public class MainActivity extends ThemedActivity {
         if (mPushMessageReceiver != null){
             unregisterReceiver(mPushMessageReceiver);
         }
+        startLocationUpdates();
     }
 
     /**
@@ -201,7 +342,6 @@ public class MainActivity extends ThemedActivity {
                         .getJwt()
         );
     }
-
 
     /**
      * A BroadcastReceiver that listens for messages sent from PushReceiver
@@ -241,5 +381,4 @@ public class MainActivity extends ThemedActivity {
             // todo: add other kinds of pushy messages (more else if () options)
         }
     }
-
 }
