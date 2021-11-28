@@ -184,7 +184,7 @@ public class ChatRoomParticipantViewModel extends AndroidViewModel {
      */
     private void handleRoomCreationError(final VolleyError theError) {
         Map<String, String> map = new HashMap<>();
-        map.put("code", theError.getLocalizedMessage());
+        map.put("code", "Server error: " + theError.getLocalizedMessage());
         mCreateRoomResponse.setValue(new JSONObject(map));
     }
 }

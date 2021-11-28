@@ -195,7 +195,7 @@ public class WeatherDataViewModel extends AndroidViewModel {
             mResponse.setValue(theResult);
         } catch (JSONException ex) {
             Map<String, String> map = new HashMap<>();
-            map.put("code", "JSON parse error");
+            map.put("code", "JSON parse error: " + ex.getMessage());
             mResponse.setValue(new JSONObject(map));
             ex.printStackTrace();
         }
@@ -208,7 +208,7 @@ public class WeatherDataViewModel extends AndroidViewModel {
      */
     private void handleError(final VolleyError theError) {
         Map<String, String> map = new HashMap<>();
-        map.put("code", theError.getLocalizedMessage());
+        map.put("code", "Server error: " + theError.getMessage());
         mResponse.setValue(new JSONObject(map));
     }
 }
