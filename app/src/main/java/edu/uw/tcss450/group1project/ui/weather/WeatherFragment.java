@@ -37,10 +37,17 @@ public class WeatherFragment extends Fragment {
     /** The weather data view model */
     private WeatherDataViewModel mModel;
 
+    /** The view binding */
     private FragmentWeatherBinding mBinding;
 
+    /** The latitude and longitude object */
     private final LatLong mLatLong;
 
+    /**
+     * Constructs a new WeatherFragment with a provided LatLong
+     *
+     * @param theLatLong the latitude longitude object to be assigned
+     */
     public WeatherFragment(final LatLong theLatLong) {
         mLatLong = theLatLong;
     }

@@ -40,8 +40,14 @@ public class WeatherLocationListViewModel extends AndroidViewModel {
     /** The mutable live data JSONObject response */
     private final MutableLiveData<JSONObject> mResponse;
 
+    /** The list of LatLong locations */
     private List<LatLong> mLocations;
 
+    /**
+     * Constructs a new weather location list view model with the provided application
+     *
+     * @param theApplication the application to be assigned
+     */
     public WeatherLocationListViewModel(@NonNull final Application theApplication) {
         super(theApplication);
         mResponse = new MutableLiveData<>();
@@ -68,14 +74,27 @@ public class WeatherLocationListViewModel extends AndroidViewModel {
         return mLocations != null;
     }
 
+    /**
+     * Clears this view model's JSONObject response
+     */
     public void clearResponse() {
         mResponse.setValue(new JSONObject());
     }
 
+    /**
+     * Provides the list of latitude longitude locations stored in this view model
+     *
+     * @return the list of LatLongs
+     */
     public List<LatLong> getLocations() {
         return mLocations;
     }
 
+    /**
+     * Initiates a request to the web service to retrieve saved weather locations
+     *
+     * @param theJwt the user's JWT
+     */
     public void connectGet(final String theJwt) {
         String url = "https://team-1-tcss-450-server.herokuapp.com/weather/locations";
         Request request = new JsonObjectRequest(
