@@ -46,7 +46,7 @@
             android:id="@+id/weather_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textSize="15sp"
+            android:textSize="14sp"
             android:textColor="?android:textColorPrimary"
             android:layout_marginStart="20dp"
             app:layout_constraintLeft_toRightOf="@+id/weather_image"
