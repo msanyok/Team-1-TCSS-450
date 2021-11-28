@@ -106,11 +106,12 @@ public class WeatherParentFragment extends Fragment {
         List<Fragment> frags = new ArrayList<>();
         LocationViewModel locModel =
                 new ViewModelProvider(getActivity()).get(LocationViewModel.class);
-        locModel.addLocationObserver(getViewLifecycleOwner(), loc -> {
-                Fragment myLocFrag = new WeatherFragment(
+        Location loc = locModel.getCurrentLocation();
+        if (loc != null) {
+            Fragment myLocFrag = new WeatherFragment(
                         new LatLong(loc.getLatitude(), loc.getLongitude()), true);
-                frags.add(myLocFrag);
-        });
+            frags.add(myLocFrag);
+        }
         for (final LatLong ltlng : mLocationModel.getLocations()) {
             frags.add(new WeatherFragment(ltlng, false));
         }
