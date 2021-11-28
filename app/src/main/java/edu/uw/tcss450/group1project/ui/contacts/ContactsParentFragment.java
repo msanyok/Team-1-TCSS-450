@@ -52,7 +52,7 @@ public class ContactsParentFragment extends Fragment {
     public void onViewCreated(@NonNull final View theView,
                               @Nullable final Bundle theSavedInstanceState) {
         super.onViewCreated(theView, theSavedInstanceState);
-        ViewPager viewPager = (ViewPager) getView().findViewById(R.id.view_pager);
+        ViewPager viewPager = getView().findViewById(R.id.view_pager);
         List<Fragment> frags = new ArrayList<>();
         frags.add(new ContactsFragment());
         frags.add(new ContactRequestsFragment());
@@ -60,7 +60,7 @@ public class ContactsParentFragment extends Fragment {
         ContactFragmentPagerAdapter pagerAdapter =
                 new ContactFragmentPagerAdapter(getChildFragmentManager(), frags);
         viewPager.setAdapter(pagerAdapter);
-        TabLayout tabLayout = (TabLayout) getView().findViewById(R.id.tab_layout);
+        TabLayout tabLayout = getView().findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(viewPager);
 
 //         THIS IS USEFUL

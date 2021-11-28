@@ -77,8 +77,8 @@ public class WeatherParentFragment extends Fragment {
         mLocationModel.connectGet(mUserModel.getJwt());
         mLocationModel.addResponseObserver(getViewLifecycleOwner(),
                 this::observeLocationListResponse);
-        mPager = (ViewPager) getView().findViewById(R.id.view_pager);
-        mTabs = (TabLayout) getView().findViewById(R.id.tab_layout);
+        mPager = getView().findViewById(R.id.view_pager);
+        mTabs = getView().findViewById(R.id.tab_layout);
     }
 
     /**
