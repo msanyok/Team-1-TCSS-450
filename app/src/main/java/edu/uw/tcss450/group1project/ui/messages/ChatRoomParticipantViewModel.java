@@ -151,17 +151,17 @@ public class ChatRoomParticipantViewModel extends AndroidViewModel {
      * Creates an initial chat room message informing participants of creation
      *
      * @param theParticipants the participants to be added
-     * @param theEmail the email of the user creating the chat room
+     * @param theNickname the nickname of the user creating the chat room
      * @return the formatted message String
      */
     private String constructFirstMessage(final Set<Contact> theParticipants,
-                                         final String theEmail) {
+                                         final String theNickname) {
         StringBuilder builder = new StringBuilder();
         int size = theParticipants.size();
         if (size == 0) {
             builder.append("Hey! You have created an empty TalkBox chat room.");
         } else {
-            builder.append("Hey! " + theEmail + " has created a TalkBox chat room with ");
+            builder.append("Hey! " + theNickname + " has created a TalkBox chat room with ");
             int i = 0;
             for (Contact cont : theParticipants) {
                 if (i < size - 1) {

@@ -128,7 +128,7 @@ public class CreateChatRoomFragment extends Fragment {
      * @param theRoomName the name of the chat room to be created
      */
     private void initiateChatRoomCreation(final String theRoomName) {
-        mParticipantsModel.createChatRoom(mUserModel.getJwt(), mUserModel.getEmail(),
+        mParticipantsModel.createChatRoom(mUserModel.getJwt(), mUserModel.getNickname(),
                 theRoomName, mParticipants);
     }
 

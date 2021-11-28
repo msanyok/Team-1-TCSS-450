@@ -105,7 +105,7 @@ public class HomeFragment extends Fragment {
                 this::observeRequestResponse);
 
         mBinding = FragmentHomeBinding.bind(getView());
-        mBinding.welcomeText.setText(String.format("Welcome, %s!", mUserModel.getEmail()));
+        mBinding.welcomeText.setText(String.format("Welcome, %s!", mUserModel.getNickname()));
     }
 
     /**
