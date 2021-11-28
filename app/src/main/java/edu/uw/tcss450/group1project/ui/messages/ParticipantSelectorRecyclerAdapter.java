@@ -102,11 +102,9 @@ public class ParticipantSelectorRecyclerAdapter
                 } else {
                     mParticipants.add(mContact);
                 }
-                mBinding.selectionImage.setImageIcon(!mParticipants.contains(mContact) ?
+                mBinding.selectionImage.setImageIcon(mParticipants.contains(mContact) ?
                         Icon.createWithResource(mView.getContext(),
-                                R.drawable.ic_plus_black_24dp) :
-                        Icon.createWithResource(mView.getContext(),
-                                R.drawable.ic_remove_black_24dp));
+                                R.drawable.ic_check_green_24dp) : null);
             });
         }
 
@@ -127,9 +125,9 @@ public class ParticipantSelectorRecyclerAdapter
             mBinding.contactName.setText(String.format("%s %s", mContact.getFirst(),
                     mContact.getLast()));
             mBinding.contactNickname.setText(mContact.getNickname());
-            mBinding.selectionImage.setImageResource(
-                    !mParticipants.contains(mContact) ? R.drawable.ic_plus_black_24dp :
-                    R.drawable.ic_remove_black_24dp);
+            if (mParticipants.contains(mContact)) {
+                mBinding.selectionImage.setImageResource(R.drawable.ic_check_green_24dp);
+            }
         }
     }
 }
