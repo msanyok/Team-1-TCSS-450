@@ -207,7 +207,7 @@ public class WeatherDataViewModel extends AndroidViewModel {
      */
     private void handleError(final VolleyError theError) {
         Map<String, String> map = new HashMap<>();
-        map.put("code", "server error");
+        map.put("code", theError.getLocalizedMessage());
         mResponse.setValue(new JSONObject(map));
     }
 }
