@@ -18,6 +18,7 @@ import java.util.Objects;
  *
  * @author Charles Bryan
  * @author Austn Attaway
+ * @author Steven Omegna
  * @version Fall 2021
  */
 public class UserInfoViewModel extends ViewModel {
@@ -37,6 +38,9 @@ public class UserInfoViewModel extends ViewModel {
     /** The user's last name */
     private final String mLastName;
 
+    /** The user's MemberId */
+    private final String mMemberId;
+
 
     /**
      * Private constructor that creates a new UserInfoViewModel with the given JWT.
@@ -53,6 +57,7 @@ public class UserInfoViewModel extends ViewModel {
         mNickname = jwt.getClaim("nickname").asString();
         mFirstName = jwt.getClaim("firstname").asString();
         mLastName = jwt.getClaim("lastname").asString();
+        mMemberId = jwt.getClaim("memberid").asString();
     }
 
     /**
@@ -80,6 +85,15 @@ public class UserInfoViewModel extends ViewModel {
      */
     public String getNickname() {
         return mNickname;
+    }
+
+      /**
+     * Provides the user's member id
+     *
+     * @return the user's member id
+     */
+    public String getMemberId() {
+        return mMemberId;
     }
 
     /**
