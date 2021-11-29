@@ -30,20 +30,30 @@ import static android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_VISIB
  *
  * @author Charles Bryan
  * @author Austn Attaway
+ * @author Steven Omegna
  * @version Fall 2021
  */
 public class PushReceiver extends BroadcastReceiver {
 
-    /** The String that notifies a new message has been received from pushy  */
-    public static final String RECEIVED_NEW_MESSAGE = "new message from pushy";
+    /** The String that notifies a new notification has been received from pushy  */
+    public static final String NEW_PUSHY_NOTIF = "new message from pushy";
+
+    /** The String that notifies a message has been sent or received from pushy */
+    public static final String NEW_MESSAGE = "msg";
+
+    /** The String that notifies a new contact request has been sent or received from pushy  */
+    public static final String NEW_CONTACT_REQUEST = "newContactRequest";
+
+    /** The String that notifies a contact request response has occurred from pushy */
+    public static final String CONTACT_REQUEST_RESPONSE = "contactRequestResponse";
+
+    /** The String that notifies a contact was deleted from pushy */
+    public static final String CONTACT_DELETE = "contactDeleted";
 
     /** The ID for the channel used for notifications */
     private static final String CHANNEL_ID = "1";
 
 
-
-    // TODO: NOTE: this method is work in progress,
-    //             should consider refactoring into smaller methods?
     /**
      * Handles what should occur when this device receives a Pushy payload.
      *
@@ -53,61 +63,84 @@ public class PushReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(final Context theContext, final Intent theIntent) {
 
-        // todo: we will likely have different types here (will need different actions for
-        //       each type, consider making methods below)
+        // the type of message will determine the type of intent we create
         final String typeOfMessage = theIntent.getStringExtra("type");
+
+        if (typeOfMessage.equals("msg")) {
+            acceptMessagePushy(theContext, theIntent);
+        } else if (typeOfMessage.equals("newContactRequest")) {
+            acceptNewContactRequestPushy(theContext, theIntent);
+        } else if (typeOfMessage.equals("contactRequestResponse")) {
+            acceptContactRequestResponsePushy(theContext, theIntent);
+        } else if (typeOfMessage.equals("contactDeleted")) {
+            acceptContactDeletePushy(theContext, theIntent);
+        } else {
+            // unexpected pushy
+            Log.d("PUSH RECIEVE", "UNEXPECTED PUSHY RECIEVED");
+        }
+    }
+
+    /**
+     * Handles what should occur when this device receives a message from a Pushy payload.
+     *
+     * @param theContext the context of the application
+     * @param theIntent the Intent that stores the Pushy payload
+     */
+    private void acceptMessagePushy(final Context theContext, final Intent theIntent) {
         ChatMessage message = null;
         int chatId = -1;
 
-        try{
+        try {
             message = ChatMessage.createFromJsonString(theIntent.getStringExtra("message"));
             chatId = theIntent.getIntExtra("chatid", -1);
-        } catch (JSONException e) {
+        } catch (JSONException exception) {
             //Web service sent us something unexpected...I can't deal with this.
             throw new IllegalStateException("Error from Web Service. Contact Dev Support");
         }
 
+        // get tools to check if the user is in the app or not
         ActivityManager.RunningAppProcessInfo appProcessInfo =
                 new ActivityManager.RunningAppProcessInfo();
         ActivityManager.getMyMemoryState(appProcessInfo);
 
-        // todo: may have multiple methods down here that accept each different type of message,
-        //      will be using the typeOfMessage for this
+        // do a particular type of notification depending on the state of the user in or outside the app
         if (appProcessInfo.importance == IMPORTANCE_FOREGROUND ||
                 appProcessInfo.importance == IMPORTANCE_VISIBLE) {
-            //app is in the foreground so send the message to the active Activities
+            // the user is inside the application, so send an intent to the MainActivity
             Log.d("PUSHY", "Message received in foreground: " + message);
 
             //create an Intent to broadcast a message to other parts of the app.
-            Intent i = new Intent(RECEIVED_NEW_MESSAGE);
-            i.putExtra("chatMessage", message);
-            i.putExtra("chatid", chatId);
-            i.putExtras(theIntent.getExtras());
+            Intent intent = new Intent(NEW_PUSHY_NOTIF);
+            intent.putExtra("type", NEW_MESSAGE);
+            intent.putExtra("chatMessage", message);
+            intent.putExtra("chatid", chatId);
+            intent.putExtras(theIntent.getExtras());
 
-            theContext.sendBroadcast(i);
+            theContext.sendBroadcast(intent);
+
 
         } else {
-            //app is in the background so create and post a notification
+            // the user is not inside the application, so send a notification
             Log.d("PUSHY", "Message received in background: " + message.getMessage());
 
-            Intent i = new Intent(theContext, AuthActivity.class);
-            i.putExtras(theIntent.getExtras());
+            // set up the intent
+            Intent intent = new Intent(theContext, AuthActivity.class);
+            intent.putExtras(theIntent.getExtras());
 
             PendingIntent pendingIntent = PendingIntent.getActivity(theContext, 0,
-                    i, PendingIntent.FLAG_UPDATE_CURRENT);
+                    intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-            //research more on notifications the how to display them
-            //https://developer.android.com/guide/topics/ui/notifiers/notifications
+            //Build notification
             NotificationCompat.Builder builder =
                     new NotificationCompat.Builder(theContext, CHANNEL_ID)
-                    .setAutoCancel(true)
-                    .setSmallIcon(R.drawable.ic_messages_black_24dp)
-                    .setContentTitle("Message from: " + message.getSender())
-                    .setContentText(message.getMessage())
-                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                    .setContentIntent(pendingIntent);
+                            .setAutoCancel(true)
+                            .setSmallIcon(R.drawable.ic_messages_black_24dp)
+                            .setContentTitle("Message from: " + message.getSender())
+                            .setContentText(message.getMessage())
+                            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                            .setContentIntent(pendingIntent);
 
-            // Automatically configure a ChatMessageNotification Channel for devices running Android O+
+            // Automatically configure a ChatMessageNotification Channel
             Pushy.setNotificationChannel(builder, theContext);
 
             // Get an instance of the NotificationManager service
@@ -118,6 +151,179 @@ public class PushReceiver extends BroadcastReceiver {
             // Build the notification and display it
             notificationManager.notify(1, builder.build());
         }
+    }
+
+    /**
+     * Handles when this device receives a contact request from a Pushy payload.
+     *
+     * @param theContext the context of the application
+     * @param theIntent the Intent that stores the Pushy payload
+     */
+//todo: do we need to set the values beforehand?
+    private void acceptNewContactRequestPushy(final Context theContext, final Intent theIntent) {
+        String toId = theIntent.getStringExtra("toId");
+        String fromId = theIntent.getStringExtra("fromId");
+        String fromNickname = theIntent.getStringExtra("fromNickname");
+
+        // get tools to check if the user is in the app or not
+        ActivityManager.RunningAppProcessInfo appProcessInfo =
+                new ActivityManager.RunningAppProcessInfo();
+        ActivityManager.getMyMemoryState(appProcessInfo);
+
+        if (appProcessInfo.importance == IMPORTANCE_FOREGROUND ||
+                appProcessInfo.importance == IMPORTANCE_VISIBLE) {
+            // user is inside the app
+            Log.d("PUSHY", "New Contact Request received in foreground");
+
+            Intent intent = new Intent(NEW_PUSHY_NOTIF);
+            intent.putExtra("type", NEW_CONTACT_REQUEST);
+            intent.putExtra("toId", toId);
+            intent.putExtra("fromId", fromId);
+            intent.putExtra("fromNickname", fromNickname);
+            intent.putExtras(theIntent.getExtras());
+
+            theContext.sendBroadcast(intent);
+
+        } else {
+            // user is outside of the app
+            Log.d("PUSHY", "New Contact Request received in background");
+
+            // set up the intent
+            Intent intent = new Intent(theContext, AuthActivity.class);
+            intent.putExtras(theIntent.getExtras());
+
+            PendingIntent pendingIntent = PendingIntent.getActivity(theContext, 0,
+                    intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            //Build notification
+            NotificationCompat.Builder builder =
+                    new NotificationCompat.Builder(theContext, CHANNEL_ID)
+                            .setAutoCancel(true)
+                            .setSmallIcon(R.drawable.ic_messages_black_24dp)
+                            .setContentTitle("Contact Request")
+                            .setContentText(fromNickname + " sent you a contact request")
+                            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                            .setContentIntent(pendingIntent);
+
+            // Automatically configure a ChatMessageNotification Channel
+            Pushy.setNotificationChannel(builder, theContext);
+
+            // Get an instance of the NotificationManager service
+            NotificationManager notificationManager =
+                    (NotificationManager)
+                            theContext.getSystemService(theContext.NOTIFICATION_SERVICE);
+
+            // Build the notification and display it
+            notificationManager.notify(1, builder.build());
+        }
+
+    }
+
+    /**
+     * Handles when this device receives a contact request response from a Pushy payload.
+     *
+     * @param theContext the context of the application
+     * @param theIntent the Intent that stores the Pushy payload
+     */
+    private void acceptContactRequestResponsePushy(final Context theContext,
+                                                   final Intent theIntent) {
+        String toId = theIntent.getStringExtra("toId");
+        String fromId = theIntent.getStringExtra("fromId");
+        String fromNickname = theIntent.getStringExtra("fromNickname");
+        Boolean isAccept = theIntent.getBooleanExtra("isAccept", false);
+
+        // get tools to check if the user is in the app or not
+        ActivityManager.RunningAppProcessInfo appProcessInfo =
+                new ActivityManager.RunningAppProcessInfo();
+        ActivityManager.getMyMemoryState(appProcessInfo);
+
+        if (appProcessInfo.importance == IMPORTANCE_FOREGROUND ||
+                appProcessInfo.importance == IMPORTANCE_VISIBLE) {
+            // user is inside the app
+            Log.d("PUSHY", "New Contact Request Response received in foreground");
+
+            Intent intent = new Intent(NEW_PUSHY_NOTIF);
+            intent.putExtra("type", CONTACT_REQUEST_RESPONSE);
+            intent.putExtra("toId", toId);
+            intent.putExtra("fromId", fromId);
+            intent.putExtra("fromNickname", fromNickname);
+            intent.putExtra("isAccept", isAccept);
+            intent.putExtras(theIntent.getExtras());
+
+            theContext.sendBroadcast(intent);
+
+        } else if (isAccept) {
+
+            // we know that the user is outside of the app,
+            // so send a notification ONLY IF it is an acceptance notification.
+            // we don't want to send a notification if the user is not accepted.
+
+            Log.d("PUSHY", "New Contact Request Response received in background");
+
+            // set up the intent
+            Intent intent = new Intent(theContext, AuthActivity.class);
+            intent.putExtras(theIntent.getExtras());
+
+            PendingIntent pendingIntent = PendingIntent.getActivity(theContext, 0,
+                    intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            //Build notification
+            NotificationCompat.Builder builder =
+                    new NotificationCompat.Builder(theContext, CHANNEL_ID)
+                            .setAutoCancel(true)
+                            .setSmallIcon(R.drawable.ic_messages_black_24dp)
+                            .setContentTitle("Contact Request Acceptance")
+                            .setContentText(fromNickname + " accepted your contact request!")
+                            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                            .setContentIntent(pendingIntent);
+
+            // Automatically configure a ChatMessageNotification Channel
+            Pushy.setNotificationChannel(builder, theContext);
+
+            // Get an instance of the NotificationManager service
+            NotificationManager notificationManager =
+                    (NotificationManager)
+                            theContext.getSystemService(theContext.NOTIFICATION_SERVICE);
+
+            // Build the notification and display it
+            notificationManager.notify(1, builder.build());
+        }
+
+    }
+
+    /**
+     * Handles when this device receives a Delete Contact request from a Pushy payload.
+     *
+     * @param theContext the context of the application
+     * @param theIntent the Intent that stores the Pushy payload
+     */
+    private void acceptContactDeletePushy(final Context theContext, final Intent theIntent) {
+
+        String deletedId = theIntent.getStringExtra("deletedId");
+        String deletorId = theIntent.getStringExtra("deletorId");
+        String fromNickname = theIntent.getStringExtra("fromNickname");
+
+        // get tools to check if the user is in the app or not
+        ActivityManager.RunningAppProcessInfo appProcessInfo =
+                new ActivityManager.RunningAppProcessInfo();
+        ActivityManager.getMyMemoryState(appProcessInfo);
+
+        if (appProcessInfo.importance == IMPORTANCE_FOREGROUND ||
+                appProcessInfo.importance == IMPORTANCE_VISIBLE) {
+            // user is inside the app
+            Log.d("PUSHY", "Contact deletion in foreground");
+
+            Intent intent = new Intent(NEW_PUSHY_NOTIF);
+            intent.putExtra("type", CONTACT_DELETE);
+            intent.putExtra("deletedId", deletedId);
+            intent.putExtra("deletorId", deletorId);
+            intent.putExtra("fromNickname", fromNickname);
+            intent.putExtras(theIntent.getExtras());
+
+            theContext.sendBroadcast(intent);
+        }
+
+        // we don't want any kind of outside-app notifications when someone gets deleted
 
     }
 

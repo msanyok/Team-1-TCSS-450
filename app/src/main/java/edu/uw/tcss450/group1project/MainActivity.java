@@ -7,6 +7,8 @@ package edu.uw.tcss450.group1project;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +16,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
@@ -39,11 +42,13 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import edu.uw.tcss450.group1project.model.ContactRequestViewModel;
 import edu.uw.tcss450.group1project.model.LocationViewModel;
 import edu.uw.tcss450.group1project.model.NewMessageCountViewModel;
 import edu.uw.tcss450.group1project.model.PushyTokenViewModel;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
 import edu.uw.tcss450.group1project.services.PushReceiver;
+import edu.uw.tcss450.group1project.ui.contacts.ContactsViewModel;
 import edu.uw.tcss450.group1project.ui.messages.ChatMessage;
 import edu.uw.tcss450.group1project.ui.messages.ChatViewModel;
 
@@ -55,6 +60,7 @@ import edu.uw.tcss450.group1project.ui.messages.ChatViewModel;
  * @author Austn Attaway
  * @author Chris Ding
  * @author Parker Rosengreen
+ * @author Steven Omegna
  * @version Fall 2021
  */
 public class MainActivity extends ThemedActivity {
@@ -74,6 +80,9 @@ public class MainActivity extends ThemedActivity {
     /** A constant int for the permissions request code. Must be a 16 bit number. */
     private static final int MY_PERMISSIONS_LOCATIONS = 8414;
 
+    /** A Channel ID for app notifications*/
+    private static final String CHANNEL_ID = "9898983213213421321";
+
     /** The location request */
     private LocationRequest mLocationRequest;
 
@@ -92,6 +101,12 @@ public class MainActivity extends ThemedActivity {
     /** Keeps track of the new messages */
     private NewMessageCountViewModel mNewMessageModel;
 
+    /** Keeps track of the new contact requests */
+    private ContactRequestViewModel mContactRequestViewModel;
+
+    /** Keeps track of contacts */
+    private ContactsViewModel mContactsViewModel;
+
 // todo: might need for navigation badges
 //    private ActivityMainBinding mBinding;
 
@@ -101,6 +116,9 @@ public class MainActivity extends ThemedActivity {
      */
     private AppBarConfiguration mAppBarConfiguration;
 
+    /** The user info view model that stores the current user's information */
+    private UserInfoViewModel mUserInfoModel;
+
     @Override
     protected void onCreate(final Bundle theSavedInstanceState) {
         super.onCreate(theSavedInstanceState);
@@ -108,15 +126,19 @@ public class MainActivity extends ThemedActivity {
                 new ViewModelProvider(MainActivity.this).get(LocationViewModel.class);
         mNewMessageModel = new ViewModelProvider(this).get(NewMessageCountViewModel.class);
 
-
 // todo: may need this for navigation badges
 //        mBinding = ActivityMainBinding.inflate(getLayoutInflater());
 //        setContentView(mBinding.getRoot());
 
         MainActivityArgs args = MainActivityArgs.fromBundle(getIntent().getExtras());
-        new ViewModelProvider(this,
+
+        // set up all of the view models
+        mUserInfoModel = new ViewModelProvider(this,
                 new UserInfoViewModel.UserInfoViewModelFactory(args.getJwt()))
                         .get(UserInfoViewModel.class);
+        mContactRequestViewModel = new ViewModelProvider(this).get(ContactRequestViewModel.class);
+        mContactsViewModel = new ViewModelProvider(this).get(ContactsViewModel.class);
+
 
         applyTheme();
         setContentView(R.layout.activity_main);
@@ -202,6 +224,10 @@ public class MainActivity extends ThemedActivity {
         }
     }
 
+    /**
+     *
+
+     */
     private void requestLocation() {
         if (ActivityCompat.checkSelfPermission(
                 this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -307,7 +333,7 @@ public class MainActivity extends ThemedActivity {
         if (mPushMessageReceiver == null) {
             mPushMessageReceiver = new MainPushMessageReceiver();
         }
-        IntentFilter iFilter = new IntentFilter(PushReceiver.RECEIVED_NEW_MESSAGE);
+        IntentFilter iFilter = new IntentFilter(PushReceiver.NEW_PUSHY_NOTIF);
         registerReceiver(mPushMessageReceiver, iFilter);
         stopLocationUpdates();
     }
@@ -358,27 +384,131 @@ public class MainActivity extends ThemedActivity {
 
         @Override
         public void onReceive(final Context theContext, final Intent theIntent) {
+
+            final String type = theIntent.getStringExtra("type");
+
+            Log.d("RECIEVE INTENT", "Type: " + type);
+
+            // figure out what kind of pushy notification was sent, then do the corresponding tasks.
+            if (type.equals(PushReceiver.NEW_MESSAGE)) {
+                completeNewMessageActions(theContext, theIntent);
+            } else if (type.equals(PushReceiver.NEW_CONTACT_REQUEST)) {
+                completeNewContactRequestActions(theContext, theIntent);
+            } else if (type.equals(PushReceiver.CONTACT_REQUEST_RESPONSE)) {
+                completeNewContactRequestResponseActions(theContext, theIntent);
+            } else if (type.equals(PushReceiver.CONTACT_DELETE)) {
+                completeNewContactDeleteActions(theContext, theIntent);
+            }
+
+
+        }
+
+        /**
+         * Handles updating the devices viewmodel when a message is received.
+         *
+         * @param theContext the context of the application
+         * @param theIntent the Intent that stores the Pushy payload
+         */
+        private void completeNewMessageActions(final Context theContext, final Intent theIntent) {
+            Log.d("RECIEVE INTENT", "New Message Actions");
+
+            NavController navController =
+                Navigation.findNavController(
+                        MainActivity.this, R.id.nav_host_fragment);
+            NavDestination navDestination = navController.getCurrentDestination();
+
+            ChatMessage chatMessage =
+                    (ChatMessage) theIntent.getSerializableExtra("chatMessage");
+
+            //If the user is not on the chat screen, update the
+            // NewMessageCountView Model
+            if (navDestination.getId() != R.id.navigation_chat_room) {
+                mNewMessageModel.increment();
+            }
+
+            //Inform the view model holding chatroom messages of the new
+            //message.
+            mModel.addMessage(theIntent.getIntExtra("chatid", -1), chatMessage);
+
+        }
+
+        /**
+         * Handles updating the devices contact requests when a request is received or sent.
+         *
+         * @param theContext the context of the application
+         * @param theIntent the Intent that stores the Pushy payload
+         */
+        private void completeNewContactRequestActions(final Context theContext, final Intent theIntent) {
+
+            // todo: need to implement on screen/off screen functionality with in app notifications
+            Log.d("RECIEVE INTENT", "New Contact Request Actions");
+
+            NavController navController =
+                Navigation.findNavController(
+                        MainActivity.this, R.id.nav_host_fragment);
+            NavDestination navDestination = navController.getCurrentDestination();
+
+            final String memberId = mUserInfoModel.getMemberId();
+            final String fromId = theIntent.getStringExtra("fromId");
+
+            if (memberId.equals(fromId)) {
+                // the current user is whoever sent the contact request, so update their sent contact requests
+                // todo:
+            } else {
+                // the current users is receiving the contact request, so update received contact requests
+                mContactRequestViewModel.allContactRequests(mUserInfoModel.getJwt());
+            }
+        }
+        /**
+         * Handles updating the devices contacts and contacts
+         * requests when a request is accepted/declined.
+         *
+         * @param theContext the context of the application
+         * @param theIntent the Intent that stores the Pushy payload
+         */
+        private void completeNewContactRequestResponseActions(final Context theContext, final Intent theIntent) {
+            // todo: need to implement on screen/off screen functionality with in app notifications
+            Log.d("RECIEVE INTENT", "New Contact Request Response Actions");
+
             NavController navController =
                     Navigation.findNavController(
                             MainActivity.this, R.id.nav_host_fragment);
             NavDestination navDestination = navController.getCurrentDestination();
 
-            // figure out what kind of pushy notification was sent, then do the corresponding tasks.
-            if (theIntent.hasExtra("chatMessage")) {
+            final String memberId = mUserInfoModel.getMemberId();
+            final String fromId = theIntent.getStringExtra("fromId");
 
-                ChatMessage chatMessage =
-                        (ChatMessage) theIntent.getSerializableExtra("chatMessage");
+            if (memberId.equals(fromId)) {
 
-                //If the user is not on the chat screen, update the
-                // NewMessageCountView Model
-                if (navDestination.getId() != R.id.navigation_chat_room) {
-                    mNewMessageModel.increment();
-                }
-                //Inform the view model holding chatroom messages of the new
-                //message.
-                mModel.addMessage(theIntent.getIntExtra("chatid", -1), chatMessage);
+                // we are the member who sent the request, so update our sent requests list
+                // todo:
+            } else {
+                // we are the member who accepted/rejected the request, so update our recieved requests list
+                mContactRequestViewModel.allContactRequests(mUserInfoModel.getJwt());
+
             }
-            // todo: add other kinds of pushy messages (more else if () options)
+
+            // update the contacts list for both users if the contact request is accepted
+            if (theIntent.getBooleanExtra("isAccept", false)) {
+                mContactsViewModel.contactsConnect(mUserInfoModel.getJwt());
+            }
+
         }
+        /**
+         * Handles updating the devices contacts when a delete request is recieved.
+         *
+         * @param theContext the context of the application
+         * @param theIntent the Intent that stores the Pushy payload
+         */
+        private void completeNewContactDeleteActions(final Context theContext, final Intent theIntent) {
+            Log.d("RECIEVE INTENT", "New Contact Delete Actions");
+
+            mContactsViewModel.contactsConnect(mUserInfoModel.getJwt());
+
+            // todo: offscreen in app notifs? perhaps not.
+
+        }
+
     }
+
 }
