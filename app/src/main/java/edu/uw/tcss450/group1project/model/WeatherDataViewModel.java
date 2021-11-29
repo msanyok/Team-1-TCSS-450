@@ -123,10 +123,9 @@ public class WeatherDataViewModel extends AndroidViewModel {
      *
      * @param theJwt the user's JWT
      */
-    public void connectGet(final String theJwt, final double theLat, final double theLon,
+    public void connectGet(final String theJwt, final String theLocation,
                            final boolean theCurrentLoc) {
-        String url = "https://team-1-tcss-450-server.herokuapp.com/weather/" +
-                theLat + ":" + theLon;
+        String url = "https://team-1-tcss-450-server.herokuapp.com/weather/" + theLocation;
         Request request = new JsonObjectRequest(
                 Request.Method.GET,
                 url,
@@ -156,7 +155,6 @@ public class WeatherDataViewModel extends AndroidViewModel {
      * @param theResult the result to be parsed
      */
     private void handleResult(final JSONObject theResult, final boolean theCurrentLoc) {
-        System.out.println(theResult);
         WeatherDataCurrent currentData = null;
         List<WeatherData> hourlyData = new ArrayList<>();
         List<WeatherData> dailyData = new ArrayList<>();

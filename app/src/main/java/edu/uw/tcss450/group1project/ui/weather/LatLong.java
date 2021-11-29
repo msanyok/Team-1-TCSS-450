@@ -4,6 +4,8 @@
 
 package edu.uw.tcss450.group1project.ui.weather;
 
+import androidx.annotation.NonNull;
+
 /**
  * LatLong is a simple class for storing latitudes and longitudes.
  *
@@ -45,5 +47,11 @@ public class LatLong {
      */
     public double getLong() {
         return mLong;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return mLat + ":" + mLong;
     }
 }

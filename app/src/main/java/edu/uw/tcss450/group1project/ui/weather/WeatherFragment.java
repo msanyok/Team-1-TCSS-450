@@ -21,6 +21,7 @@ import org.json.JSONObject;
 import edu.uw.tcss450.group1project.MainActivity;
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentWeatherBinding;
+import edu.uw.tcss450.group1project.model.LocationViewModel;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
 import edu.uw.tcss450.group1project.model.WeatherDataViewModel;
 import edu.uw.tcss450.group1project.utils.WeatherUtils;
@@ -37,33 +38,39 @@ public class WeatherFragment extends Fragment {
     /** The weather data view model */
     private WeatherDataViewModel mModel;
 
+    /** The user info view model */
+    private UserInfoViewModel mUserModel;
+
     /** The view binding */
     private FragmentWeatherBinding mBinding;
 
     /** The latitude and longitude object */
-    private final LatLong mLatLong;
+    private LatLong mLatLong;
 
     /** Indicates whether or not this fragment is displaying weather for the user's location */
-    private final boolean mCurrentLocation;
+    private final boolean mDeletable;
 
     /**
      * Constructs a new WeatherFragment with a provided LatLong
      *
      * @param theLatLong the latitude longitude object to be assigned
+     * @param theDeletable indicates whether or not this fragment can be deleted from the
+     *                     parent view pager
      */
-    public WeatherFragment(final LatLong theLatLong, final boolean theCurrentLoc) {
+    public WeatherFragment(final LatLong theLatLong, final boolean theDeletable) {
         mLatLong = theLatLong;
-        mCurrentLocation = theCurrentLoc;
+        mDeletable = theDeletable;
     }
 
     @Override
     public void onCreate(@Nullable final Bundle theSavedInstanceState) {
         super.onCreate(theSavedInstanceState);
-        mModel = new ViewModelProvider(this).get(WeatherDataViewModel.class);
-        UserInfoViewModel userInfo = new ViewModelProvider(getActivity())
+        mModel = mDeletable ?
+                new ViewModelProvider(getActivity()).get(WeatherDataViewModel.class) :
+                new ViewModelProvider(this).get(WeatherDataViewModel.class);
+        mUserModel = new ViewModelProvider(getActivity())
                 .get(UserInfoViewModel.class);
-        mModel.connectGet(
-                userInfo.getJwt(), mLatLong.getLat(), mLatLong.getLong(), mCurrentLocation);
+        mModel.connectGet(mUserModel.getJwt(), mLatLong.toString(), mDeletable);
     }
 
     @Override
@@ -78,12 +85,27 @@ public class WeatherFragment extends Fragment {
                               @Nullable final Bundle theSavedInstanceState) {
         super.onViewCreated(theView, theSavedInstanceState);
         mBinding = FragmentWeatherBinding.bind(getView());
-        UserInfoViewModel model = new ViewModelProvider(getActivity())
-                .get(UserInfoViewModel.class);
         mModel.addResponseObserver(getViewLifecycleOwner(), this::observeResponse);
-        if (mCurrentLocation) {
+        if (mDeletable) {
             mBinding.locationDeleteButton.setVisibility(View.GONE);
+            LocationViewModel locModel =
+                    new ViewModelProvider(getActivity()).get(LocationViewModel.class);
+            locModel.addLocationObserver(getViewLifecycleOwner(), location -> {
+                if (location != null) {
+                    mLatLong = new LatLong(location.getLatitude(), location.getLongitude());
+                    mModel.connectGet(mUserModel.getJwt(), mLatLong.toString(), mDeletable);
+                }
+            });
         }
+    }
+
+    /**
+     * Sets the latitude and longitude for this weather fragment
+     *
+     * @param theLatLong the lat long to be assigned
+     */
+    public void setLatLong(final LatLong theLatLong) {
+        mLatLong = theLatLong;
     }
 
     /**
@@ -119,7 +141,6 @@ public class WeatherFragment extends Fragment {
                         mModel.getCurrentData().getPrecipPercentage() + "%");
         mBinding.titleHumidity
                 .setText("Humidity: " + mModel.getCurrentData().getHumidity() + "%");
-
         mBinding.listHourlyForecast
                 .setAdapter(new WeatherRecyclerAdapterHourly(mModel.getHourlyData()));
         mBinding.listDailyForecast

@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
@@ -23,10 +24,12 @@ import com.google.android.material.tabs.TabLayout;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import edu.uw.tcss450.group1project.MainActivity;
 import edu.uw.tcss450.group1project.R;
+import edu.uw.tcss450.group1project.databinding.FragmentWeatherParentBinding;
 import edu.uw.tcss450.group1project.model.LocationViewModel;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
 
@@ -43,12 +46,6 @@ public class WeatherParentFragment extends Fragment {
 
     /** The user info view model */
     private UserInfoViewModel mUserModel;
-
-    /** The weather fragment view pager */
-    private ViewPager mPager;
-
-    /** The tab layout to accompany the weather fragment view pager */
-    private TabLayout mTabs;
 
     /**
      * Required empty constructor
@@ -79,8 +76,11 @@ public class WeatherParentFragment extends Fragment {
         mLocationModel.connectGet(mUserModel.getJwt());
         mLocationModel.addResponseObserver(getViewLifecycleOwner(),
                 this::observeLocationListResponse);
-        mPager = getView().findViewById(R.id.view_pager);
-        mTabs = getView().findViewById(R.id.tab_layout);
+        FragmentWeatherParentBinding binding = FragmentWeatherParentBinding.bind(theView);
+        binding.searchButton.setOnClickListener(button -> {
+            Navigation.findNavController(theView).navigate(
+                    R.id.action_navigation_weather_parent_to_navigation_weather_location_selection);
+        });
     }
 
     /**
@@ -103,22 +103,23 @@ public class WeatherParentFragment extends Fragment {
      * Sets this fragment's view components which include its view pager and tab view
      */
     private void setViewComponents() {
-        List<Fragment> frags = new ArrayList<>();
+        List<WeatherFragment> frags = new LinkedList<>();
         LocationViewModel locModel =
                 new ViewModelProvider(getActivity()).get(LocationViewModel.class);
         Location loc = locModel.getCurrentLocation();
         if (loc != null) {
-            Fragment myLocFrag = new WeatherFragment(
-                        new LatLong(loc.getLatitude(), loc.getLongitude()), true);
-            frags.add(myLocFrag);
+            frags.add(new WeatherFragment(
+                    new LatLong(loc.getLatitude(), loc.getLongitude()), true));
         }
         for (final LatLong ltlng : mLocationModel.getLocations()) {
             frags.add(new WeatherFragment(ltlng, false));
         }
+        ViewPager pager = getView().findViewById(R.id.view_pager);
+        TabLayout tabs = getView().findViewById(R.id.tab_layout);
         WeatherFragmentPagerAdapter pagerAdapter =
                 new WeatherFragmentPagerAdapter(getChildFragmentManager(), frags);
-        mPager.setAdapter(pagerAdapter);
-        mTabs.setupWithViewPager(mPager);
+        pager.setAdapter(pagerAdapter);
+        tabs.setupWithViewPager(pager);
     }
 
     /**

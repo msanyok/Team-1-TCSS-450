@@ -21,7 +21,7 @@ import java.util.List;
 public class WeatherFragmentPagerAdapter extends FragmentPagerAdapter {
 
     /** The fragments to be displayed */
-    private final List<Fragment> mFrags;
+    private final List<WeatherFragment> mFrags;
 
     /**
      * Constructs a new WeatherFragmentPagerAdapter with the provided fragment manager and list
@@ -31,7 +31,7 @@ public class WeatherFragmentPagerAdapter extends FragmentPagerAdapter {
      * @param theFrags the list of fragments to be displayed
      */
     public WeatherFragmentPagerAdapter(@NonNull final FragmentManager theManager,
-                                       final List<Fragment> theFrags) {
+                                       final List<WeatherFragment> theFrags) {
         super(theManager);
         mFrags = theFrags;
     }

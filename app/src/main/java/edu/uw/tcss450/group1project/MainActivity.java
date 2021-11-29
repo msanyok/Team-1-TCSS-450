@@ -19,8 +19,10 @@ import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -62,7 +64,7 @@ public class MainActivity extends ThemedActivity {
     /**
      * The desired interval for location updates. Inexact. Updates may be more or less frequent.
      */
-    public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
+    public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 50000;
 
     /**
      * The fastest rate for active location updates. Exact. Updates will never be more frequent
@@ -134,6 +136,17 @@ public class MainActivity extends ThemedActivity {
         NavigationUI.setupActionBarWithNavController(
                 this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
+        navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
+            @Override
+            public void onDestinationChanged(@NonNull NavController controller, @NonNull NavDestination destination, @Nullable Bundle arguments) {
+                int id = destination.getId();
+                if (id == R.id.navigation_home || id == R.id.navigation_contacts_parent || id == R.id.navigation_messages || id == R.id.navigation_weather_parent) {
+                    navView.setVisibility(View.VISIBLE);
+                } else {
+                    navView.setVisibility(View.GONE);
+                }
+            }
+        });
 
         // handles the destination changes that occur in the app and what
         // should happen when it occurs
@@ -309,7 +322,7 @@ public class MainActivity extends ThemedActivity {
         }
         IntentFilter iFilter = new IntentFilter(PushReceiver.RECEIVED_NEW_MESSAGE);
         registerReceiver(mPushMessageReceiver, iFilter);
-        stopLocationUpdates();
+        startLocationUpdates();
     }
 
     @Override
@@ -318,7 +331,7 @@ public class MainActivity extends ThemedActivity {
         if (mPushMessageReceiver != null){
             unregisterReceiver(mPushMessageReceiver);
         }
-        startLocationUpdates();
+        stopLocationUpdates();
     }
 
     /**
