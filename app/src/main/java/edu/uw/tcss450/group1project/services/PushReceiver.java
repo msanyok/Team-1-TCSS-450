@@ -36,7 +36,7 @@ import static android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_VISIB
 public class PushReceiver extends BroadcastReceiver {
 
     /** The String that notifies a new notification has been received from pushy  */
-    public static final String NEW_PUSHY_NOTIF = "new message from pushy";
+    public static final String NEW_PUSHY_NOTIF = "newMessageFromPushy";
 
     /** The String that notifies a message has been sent or received from pushy */
     public static final String NEW_MESSAGE = "msg";

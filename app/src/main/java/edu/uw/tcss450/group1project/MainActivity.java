@@ -225,8 +225,7 @@ public class MainActivity extends ThemedActivity {
     }
 
     /**
-     *
-
+     * Requests devices location for weather
      */
     private void requestLocation() {
         if (ActivityCompat.checkSelfPermission(
@@ -399,7 +398,6 @@ public class MainActivity extends ThemedActivity {
             } else if (type.equals(PushReceiver.CONTACT_DELETE)) {
                 completeNewContactDeleteActions(theContext, theIntent);
             }
-
 
         }
 
