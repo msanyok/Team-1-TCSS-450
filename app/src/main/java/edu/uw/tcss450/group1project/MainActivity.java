@@ -45,6 +45,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import edu.uw.tcss450.group1project.databinding.ActivityMainBinding;
 import edu.uw.tcss450.group1project.model.ContactRequestViewModel;
+import edu.uw.tcss450.group1project.model.LocalStorageUtils;
 import edu.uw.tcss450.group1project.model.LocationViewModel;
 import edu.uw.tcss450.group1project.model.NewMessageCountViewModel;
 import edu.uw.tcss450.group1project.model.PushyTokenViewModel;
@@ -335,12 +336,18 @@ Log.d("NEW MESSAGE", "NEW MESSAGE NOTICED");
     @Override
     public void onResume() {
         super.onResume();
+
+        // get the notifications that occurred while the app was not in the foreground
+        mNewMessageModel.putData(LocalStorageUtils.getMissedMessages(this));
+
+
         if (mPushMessageReceiver == null) {
             mPushMessageReceiver = new MainPushMessageReceiver();
         }
         IntentFilter iFilter = new IntentFilter(PushReceiver.NEW_PUSHY_NOTIF);
         registerReceiver(mPushMessageReceiver, iFilter);
         stopLocationUpdates();
+
     }
 
     @Override

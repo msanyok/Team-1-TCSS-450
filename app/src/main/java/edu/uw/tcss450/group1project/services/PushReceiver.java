@@ -11,6 +11,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
@@ -19,6 +20,7 @@ import org.json.JSONException;
 
 import edu.uw.tcss450.group1project.AuthActivity;
 import edu.uw.tcss450.group1project.R;
+import edu.uw.tcss450.group1project.model.LocalStorageUtils;
 import edu.uw.tcss450.group1project.ui.messages.ChatMessage;
 import me.pushy.sdk.Pushy;
 
@@ -122,6 +124,11 @@ Log.e("APP STATUS", appProcessInfo.importance == IMPORTANCE_BACKGROUND ? "BACKGR
 
 
         } else {
+
+            // insert the new message into internal storage so it can be retrieved
+            // when the app is back in the foreground
+            LocalStorageUtils.putMissedMessage(theContext, String.valueOf(chatId));
+            
             // the user is not inside the application, so send a notification
             Log.d("PUSHY", "Message received in background: " + message.getMessage());
 
@@ -131,6 +138,7 @@ Log.e("APP STATUS", appProcessInfo.importance == IMPORTANCE_BACKGROUND ? "BACKGR
 
             PendingIntent pendingIntent = PendingIntent.getActivity(theContext, 0,
                     intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
 
             //Build notification
             NotificationCompat.Builder builder =

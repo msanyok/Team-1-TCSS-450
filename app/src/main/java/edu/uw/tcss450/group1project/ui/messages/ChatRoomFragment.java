@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentChatroomBinding;
+import edu.uw.tcss450.group1project.model.LocalStorageUtils;
 import edu.uw.tcss450.group1project.model.NewMessageCountViewModel;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
 
@@ -61,6 +62,9 @@ public class ChatRoomFragment extends Fragment {
         // update the new message counts now that we have navigated to a chat room.
         // if this chat room had new messages, the view model will remove the counts.
         provider.get(NewMessageCountViewModel.class).decrement(mChatId);
+
+        // remove the locally stored new message counts if they exist for this chat id
+        LocalStorageUtils.removeNewMessageStore(this.getContext(), mChatId);
 
         // get the most recent messages for this chat
         mChatModel.getFirstMessages(mChatId, mUserModel.getJwt());

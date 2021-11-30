@@ -70,6 +70,21 @@ Log.d("NEW MESSAGE VIEW MODEL", "INCREMENT CALLED");
 
     }
 
+
+    public void putData(Map<String, Integer> theMap) {
+        int totalNewMessages = 0;
+        Map<Integer, Integer> newMissedMessagesMap = new HashMap<>();
+        for (Map.Entry<String, Integer> entry : theMap.entrySet()) {
+            int key = Integer.valueOf(entry.getKey());
+            int newMessageCount = entry.getValue();
+            newMissedMessagesMap.put(key, newMessageCount);
+            totalNewMessages += newMessageCount;
+        }
+
+        mNewMessageMap.setValue(newMissedMessagesMap);
+        mNewMessageCount.setValue(totalNewMessages);
+    }
+
     /**
      * Increments the total new messages and the new message mapping corresponding
      * to the chatId that the new message was from
