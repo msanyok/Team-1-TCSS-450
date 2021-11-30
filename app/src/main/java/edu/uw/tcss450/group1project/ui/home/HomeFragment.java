@@ -203,9 +203,10 @@ mBinding.listNewMessages.setAdapter(
     }
 
 
-
-
-
+    /**
+     * Observe the response from getting the chat room list
+     * @param theResponse the response from the endpoint
+     */
     private void observerMissedChatsResponse(final JSONObject theResponse) {
         if (theResponse.length() > 0) {
             if (theResponse.has("code")) {
@@ -222,6 +223,10 @@ mBinding.listNewMessages.setAdapter(
         }
     }
 
+    /**
+     * Parses and sets the data for missed message chat rooms
+     * @param theResponse the raw data from the endpoint
+     */
     private void setMissedMessagesComponents(final JSONObject theResponse) {
         // parse the response and turn it into a new ChatRoom list
         final List<ChatRoom> newMessagesChatList = new ArrayList<>();
