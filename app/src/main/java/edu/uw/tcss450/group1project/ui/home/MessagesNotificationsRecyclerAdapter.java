@@ -102,7 +102,11 @@ public class MessagesNotificationsRecyclerAdapter extends
 
         /** Displays all chat room data and image views for a single new message card */
         private void display() {
-            // TODO implement code for live chat room data
+            // TODO style the same as on chat list frag
+            mBinding.chatName.setText(mRoom.getChatName());
+            mBinding.currentMessage.setText(mRoom.getMostRecentMessage());
+            mBinding.participantImage.setImageAlpha(150);
+
         }
     }
 }
