@@ -184,6 +184,7 @@ public class WeatherParentFragment extends Fragment {
             mLocationModel.clearDeletionResponse();
         } else if (theResponse.length() != 0) {
             mLocationModel.clearDeletionResponse();
+            mViewIndex--;
             mLocationModel.connectGet(mUserModel.getJwt());
             Toast.makeText(getContext(), "Location deleted.",
                     Toast.LENGTH_SHORT).show();

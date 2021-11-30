@@ -234,6 +234,9 @@ public class WeatherLocationSelectionFragment
                     } else if (issue.equalsIgnoreCase("ZIP to lat/lon API Error")) {
                         message = "The provided zip code is invalid and cannot be saved. Please " +
                                 "try again.";
+                    } else if (issue.equalsIgnoreCase("Location already exists")) {
+                        message = "It looks like you've already saved this location. We didn't " +
+                                "add it again.";
                     }
                 } catch (JSONException ex) {
                     Log.e("JSON PARSE ERROR IN LOCATION ADD OBSERVER", ex.getMessage());
