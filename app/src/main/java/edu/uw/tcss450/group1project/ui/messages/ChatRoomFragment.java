@@ -6,7 +6,6 @@
 package edu.uw.tcss450.group1project.ui.messages;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,6 +44,10 @@ public class ChatRoomFragment extends Fragment {
     private int mChatId;
 
 
+    public int getChatId() {
+        return mChatId;
+    }
+
     @Override
     public void onCreate(@Nullable final Bundle theSavedInstanceState) {
         super.onCreate(theSavedInstanceState);
@@ -61,7 +64,7 @@ public class ChatRoomFragment extends Fragment {
 
         // update the new message counts now that we have navigated to a chat room.
         // if this chat room had new messages, the view model will remove the counts.
-        provider.get(NewMessageCountViewModel.class).decrement(mChatId);
+        provider.get(NewMessageCountViewModel.class).clearNewMessages(mChatId);
 
         // remove the locally stored new message counts if they exist for this chat id
         LocalStorageUtils.removeNewMessageStore(this.getContext(), mChatId);

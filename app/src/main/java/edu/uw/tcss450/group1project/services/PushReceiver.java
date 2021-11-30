@@ -56,7 +56,6 @@ public class PushReceiver extends BroadcastReceiver {
     /** The ID for the channel used for notifications */
     private static final String CHANNEL_ID = "1";
 
-
     /**
      * Handles what should occur when this device receives a Pushy payload.
      *
@@ -105,9 +104,8 @@ public class PushReceiver extends BroadcastReceiver {
         ActivityManager.RunningAppProcessInfo appProcessInfo =
                 new ActivityManager.RunningAppProcessInfo();
         ActivityManager.getMyMemoryState(appProcessInfo);
-Log.e("APP STATUS", appProcessInfo.importance == IMPORTANCE_BACKGROUND ? "BACKGROUND" : "ELSE");
 
-                // do a particular type of notification depending on the state of the user in or outside the app
+        // do a particular type of notification depending on the state of the user in or outside the app
         if (appProcessInfo.importance == IMPORTANCE_FOREGROUND ||
                 appProcessInfo.importance == IMPORTANCE_VISIBLE) {
             // the user is inside the application, so send an intent to the MainActivity
@@ -122,15 +120,14 @@ Log.e("APP STATUS", appProcessInfo.importance == IMPORTANCE_BACKGROUND ? "BACKGR
 
             theContext.sendBroadcast(intent);
 
-
         } else {
+
+            // the user is not inside the application, so send a notification
+            Log.d("PUSHY", "Message received in background: " + message.getMessage());
 
             // insert the new message into internal storage so it can be retrieved
             // when the app is back in the foreground
             LocalStorageUtils.putMissedMessage(theContext, String.valueOf(chatId));
-            
-            // the user is not inside the application, so send a notification
-            Log.d("PUSHY", "Message received in background: " + message.getMessage());
 
             // set up the intent
             Intent intent = new Intent(theContext, AuthActivity.class);
@@ -138,7 +135,6 @@ Log.e("APP STATUS", appProcessInfo.importance == IMPORTANCE_BACKGROUND ? "BACKGR
 
             PendingIntent pendingIntent = PendingIntent.getActivity(theContext, 0,
                     intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
 
             //Build notification
             NotificationCompat.Builder builder =
@@ -169,7 +165,7 @@ Log.e("APP STATUS", appProcessInfo.importance == IMPORTANCE_BACKGROUND ? "BACKGR
      * @param theContext the context of the application
      * @param theIntent the Intent that stores the Pushy payload
      */
-//todo: do we need to set the values beforehand?
+//todo: do we need to set the values beforehand? -- update, idk what this todo is for anymore, subject to deletion
     private void acceptNewContactRequestPushy(final Context theContext, final Intent theIntent) {
         String toId = theIntent.getStringExtra("toId");
         String fromId = theIntent.getStringExtra("fromId");

@@ -5,8 +5,6 @@
 
 package edu.uw.tcss450.group1project.ui.messages;
 
-import android.graphics.Typeface;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -120,9 +118,8 @@ public class MessagesRecyclerAdapter
 
             // set the text on the chat if there are new messages in the chat
             if (mRoom.getMissedMessageCount() > 0) {
-                Log.d("mssg RECYCLER ADAPTER", "MISSED MESSAGE SETTING BOLD");
-                mBinding.chatName.setTypeface(Typeface.DEFAULT_BOLD);
-                mBinding.currentMessage.setTypeface(Typeface.DEFAULT_BOLD);
+                // TODO: STYLE ROOM CARD FOR NEW MESSAGE
+                mBinding.participantImage.setImageAlpha(150);
             }
 
         }

@@ -62,16 +62,11 @@ public class NewMessageCountViewModel extends ViewModel {
     }
 
     /**
-     * Increment the new message count by 1.
+     * Copies the given mapping (chatId -> new message count) to this view model.
+     *
+     * @param theMap the map to copy
      */
-    public void increment() {
-Log.d("NEW MESSAGE VIEW MODEL", "INCREMENT CALLED");
-        mNewMessageCount.setValue(mNewMessageCount.getValue() + 1);
-
-    }
-
-
-    public void putData(Map<String, Integer> theMap) {
+    public void putData(final Map<String, Integer> theMap) {
         int totalNewMessages = 0;
         Map<Integer, Integer> newMissedMessagesMap = new HashMap<>();
         for (Map.Entry<String, Integer> entry : theMap.entrySet()) {
@@ -92,7 +87,6 @@ Log.d("NEW MESSAGE VIEW MODEL", "INCREMENT CALLED");
      * @param theChatId the chatId the new message came from
      */
     public void increment(final int theChatId) {
-Log.d("NEW MESSAGE VIEW MODEL", "INCREMENT " + theChatId + " + 1");
         // increment the value that corresponds to this chatId
         final Map<Integer, Integer> map = mNewMessageMap.getValue();
         map.put(theChatId, map.getOrDefault(theChatId, 0) + 1);
@@ -103,14 +97,13 @@ Log.d("NEW MESSAGE VIEW MODEL", "INCREMENT " + theChatId + " + 1");
         System.out.println(map.get(theChatId));
     }
 
-
     /**
      * Clears the new message count mapping for the given chat, and decrements the total
      * new chat count by the amount that was cleared in the map.
      *
      * @param theChatId the chat that is being navigated to
      */
-    public void decrement(final int theChatId) {
+    public void clearNewMessages(final int theChatId) {
         final Map<Integer, Integer> map = mNewMessageMap.getValue();
 
         // check to make sure a value exists for the given chatId
@@ -123,13 +116,13 @@ Log.d("NEW MESSAGE VIEW MODEL", "INCREMENT " + theChatId + " + 1");
         }
     }
 
-
     /**
-     * Reset the message count to 0.
+     * Returns the number of new messages that have occurred for the given chat id
+     *
+     * @param theChatId the id of the chat we want the count for
+     * @return the number of new messages
      */
-    public void reset() {
-        mNewMessageCount.setValue(0);
+    public int getNumNewMessages(final int theChatId) {
+        return mNewMessageMap.getValue().getOrDefault(theChatId, 0);
     }
-
-
 }

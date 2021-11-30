@@ -17,10 +17,18 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentChatRoomsBinding;
+import edu.uw.tcss450.group1project.model.NewMessageCountViewModel;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
 
 /**
@@ -77,19 +85,18 @@ public class ChatsFragment extends Fragment {
      * @param theResponse the response object sent back from the http get request
      */
     private void observeResponse(final JSONObject theResponse) {
-        System.out.println(theResponse);
+
         if (theResponse.length() > 0) {
             if (theResponse.has("code")) {
                 // a 400 error occurred, so log it.
                 Log.e("CHATS LIST 400", theResponse.toString());
                 // TODO: Handle UI change when the chat list is not received properly,
-                //  potentailly show DialogBox?
+                //  potentailly show Dialog?
 
             } else {
                 // the data was retrieved properly, so get the formatted data from the view model
                 // (will be up to date by the time this method is called from the observer)
-                mBinding.listRoot.setAdapter(
-                        new MessagesRecyclerAdapter(mChatListsModel.getChatList()));
+                parseAndSetChatList(theResponse);
 
             }
         } else {
@@ -98,4 +105,46 @@ public class ChatsFragment extends Fragment {
                     + theResponse.toString());
         }
     }
+
+    private void parseAndSetChatList(JSONObject theResponse) {
+
+        // parse the response and turn it into a new ChatRoom list
+        final List<ChatRoom> mChatRoomList = new ArrayList<>();
+        NewMessageCountViewModel newMessageModel =
+                new ViewModelProvider(getActivity()).get(NewMessageCountViewModel.class);
+
+
+        try {
+            JSONArray chats = theResponse.getJSONArray("data");
+
+            for (int i = 0; i < chats.length(); i++) {
+                // the names of the get(...) fields are determined
+                // by the server and can be found in the documentation
+                JSONObject chat = (JSONObject) chats.get(i);
+                mChatRoomList.add(new ChatRoom(chat.get("chat_name").toString(),
+                        chat.get("chatid").toString(),
+                        chat.get("message").toString(),
+                        chat.get("timestamp").toString(),
+                        newMessageModel.getNumNewMessages(
+                                Integer.valueOf(chat.get("chatid").toString()))));
+            }
+
+            // once the list has been repopulated, sort the chat rooms based on the timestamp
+            // of the most recent message sent
+            Collections.sort(mChatRoomList);
+
+        } catch (JSONException exception) {
+            // should we do something specific here if the json isn't parsed properly/
+            exception.printStackTrace();
+        }
+
+        mBinding.listRoot.setAdapter(new MessagesRecyclerAdapter(mChatRoomList));
+    }
+
+
+
+
+
+
+
 }
