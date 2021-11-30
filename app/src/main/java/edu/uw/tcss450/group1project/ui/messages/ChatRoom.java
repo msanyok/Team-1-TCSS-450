@@ -28,6 +28,8 @@ public class ChatRoom implements Comparable<ChatRoom> {
     /** The timestamp that corresponds to when the most recent message was sent in this chat room */
     private String mTimestamp;
 
+    private int mMissedMessageCount;
+
     /**
      * Creates a new chat room with the provided name, id, and most recent message.
      *
@@ -51,7 +53,16 @@ public class ChatRoom implements Comparable<ChatRoom> {
         mChatRoomMessage = Objects.requireNonNull(theMostRecentMessage,
                 "theMostRecentMessage can not be null");
         mTimestamp = Objects.requireNonNull(theTimestamp, "theTimestamp can not be null");
+        mMissedMessageCount = 0;
     }
+
+    public void setMissedMessages(final int theMessageCount) {
+        mMissedMessageCount = theMessageCount;
+    }
+    public int getMissedMessageCount() {
+        return mMissedMessageCount;
+    }
+
 
     /**
      * Returns this chat's name
@@ -90,8 +101,20 @@ public class ChatRoom implements Comparable<ChatRoom> {
         return mTimestamp;
     }
 
+
+
+    // todo: compares first by missed messages, then by timestamp?
     @Override
     public int compareTo(final ChatRoom theChatRoom) {
+//        int result = 0;
+//        if (this.getMissedMessageCount() > 0 && theChatRoom.getMissedMessageCount() > 0) {
+//            // both chats have missed messages, so compare based on timestamp
+//            result = theChatRoom.getTimestamp().compareTo(this.getTimestamp());
+//        } else if (this.getMissedMessageCount() > 0 ) {
+//
+//        }
+
         return theChatRoom.getTimestamp().compareTo(this.getTimestamp());
+
     }
 }

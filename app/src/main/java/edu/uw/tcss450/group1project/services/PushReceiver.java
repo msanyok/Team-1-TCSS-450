@@ -22,6 +22,7 @@ import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.ui.messages.ChatMessage;
 import me.pushy.sdk.Pushy;
 
+import static android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_BACKGROUND;
 import static android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND;
 import static android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_VISIBLE;
 
@@ -102,8 +103,9 @@ public class PushReceiver extends BroadcastReceiver {
         ActivityManager.RunningAppProcessInfo appProcessInfo =
                 new ActivityManager.RunningAppProcessInfo();
         ActivityManager.getMyMemoryState(appProcessInfo);
+Log.e("APP STATUS", appProcessInfo.importance == IMPORTANCE_BACKGROUND ? "BACKGROUND" : "ELSE");
 
-        // do a particular type of notification depending on the state of the user in or outside the app
+                // do a particular type of notification depending on the state of the user in or outside the app
         if (appProcessInfo.importance == IMPORTANCE_FOREGROUND ||
                 appProcessInfo.importance == IMPORTANCE_VISIBLE) {
             // the user is inside the application, so send an intent to the MainActivity

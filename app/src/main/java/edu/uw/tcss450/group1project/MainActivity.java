@@ -40,8 +40,10 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import edu.uw.tcss450.group1project.databinding.ActivityMainBinding;
 import edu.uw.tcss450.group1project.model.ContactRequestViewModel;
 import edu.uw.tcss450.group1project.model.LocationViewModel;
 import edu.uw.tcss450.group1project.model.NewMessageCountViewModel;
@@ -122,23 +124,18 @@ public class MainActivity extends ThemedActivity {
     @Override
     protected void onCreate(final Bundle theSavedInstanceState) {
         super.onCreate(theSavedInstanceState);
-        mLocationModel =
-                new ViewModelProvider(MainActivity.this).get(LocationViewModel.class);
-        mNewMessageModel = new ViewModelProvider(this).get(NewMessageCountViewModel.class);
-
-// todo: may need this for navigation badges
-//        mBinding = ActivityMainBinding.inflate(getLayoutInflater());
-//        setContentView(mBinding.getRoot());
 
         MainActivityArgs args = MainActivityArgs.fromBundle(getIntent().getExtras());
 
         // set up all of the view models
+        mLocationModel =
+                new ViewModelProvider(MainActivity.this).get(LocationViewModel.class);
+        mNewMessageModel = new ViewModelProvider(this).get(NewMessageCountViewModel.class);
         mUserInfoModel = new ViewModelProvider(this,
                 new UserInfoViewModel.UserInfoViewModelFactory(args.getJwt()))
                         .get(UserInfoViewModel.class);
         mContactRequestViewModel = new ViewModelProvider(this).get(ContactRequestViewModel.class);
         mContactsViewModel = new ViewModelProvider(this).get(ContactsViewModel.class);
-
 
         applyTheme();
         setContentView(R.layout.activity_main);
@@ -160,30 +157,39 @@ public class MainActivity extends ThemedActivity {
         // handles the destination changes that occur in the app and what
         // should happen when it occurs
 // todo: need to modify the if statement body so it works for different chat rooms.
-        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
-            if (destination.getId() == R.id.navigation_chat_room) {
-                mNewMessageModel.reset();
+//        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+//            if (destination.getId() == R.id.navigation_chat_room) {
+//Log.d("NAVIGATION", "NAVIGATED TO CHAT ROOM");
+//                // get the ID of the chat room that was navigated to
+//                int chatId = new ViewModelProvider(this)
+//                        .get(ChatViewModel.class).getCurrentChatRoom();
+//                mNewMessageModel.decrement(chatId);
+//
+//
+//Log.d("NAVIGATION", "NAVIGATED TO CHAT ROOM "
+//        + new ViewModelProvider(this).get(ChatViewModel.class).getCurrentChatRoom());
+//
+//
+
+
+        // Handles the notification badge drawing
+        mNewMessageModel.addMessageCountObserver(this, count -> {
+Log.d("NEW MESSAGE", "NEW MESSAGE NOTICED");
+            BadgeDrawable badge = navView.getOrCreateBadge(R.id.navigation_messages);
+            badge.setMaxCharacterCount(2);
+            if (count > 0) {
+                // new messages! update and show the notification badge.
+                badge.setNumber(count);
+                badge.setVisible(true);
+            } else {
+                // user did some action to clear the new messages, remove the badge
+                badge.clearNumber();
+                badge.setVisible(false);
             }
         });
 
-// todo: need to research and see if it will work with our theme
-        // Handles the notification badge drawing
-        mNewMessageModel.addMessageCountObserver(this, count -> {
-//            BadgeDrawable badge = mBinding.navView.getOrCreateBadge(R.id.navigation_chat);
-//            badge.setMaxCharacterCount(2);
-//            if (count > 0) {
-//                //new messages! update and show the notification badge.
-//                badge.setNumber(count);
-//                badge.setVisible(true);
-//            } else {
-//                //user did some action to clear the new messages, remove the badge
-//                badge.clearNumber();
-//                badge.setVisible(false);
-//            }
-        });
-
+        // check for locations permissions
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-
         if (ActivityCompat.checkSelfPermission(
                 this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED
@@ -368,6 +374,9 @@ public class MainActivity extends ThemedActivity {
         );
     }
 
+
+
+
     /**
      * A BroadcastReceiver that listens for messages sent from PushReceiver
      *
@@ -420,9 +429,14 @@ public class MainActivity extends ThemedActivity {
 
             //If the user is not on the chat screen, update the
             // NewMessageCountView Model
-            if (navDestination.getId() != R.id.navigation_chat_room) {
-                mNewMessageModel.increment();
-            }
+// TODO: CHANGE BACK
+//            if (navDestination.getId() != R.id.navigation_chat_room) {
+                // notify the new message view model that a new message occured in a chat
+                int chatId = theIntent.getIntExtra("chatid", -1);
+                mNewMessageModel.increment(chatId);
+
+                // notify the chat list view model that a chat now has missed messages
+//            }
 
             //Inform the view model holding chatroom messages of the new
             //message.

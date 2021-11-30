@@ -5,6 +5,8 @@
 
 package edu.uw.tcss450.group1project.ui.messages;
 
+import android.graphics.Typeface;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +20,7 @@ import java.util.List;
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentChatRoomCardBinding;
 
-
+// todo: this class to be refactoed to 'ChatRoomRecyclerAdapter'
 /**
  * ContactRecyclerAdapter provides an adapter for the ContactsFragment RecyclerView.
  *
@@ -115,6 +117,14 @@ public class MessagesRecyclerAdapter
         private void display() {
             mBinding.chatName.setText(mRoom.getChatName());
             mBinding.currentMessage.setText(mRoom.getMostRecentMessage());
+
+            // set the text on the chat if there are new messages in the chat
+            if (mRoom.getMissedMessageCount() > 0) {
+                Log.d("mssg RECYCLER ADAPTER", "MISSED MESSAGE SETTING BOLD");
+                mBinding.chatName.setTypeface(Typeface.DEFAULT_BOLD);
+                mBinding.currentMessage.setTypeface(Typeface.DEFAULT_BOLD);
+            }
+
         }
     }
 }
