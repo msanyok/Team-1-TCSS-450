@@ -85,7 +85,7 @@ public class HomeFragment extends Fragment {
             if (loc != null) {
                 mWeatherModel.connectGet(
                         mUserModel.getJwt(),
-                        new LatLong(loc.getLatitude(), loc.getLongitude()).toString(), true);
+                        new LatLong(loc.getLatitude(), loc.getLongitude()).toString(), false);
             }
         });
         UserInfoViewModel userInfo = new ViewModelProvider(this.getActivity())

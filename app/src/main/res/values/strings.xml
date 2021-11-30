@@ -32,6 +32,7 @@
     <string name="title_contact_info">Contact Info</string>
     <string name="title_messages">Chat Rooms</string>
     <string name="title_location_selection">Choose a New Location</string>
+    <string name="title_save_location">Add to saved locations</string>
     <string name="title_create_chat_room">Create a Chat Room</string>
     <string name="title_select_participants">Select participants</string>
     <string name="title_register">Register for TalkBox</string>

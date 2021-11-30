@@ -9,6 +9,8 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.viewpager.widget.PagerAdapter;
 
 import java.util.List;
 
@@ -18,10 +20,12 @@ import java.util.List;
  * @author Parker Rosengreen
  * @version Fall 2021
  */
-public class WeatherFragmentPagerAdapter extends FragmentPagerAdapter {
+public class WeatherFragmentPagerAdapter extends FragmentStatePagerAdapter {
 
     /** The fragments to be displayed */
     private final List<WeatherFragment> mFrags;
+
+    private long mBaseId;
 
     /**
      * Constructs a new WeatherFragmentPagerAdapter with the provided fragment manager and list
@@ -34,6 +38,7 @@ public class WeatherFragmentPagerAdapter extends FragmentPagerAdapter {
                                        final List<WeatherFragment> theFrags) {
         super(theManager);
         mFrags = theFrags;
+        mBaseId = 0;
     }
 
     @NonNull

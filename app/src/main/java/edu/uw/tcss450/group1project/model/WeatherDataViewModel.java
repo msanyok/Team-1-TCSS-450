@@ -124,13 +124,13 @@ public class WeatherDataViewModel extends AndroidViewModel {
      * @param theJwt the user's JWT
      */
     public void connectGet(final String theJwt, final String theLocation,
-                           final boolean theCurrentLoc) {
+                           final boolean theDeletable) {
         String url = "https://team-1-tcss-450-server.herokuapp.com/weather/" + theLocation;
         Request request = new JsonObjectRequest(
                 Request.Method.GET,
                 url,
                 null, //no body for this get request
-                result -> handleResult(result, theCurrentLoc),
+                result -> handleResult(result, theDeletable),
                 this::handleError) {
             @Override
             public Map<String, String> getHeaders() {
@@ -154,14 +154,14 @@ public class WeatherDataViewModel extends AndroidViewModel {
      *
      * @param theResult the result to be parsed
      */
-    private void handleResult(final JSONObject theResult, final boolean theCurrentLoc) {
+    private void handleResult(final JSONObject theResult, final boolean theDeletable) {
         WeatherDataCurrent currentData = null;
         List<WeatherData> hourlyData = new ArrayList<>();
         List<WeatherData> dailyData = new ArrayList<>();
         try {
             JSONObject curr = theResult.getJSONObject("currentData");
             currentData = new WeatherDataCurrent(
-                    theCurrentLoc ? "My Location" : theResult.getString("location"),
+                    !theDeletable ? "My Location" : theResult.getString("location"),
                     curr.getInt("curTemp"),
                     curr.getInt("curFeels_like"),
                     (int) Math.round(curr.getDouble("curRain") * 100),

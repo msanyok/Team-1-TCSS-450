@@ -2,7 +2,6 @@ package edu.uw.tcss450.group1project.ui.weather;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.graphics.Typeface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -13,7 +12,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavBackStackEntry;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -21,6 +19,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -30,6 +29,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import edu.uw.tcss450.group1project.MainActivity;
@@ -46,9 +46,11 @@ public class WeatherLocationSelectionFragment
 
     private Marker mMarker;
 
-    private boolean mPinDropped;
+    private boolean mLocationSet;
 
     private WeatherDataViewModel mWeatherModel;
+
+    private WeatherLocationListViewModel mLocationListModel;
 
     private UserInfoViewModel mUserModel;
 
@@ -56,7 +58,7 @@ public class WeatherLocationSelectionFragment
 
     public WeatherLocationSelectionFragment() {
         // Required empty public constructor
-        mPinDropped = false;
+        mLocationSet = false;
     }
 
     @Override
@@ -79,6 +81,10 @@ public class WeatherLocationSelectionFragment
                 navController.getBackStackEntry(R.id.navigation_weather_location_selection);
         mWeatherModel = new ViewModelProvider(backStackEntry).get(WeatherDataViewModel.class);
         mWeatherModel.clearResponse();
+        backStackEntry = navController.getBackStackEntry(R.id.navigation_weather_parent);
+        mLocationListModel = new ViewModelProvider(backStackEntry).get(
+                WeatherLocationListViewModel.class);
+        mLocationListModel.clearAdditionResponse();
         mUserModel = new ViewModelProvider(getActivity()).get(UserInfoViewModel.class);
         mBinding = FragmentWeatherLocationSelectionBinding.bind(view);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -90,6 +96,7 @@ public class WeatherLocationSelectionFragment
         mBinding.searchText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 mBinding.searchText.setError(null);
@@ -102,9 +109,7 @@ public class WeatherLocationSelectionFragment
             }
 
             @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
+            public void afterTextChanged(Editable editable) {}
         });
     }
 
@@ -114,7 +119,7 @@ public class WeatherLocationSelectionFragment
         LocationViewModel model = new ViewModelProvider(getActivity())
                 .get(LocationViewModel.class);
         model.addLocationObserver(getViewLifecycleOwner(), location -> {
-            if (location != null && !mPinDropped) {
+            if (location != null) {
                 googleMap.getUiSettings().setZoomControlsEnabled(true);
                 if (ActivityCompat.checkSelfPermission(getActivity(),
                         Manifest.permission.ACCESS_FINE_LOCATION) !=
@@ -127,7 +132,10 @@ public class WeatherLocationSelectionFragment
                 googleMap.setMyLocationEnabled(true);
                 final LatLng c = new LatLng(location.getLatitude(), location.getLongitude());
                 //Zoom levels are from 2.0f (zoomed out) to 21.f (zoomed in)
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(c, 15.0f));
+                if (!mLocationSet) {
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(c, 15.0f));
+                    mLocationSet = true;
+                }
             }
         });
         mMap.setOnMapClickListener(this);
@@ -144,17 +152,18 @@ public class WeatherLocationSelectionFragment
         mMap.animateCamera(
                 CameraUpdateFactory.newLatLngZoom(
                         latLng, mMap.getCameraPosition().zoom));
-        mPinDropped = true;
         mBinding.searchText.setText("Dropped pin");
     }
 
     private void initiateSearchRequest() {
         if (mMarker != null) {
+            String latLong = new LatLong(mMarker.getPosition().latitude,
+                    mMarker.getPosition().longitude).toString();
             mWeatherModel.addResponseObserver(
-                    getViewLifecycleOwner(), this::observeSearchAttemptResponse);
-            mWeatherModel.connectGet(mUserModel.getJwt(),
-                    new LatLong(mMarker.getPosition().latitude,
-                            mMarker.getPosition().longitude).toString(), false);
+                    getViewLifecycleOwner(),
+                    response -> observeSearchAttemptResponse(
+                            response, mBinding.saveCheckbox.isChecked(), latLong));
+            mWeatherModel.connectGet(mUserModel.getJwt(), latLong, true);
         } else {
             boolean valid = false;
             int zipCode = 0;
@@ -170,33 +179,76 @@ public class WeatherLocationSelectionFragment
                 }
             }
             if (valid) {
+                String zip = String.valueOf(zipCode);
                 mWeatherModel.addResponseObserver(
-                        getViewLifecycleOwner(), this::observeSearchAttemptResponse);
-                mWeatherModel.connectGet(mUserModel.getJwt(), String.valueOf(zipCode), false);
+                        getViewLifecycleOwner(),
+                        response -> observeSearchAttemptResponse(
+                                response, mBinding.saveCheckbox.isChecked(), zip));
+                mWeatherModel.connectGet(mUserModel.getJwt(), zip, true);
             } else {
                 mBinding.searchText.setError("Zip code must be a positive, 5 digit value!");
             }
         }
     }
 
-    private void observeSearchAttemptResponse(final JSONObject theResponse) {
+    private void observeSearchAttemptResponse(final JSONObject theResponse,
+                                              final boolean theChecked, final String theLocation) {
         if (theResponse.has("code")) {
             Log.e("SERVER FAILURE TO SUPPORT LOCATION", theResponse.toString());
-            displayErrorDialog();
+            displayErrorDialog("The supplied location " +
+                    "is not currently supported. Please try again.");
             mWeatherModel.clearResponse();
         } else if (theResponse.length() != 0) {
-            String city = mWeatherModel.getCurrentData().getCity().split(",")[0];
-            WeatherLocationSelectionFragmentDirections.
-                    ActionNavigationWeatherLocationSelectionToNavigationWeatherTeaser action =
-                    WeatherLocationSelectionFragmentDirections.
-                            actionNavigationWeatherLocationSelectionToNavigationWeatherTeaser(
-                                    "Weather for " + city);
-            Navigation.findNavController(getView()).navigate(action);
+            Runnable navRun = () -> {
+                String city = mWeatherModel.getCurrentData().getCity().split(",")[0];
+                WeatherLocationSelectionFragmentDirections.
+                        ActionNavigationWeatherLocationSelectionToNavigationWeatherTeaser action =
+                        WeatherLocationSelectionFragmentDirections.
+                                actionNavigationWeatherLocationSelectionToNavigationWeatherTeaser(
+                                        "Weather for " + city);
+                Navigation.findNavController(getView()).navigate(action);
+            };
+            if (theChecked) {
+                mLocationListModel.addAdditionResponseObserver(
+                        getViewLifecycleOwner(),
+                        response -> observeLocationAdditionResponse(response, navRun));
+                mLocationListModel.connectPost(mUserModel.getJwt(), theLocation);
+            } else {
+                navRun.run();
+            }
         }
     }
 
-    private void displayErrorDialog() {
-        ((MainActivity) getActivity()).displayErrorDialog("The supplied location " +
-                "is not currently supported. Please try again.");
+    private void observeLocationAdditionResponse(final JSONObject theResponse,
+                                                 final Runnable theNavRun) {
+        if (theResponse.has("code")) { // error or list size limit met
+            System.out.println("error!");
+            String message = "An unexpected error occurred when adding to saved locations. " +
+                "Please try again.";
+            if (theResponse.has("data")) {
+                try {
+                    String issue = theResponse.getJSONObject("data").getString("message");
+                    if (issue.equalsIgnoreCase("Location Storage Full")) {
+                        message = "Unable to save location, maximum of 10 stored locations" +
+                    " reached! Please delete a location and try again.";
+                    } else if (issue.equalsIgnoreCase("ZIP to lat/lon API Error")) {
+                        message = "The provided zip code is invalid and cannot be saved. Please " +
+                                "try again.";
+                    }
+                } catch (JSONException ex) {
+                    Log.e("JSON PARSE ERROR IN LOCATION ADD OBSERVER", ex.getMessage());
+                }
+            }
+            displayErrorDialog(message);
+            mLocationListModel.clearAdditionResponse();
+        }
+        if (theResponse.length() != 0) {
+            Toast.makeText(getContext(),"Location saved", Toast.LENGTH_SHORT).show();
+            theNavRun.run();
+        }
+    }
+
+    private void displayErrorDialog(final String theMessage) {
+        ((MainActivity) getActivity()).displayErrorDialog(theMessage);
     }
 }

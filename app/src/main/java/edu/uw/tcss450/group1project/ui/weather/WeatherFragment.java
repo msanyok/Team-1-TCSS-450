@@ -18,6 +18,8 @@ import androidx.lifecycle.ViewModelProvider;
 
 import org.json.JSONObject;
 
+import java.util.function.Consumer;
+
 import edu.uw.tcss450.group1project.MainActivity;
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentWeatherBinding;
@@ -50,22 +52,29 @@ public class WeatherFragment extends Fragment {
     /** Indicates whether or not this fragment is displaying weather for the user's location */
     private final boolean mDeletable;
 
+    /** The consumer responsible for deleting this fragment from parent view pager */
+    private final Consumer<LatLong> mConsumer;
+
     /**
      * Constructs a new WeatherFragment with a provided LatLong
      *
      * @param theLatLong the latitude longitude object to be assigned
      * @param theDeletable indicates whether or not this fragment can be deleted from the
      *                     parent view pager
+     * @param theConsumer the consumer responsible for deleting this fragment from its parent
+     *                    view pager
      */
-    public WeatherFragment(final LatLong theLatLong, final boolean theDeletable) {
+    public WeatherFragment(final LatLong theLatLong, final boolean theDeletable,
+                           final Consumer<LatLong> theConsumer) {
         mLatLong = theLatLong;
         mDeletable = theDeletable;
+        mConsumer = theConsumer;
     }
 
     @Override
     public void onCreate(@Nullable final Bundle theSavedInstanceState) {
         super.onCreate(theSavedInstanceState);
-        mModel = mDeletable ?
+        mModel = !mDeletable ?
                 new ViewModelProvider(getActivity()).get(WeatherDataViewModel.class) :
                 new ViewModelProvider(this).get(WeatherDataViewModel.class);
         mUserModel = new ViewModelProvider(getActivity())
@@ -86,7 +95,7 @@ public class WeatherFragment extends Fragment {
         super.onViewCreated(theView, theSavedInstanceState);
         mBinding = FragmentWeatherBinding.bind(getView());
         mModel.addResponseObserver(getViewLifecycleOwner(), this::observeResponse);
-        if (mDeletable) {
+        if (!mDeletable) {
             mBinding.locationDeleteButton.setVisibility(View.GONE);
             LocationViewModel locModel =
                     new ViewModelProvider(getActivity()).get(LocationViewModel.class);
@@ -96,16 +105,9 @@ public class WeatherFragment extends Fragment {
                     mModel.connectGet(mUserModel.getJwt(), mLatLong.toString(), mDeletable);
                 }
             });
+        } else {
+            mBinding.locationDeleteButton.setOnClickListener(button -> mConsumer.accept(mLatLong));
         }
-    }
-
-    /**
-     * Sets the latitude and longitude for this weather fragment
-     *
-     * @param theLatLong the lat long to be assigned
-     */
-    public void setLatLong(final LatLong theLatLong) {
-        mLatLong = theLatLong;
     }
 
     /**
