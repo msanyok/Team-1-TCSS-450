@@ -43,11 +43,6 @@ public class ChatRoomFragment extends Fragment {
     /** The unique ChatId for this particular chat */
     private int mChatId;
 
-
-    public int getChatId() {
-        return mChatId;
-    }
-
     @Override
     public void onCreate(@Nullable final Bundle theSavedInstanceState) {
         super.onCreate(theSavedInstanceState);

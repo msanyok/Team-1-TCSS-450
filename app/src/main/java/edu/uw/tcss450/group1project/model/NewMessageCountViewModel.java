@@ -94,7 +94,6 @@ public class NewMessageCountViewModel extends ViewModel {
 
         // increment the total new chats
         mNewMessageCount.setValue(mNewMessageCount.getValue() + 1);
-        System.out.println(map.get(theChatId));
     }
 
     /**
@@ -112,7 +111,6 @@ public class NewMessageCountViewModel extends ViewModel {
             map.put(theChatId, 0);
             mNewMessageMap.setValue(map);
             mNewMessageCount.setValue(mNewMessageCount.getValue() - numMessagesRemoved);
-            Log.d("NEW MESSAGE VIEW MODEL", "DECREMENT " + theChatId + " - " + numMessagesRemoved);
         }
     }
 

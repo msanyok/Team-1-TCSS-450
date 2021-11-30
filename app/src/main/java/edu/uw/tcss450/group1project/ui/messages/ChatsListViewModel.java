@@ -48,9 +48,6 @@ public class ChatsListViewModel extends AndroidViewModel {
     /** The live data that stores the chats/list/ JSON response. */
     private MutableLiveData<JSONObject> mResponse;
 
-//    /** The live data that stores the list of ChatRoom objects. This should be observed. */
-//    private List<ChatRoom> mChatRoomList;
-
     /**
      * Creates a new Chats view model with default values
      *
@@ -61,7 +58,6 @@ public class ChatsListViewModel extends AndroidViewModel {
         super(Objects.requireNonNull(theApplication, "theApplication can not be null."));
         mResponse = new MutableLiveData<>();
         mResponse.setValue(new JSONObject());
-//        mChatRoomList = new ArrayList<>();
     }
 
     /**
@@ -110,54 +106,6 @@ public class ChatsListViewModel extends AndroidViewModel {
         Volley.newRequestQueue(getApplication().getApplicationContext())
                 .add(request);
     }
-
-//    /**
-//     * Returns the current list of ChatRooms
-//     * @return
-//     */
-//    public List<ChatRoom> getChatList() {
-//        return mChatRoomList;
-//    }
-
-//    /**
-//     * Handles the JSON response object that is sent back from a successful
-//     * chat list endpoint request.
-//     *
-//     * @param theResponse the response sent back from the http request
-//     * @throws NullPointerException if theResponse is null
-//     */
-//    private void handleSuccess(final JSONObject theResponse) {
-//        Objects.requireNonNull(theResponse, "theResponse can not be null");
-//
-//        // parse the response and turn it into a new ChatRoom list
-//        mChatRoomList = new ArrayList<>();
-//
-//        try {
-//            JSONArray chats = theResponse.getJSONArray("data");
-//            for (int i = 0; i < chats.length(); i++) {
-//
-//                // the names of the get(...) fields are determined
-//                // by the server and can be found in the documentation
-//                JSONObject chat = (JSONObject) chats.get(i);
-//                mChatRoomList.add(new ChatRoom(chat.get("chat_name").toString(),
-//                        chat.get("chatid").toString(),
-//                        chat.get("message").toString(),
-//                        chat.get("timestamp").toString()));
-//            }
-//
-//            // once the list has been repopulated, sort the chat rooms based on the timestamp
-//            // of the most recent message sent
-//            Collections.sort(mChatRoomList);
-//
-//
-//        } catch (JSONException exception) {
-//            // should we do something specific here if the json isn't parsed properly/
-//            exception.printStackTrace();
-//        }
-//
-//        // set the response value AFTER setting the new list of chat rooms
-//        mResponse.setValue(theResponse);
-//    }
 
     /**
      * Completes the actions required when an error occurs during a HTTP request to the server.

@@ -103,6 +103,7 @@ public class MainActivity extends ThemedActivity {
     /** Keeps track of the new contact requests */
     private ContactRequestViewModel mContactRequestViewModel;
 
+    /** Keeps track of the the list of chats */
     private ChatsListViewModel mChatListViewModel;
 
     /** Keeps track of contacts */
@@ -156,21 +157,9 @@ public class MainActivity extends ThemedActivity {
 
         // handles the destination changes that occur in the app and what
         // should happen when it occurs
-// todo: need to modify the if statement body so it works for different chat rooms.
-//        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
-//            if (destination.getId() == R.id.navigation_chat_room) {
-//Log.d("NAVIGATION", "NAVIGATED TO CHAT ROOM");
-//                // get the ID of the chat room that was navigated to
-//                int chatId = new ViewModelProvider(this)
-//                        .get(ChatViewModel.class).getCurrentChatRoom();
-//                mNewMessageModel.decrement(chatId);
-//
-//
-//Log.d("NAVIGATION", "NAVIGATED TO CHAT ROOM "
-//        + new ViewModelProvider(this).get(ChatViewModel.class).getCurrentChatRoom());
-//
-//
-
+        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+            // todo: need for navigation for in app badges?
+        });
 
         // Handles the notification badge drawing
         mNewMessageModel.addMessageCountObserver(this, count -> {

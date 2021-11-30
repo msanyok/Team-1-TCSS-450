@@ -59,9 +59,10 @@ public class ChatRoom implements Comparable<ChatRoom> {
         mMissedMessageCount = theNumMissedMessages;
     }
 
-    public void setMissedMessages(final int theMessageCount) {
-        mMissedMessageCount = theMessageCount;
-    }
+    /**
+     * Returns the number of new messages that were missed for this ChatRoom
+     * @return the number of new messages that were missed for this ChatRoom
+     */
     public int getMissedMessageCount() {
         return mMissedMessageCount;
     }
@@ -106,9 +107,9 @@ public class ChatRoom implements Comparable<ChatRoom> {
 
 
 
-    // todo: compares first by missed messages, then by timestamp?
     @Override
     public int compareTo(final ChatRoom theChatRoom) {
+        // compares first by missed messages, then by timestamp
         int result = 0;
         if (this.getMissedMessageCount() > 0 && theChatRoom.getMissedMessageCount() == 0) {
             // this chat has new messages and the other one doesn't

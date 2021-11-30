@@ -106,13 +106,17 @@ public class ChatsFragment extends Fragment {
         }
     }
 
+    /**
+     * Parses the given JSONObject that contains the chat list raw data for this user.
+     *
+     * @param theResponse the raw data response from the server
+     */
     private void parseAndSetChatList(JSONObject theResponse) {
 
         // parse the response and turn it into a new ChatRoom list
         final List<ChatRoom> mChatRoomList = new ArrayList<>();
         NewMessageCountViewModel newMessageModel =
                 new ViewModelProvider(getActivity()).get(NewMessageCountViewModel.class);
-
 
         try {
             JSONArray chats = theResponse.getJSONArray("data");
@@ -140,11 +144,5 @@ public class ChatsFragment extends Fragment {
 
         mBinding.listRoot.setAdapter(new MessagesRecyclerAdapter(mChatRoomList));
     }
-
-
-
-
-
-
 
 }
