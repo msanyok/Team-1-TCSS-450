@@ -24,14 +24,18 @@ import androidx.navigation.NavBackStackEntry;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import edu.uw.tcss450.group1project.MainActivity;
 import edu.uw.tcss450.group1project.R;
@@ -53,10 +57,6 @@ public class WeatherParentFragment extends Fragment {
     /** The user info view model */
     private UserInfoViewModel mUserModel;
 
-    private ViewPager mPager;
-
-    private WeatherFragmentPagerAdapter mAdapter;
-
     /** The index of the view being shown */
     private int mViewIndex;
 
@@ -68,8 +68,7 @@ public class WeatherParentFragment extends Fragment {
 
     @Override
     public void onCreate(final Bundle theSavedInstanceState) {
-        super.onCreate(null);
-        mViewIndex = 0;
+        super.onCreate(theSavedInstanceState);
     }
 
     @Override
@@ -119,37 +118,47 @@ public class WeatherParentFragment extends Fragment {
      * Sets this fragment's view components which include its view pager and tab view
      */
     private void setViewComponents() {
+        System.out.println(mViewIndex);
         List<WeatherFragment> frags = new LinkedList<>();
         LocationViewModel locModel =
                 new ViewModelProvider(getActivity()).get(LocationViewModel.class);
         Location loc = locModel.getCurrentLocation();
         if (loc != null) {
-            frags.add(new WeatherFragment(
+            frags.add(WeatherFragment.newInstance(
                     new LatLong(loc.getLatitude(), loc.getLongitude()), false,
-                    this::displayLocationDeleteDialog));
+                    (Consumer<LatLong> & Serializable) this::displayLocationDeleteDialog));
         }
         for (final LatLong ltlng : mLocationModel.getLocations()) {
-            frags.add(new WeatherFragment(ltlng, true, this::displayLocationDeleteDialog));
+            frags.add(WeatherFragment.newInstance(ltlng, true,
+                    (Consumer<LatLong> & Serializable) this::displayLocationDeleteDialog));
         }
-        mPager = getView().findViewById(R.id.view_pager);
+        ViewPager2 viewPager = getView().findViewById(R.id.view_pager);
         TabLayout tabs = getView().findViewById(R.id.tab_layout);
-        mAdapter = new WeatherFragmentPagerAdapter(getChildFragmentManager(), frags);
-        mPager.setAdapter(mAdapter);
-        tabs.setupWithViewPager(mPager);
-        mPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position,
-                                       float positionOffset, int positionOffsetPixels) {}
-
+        WeatherFragmentPagerAdapter adapter = new WeatherFragmentPagerAdapter(
+                getChildFragmentManager(), getLifecycle(), frags);
+        viewPager.setAdapter(adapter);
+        viewPager.setCurrentItem(mViewIndex);
+        new TabLayoutMediator(tabs, viewPager, (tab, position) -> {}).attach();
+        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
                 mViewIndex = position;
             }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {}
         });
-        mPager.setCurrentItem(mViewIndex);
+//        tabs.setupWithViewPager(mPager);
+//        mPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+//            @Override
+//            public void onPageScrolled(int position,
+//                                       float positionOffset, int positionOffsetPixels) {}
+//
+//            @Override
+//            public void onPageSelected(int position) {
+//                mViewIndex = position;
+//            }
+//
+//            @Override
+//            public void onPageScrollStateChanged(int state) {}
+//        });
     }
 
     /**

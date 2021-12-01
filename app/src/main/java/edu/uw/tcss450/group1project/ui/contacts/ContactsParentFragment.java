@@ -15,8 +15,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -34,11 +36,12 @@ import edu.uw.tcss450.group1project.ui.weather.WeatherFragment;
  */
 public class ContactsParentFragment extends Fragment {
 
+    private int mViewIndex;
+
     /**
      * Required empty constructor
      */
     public ContactsParentFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -52,16 +55,35 @@ public class ContactsParentFragment extends Fragment {
     public void onViewCreated(@NonNull final View theView,
                               @Nullable final Bundle theSavedInstanceState) {
         super.onViewCreated(theView, theSavedInstanceState);
-        ViewPager viewPager = getView().findViewById(R.id.view_pager);
+        ViewPager2 viewPager = getView().findViewById(R.id.view_pager);
         List<Fragment> frags = new ArrayList<>();
         frags.add(new ContactsFragment());
         frags.add(new ContactRequestsFragment());
         frags.add(new NewContactRequestFragment());
         ContactFragmentPagerAdapter pagerAdapter =
-                new ContactFragmentPagerAdapter(getChildFragmentManager(), frags);
+                new ContactFragmentPagerAdapter(getChildFragmentManager(), getLifecycle(), frags);
         viewPager.setAdapter(pagerAdapter);
-        TabLayout tabLayout = getView().findViewById(R.id.tab_layout);
-        tabLayout.setupWithViewPager(viewPager);
+        TabLayout tabs = getView().findViewById(R.id.tab_layout);
+        viewPager.setCurrentItem(mViewIndex);
+        new TabLayoutMediator(tabs, viewPager, (tab, position) -> {
+            switch (position) {
+                case 0:
+                    tab.setText("All Contacts");
+                    break;
+                case 1:
+                    tab.setText("Requests");
+                    break;
+                case 2:
+                    tab.setText("New Request");
+                    break;
+            }
+        }).attach();
+        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                mViewIndex = position;
+            }
+        });
 
 //         THIS IS USEFUL
 //        viewPager.setCurrentItem(2);

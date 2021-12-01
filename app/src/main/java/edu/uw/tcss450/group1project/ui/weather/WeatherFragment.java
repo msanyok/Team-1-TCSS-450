@@ -18,6 +18,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.function.Consumer;
 
 import edu.uw.tcss450.group1project.MainActivity;
@@ -50,30 +51,32 @@ public class WeatherFragment extends Fragment {
     private LatLong mLatLong;
 
     /** Indicates whether or not this fragment is displaying weather for the user's location */
-    private final boolean mDeletable;
+    private boolean mDeletable;
 
     /** The consumer responsible for deleting this fragment from parent view pager */
-    private final Consumer<LatLong> mConsumer;
+    private Consumer<LatLong> mConsumer;
 
-    /**
-     * Constructs a new WeatherFragment with a provided LatLong
-     *
-     * @param theLatLong the latitude longitude object to be assigned
-     * @param theDeletable indicates whether or not this fragment can be deleted from the
-     *                     parent view pager
-     * @param theConsumer the consumer responsible for deleting this fragment from its parent
-     *                    view pager
-     */
-    public WeatherFragment(final LatLong theLatLong, final boolean theDeletable,
-                           final Consumer<LatLong> theConsumer) {
-        mLatLong = theLatLong;
-        mDeletable = theDeletable;
-        mConsumer = theConsumer;
+    public WeatherFragment() {
+        // required empty constructor
+    }
+
+    public static WeatherFragment newInstance(final LatLong theLatLong, final boolean theDeletable,
+                                              final Consumer<LatLong> theConsumer) {
+        WeatherFragment newFrag = new WeatherFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("mLatLong", theLatLong);
+        args.putBoolean("mDeletable", theDeletable);
+        args.putSerializable("mConsumer", (Consumer & Serializable) theConsumer);
+        newFrag.setArguments(args);
+        return newFrag;
     }
 
     @Override
     public void onCreate(@Nullable final Bundle theSavedInstanceState) {
         super.onCreate(theSavedInstanceState);
+        mLatLong = (LatLong) getArguments().getSerializable("mLatLong");
+        mDeletable = getArguments().getBoolean("mDeletable");
+        mConsumer = (Consumer) getArguments().getSerializable("mConsumer");
         mModel = !mDeletable ?
                 new ViewModelProvider(getActivity()).get(WeatherDataViewModel.class) :
                 new ViewModelProvider(this).get(WeatherDataViewModel.class);

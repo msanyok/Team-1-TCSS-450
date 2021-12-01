@@ -10,7 +10,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.lifecycle.Lifecycle;
 import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import java.util.List;
 
@@ -20,12 +22,10 @@ import java.util.List;
  * @author Parker Rosengreen
  * @version Fall 2021
  */
-public class WeatherFragmentPagerAdapter extends FragmentStatePagerAdapter {
+public class WeatherFragmentPagerAdapter extends FragmentStateAdapter {
 
     /** The fragments to be displayed */
     private final List<WeatherFragment> mFrags;
-
-    private long mBaseId;
 
     /**
      * Constructs a new WeatherFragmentPagerAdapter with the provided fragment manager and list
@@ -35,20 +35,31 @@ public class WeatherFragmentPagerAdapter extends FragmentStatePagerAdapter {
      * @param theFrags the list of fragments to be displayed
      */
     public WeatherFragmentPagerAdapter(@NonNull final FragmentManager theManager,
+                                       final Lifecycle theLifeCycle,
                                        final List<WeatherFragment> theFrags) {
-        super(theManager);
+        super(theManager, theLifeCycle);
         mFrags = theFrags;
-        mBaseId = 0;
     }
+
+//    @NonNull
+//    @Override
+//    public Fragment getItem(final int thePosition) {
+//        return mFrags.get(thePosition);
+//    }
+//
+//    @Override
+//    public int getCount() {
+//        return mFrags.size();
+//    }
 
     @NonNull
     @Override
-    public Fragment getItem(final int thePosition) {
-        return mFrags.get(thePosition);
+    public Fragment createFragment(int position) {
+        return mFrags.get(position);
     }
 
     @Override
-    public int getCount() {
+    public int getItemCount() {
         return mFrags.size();
     }
 }
