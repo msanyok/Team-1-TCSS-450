@@ -323,7 +323,7 @@ public class MainActivity extends ThemedActivity {
     @Override
     public void onResume() {
         super.onResume();
-
+    Log.e("", "ON RESUME");
         // get the notifications that occurred while the app was not in the foreground
         mNewMessageModel.putData(LocalStorageUtils.getMissedMessages(this));
 

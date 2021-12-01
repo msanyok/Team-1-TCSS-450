@@ -100,6 +100,7 @@ public class PushReceiver extends BroadcastReceiver {
             throw new IllegalStateException("Error from Web Service. Contact Dev Support");
         }
 
+
         // get tools to check if the user is in the app or not
         ActivityManager.RunningAppProcessInfo appProcessInfo =
                 new ActivityManager.RunningAppProcessInfo();
@@ -124,10 +125,6 @@ public class PushReceiver extends BroadcastReceiver {
 
             // the user is not inside the application, so send a notification
             Log.d("PUSHY", "Message received in background: " + message.getMessage());
-
-            // insert the new message into internal storage so it can be retrieved
-            // when the app is back in the foreground
-            LocalStorageUtils.putMissedMessage(theContext, String.valueOf(chatId));
 
             // set up the intent
             Intent intent = new Intent(theContext, AuthActivity.class);
@@ -157,6 +154,10 @@ public class PushReceiver extends BroadcastReceiver {
             // Build the notification and display it
             notificationManager.notify(1, builder.build());
         }
+
+        // insert the new message into internal storage so if the user navigates closes the app,
+        // the saved notification data is not lost
+        LocalStorageUtils.putMissedMessage(theContext, String.valueOf(chatId));
     }
 
     /**

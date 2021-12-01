@@ -7,6 +7,7 @@ package edu.uw.tcss450.group1project.model;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,7 +30,6 @@ public final class LocalStorageUtils {
      * @param theChatId the chat a new message came from
      */
     public static final void putMissedMessage(final Context theContext, final String theChatId) {
-
         final SharedPreferences newMessagesStorage =
                 theContext.getSharedPreferences("NewMessages", Context.MODE_PRIVATE);
         final SharedPreferences.Editor editor = newMessagesStorage.edit();
@@ -54,7 +54,6 @@ public final class LocalStorageUtils {
      * @return the map
      */
     public static final Map<String, Integer> getMissedMessages(final Context theContext) {
-
         final Map<String, Integer> missedMessagesMap = new HashMap<>();
         final SharedPreferences newMessagesStorage =
                 theContext.getSharedPreferences("NewMessages", Context.MODE_PRIVATE);
@@ -74,7 +73,6 @@ public final class LocalStorageUtils {
      * @param theChatId the chat a new message came from
      */
     public static final void removeNewMessageStore(final Context theContext, final int theChatId) {
-
         final SharedPreferences newMessagesStorage =
                 theContext.getSharedPreferences("NewMessages", Context.MODE_PRIVATE);
         final SharedPreferences.Editor editor = newMessagesStorage.edit();
