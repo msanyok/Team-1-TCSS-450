@@ -115,6 +115,23 @@ public class ContactsViewModel extends AndroidViewModel {
         mRequestResponse.observe(theOwner, theObserver);
     }
 
+
+    /**
+     * Adds the given observer to the contact Delete request live data.
+     *
+     * @param theOwner the lifecycle owner of the fragment that contains the observer
+     * @param theObserver the observer that is used when the response data changes state
+     * @throws NullPointerException if theOwner is null
+     * @throws NullPointerException if theObserver is null
+     */
+    public void addContactDeleteObserver(@NonNull final LifecycleOwner theOwner,
+                                          @NonNull final Observer<? super JSONObject> theObserver) {
+        Objects.requireNonNull(theOwner, "theOwner can not be null");
+        Objects.requireNonNull(theObserver, "theObserver can not be null");
+        mDeleteResponse.observe(theOwner, theObserver);
+    }
+
+
     /**
      * Sends an HTTP POST request to the server attempting to get all contacts
      *
@@ -157,7 +174,6 @@ public class ContactsViewModel extends AndroidViewModel {
      * @throws NullPointerException if theNickname is null
      */
     public void sendDeleteResponse(final String theJwt, final String theMemberId) {
-        System.out.println(theMemberId);
         Objects.requireNonNull(theMemberId, "theMemberId can not be null");
         final String url = "https://team-1-tcss-450-server.herokuapp.com/contacts/" + theMemberId;
 

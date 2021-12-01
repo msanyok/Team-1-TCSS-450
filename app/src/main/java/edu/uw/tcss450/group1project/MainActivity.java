@@ -6,9 +6,6 @@
 package edu.uw.tcss450.group1project;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -16,7 +13,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
@@ -42,7 +38,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import edu.uw.tcss450.group1project.model.ContactRequestViewModel;
+import edu.uw.tcss450.group1project.ui.contacts.ContactRequestViewModel;
 import edu.uw.tcss450.group1project.model.LocationViewModel;
 import edu.uw.tcss450.group1project.model.NewMessageCountViewModel;
 import edu.uw.tcss450.group1project.model.PushyTokenViewModel;
@@ -397,6 +393,8 @@ public class MainActivity extends ThemedActivity {
                 completeNewContactRequestResponseActions(theContext, theIntent);
             } else if (type.equals(PushReceiver.CONTACT_DELETE)) {
                 completeNewContactDeleteActions(theContext, theIntent);
+            } else if (type.equals(PushReceiver.CONTACT_REQUEST_DELETE)) {
+                completeNewContactRequestDeleteActions(theContext, theIntent);
             }
 
         }
@@ -441,21 +439,16 @@ public class MainActivity extends ThemedActivity {
             // todo: need to implement on screen/off screen functionality with in app notifications
             Log.d("RECIEVE INTENT", "New Contact Request Actions");
 
-            NavController navController =
-                Navigation.findNavController(
-                        MainActivity.this, R.id.nav_host_fragment);
-            NavDestination navDestination = navController.getCurrentDestination();
+//            NavController navController =
+//                Navigation.findNavController(
+//                        MainActivity.this, R.id.nav_host_fragment);
+//            NavDestination navDestination = navController.getCurrentDestination();
+//
+//            final String memberId = mUserInfoModel.getMemberId();
+//            final String fromId = theIntent.getStringExtra("fromId");
+            //update the contacts viewmodel
+            mContactRequestViewModel.allContactRequests(mUserInfoModel.getJwt());
 
-            final String memberId = mUserInfoModel.getMemberId();
-            final String fromId = theIntent.getStringExtra("fromId");
-
-            if (memberId.equals(fromId)) {
-                // the current user is whoever sent the contact request, so update their sent contact requests
-                // todo:
-            } else {
-                // the current users is receiving the contact request, so update received contact requests
-                mContactRequestViewModel.allContactRequests(mUserInfoModel.getJwt());
-            }
         }
         /**
          * Handles updating the devices contacts and contacts
@@ -483,7 +476,6 @@ public class MainActivity extends ThemedActivity {
             } else {
                 // we are the member who accepted/rejected the request, so update our recieved requests list
                 mContactRequestViewModel.allContactRequests(mUserInfoModel.getJwt());
-
             }
 
             // update the contacts list for both users if the contact request is accepted
@@ -502,6 +494,21 @@ public class MainActivity extends ThemedActivity {
             Log.d("RECIEVE INTENT", "New Contact Delete Actions");
 
             mContactsViewModel.contactsConnect(mUserInfoModel.getJwt());
+
+            // todo: offscreen in app notifs? perhaps not.
+
+        }
+
+        /**
+         * Handles updating the devices outgoing contact requests when a delete request is recieved.
+         *
+         * @param theContext the context of the application
+         * @param theIntent the Intent that stores the Pushy payload
+         */
+        private void completeNewContactRequestDeleteActions(final Context theContext, final Intent theIntent) {
+            Log.d("RECIEVE INTENT", "New Contact Request Delete Actions");
+
+            mContactRequestViewModel.allContactRequests(mUserInfoModel.getJwt());
 
             // todo: offscreen in app notifs? perhaps not.
 

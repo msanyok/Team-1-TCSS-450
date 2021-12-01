@@ -50,6 +50,9 @@ public class PushReceiver extends BroadcastReceiver {
     /** The String that notifies a contact was deleted from pushy */
     public static final String CONTACT_DELETE = "contactDeleted";
 
+    /** The String that notifies a contact request was deleted from pushy */
+    public static final String CONTACT_REQUEST_DELETE = "contactRequestDeleted";
+
     /** The ID for the channel used for notifications */
     private static final String CHANNEL_ID = "1";
 
@@ -68,15 +71,17 @@ public class PushReceiver extends BroadcastReceiver {
 
         if (typeOfMessage.equals("msg")) {
             acceptMessagePushy(theContext, theIntent);
-        } else if (typeOfMessage.equals("newContactRequest")) {
+        } else if (typeOfMessage.equals(NEW_CONTACT_REQUEST)) {
             acceptNewContactRequestPushy(theContext, theIntent);
-        } else if (typeOfMessage.equals("contactRequestResponse")) {
+        } else if (typeOfMessage.equals(CONTACT_REQUEST_RESPONSE)) {
             acceptContactRequestResponsePushy(theContext, theIntent);
-        } else if (typeOfMessage.equals("contactDeleted")) {
+        } else if (typeOfMessage.equals(CONTACT_DELETE)) {
             acceptContactDeletePushy(theContext, theIntent);
+        } else if (typeOfMessage.equals(CONTACT_REQUEST_DELETE)) {
+                acceptContactRequestDeletePushy(theContext, theIntent);
         } else {
             // unexpected pushy
-            Log.d("PUSH RECIEVE", "UNEXPECTED PUSHY RECIEVED");
+            Log.d("PUSH RECEIVE", "UNEXPECTED PUSHY RECEIVED");
         }
     }
 
@@ -318,6 +323,41 @@ public class PushReceiver extends BroadcastReceiver {
             intent.putExtra("deletedId", deletedId);
             intent.putExtra("deletorId", deletorId);
             intent.putExtra("fromNickname", fromNickname);
+            intent.putExtras(theIntent.getExtras());
+
+            theContext.sendBroadcast(intent);
+        }
+
+        // we don't want any kind of outside-app notifications when someone gets deleted
+
+    }
+
+
+    /**
+     * Handles when this device receives a Outgoing Contact request Deletion from a Pushy payload.
+     *
+     * @param theContext the context of the application
+     * @param theIntent the Intent that stores the Pushy payload
+     */
+    private void acceptContactRequestDeletePushy(final Context theContext, final Intent theIntent) {
+
+        String deletedId = theIntent.getStringExtra("deletedId");
+        String deletorId = theIntent.getStringExtra("deletorId");
+
+        // get tools to check if the user is in the app or not
+        ActivityManager.RunningAppProcessInfo appProcessInfo =
+                new ActivityManager.RunningAppProcessInfo();
+        ActivityManager.getMyMemoryState(appProcessInfo);
+
+        if (appProcessInfo.importance == IMPORTANCE_FOREGROUND ||
+                appProcessInfo.importance == IMPORTANCE_VISIBLE) {
+            // user is inside the app
+            Log.d("PUSHY", "Contact Request deletion in foreground");
+
+            Intent intent = new Intent(NEW_PUSHY_NOTIF);
+            intent.putExtra("type", CONTACT_REQUEST_DELETE);
+            intent.putExtra("deletedId", deletedId);
+            intent.putExtra("deletorId", deletorId);
             intent.putExtras(theIntent.getExtras());
 
             theContext.sendBroadcast(intent);

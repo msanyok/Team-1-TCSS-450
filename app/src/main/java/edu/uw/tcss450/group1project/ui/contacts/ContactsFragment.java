@@ -46,8 +46,11 @@ public class ContactsFragment extends Fragment {
     /** ViewBinding reference to the Contact Fragment UI */
     private FragmentContactsBinding mBinding;
 
-    /** ViewModel for registration */
+    /** ViewModel for contacts */
     private ContactsViewModel mContactsModel;
+
+    /** ViewModel for contacts */
+    private ContactsViewModel mContactDeleteModel;
 
     /** The user info view model */
     private UserInfoViewModel mUserInfo;
@@ -79,11 +82,14 @@ public class ContactsFragment extends Fragment {
     public void onViewCreated(@NonNull final View theView,
                               @Nullable final Bundle theSavedInstanceState) {
         super.onViewCreated(theView, theSavedInstanceState);
-        mContactsModel.contactsConnect(mUserInfo.getJwt());
-        mContactsModel.addContactListObserver(getViewLifecycleOwner(), this::observeContactResponse);
+        mContactsModel.addContactListObserver(getViewLifecycleOwner(),
+                this::observeContactResponse);
         mBinding.contactRequestButton.setOnClickListener(this::requestToBeSent);
         mContactsModel.addContactRequestObserver(getViewLifecycleOwner(),
                 this::observeResponse);
+        mContactsModel.addContactDeleteObserver(getViewLifecycleOwner(),
+                this::observeDeleteResponse);
+        mContactsModel.contactsConnect(mUserInfo.getJwt());
 
         Spinner spinner = (Spinner) getView().findViewById(R.id.contact_search_spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
@@ -196,6 +202,16 @@ public class ContactsFragment extends Fragment {
         }
     }
 
+    private void observeDeleteResponse(final JSONObject theResponse) {
+        if (theResponse.has("code")) {
+            Log.e("Contact List Error", theResponse.toString());
+        } else if (theResponse.length() != 0){
+            Toast.makeText(getContext(),"You have deleted a contact.",
+                    Toast.LENGTH_SHORT).show();
+            mContactsModel.removeData();
+        }
+    }
+
     /**
      * Function of warning for deleting a contact using alert dialog
      *
@@ -207,10 +223,6 @@ public class ContactsFragment extends Fragment {
                 "will be permanent. Are you sure?</font>"));
         alertDialog.setPositiveButton(Html.fromHtml("<font color='000000'>Delete</font>"),
                 (dialog, which) -> {
-                    //TODO add delete function in it
-                    Toast.makeText(getContext(),"You have deleted " + theContact.getNickname()
-                                    + " from contacts.",
-                            Toast.LENGTH_SHORT).show();
                     mContactsModel.sendDeleteResponse(mUserInfo.getJwt(), theContact.getMemberId());
                 });
         alertDialog.setNegativeButton(Html.fromHtml("<font color='#000000'>Cancel</font>"),

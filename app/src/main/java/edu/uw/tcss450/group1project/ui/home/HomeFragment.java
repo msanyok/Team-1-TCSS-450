@@ -5,7 +5,6 @@
 
 package edu.uw.tcss450.group1project.ui.home;
 
-import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,7 +21,7 @@ import org.json.JSONObject;
 import edu.uw.tcss450.group1project.MainActivity;
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentHomeBinding;
-import edu.uw.tcss450.group1project.model.ContactRequestViewModel;
+import edu.uw.tcss450.group1project.ui.contacts.ContactRequestViewModel;
 import edu.uw.tcss450.group1project.model.LocationViewModel;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
 import edu.uw.tcss450.group1project.model.WeatherDataViewModel;
@@ -62,7 +61,6 @@ public class HomeFragment extends Fragment {
     public void onCreate(@Nullable final Bundle theSavedInstanceState) {
         super.onCreate(theSavedInstanceState);
         mWeatherModel = new ViewModelProvider(getActivity()).get(WeatherDataViewModel.class);
-        mRequestModel = new ViewModelProvider(getActivity()).get(ContactRequestViewModel.class);
         mUserModel = new ViewModelProvider(getActivity()).get(UserInfoViewModel.class);
 //        LocationViewModel locModel =
 //                new ViewModelProvider(getActivity()).get(LocationViewModel.class);
@@ -95,14 +93,8 @@ public class HomeFragment extends Fragment {
                 mWeatherModel.connectGet(
                         mUserModel.getJwt(), location.getLatitude(), location.getLongitude(), true);
         });
-        UserInfoViewModel userInfo = new ViewModelProvider(this.getActivity())
-                .get(UserInfoViewModel.class);
-        mRequestModel.allContactRequests(userInfo.getJwt());
 
         mWeatherModel.addResponseObserver(getViewLifecycleOwner(), this::observeWeatherResponse);
-        mRequestModel.addRequestObserver(getViewLifecycleOwner(), this::observeRequestResponse);
-        mRequestModel.addRequestResponseObserver(getViewLifecycleOwner(),
-                this::observeRequestResponse);
 
         mBinding = FragmentHomeBinding.bind(getView());
         mBinding.welcomeText.setText(String.format("Welcome, %s!", mUserModel.getNickname()));
@@ -123,40 +115,6 @@ public class HomeFragment extends Fragment {
         if (mWeatherModel.containsReadableData()) {
             setWeatherViewComponents();
         }
-    }
-
-    /**
-     * Observes the HTTP Response from the web server. If an error occurred, notify the user
-     * accordingly. If it was a success, set the contact request list.
-     *
-     * @param theResponse response from the server
-     */
-    private void observeRequestResponse(final JSONObject theResponse) {
-        if (theResponse.length() > 0) {
-            if (theResponse.has("code")) {
-                // a 400 error occurred, so log it.
-                Log.e("REQUEST ERROR", theResponse.toString());
-            } else if (theResponse.length() != 0) {
-                setContactListComponents();
-
-            }
-        } else {
-            // no response from the request
-            Log.d("Chats List JSON Response", "No Response: "
-                    + theResponse.toString());
-        }
-    }
-
-    /**
-     * Sets the adapter and added the contacts to the main page
-     */
-    private void setContactListComponents() {
-        FragmentHomeBinding binding = FragmentHomeBinding.bind(getView());
-
-        UserInfoViewModel userInfo = new ViewModelProvider(this.getActivity())
-                .get(UserInfoViewModel.class);
-        binding.listContactRequests.setAdapter(new ContactRequestRecyclerAdapter(
-                mRequestModel.getContactList(), mRequestModel, userInfo));
     }
 
     /**
