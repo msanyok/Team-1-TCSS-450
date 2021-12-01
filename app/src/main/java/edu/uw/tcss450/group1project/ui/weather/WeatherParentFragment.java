@@ -137,11 +137,11 @@ public class WeatherParentFragment extends Fragment {
         if (loc != null) {
             frags.add(WeatherFragment.newInstance(
                     new LatLong(loc.getLatitude(), loc.getLongitude()), false,
-                    this::displayLocationDeleteDialog));
+                    (Consumer<LatLong> & Serializable) this::displayLocationDeleteDialog));
         }
         for (final LatLong ltlng : mLocationModel.getLocations()) {
             frags.add(WeatherFragment.newInstance(ltlng, true,
-                    this::displayLocationDeleteDialog));
+                    (Consumer<LatLong> & Serializable) this::displayLocationDeleteDialog));
         }
         ViewPager2 viewPager = getView().findViewById(R.id.view_pager);
         TabLayout tabs = getView().findViewById(R.id.tab_layout);
