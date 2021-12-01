@@ -13,20 +13,15 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
 import edu.uw.tcss450.group1project.R;
-import edu.uw.tcss450.group1project.ui.home.HomeFragment;
-import edu.uw.tcss450.group1project.ui.weather.WeatherFragment;
 
 /**
  * ContactsParentFragment is a class for containing child data fragments via a view pager.
@@ -35,8 +30,6 @@ import edu.uw.tcss450.group1project.ui.weather.WeatherFragment;
  * @version Fall 2021
  */
 public class ContactsParentFragment extends Fragment {
-
-    private int mViewIndex;
 
     /**
      * Required empty constructor
@@ -60,11 +53,11 @@ public class ContactsParentFragment extends Fragment {
         frags.add(new ContactsFragment());
         frags.add(new ContactRequestsFragment());
         frags.add(new NewContactRequestFragment());
-        ContactFragmentPagerAdapter pagerAdapter =
-                new ContactFragmentPagerAdapter(getChildFragmentManager(), getLifecycle(), frags);
+        ContactFragmentAdapter pagerAdapter =
+                new ContactFragmentAdapter(getChildFragmentManager(), getLifecycle(), frags);
         viewPager.setAdapter(pagerAdapter);
+        viewPager.setOffscreenPageLimit(3);
         TabLayout tabs = getView().findViewById(R.id.tab_layout);
-        viewPager.setCurrentItem(mViewIndex);
         new TabLayoutMediator(tabs, viewPager, (tab, position) -> {
             switch (position) {
                 case 0:
@@ -78,17 +71,5 @@ public class ContactsParentFragment extends Fragment {
                     break;
             }
         }).attach();
-        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-            @Override
-            public void onPageSelected(int position) {
-                mViewIndex = position;
-            }
-        });
-
-//         THIS IS USEFUL
-//        viewPager.setCurrentItem(2);
-//        frags.add(new HomeFragment());
-//        frags.remove(0);
-//        pagerAdapter.notifyDataSetChanged();
     }
 }

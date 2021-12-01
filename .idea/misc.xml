@@ -36,9 +36,6 @@
         <entry key="..\:/Users/Chris Ding/AndroidStudioProjects/project_repo_client/Team-1-TCSS-450/app/src/main/res/layout/fragment_weather_10day_card.xml" value="0.11367753623188406" />
         <entry key="..\:/Users/Chris Ding/AndroidStudioProjects/project_repo_client/Team-1-TCSS-450/app/src/main/res/layout/fragment_weather_24hr_card.xml" value="0.11367753623188406" />
         <entry key="..\:/Users/Chris Ding/AndroidStudioProjects/project_repo_client/Team-1-TCSS-450/app/src/main/res/menu/toolbar.xml" value="0.5652173913043478" />
-        <entry key="..\:/Users/Parker/Documents/450_client_clone/Team-1-TCSS-450/app/src/main/res/layout/fragment_contacts.xml" value="0.29981884057971014" />
-        <entry key="..\:/Users/Parker/Documents/450_client_clone/Team-1-TCSS-450/app/src/main/res/layout/fragment_contacts_parent.xml" value="0.29981884057971014" />
-        <entry key="..\:/Users/Parker/Documents/450_client_clone/Team-1-TCSS-450/app/src/main/res/layout/fragment_weather_parent.xml" value="0.1762917933130699" />
         <entry key="..\:/Users/Steven/AndroidStudioProjects/Team-1-TCSS-450/app/src/main/res/layout/fragment_home_contact_request_card.xml" value="0.3625" />
         <entry key="..\:/Users/parke/OneDrive/Documents/TCSS450/projectrepo_client/Team-1-TCSS-450/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.5820512820512821" />
         <entry key="..\:/Users/parke/OneDrive/Documents/TCSS450/projectrepo_client/Team-1-TCSS-450/app/src/main/res/drawable/dot_default.xml" value="0.3890625" />
@@ -50,6 +47,7 @@
         <entry key="..\:/Users/parke/OneDrive/Documents/TCSS450/projectrepo_client/Team-1-TCSS-450/app/src/main/res/drawable/ic_deny_red_24dp.xml" value="0.5578125" />
         <entry key="..\:/Users/parke/OneDrive/Documents/TCSS450/projectrepo_client/Team-1-TCSS-450/app/src/main/res/drawable/ic_home_black_24dp.xml" value="0.3609375" />
         <entry key="..\:/Users/parke/OneDrive/Documents/TCSS450/projectrepo_client/Team-1-TCSS-450/app/src/main/res/drawable/ic_launcher_background.xml" value="0.5820512820512821" />
+        <entry key="..\:/Users/parke/OneDrive/Documents/TCSS450/projectrepo_client/Team-1-TCSS-450/app/src/main/res/drawable/ic_messages_black_24dp.xml" value="0.5734375" />
         <entry key="..\:/Users/parke/OneDrive/Documents/TCSS450/projectrepo_client/Team-1-TCSS-450/app/src/main/res/drawable/ic_remove_black_24dp.xml" value="0.5734375" />
         <entry key="..\:/Users/parke/OneDrive/Documents/TCSS450/projectrepo_client/Team-1-TCSS-450/app/src/main/res/drawable/ic_search_grey_24dp.xml" value="0.5734375" />
         <entry key="..\:/Users/parke/OneDrive/Documents/TCSS450/projectrepo_client/Team-1-TCSS-450/app/src/main/res/drawable/ic_sun_yellow_24dp.xml" value="0.5734375" />

@@ -1,3 +1,8 @@
+/*
+ * TCSS450 Mobile Applications
+ * Fall 2021
+ */
+
 package edu.uw.tcss450.group1project.ui.weather;
 
 import android.Manifest;
@@ -39,44 +44,70 @@ import edu.uw.tcss450.group1project.model.LocationViewModel;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
 import edu.uw.tcss450.group1project.model.WeatherDataViewModel;
 
+/**
+ * WeatherLocationSelectionFragment is a class for selecting and/or saving new weather locations.
+ *
+ * @author Parker Rosengreen
+ * @version Fall 2021
+ */
 public class WeatherLocationSelectionFragment
         extends Fragment implements OnMapReadyCallback, GoogleMap.OnMapClickListener {
 
+    /** The Google map */
     private GoogleMap mMap;
 
+    /** The user's selected location marker */
     private Marker mMarker;
 
+    /** Indicates whether or not the user's location has been determined */
     private boolean mLocationSet;
 
+    /** Indicates whether or not an observer is assigned to observe weather data */
+    private boolean mDataObserverAssigned;
+
+    /** Indicates whether or not an observer is assigned to observe weather location additions */
+    private boolean mLocationAdditionObserverAssigned;
+
+    /** The view model responsible for data retrieval */
     private WeatherDataViewModel mWeatherModel;
 
+    /** The view model responsible for saved locations management */
     private WeatherLocationListViewModel mLocationListModel;
 
+    /** The user info view model */
     private UserInfoViewModel mUserModel;
 
+    /** The view binding */
     private FragmentWeatherLocationSelectionBinding mBinding;
 
+    /**
+     * Required empty constructor
+     */
     public WeatherLocationSelectionFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onCreate(final Bundle theSavedInstanceState) {
+        super.onCreate(theSavedInstanceState);
         mLocationSet = false;
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(final LayoutInflater theInflater, final ViewGroup theContainer,
+                             final Bundle theSavedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_weather_location_selection, container, false);
+        return theInflater.inflate(
+                R.layout.fragment_weather_location_selection, theContainer, false);
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        NavController navController = Navigation.findNavController(view);
+    public void onViewCreated(@NonNull final View theView,
+                              @Nullable final Bundle theSavedInstanceState) {
+        super.onViewCreated(theView, theSavedInstanceState);
+        mDataObserverAssigned = false;
+        mLocationAdditionObserverAssigned = false;
+        NavController navController = Navigation.findNavController(theView);
         NavBackStackEntry backStackEntry =
                 navController.getBackStackEntry(R.id.navigation_weather_location_selection);
         mWeatherModel = new ViewModelProvider(backStackEntry).get(WeatherDataViewModel.class);
@@ -86,7 +117,7 @@ public class WeatherLocationSelectionFragment
                 WeatherLocationListViewModel.class);
         mLocationListModel.clearAdditionResponse();
         mUserModel = new ViewModelProvider(getActivity()).get(UserInfoViewModel.class);
-        mBinding = FragmentWeatherLocationSelectionBinding.bind(view);
+        mBinding = FragmentWeatherLocationSelectionBinding.bind(theView);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
@@ -95,10 +126,12 @@ public class WeatherLocationSelectionFragment
         mBinding.searchButton.setOnClickListener(button -> initiateSearchRequest());
         mBinding.searchText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            public void beforeTextChanged(
+                    final CharSequence theSeq, final int theI, final int theI1, final int theI2) {}
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            public void onTextChanged(
+                    final CharSequence theSeq, final int theI, final int theI1, final int theI2) {
                 mBinding.searchText.setError(null);
                 if (!mBinding.searchText.getText().toString().equals("Dropped pin")) {
                     if (mMarker != null) {
@@ -109,18 +142,18 @@ public class WeatherLocationSelectionFragment
             }
 
             @Override
-            public void afterTextChanged(Editable editable) {}
+            public void afterTextChanged(final Editable theEditable) {}
         });
     }
 
     @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
+    public void onMapReady(@NonNull final GoogleMap theMap) {
+        mMap = theMap;
         LocationViewModel model = new ViewModelProvider(getActivity())
                 .get(LocationViewModel.class);
         model.addLocationObserver(getViewLifecycleOwner(), location -> {
             if (location != null) {
-                googleMap.getUiSettings().setZoomControlsEnabled(true);
+                theMap.getUiSettings().setZoomControlsEnabled(true);
                 if (ActivityCompat.checkSelfPermission(getActivity(),
                         Manifest.permission.ACCESS_FINE_LOCATION) !=
                         PackageManager.PERMISSION_GRANTED &&
@@ -129,7 +162,7 @@ public class WeatherLocationSelectionFragment
                                 PackageManager.PERMISSION_GRANTED) {
                     return;
                 }
-                googleMap.setMyLocationEnabled(true);
+                theMap.setMyLocationEnabled(true);
                 final LatLng c = new LatLng(location.getLatitude(), location.getLongitude());
                 //Zoom levels are from 2.0f (zoomed out) to 21.f (zoomed in)
                 if (!mLocationSet) {
@@ -142,30 +175,30 @@ public class WeatherLocationSelectionFragment
     }
 
     @Override
-    public void onMapClick(@NonNull LatLng latLng) {
+    public void onMapClick(@NonNull final LatLng theLatLong) {
         if (mMarker != null) {
             mMarker.remove();
         }
         mMarker = mMap.addMarker(new MarkerOptions()
-                .position(latLng)
+                .position(theLatLong)
                 .title("New Marker"));
         mMap.animateCamera(
                 CameraUpdateFactory.newLatLngZoom(
-                        latLng, mMap.getCameraPosition().zoom));
+                        theLatLong, mMap.getCameraPosition().zoom));
         mBinding.searchText.setText("Dropped pin");
     }
 
+    /**
+     * Begins a weather location search request either by lat long or zip code.
+     */
     private void initiateSearchRequest() {
+        boolean valid = false;
+        String location = "";
         if (mMarker != null) {
-            String latLong = new LatLong(mMarker.getPosition().latitude,
+            valid = true;
+            location = new LatLong(mMarker.getPosition().latitude,
                     mMarker.getPosition().longitude).toString();
-            mWeatherModel.addResponseObserver(
-                    getViewLifecycleOwner(),
-                    response -> observeSearchAttemptResponse(
-                            response, mBinding.saveCheckbox.isChecked(), latLong));
-            mWeatherModel.connectGet(mUserModel.getJwt(), latLong, true);
         } else {
-            boolean valid = false;
             int zipCode = 0;
             String input = mBinding.searchText.getText().toString().trim();
             if (input.length() == 5) {
@@ -179,18 +212,31 @@ public class WeatherLocationSelectionFragment
                 }
             }
             if (valid) {
-                String zip = String.valueOf(zipCode);
-                mWeatherModel.addResponseObserver(
-                        getViewLifecycleOwner(),
-                        response -> observeSearchAttemptResponse(
-                                response, mBinding.saveCheckbox.isChecked(), zip));
-                mWeatherModel.connectGet(mUserModel.getJwt(), zip, true);
+                location = String.valueOf(zipCode);
             } else {
                 mBinding.searchText.setError("Zip code must be a positive, 5 digit value!");
             }
         }
+        if (valid) {
+            String finalLocation = location;
+            if (!mDataObserverAssigned) {
+                mDataObserverAssigned = true;
+                mWeatherModel.addResponseObserver(
+                        getViewLifecycleOwner(),
+                        response -> observeSearchAttemptResponse(
+                                response, mBinding.saveCheckbox.isChecked(), finalLocation));
+            }
+            mWeatherModel.connectGet(mUserModel.getJwt(), finalLocation, true);
+        }
     }
 
+    /**
+     * Observes a server response from a weather location data search
+     *
+     * @param theResponse the observed response
+     * @param theChecked indicates whether the user would like to save the location
+     * @param theLocation the location to be saved
+     */
     private void observeSearchAttemptResponse(final JSONObject theResponse,
                                               final boolean theChecked, final String theLocation) {
         if (theResponse.has("code")) {
@@ -209,9 +255,12 @@ public class WeatherLocationSelectionFragment
                 Navigation.findNavController(getView()).navigate(action);
             };
             if (theChecked) {
-                mLocationListModel.addAdditionResponseObserver(
-                        getViewLifecycleOwner(),
-                        response -> observeLocationAdditionResponse(response, navRun));
+                if (!mLocationAdditionObserverAssigned) {
+                    mLocationAdditionObserverAssigned = true;
+                    mLocationListModel.addAdditionResponseObserver(
+                            getViewLifecycleOwner(),
+                            response -> observeLocationAdditionResponse(response, navRun));
+                }
                 mLocationListModel.connectPost(mUserModel.getJwt(), theLocation);
             } else {
                 navRun.run();
@@ -219,6 +268,12 @@ public class WeatherLocationSelectionFragment
         }
     }
 
+    /**
+     * Observes a server response for adding a saved weather location
+     *
+     * @param theResponse the observed response
+     * @param theNavRun the runnable to be executed if the addition was successful
+     */
     private void observeLocationAdditionResponse(final JSONObject theResponse,
                                                  final Runnable theNavRun) {
         if (theResponse.has("code")) { // error or list size limit met
@@ -251,6 +306,11 @@ public class WeatherLocationSelectionFragment
         }
     }
 
+    /**
+     * Displays an error dialog to the user upon unsuccessful search or location addition
+     *
+     * @param theMessage the custom dialog message
+     */
     private void displayErrorDialog(final String theMessage) {
         ((MainActivity) getActivity()).displayErrorDialog(theMessage);
     }

@@ -20,7 +20,7 @@ import java.util.List;
  * @author Parker Rosengreen
  * @version Fall 2021
  */
-public class ContactFragmentPagerAdapter extends FragmentStateAdapter {
+public class ContactFragmentAdapter extends FragmentStateAdapter {
 
     /** The fragment list to be displayed */
     private List<Fragment> mFrags;
@@ -30,36 +30,15 @@ public class ContactFragmentPagerAdapter extends FragmentStateAdapter {
      * of fragments
      *
      * @param theManager the fragment manager
+     * @param theLifeCycle the life cycle to be assigned
      * @param theFrags the fragment list to be displayed
      */
-    public ContactFragmentPagerAdapter(@NonNull final FragmentManager theManager,
-                                       final Lifecycle theLifeCycle,
-                                       final List<Fragment> theFrags) {
+    public ContactFragmentAdapter(@NonNull final FragmentManager theManager,
+                                  final Lifecycle theLifeCycle,
+                                  final List<Fragment> theFrags) {
         super(theManager, theLifeCycle);
         mFrags = theFrags;
     }
-
-//    @NonNull
-//    @Override
-//    public Fragment getItem(final int thePosition) {
-//        return mFrags.get(thePosition);
-//    }
-//
-//    @Override
-//    public int getCount() {
-//        return mFrags.size();
-//    }
-//
-//    @Override
-//    public CharSequence getPageTitle(final int thePosition) {
-//        switch (thePosition) {
-//            case 0:
-//                return "All Contacts";
-//            case 1:
-//                return "Requests";
-//        }
-//        return "New Request";
-//    }
 
     @NonNull
     @Override

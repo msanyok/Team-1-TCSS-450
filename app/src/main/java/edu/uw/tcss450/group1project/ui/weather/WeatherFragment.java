@@ -50,7 +50,7 @@ public class WeatherFragment extends Fragment {
     /** The latitude and longitude object */
     private LatLong mLatLong;
 
-    /** Indicates whether or not this fragment is displaying weather for the user's location */
+    /** Indicates whether or not this fragment is deletable from saved weather locations */
     private boolean mDeletable;
 
     /** The consumer responsible for deleting this fragment from parent view pager */
@@ -60,6 +60,14 @@ public class WeatherFragment extends Fragment {
         // required empty constructor
     }
 
+    /**
+     * Creates and returns a new WeatherFragment assigned with the provided data
+     *
+     * @param theLatLong the lat long to be assigned
+     * @param theDeletable indicates whether this fragment is deletable from saved locations
+     * @param theConsumer the consumer responsible for deleting this location
+     * @return the weather fragment instance
+     */
     public static WeatherFragment newInstance(final LatLong theLatLong, final boolean theDeletable,
                                               final Consumer<LatLong> theConsumer) {
         WeatherFragment newFrag = new WeatherFragment();

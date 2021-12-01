@@ -22,35 +22,25 @@ import java.util.List;
  * @author Parker Rosengreen
  * @version Fall 2021
  */
-public class WeatherFragmentPagerAdapter extends FragmentStateAdapter {
+public class WeatherFragmentAdapter extends FragmentStateAdapter {
 
     /** The fragments to be displayed */
     private final List<WeatherFragment> mFrags;
 
     /**
-     * Constructs a new WeatherFragmentPagerAdapter with the provided fragment manager and list
-     * of fragments to be displayed
+     * Constructs a new WeatherFragmentPagerAdapter with the provided fragment manager, lifecycle,
+     * and list of fragments to be displayed
      *
      * @param theManager the fragment manager
+     * @param theLifeCycle the life cycle to be assigned
      * @param theFrags the list of fragments to be displayed
      */
-    public WeatherFragmentPagerAdapter(@NonNull final FragmentManager theManager,
-                                       final Lifecycle theLifeCycle,
-                                       final List<WeatherFragment> theFrags) {
+    public WeatherFragmentAdapter(@NonNull final FragmentManager theManager,
+                                  final Lifecycle theLifeCycle,
+                                  final List<WeatherFragment> theFrags) {
         super(theManager, theLifeCycle);
         mFrags = theFrags;
     }
-
-//    @NonNull
-//    @Override
-//    public Fragment getItem(final int thePosition) {
-//        return mFrags.get(thePosition);
-//    }
-//
-//    @Override
-//    public int getCount() {
-//        return mFrags.size();
-//    }
 
     @NonNull
     @Override

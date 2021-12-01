@@ -18,12 +18,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavBackStackEntry;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.tabs.TabLayout;
@@ -32,7 +30,6 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import org.json.JSONObject;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -57,7 +54,8 @@ public class WeatherParentFragment extends Fragment {
     /** The user info view model */
     private UserInfoViewModel mUserModel;
 
-    /** The index of the view being shown */
+    private boolean mDeleteObserverAssigned;
+
     private int mViewIndex;
 
     /**
@@ -69,6 +67,13 @@ public class WeatherParentFragment extends Fragment {
     @Override
     public void onCreate(final Bundle theSavedInstanceState) {
         super.onCreate(theSavedInstanceState);
+        mViewIndex = theSavedInstanceState == null ? 0 : theSavedInstanceState.getInt("mViewIndex");
+    }
+
+    @Override
+    public void onSaveInstanceState(final Bundle theBundle) {
+        super.onSaveInstanceState(theBundle);
+        theBundle.putInt("mViewIndex", mViewIndex);
     }
 
     @Override
@@ -82,6 +87,7 @@ public class WeatherParentFragment extends Fragment {
     public void onViewCreated(@NonNull final View theView,
                               @Nullable final Bundle theSavedInstanceState) {
         super.onViewCreated(theView, theSavedInstanceState);
+        mDeleteObserverAssigned = false;
         NavController navController = Navigation.findNavController(theView);
         NavBackStackEntry backStackEntry =
                 navController.getBackStackEntry(R.id.navigation_weather_parent);
@@ -118,7 +124,6 @@ public class WeatherParentFragment extends Fragment {
      * Sets this fragment's view components which include its view pager and tab view
      */
     private void setViewComponents() {
-        System.out.println(mViewIndex);
         List<WeatherFragment> frags = new LinkedList<>();
         LocationViewModel locModel =
                 new ViewModelProvider(getActivity()).get(LocationViewModel.class);
@@ -134,31 +139,20 @@ public class WeatherParentFragment extends Fragment {
         }
         ViewPager2 viewPager = getView().findViewById(R.id.view_pager);
         TabLayout tabs = getView().findViewById(R.id.tab_layout);
-        WeatherFragmentPagerAdapter adapter = new WeatherFragmentPagerAdapter(
+        WeatherFragmentAdapter adapter = new WeatherFragmentAdapter(
                 getChildFragmentManager(), getLifecycle(), frags);
         viewPager.setAdapter(adapter);
+        viewPager.setOffscreenPageLimit(10);
         viewPager.setCurrentItem(mViewIndex);
         new TabLayoutMediator(tabs, viewPager, (tab, position) -> {}).attach();
         viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
+                super.onPageSelected(position);
                 mViewIndex = position;
+                System.out.println(mViewIndex);
             }
         });
-//        tabs.setupWithViewPager(mPager);
-//        mPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-//            @Override
-//            public void onPageScrolled(int position,
-//                                       float positionOffset, int positionOffsetPixels) {}
-//
-//            @Override
-//            public void onPageSelected(int position) {
-//                mViewIndex = position;
-//            }
-//
-//            @Override
-//            public void onPageScrollStateChanged(int state) {}
-//        });
     }
 
     /**
@@ -176,8 +170,11 @@ public class WeatherParentFragment extends Fragment {
                 "you want to delete this location?</font>"));
         alertDialog.setPositiveButton(Html.fromHtml("<font color='000000'>Delete</font>"),
                 (dialog, which) -> {
-                    mLocationModel.addDeletionResponseObserver(getViewLifecycleOwner(),
-                            response -> observeDeleteResponse(response, theLatLong));
+                    if (!mDeleteObserverAssigned) {
+                        mDeleteObserverAssigned = true;
+                        mLocationModel.addDeletionResponseObserver(getViewLifecycleOwner(),
+                                response -> observeDeleteResponse(response, theLatLong));
+                    }
                     mLocationModel.connectDelete(mUserModel.getJwt(), theLatLong.toString());
                 });
         alertDialog.setNegativeButton(Html.fromHtml("<font color='#000000'>Cancel</font>"),
