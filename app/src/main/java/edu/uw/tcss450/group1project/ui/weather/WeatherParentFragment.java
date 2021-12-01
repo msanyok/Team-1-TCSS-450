@@ -54,8 +54,10 @@ public class WeatherParentFragment extends Fragment {
     /** The user info view model */
     private UserInfoViewModel mUserModel;
 
+    /** Indicates whether a delete observer has been assigned to the current view life cycle */
     private boolean mDeleteObserverAssigned;
 
+    /** The view index of this fragment's weather fragment view pager */
     private int mViewIndex;
 
     /**
@@ -176,7 +178,7 @@ public class WeatherParentFragment extends Fragment {
                     if (!mDeleteObserverAssigned) {
                         mDeleteObserverAssigned = true;
                         mLocationModel.addDeletionResponseObserver(getViewLifecycleOwner(),
-                                response -> observeDeleteResponse(response, theLatLong));
+                                this::observeDeleteResponse);
                     }
                     mLocationModel.connectDelete(mUserModel.getJwt(), theLatLong.toString());
                 });
@@ -185,7 +187,12 @@ public class WeatherParentFragment extends Fragment {
         alertDialog.show();
     }
 
-    private void observeDeleteResponse(final JSONObject theResponse, final LatLong theRemove) {
+    /**
+     * Observes server responses for deleting a selected weather location
+     *
+     * @param theResponse the observed response
+     */
+    private void observeDeleteResponse(final JSONObject theResponse) {
         if (theResponse.has("code")) {
             Log.e("LOCATION DELETE ERROR", theResponse.toString());
             displayErrorDialog("An unexpected error occurred when deleting location." +

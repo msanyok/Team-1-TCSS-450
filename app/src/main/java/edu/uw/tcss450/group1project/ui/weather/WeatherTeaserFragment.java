@@ -1,6 +1,13 @@
+/*
+ * TCSS450 Mobile Applications
+ */
+
 package edu.uw.tcss450.group1project.ui.weather;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -9,40 +16,33 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavBackStackEntry;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import java.util.List;
 
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentWeatherBinding;
-import edu.uw.tcss450.group1project.databinding.FragmentWeatherTeaserBinding;
 import edu.uw.tcss450.group1project.model.WeatherDataViewModel;
 import edu.uw.tcss450.group1project.utils.WeatherUtils;
 
+/**
+ * WeatherTeaserFragment is a fragment class for displaying weather data for a newly searched
+ * location.
+ *
+ * @author Parker Rosengreen
+ * @version Fall 2021
+ */
 public class WeatherTeaserFragment extends Fragment {
 
-    private WeatherDataViewModel mModel;
-
-    private FragmentWeatherBinding mBinding;
-
+    /**
+     * Required empty constructor
+     */
     public WeatherTeaserFragment() {
         // Required empty public constructor
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(final LayoutInflater theInflater, final ViewGroup theContainer,
+                             final Bundle theSavedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_weather, container, false);
+        return theInflater.inflate(R.layout.fragment_weather, theContainer, false);
     }
 
     @Override
@@ -52,25 +52,26 @@ public class WeatherTeaserFragment extends Fragment {
         NavController navController = Navigation.findNavController(theView);
         NavBackStackEntry backStackEntry =
                 navController.getBackStackEntry(R.id.navigation_weather_location_selection);
-        mModel = new ViewModelProvider(backStackEntry).get(WeatherDataViewModel.class);
-        mBinding = FragmentWeatherBinding.bind(theView);
-        mBinding.locationDeleteButton.setVisibility(View.GONE);
-        mBinding.titleCity.setText(mModel.getCurrentData().getCity());
-        mBinding.titleWeatherIcon.setImageResource(
+        WeatherDataViewModel model =
+                new ViewModelProvider(backStackEntry).get(WeatherDataViewModel.class);
+        FragmentWeatherBinding binding = FragmentWeatherBinding.bind(theView);
+        binding.locationDeleteButton.setVisibility(View.GONE);
+        binding.titleCity.setText(model.getCurrentData().getCity());
+        binding.titleWeatherIcon.setImageResource(
                 WeatherUtils.getInstance()
-                        .getIconResource(mModel.getCurrentData().getWeatherCondition()));
-        mBinding.titleTemperature
-                .setText(String.valueOf(mModel.getCurrentData().getTemperature()) + "\u2109");
-        mBinding.titleFeelsLike
-                .setText("Feels like: " + mModel.getCurrentData().getFeelsLike() + "\u2109");
-        mBinding.titleChanceRain
+                        .getIconResource(model.getCurrentData().getWeatherCondition()));
+        binding.titleTemperature
+                .setText(String.valueOf(model.getCurrentData().getTemperature()) + "\u2109");
+        binding.titleFeelsLike
+                .setText("Feels like: " + model.getCurrentData().getFeelsLike() + "\u2109");
+        binding.titleChanceRain
                 .setText("Precipitation: " +
-                        mModel.getCurrentData().getPrecipPercentage() + "%");
-        mBinding.titleHumidity
-                .setText("Humidity: " + mModel.getCurrentData().getHumidity() + "%");
-        mBinding.listHourlyForecast
-                .setAdapter(new WeatherRecyclerAdapterHourly(mModel.getHourlyData()));
-        mBinding.listDailyForecast
-                .setAdapter(new WeatherRecyclerAdapterDaily(mModel.getDailyData()));
+                        model.getCurrentData().getPrecipPercentage() + "%");
+        binding.titleHumidity
+                .setText("Humidity: " + model.getCurrentData().getHumidity() + "%");
+        binding.listHourlyForecast
+                .setAdapter(new WeatherRecyclerAdapterHourly(model.getHourlyData()));
+        binding.listDailyForecast
+                .setAdapter(new WeatherRecyclerAdapterDaily(model.getDailyData()));
     }
 }
