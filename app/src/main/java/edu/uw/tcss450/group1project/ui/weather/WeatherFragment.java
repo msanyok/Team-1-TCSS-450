@@ -56,6 +56,9 @@ public class WeatherFragment extends Fragment {
     /** The consumer responsible for deleting this fragment from parent view pager */
     private Consumer<LatLong> mConsumer;
 
+    /**
+     * Required empty constructor
+     */
     public WeatherFragment() {
         // required empty constructor
     }
