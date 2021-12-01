@@ -94,9 +94,14 @@ public class WeatherParentFragment extends Fragment {
         mLocationModel =
                 new ViewModelProvider(backStackEntry).get(WeatherLocationListViewModel.class);
         mUserModel = new ViewModelProvider(getActivity()).get(UserInfoViewModel.class);
-        mLocationModel.connectGet(mUserModel.getJwt());
-        mLocationModel.addResponseObserver(getViewLifecycleOwner(),
-                this::observeLocationListResponse);
+        if (mLocationModel.containsReadableData() && !mLocationModel.isListExpanded()) {
+            setViewComponents();
+        } else {
+            mLocationModel.checkAdditions();
+            mLocationModel.connectGet(mUserModel.getJwt());
+            mLocationModel.addResponseObserver(getViewLifecycleOwner(),
+                    this::observeLocationListResponse);
+        }
         FragmentWeatherParentBinding binding = FragmentWeatherParentBinding.bind(theView);
         binding.searchButton.setOnClickListener(button -> {
             Navigation.findNavController(theView).navigate(
@@ -114,8 +119,7 @@ public class WeatherParentFragment extends Fragment {
             Log.e("WEATHER LOCATION LIST REQUEST ERROR", theResponse.toString());
             displayErrorDialog("Unexpected error when loading saved locations. Please try again.");
             mLocationModel.clearResponse();
-        }
-        if (mLocationModel.containsReadableData()) {
+        } else if (theResponse.length() != 0) {
             setViewComponents();
         }
     }
@@ -143,14 +147,13 @@ public class WeatherParentFragment extends Fragment {
                 getChildFragmentManager(), getLifecycle(), frags);
         viewPager.setAdapter(adapter);
         viewPager.setOffscreenPageLimit(10);
-        viewPager.setCurrentItem(mViewIndex);
+        viewPager.setCurrentItem(mViewIndex, true);
         new TabLayoutMediator(tabs, viewPager, (tab, position) -> {}).attach();
         viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
                 mViewIndex = position;
-                System.out.println(mViewIndex);
             }
         });
     }

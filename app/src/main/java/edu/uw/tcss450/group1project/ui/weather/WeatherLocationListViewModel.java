@@ -51,6 +51,9 @@ public class WeatherLocationListViewModel extends AndroidViewModel {
     /** The list of LatLong locations */
     private List<LatLong> mLocations;
 
+    /** Indicates whether this view model's location list has been added to */
+    private boolean mAdditionFlag;
+
     /**
      * Constructs a new weather location list view model with the provided application
      *
@@ -137,7 +140,23 @@ public class WeatherLocationListViewModel extends AndroidViewModel {
      * @return the list of LatLongs
      */
     public List<LatLong> getLocations() {
-        return mLocations;
+        return new ArrayList<>(mLocations);
+    }
+
+    /**
+     * Indicates whether this view model's list has been added to
+     *
+     * @return true if added to, false otherwise
+     */
+    public boolean isListExpanded() {
+        return mAdditionFlag;
+    }
+
+    /**
+     * Informs this view model that new additions have been noted
+     */
+    public void checkAdditions() {
+        mAdditionFlag = false;
     }
 
     /**
@@ -190,7 +209,10 @@ public class WeatherLocationListViewModel extends AndroidViewModel {
                 Request.Method.POST,
                 url,
                 body,
-                mAdditionResponse::setValue,
+                response -> {
+                    mAdditionResponse.setValue(response);
+                    mAdditionFlag = true;
+                },
                 this::handleAddError) {
             @Override
             public Map<String, String> getHeaders() {
