@@ -77,7 +77,7 @@ public class WeatherFragment extends Fragment {
         Bundle args = new Bundle();
         args.putSerializable("mLatLong", theLatLong);
         args.putBoolean("mDeletable", theDeletable);
-        args.putSerializable("mConsumer", (Consumer & Serializable) theConsumer);
+        args.putSerializable("mConsumer", (Consumer<LatLong> & Serializable) theConsumer);
         newFrag.setArguments(args);
         return newFrag;
     }
@@ -87,7 +87,7 @@ public class WeatherFragment extends Fragment {
         super.onCreate(theSavedInstanceState);
         mLatLong = (LatLong) getArguments().getSerializable("mLatLong");
         mDeletable = getArguments().getBoolean("mDeletable");
-        mConsumer = (Consumer) getArguments().getSerializable("mConsumer");
+        mConsumer = (Consumer<LatLong>) getArguments().getSerializable("mConsumer");
         mModel = !mDeletable ?
                 new ViewModelProvider(getActivity()).get(WeatherDataViewModel.class) :
                 new ViewModelProvider(this).get(WeatherDataViewModel.class);
