@@ -58,6 +58,7 @@ public class HomeFragment extends Fragment {
     /** User View Model for Jwt*/
     private UserInfoViewModel mUserModel;
 
+    /** View model that stores the list of chat rooms */
     private ChatsListViewModel mChatListModel;
 
     /** The view binding */
@@ -125,8 +126,8 @@ public class HomeFragment extends Fragment {
         mBinding = FragmentHomeBinding.bind(getView());
         mBinding.welcomeText.setText(String.format("Welcome, %s!", mUserModel.getNickname()));
 
-mBinding.listNewMessages.setAdapter(
-        new MessagesNotificationsRecyclerAdapter(new ArrayList<ChatRoom>()));
+        mBinding.listNewMessages.setAdapter(
+                new MessagesNotificationsRecyclerAdapter(new ArrayList<>()));
 
     }
 

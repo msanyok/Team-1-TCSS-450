@@ -111,7 +111,7 @@ public class ChatsFragment extends Fragment {
      *
      * @param theResponse the raw data response from the server
      */
-    private void parseAndSetChatList(JSONObject theResponse) {
+    private void parseAndSetChatList(final JSONObject theResponse) {
 
         // parse the response and turn it into a new ChatRoom list
         final List<ChatRoom> mChatRoomList = new ArrayList<>();
