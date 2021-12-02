@@ -141,7 +141,6 @@ public class ChatRoomFragment extends Fragment {
                         newScrollPosition = 0;
                     }
 
-
                     messagesRecyclerView.getAdapter().notifyDataSetChanged();
                     messagesRecyclerView.scrollToPosition(newScrollPosition);
                     binding.swipeContainer.setRefreshing(false);
@@ -150,6 +149,15 @@ public class ChatRoomFragment extends Fragment {
                     // make the view go to the bottom
                     mScrollPosition = 0;
 
+                    // We allow both view model and local message stores of new chats
+                    // while the app is running. We do so because we want to make
+                    // sure the notification data stays if the user exits the app or get a
+                    // notification from a different chat.
+                    // As a result, when new messages come in for this particular chat
+                    // we must make sure to delete these.
+                    LocalStorageUtils.removeNewMessageStore(this.getContext(), mChatId);
+                    new ViewModelProvider(this.getActivity()).
+                            get(NewMessageCountViewModel.class).clearNewMessages(mChatId);
                 });
 
         //Send button was clicked. Send the message via the SendViewModel
@@ -158,7 +166,6 @@ public class ChatRoomFragment extends Fragment {
                     mUserModel.getJwt(),
                     binding.editMessage.getText().toString());
 
-            // set the scroll position to 0 so the recycler goes to the bottom
 
         });
 
