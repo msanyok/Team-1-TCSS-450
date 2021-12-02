@@ -15,10 +15,14 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
+import androidx.navigation.NavController;
+import androidx.navigation.NavDestination;
+import androidx.navigation.Navigation;
 
 import org.json.JSONException;
 
 import edu.uw.tcss450.group1project.AuthActivity;
+import edu.uw.tcss450.group1project.MainActivity;
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.model.LocalStorageUtils;
 import edu.uw.tcss450.group1project.ui.messages.ChatMessage;
@@ -161,8 +165,12 @@ public class PushReceiver extends BroadcastReceiver {
         }
 
         // insert the new message into internal storage so if the user navigates closes the app,
-        // the saved notification data is not lost
+        // the saved notification data is not lost. Note: we only want to store the
+        // missed messages if we are not in the chat fragment.
         LocalStorageUtils.putMissedMessage(theContext, String.valueOf(chatId));
+        // todo: fix bug where if the user is already in the chat fragment the message gets
+        //  added to local storage but never deleted (might want to hit LocalStorage.delete
+        //  when a new message comes and we are in the same chat)
     }
 
     /**
