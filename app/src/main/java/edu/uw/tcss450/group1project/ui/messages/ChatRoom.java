@@ -28,6 +28,9 @@ public class ChatRoom implements Comparable<ChatRoom> {
     /** The timestamp that corresponds to when the most recent message was sent in this chat room */
     private String mTimestamp;
 
+    /** The number of missed messages this chat has */
+    private int mMissedMessageCount;
+
     /**
      * Creates a new chat room with the provided name, id, and most recent message.
      *
@@ -36,6 +39,7 @@ public class ChatRoom implements Comparable<ChatRoom> {
      * @param theMostRecentMessage the most recent message text sent in this chat.
      * @param theTimestamp the timestamp that corresponds to when
      *                     the most recent message in this chat was sent.
+     * @param theNumMissedMessages the number of missed messages this chat has
      * @throws NullPointerException if theName is null
      * @throws NullPointerException if theID is null
      * @throws NullPointerException if theMostRecentMessage is null
@@ -44,14 +48,25 @@ public class ChatRoom implements Comparable<ChatRoom> {
     public ChatRoom(final String theName,
                     final String theID,
                     final String theMostRecentMessage,
-                    final String theTimestamp) {
+                    final String theTimestamp,
+                    final int theNumMissedMessages) {
 
         mChatRoomName = Objects.requireNonNull(theName, "theName can not be null");
         mChatRoomID = Objects.requireNonNull(theID, "theID can not be null");
         mChatRoomMessage = Objects.requireNonNull(theMostRecentMessage,
                 "theMostRecentMessage can not be null");
         mTimestamp = Objects.requireNonNull(theTimestamp, "theTimestamp can not be null");
+        mMissedMessageCount = theNumMissedMessages;
     }
+
+    /**
+     * Returns the number of new messages that were missed for this ChatRoom
+     * @return the number of new messages that were missed for this ChatRoom
+     */
+    public int getMissedMessageCount() {
+        return mMissedMessageCount;
+    }
+
 
     /**
      * Returns this chat's name
@@ -90,8 +105,25 @@ public class ChatRoom implements Comparable<ChatRoom> {
         return mTimestamp;
     }
 
+
+
     @Override
     public int compareTo(final ChatRoom theChatRoom) {
-        return theChatRoom.getTimestamp().compareTo(this.getTimestamp());
+        // compares first by missed messages, then by timestamp
+        int result = 0;
+        if (this.getMissedMessageCount() > 0 && theChatRoom.getMissedMessageCount() == 0) {
+            // this chat has new messages and the other one doesn't
+            result = -1;
+        } else if (theChatRoom.getMissedMessageCount() > 0 && this.getMissedMessageCount() == 0) {
+            // this chat has no new messages and the other one does
+            result = 1;
+        } else {
+            // either both chats have missed messages or neither chats have missed messages,
+            // so compare based on timestamp
+            result = theChatRoom.getTimestamp().compareTo(this.getTimestamp());
+        }
+
+        return result;
+
     }
 }

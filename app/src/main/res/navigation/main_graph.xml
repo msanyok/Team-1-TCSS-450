@@ -9,7 +9,11 @@
         android:id="@+id/navigation_home"
         android:name="edu.uw.tcss450.group1project.ui.home.HomeFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_navigation_home_chats_to_navigation_chat_room"
+            app:destination="@id/navigation_chat_room" />
+    </fragment>
     <fragment
         android:id="@+id/navigation_messages"
         android:name="edu.uw.tcss450.group1project.ui.messages.ChatsFragment"

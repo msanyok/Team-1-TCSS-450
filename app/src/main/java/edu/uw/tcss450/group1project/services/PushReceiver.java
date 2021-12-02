@@ -11,6 +11,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
@@ -19,9 +20,11 @@ import org.json.JSONException;
 
 import edu.uw.tcss450.group1project.AuthActivity;
 import edu.uw.tcss450.group1project.R;
+import edu.uw.tcss450.group1project.model.LocalStorageUtils;
 import edu.uw.tcss450.group1project.ui.messages.ChatMessage;
 import me.pushy.sdk.Pushy;
 
+import static android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_BACKGROUND;
 import static android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND;
 import static android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_VISIBLE;
 
@@ -52,7 +55,6 @@ public class PushReceiver extends BroadcastReceiver {
 
     /** The ID for the channel used for notifications */
     private static final String CHANNEL_ID = "1";
-
 
     /**
      * Handles what should occur when this device receives a Pushy payload.
@@ -98,6 +100,7 @@ public class PushReceiver extends BroadcastReceiver {
             throw new IllegalStateException("Error from Web Service. Contact Dev Support");
         }
 
+
         // get tools to check if the user is in the app or not
         ActivityManager.RunningAppProcessInfo appProcessInfo =
                 new ActivityManager.RunningAppProcessInfo();
@@ -118,8 +121,8 @@ public class PushReceiver extends BroadcastReceiver {
 
             theContext.sendBroadcast(intent);
 
-
         } else {
+
             // the user is not inside the application, so send a notification
             Log.d("PUSHY", "Message received in background: " + message.getMessage());
 
@@ -151,6 +154,10 @@ public class PushReceiver extends BroadcastReceiver {
             // Build the notification and display it
             notificationManager.notify(1, builder.build());
         }
+
+        // insert the new message into internal storage so if the user navigates closes the app,
+        // the saved notification data is not lost
+        LocalStorageUtils.putMissedMessage(theContext, String.valueOf(chatId));
     }
 
     /**
@@ -159,7 +166,7 @@ public class PushReceiver extends BroadcastReceiver {
      * @param theContext the context of the application
      * @param theIntent the Intent that stores the Pushy payload
      */
-//todo: do we need to set the values beforehand?
+//todo: do we need to set the values beforehand? -- update, idk what this todo is for anymore, subject to deletion
     private void acceptNewContactRequestPushy(final Context theContext, final Intent theIntent) {
         String toId = theIntent.getStringExtra("toId");
         String fromId = theIntent.getStringExtra("fromId");

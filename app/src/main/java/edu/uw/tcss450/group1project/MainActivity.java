@@ -6,9 +6,6 @@
 package edu.uw.tcss450.group1project;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -16,7 +13,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
@@ -42,9 +38,11 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import edu.uw.tcss450.group1project.model.ContactRequestViewModel;
+import edu.uw.tcss450.group1project.model.LocalStorageUtils;
 import edu.uw.tcss450.group1project.model.LocationViewModel;
 import edu.uw.tcss450.group1project.model.NewMessageCountViewModel;
 import edu.uw.tcss450.group1project.model.PushyTokenViewModel;
@@ -53,6 +51,7 @@ import edu.uw.tcss450.group1project.services.PushReceiver;
 import edu.uw.tcss450.group1project.ui.contacts.ContactsViewModel;
 import edu.uw.tcss450.group1project.ui.messages.ChatMessage;
 import edu.uw.tcss450.group1project.ui.messages.ChatViewModel;
+import edu.uw.tcss450.group1project.ui.messages.ChatsListViewModel;
 
 /**
  * A {@link AppCompatActivity} subclass that is responsible
@@ -106,6 +105,9 @@ public class MainActivity extends ThemedActivity {
     /** Keeps track of the new contact requests */
     private ContactRequestViewModel mContactRequestViewModel;
 
+    /** Keeps track of the the list of chats */
+    private ChatsListViewModel mChatListViewModel;
+
     /** Keeps track of contacts */
     private ContactsViewModel mContactsViewModel;
 
@@ -124,23 +126,19 @@ public class MainActivity extends ThemedActivity {
     @Override
     protected void onCreate(final Bundle theSavedInstanceState) {
         super.onCreate(theSavedInstanceState);
-        mLocationModel =
-                new ViewModelProvider(MainActivity.this).get(LocationViewModel.class);
-        mNewMessageModel = new ViewModelProvider(this).get(NewMessageCountViewModel.class);
-
-// todo: may need this for navigation badges
-//        mBinding = ActivityMainBinding.inflate(getLayoutInflater());
-//        setContentView(mBinding.getRoot());
 
         MainActivityArgs args = MainActivityArgs.fromBundle(getIntent().getExtras());
 
         // set up all of the view models
+        mLocationModel =
+                new ViewModelProvider(MainActivity.this).get(LocationViewModel.class);
+        mNewMessageModel = new ViewModelProvider(this).get(NewMessageCountViewModel.class);
         mUserInfoModel = new ViewModelProvider(this,
                 new UserInfoViewModel.UserInfoViewModelFactory(args.getJwt()))
                         .get(UserInfoViewModel.class);
         mContactRequestViewModel = new ViewModelProvider(this).get(ContactRequestViewModel.class);
         mContactsViewModel = new ViewModelProvider(this).get(ContactsViewModel.class);
-
+        mChatListViewModel = new ViewModelProvider(this).get(ChatsListViewModel.class);
 
         applyTheme();
         setContentView(R.layout.activity_main);
@@ -172,31 +170,27 @@ public class MainActivity extends ThemedActivity {
 
         // handles the destination changes that occur in the app and what
         // should happen when it occurs
-// todo: need to modify the if statement body so it works for different chat rooms.
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
-            if (destination.getId() == R.id.navigation_chat_room) {
-                mNewMessageModel.reset();
+            // todo: need for navigation for in app badges?
+        });
+
+        // Handles the notification badge drawing
+        mNewMessageModel.addMessageCountObserver(this, count -> {
+            BadgeDrawable badge = navView.getOrCreateBadge(R.id.navigation_messages);
+            badge.setMaxCharacterCount(2);
+            if (count > 0) {
+                // new messages! update and show the notification badge.
+                badge.setNumber(count);
+                badge.setVisible(true);
+            } else {
+                // user did some action to clear the new messages, remove the badge
+                badge.clearNumber();
+                badge.setVisible(false);
             }
         });
 
-// todo: need to research and see if it will work with our theme
-        // Handles the notification badge drawing
-        mNewMessageModel.addMessageCountObserver(this, count -> {
-//            BadgeDrawable badge = mBinding.navView.getOrCreateBadge(R.id.navigation_chat);
-//            badge.setMaxCharacterCount(2);
-//            if (count > 0) {
-//                //new messages! update and show the notification badge.
-//                badge.setNumber(count);
-//                badge.setVisible(true);
-//            } else {
-//                //user did some action to clear the new messages, remove the badge
-//                badge.clearNumber();
-//                badge.setVisible(false);
-//            }
-        });
-
+        // check for locations permissions
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-
         if (ActivityCompat.checkSelfPermission(
                 this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED
@@ -337,12 +331,18 @@ public class MainActivity extends ThemedActivity {
     @Override
     public void onResume() {
         super.onResume();
+    Log.e("", "ON RESUME");
+        // get the notifications that occurred while the app was not in the foreground
+        mNewMessageModel.putData(LocalStorageUtils.getMissedMessages(this));
+
+
         if (mPushMessageReceiver == null) {
             mPushMessageReceiver = new MainPushMessageReceiver();
         }
         IntentFilter iFilter = new IntentFilter(PushReceiver.NEW_PUSHY_NOTIF);
         registerReceiver(mPushMessageReceiver, iFilter);
         startLocationUpdates();
+
     }
 
     @Override
@@ -385,7 +385,7 @@ public class MainActivity extends ThemedActivity {
     private class MainPushMessageReceiver extends BroadcastReceiver {
 
         /** View model that contains data about chat messages */
-        private ChatViewModel mModel =
+        private ChatViewModel mChatMessageViewModel =
                 new ViewModelProvider(MainActivity.this)
                         .get(ChatViewModel.class);
 
@@ -410,13 +410,12 @@ public class MainActivity extends ThemedActivity {
         }
 
         /**
-         * Handles updating the devices viewmodel when a message is received.
+         * Handles updating the devices view model when a message is received.
          *
          * @param theContext the context of the application
          * @param theIntent the Intent that stores the Pushy payload
          */
         private void completeNewMessageActions(final Context theContext, final Intent theIntent) {
-            Log.d("RECIEVE INTENT", "New Message Actions");
 
             NavController navController =
                 Navigation.findNavController(
@@ -426,15 +425,21 @@ public class MainActivity extends ThemedActivity {
             ChatMessage chatMessage =
                     (ChatMessage) theIntent.getSerializableExtra("chatMessage");
 
-            //If the user is not on the chat screen, update the
+            // If the user is not on the chat screen, update the
             // NewMessageCountView Model
             if (navDestination.getId() != R.id.navigation_chat_room) {
-                mNewMessageModel.increment();
+                // notify the new message view model that there is a new message
+                int chatId = theIntent.getIntExtra("chatid", -1);
+                mNewMessageModel.increment(chatId);
+                mChatListViewModel.getChatListData(mUserInfoModel.getJwt());
             }
+            // todo: find a way to get the current chat ID so we can add notification
+            //       when another chat has a message and we are in a different chat?
+            //       could do this by storing temp chatId in chatViewModle when ChatRoomFragment onCreate()
 
             //Inform the view model holding chatroom messages of the new
             //message.
-            mModel.addMessage(theIntent.getIntExtra("chatid", -1), chatMessage);
+            mChatMessageViewModel.addMessage(theIntent.getIntExtra("chatid", -1), chatMessage);
 
         }
 
