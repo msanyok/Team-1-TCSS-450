@@ -207,7 +207,6 @@ public class ContactsFragment extends Fragment {
                 "will be permanent. Are you sure?</font>"));
         alertDialog.setPositiveButton(Html.fromHtml("<font color='000000'>Delete</font>"),
                 (dialog, which) -> {
-                    //TODO add delete function in it
                     Toast.makeText(getContext(),"You have deleted " + theContact.getNickname()
                                     + " from contacts.",
                             Toast.LENGTH_SHORT).show();

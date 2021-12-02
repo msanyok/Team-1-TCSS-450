@@ -4,13 +4,17 @@
 
 package edu.uw.tcss450.group1project.ui.weather;
 
+import androidx.annotation.NonNull;
+
+import java.io.Serializable;
+
 /**
  * LatLong is a simple class for storing latitudes and longitudes.
  *
  * @author Parker Rosengreen
  * @version Fall 2021
  */
-public class LatLong {
+public class LatLong implements Serializable {
 
     /** The latitude */
     private final double mLat;
@@ -45,5 +49,11 @@ public class LatLong {
      */
     public double getLong() {
         return mLong;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return mLat + ":" + mLong;
     }
 }

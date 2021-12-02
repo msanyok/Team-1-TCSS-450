@@ -8,7 +8,8 @@ package edu.uw.tcss450.group1project.ui.contacts;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.lifecycle.Lifecycle;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import java.util.List;
 
@@ -19,7 +20,7 @@ import java.util.List;
  * @author Parker Rosengreen
  * @version Fall 2021
  */
-public class ContactFragmentPagerAdapter extends FragmentPagerAdapter {
+public class ContactFragmentAdapter extends FragmentStateAdapter {
 
     /** The fragment list to be displayed */
     private List<Fragment> mFrags;
@@ -29,34 +30,24 @@ public class ContactFragmentPagerAdapter extends FragmentPagerAdapter {
      * of fragments
      *
      * @param theManager the fragment manager
+     * @param theLifeCycle the life cycle to be assigned
      * @param theFrags the fragment list to be displayed
      */
-    public ContactFragmentPagerAdapter(@NonNull final FragmentManager theManager,
-                                       final List<Fragment> theFrags) {
-        super(theManager);
+    public ContactFragmentAdapter(@NonNull final FragmentManager theManager,
+                                  final Lifecycle theLifeCycle,
+                                  final List<Fragment> theFrags) {
+        super(theManager, theLifeCycle);
         mFrags = theFrags;
     }
 
     @NonNull
     @Override
-    public Fragment getItem(final int thePosition) {
-        return mFrags.get(thePosition);
+    public Fragment createFragment(int position) {
+        return mFrags.get(position);
     }
 
     @Override
-    public int getCount() {
+    public int getItemCount() {
         return mFrags.size();
     }
-
-    @Override
-    public CharSequence getPageTitle(final int thePosition) {
-        switch (thePosition) {
-            case 0:
-                return "All Contacts";
-            case 1:
-                return "Requests";
-        }
-        return "New Request";
-    }
-
 }
