@@ -480,22 +480,16 @@ public class MainActivity extends ThemedActivity {
             // todo: need to implement on screen/off screen functionality with in app notifications
             Log.d("RECIEVE INTENT", "New Contact Request Response Actions");
 
-            NavController navController =
-                    Navigation.findNavController(
-                            MainActivity.this, R.id.nav_host_fragment);
-            NavDestination navDestination = navController.getCurrentDestination();
+//            NavController navController =
+//                    Navigation.findNavController(
+//                            MainActivity.this, R.id.nav_host_fragment);
+//            NavDestination navDestination = navController.getCurrentDestination();
+//
+//            final String memberId = mUserInfoModel.getMemberId();
+//            final String fromId = theIntent.getStringExtra("fromId");
 
-            final String memberId = mUserInfoModel.getMemberId();
-            final String fromId = theIntent.getStringExtra("fromId");
+            mContactRequestViewModel.allContactRequests(mUserInfoModel.getJwt());
 
-            if (memberId.equals(fromId)) {
-
-                // we are the member who sent the request, so update our sent requests list
-                // todo:
-            } else {
-                // we are the member who accepted/rejected the request, so update our recieved requests list
-                mContactRequestViewModel.allContactRequests(mUserInfoModel.getJwt());
-            }
 
             // update the contacts list for both users if the contact request is accepted
             if (theIntent.getBooleanExtra("isAccept", false)) {
