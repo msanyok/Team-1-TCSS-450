@@ -3,7 +3,7 @@
  * Fall 2021
  */
 
-package edu.uw.tcss450.group1project.ui.home;
+package edu.uw.tcss450.group1project.ui.contacts;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,10 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import edu.uw.tcss450.group1project.R;
-import edu.uw.tcss450.group1project.databinding.FragmentHomeContactRequestCardBinding;
-import edu.uw.tcss450.group1project.model.ContactRequestViewModel;
+import edu.uw.tcss450.group1project.databinding.FragmentContactRequestCardBinding;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
-import edu.uw.tcss450.group1project.ui.contacts.Contact;
 
 
 /**
@@ -59,7 +57,7 @@ public class ContactRequestRecyclerAdapter
                                                        final int theViewType) {
         return new ContactRequestViewHolder(LayoutInflater
                 .from(theParent.getContext())
-                .inflate(R.layout.fragment_home_contact_request_card, theParent, false));
+                .inflate(R.layout.fragment_contact_request_card, theParent, false));
     }
 
     @Override
@@ -86,7 +84,7 @@ public class ContactRequestRecyclerAdapter
         private final View mView;
 
         /** The ViewBinding corresponded to a contact request RecyclerView card */
-        private final FragmentHomeContactRequestCardBinding mBinding;
+        private final FragmentContactRequestCardBinding mBinding;
 
         /** The potential contact assigned to this ViewHolder */
         private Contact mContact;
@@ -99,7 +97,7 @@ public class ContactRequestRecyclerAdapter
         public ContactRequestViewHolder(@NonNull final View theItemView) {
             super(theItemView);
             mView = theItemView;
-            mBinding = FragmentHomeContactRequestCardBinding.bind(theItemView);
+            mBinding = FragmentContactRequestCardBinding.bind(theItemView);
             mBinding.acceptButton.setOnClickListener(button -> {
                     mContactRequests.sendContactResponse(
                             true, mContact.getMemberId(), mUserInfo.getJwt());

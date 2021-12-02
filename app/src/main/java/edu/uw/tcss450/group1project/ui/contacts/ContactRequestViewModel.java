@@ -3,8 +3,7 @@
  * Fall 2021
  */
 
-package edu.uw.tcss450.group1project.model;
-
+package edu.uw.tcss450.group1project.ui.contacts;
 
 import android.app.Application;
 import android.util.Log;
@@ -32,8 +31,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import edu.uw.tcss450.group1project.ui.contacts.Contact;
-
 /**
  * A view model class that stores information about Contact Requests received and accepted/declined
  * from the server.
@@ -54,19 +51,22 @@ public class ContactRequestViewModel extends AndroidViewModel {
      */
     private MutableLiveData<JSONObject> mContactRequestResponse;
 
-
     /** The list of request objects. */
     private List<Contact> mRequestList;
+
+    /** The list of Outgoing Request objects. */
+    private List<Contact> mOutgoingRequestList;
 
     /**
      * Creates a new ContactRequestViewModel that is tied to the given application.
      *
      * @param theApplication the Application this ViewModel belongs to
-     * @throws NullPointerException if theApplication is null
+     * @throws NullPointerException if theApplication is null throw a null pointer exception
      */
     public ContactRequestViewModel(@NonNull final Application theApplication) {
         super(Objects.requireNonNull(theApplication, "theApplication can not be null"));
         mRequestList = new ArrayList<>();
+        mOutgoingRequestList = new ArrayList<>();
 
         mContactRequestResponse = new MutableLiveData<>();
         mContactRequestResponse.setValue(new JSONObject());
@@ -75,22 +75,6 @@ public class ContactRequestViewModel extends AndroidViewModel {
         mRequestResponse.setValue(new JSONObject());
 
     }
-
-    /**
-     * Adds the given observer to the contact request live data.
-     *
-     * @param theOwner the lifecycle owner of the fragment that contains the observer
-     * @param theObserver the observer that is used when the response data changes state
-     * @throws NullPointerException if theOwner is null
-     * @throws NullPointerException if theObserver is null
-     */
-    public void addRequestObserver(@NonNull final LifecycleOwner theOwner,
-                                   @NonNull final Observer<? super JSONObject> theObserver) {
-        Objects.requireNonNull(theOwner, "theOwner can not be null");
-        Objects.requireNonNull(theObserver, "theObserver can not be null");
-        mContactRequestResponse.observe(theOwner, theObserver);
-    }
-
 
     /**
      * Adds the given observer to the contact request response live data.
@@ -108,7 +92,7 @@ public class ContactRequestViewModel extends AndroidViewModel {
     }
 
     /**
-     * Sends an HTTP POST request to the server attempting to get all contact requests
+     * Sends an HTTP Get request to the server attempting to get all contact requests
      *
      * @param theJwt JWT token to be passed to server
      * @throws NullPointerException if theNickname is null
@@ -149,29 +133,52 @@ public class ContactRequestViewModel extends AndroidViewModel {
     }
 
     /**
+     * Returns the current list of outgoing requests
+     * @return mOutgoingRequestList List<Contacts>
+     */
+    public List<Contact> getOutgoingRequestList() { return mOutgoingRequestList; }
+
+    /**
      * Observes the HTTP Response from the web server. If an error occurred, notify the user
-     * accordingly. If it was a success, parse the contact request information.
+     * accordingly. If it was a success, parse the contact request information incoming and outgoing.
      *
      * @param theResponse the Response from the server
      */
     private void parseRequestListData(final JSONObject theResponse) {
         if (theResponse.length() > 0) {
-            List<Contact> formattedContactList = new ArrayList<>();
+            List<Contact> formattedIncomingList = new ArrayList<>();
+            List<Contact> formattedOutgoingList = new ArrayList<>();
             if (theResponse.has("code")) {
                 //this is an error
             } else {
                 try {
-                    JSONArray contacts = theResponse.getJSONArray("data");
-                    for(int i = 0; i < contacts.length(); i++) {
-                        JSONObject contact = (JSONObject) contacts.get(i);
-                        formattedContactList.add(new Contact(contact.get("first").toString(),
-                                contact.get("last").toString(),
-                                contact.get("nickname").toString(),
-                                contact.get("memberid").toString()));
+                    //loop for incoming requests
+                    JSONArray incoming = theResponse.getJSONArray("receivedRequests");
+                    if (incoming.length() > 0) {
+                        for (int i = 0; i < incoming.length(); i++) {
+                            JSONObject contact = (JSONObject) incoming.get(i);
+                            formattedIncomingList.add(new Contact(contact.get("first").toString(),
+                                    contact.get("last").toString(),
+                                    contact.get("nickname").toString(),
+                                    contact.get("memberid").toString()));
+                        }
                     }
-                    mRequestList = formattedContactList;
+                        //loop for outgoing list could probably refactor
+                    JSONArray outgoing = theResponse.getJSONArray("sentRequests");
+                    if (outgoing.length() > 0) {
+                        for (int i = 0; i < outgoing.length(); i++) {
+                            JSONObject contact = (JSONObject) outgoing.get(i);
+                            formattedOutgoingList.add(new Contact(contact.get("first").toString(),
+                                    contact.get("last").toString(),
+                                    contact.get("nickname").toString(),
+                                    contact.get("memberid").toString()));
+                        }
+                    }
+                    mOutgoingRequestList = formattedOutgoingList;
+                    mRequestList = formattedIncomingList;
                     mRequestResponse.setValue(theResponse);
                 } catch (JSONException exception) {
+                    
                     Log.e("JSON Parse Error", exception.getMessage());
                 }
             }
@@ -182,7 +189,7 @@ public class ContactRequestViewModel extends AndroidViewModel {
 
 
     /**
-     * Sends an HTTP POST request to the server attempts to accept/decline
+     * Sends an HTTP Put request to the server attempts to accept/decline
      *
      * @param theChoice the new account's nickname
      * @param theJwt JWT token to be passed to server
@@ -225,6 +232,51 @@ public class ContactRequestViewModel extends AndroidViewModel {
                 .add(request);
     }
 
+
+
+    /**
+     * Sends an HTTP POST request to the server attempts to accept/decline
+     *
+     * @param theJwt JWT token to be passed to server
+     * @throws NullPointerException if theNickname is null
+     */
+    public void sendDeleteResponse(@NonNull final String theJwt, final String theMemberId) {
+            Objects.requireNonNull(theJwt, "JWT can not be null");
+            final String url = "https://team-1-tcss-450-server.herokuapp.com/contacts/requests/"+ theMemberId;
+
+            final JSONObject body = new JSONObject();
+            try {
+                body.put("memberID", theMemberId);
+            } catch (JSONException exception) {
+                exception.printStackTrace();
+            }
+
+            final Request request = new JsonObjectRequest(
+                    Request.Method.DELETE,
+                    url,
+                    body,
+                    mContactRequestResponse::setValue,
+                    this::handleContactError) {
+                @Override
+                public Map<String, String> getHeaders() {
+                    Map<String, String> headers = new HashMap<>();
+                    headers.put("Authorization", theJwt);
+
+                    return headers;
+                }
+            };
+
+            request.setRetryPolicy(new DefaultRetryPolicy(
+                    10_000,
+                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            //Instantiate the RequestQueue and add the request to the queue
+            Volley.newRequestQueue(getApplication().getApplicationContext())
+                    .add(request);
+        
+    }
+    
+    
 
     /**
      * Completes the actions required when an error occurs during a HTTP request to the server
@@ -295,4 +347,5 @@ public class ContactRequestViewModel extends AndroidViewModel {
         mRequestResponse.setValue(new JSONObject());
     }
 
+    
 }

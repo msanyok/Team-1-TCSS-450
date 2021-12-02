@@ -10,6 +10,7 @@
     <string name="hint_verification_code">Verification Code</string>
     <string name="hint_weather_location">Enter a new location.</string>
     <string name="hint_add_new_contact">Filter existing contacts.</string>
+    <string name="hint_search_new_contact">Search for contacts.</string>
     <string name="hint_chat_room_name">Your chat room name.</string>
     <string name="hint_reset_email">Enter email</string>
     <string name="hint_reset_code">Enter code</string>
@@ -39,7 +40,8 @@
     <string name="title_weather">Weather</string>
     <string name="title_settings">Settings</string>
     <string name="title_missed_messages">Missed messages</string>
-    <string name="title_contact_requests">New contact requests</string>
+    <string name="title_contact_requests">Incoming Contact Requests</string>
+    <string name="title_outgoing_contact_requests">Outgoing Contact Requests</string>
     <string name="title_24hr_forecast">24-hour forecast</string>
     <string name="title_10day_forecast">7-day forecast</string>
     <string name="title_change_theme">Change Theme</string>
