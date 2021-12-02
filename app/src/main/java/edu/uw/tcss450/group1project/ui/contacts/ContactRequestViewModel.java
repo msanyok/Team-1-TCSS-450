@@ -1,5 +1,9 @@
-package edu.uw.tcss450.group1project.ui.contacts;
+/*
+ * TCSS450 Mobile Applications
+ * Fall 2021
+ */
 
+package edu.uw.tcss450.group1project.ui.contacts;
 
 import android.app.Application;
 import android.util.Log;
@@ -26,8 +30,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
-import edu.uw.tcss450.group1project.ui.contacts.Contact;
 
 /**
  * A view model class that stores information about Contact Requests received and accepted/declined

@@ -18,7 +18,7 @@ import java.util.List;
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentChatRoomCardBinding;
 
-
+// todo: this class to be refactoed to 'ChatRoomRecyclerAdapter'
 /**
  * ContactRecyclerAdapter provides an adapter for the ContactsFragment RecyclerView.
  *
@@ -115,6 +115,13 @@ public class MessagesRecyclerAdapter
         private void display() {
             mBinding.chatName.setText(mRoom.getChatName());
             mBinding.currentMessage.setText(mRoom.getMostRecentMessage());
+
+            // set the text on the chat if there are new messages in the chat
+            if (mRoom.getMissedMessageCount() > 0) {
+                // TODO: STYLE ROOM CARD FOR NEW MESSAGE
+                mBinding.participantImage.setImageAlpha(150);
+            }
+
         }
     }
 }

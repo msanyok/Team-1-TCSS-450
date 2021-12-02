@@ -32,6 +32,8 @@
     <string name="title_contacts">Contacts</string>
     <string name="title_contact_info">Contact Info</string>
     <string name="title_messages">Chat Rooms</string>
+    <string name="title_location_selection">Choose a New Location</string>
+    <string name="title_save_location">Add to saved locations</string>
     <string name="title_create_chat_room">Create a Chat Room</string>
     <string name="title_select_participants">Select participants</string>
     <string name="title_register">Register for TalkBox</string>
@@ -50,6 +52,8 @@
     <string name="title_code_comfirm">
         Enter the code sent to your email and choose a new password!</string>
     <string name="title_search_by">Search by:</string>
+    <string name="title_zip_search">Search by zip code</string>
+    <string name="title_pin_search">No zip code? Drop a pin!</string>
 
     <string name="message_verification_greeting">Hey! We sent you an email.</string>
     <string name="message_resend_code_instructions">Need a new code?</string>
@@ -72,4 +76,5 @@
         <item>Last Name</item>
         <item>Email</item>
     </string-array>
+    <string name="title_activity_maps">MapsActivity</string>
 </resources>
