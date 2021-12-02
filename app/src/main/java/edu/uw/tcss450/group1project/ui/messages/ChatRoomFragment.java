@@ -105,7 +105,7 @@ public class ChatRoomFragment extends Fragment {
         // holds.
         messagesRecyclerView.setAdapter(new ChatRecyclerViewAdapter(
                 mChatModel.getMessageListByChatId(mChatId),
-                mUserModel.getEmail()));
+                mUserModel.getNickname()));
 
         // moves the bottom of the chat recycler view up and down when the keyboard is open/closed
         // defaults to the bottom of the recycler view
@@ -146,7 +146,7 @@ public class ChatRoomFragment extends Fragment {
                     messagesRecyclerView.scrollToPosition(newScrollPosition);
                     binding.swipeContainer.setRefreshing(false);
 
-                    // set the scroll position to 0 to make sure new sent/recieved messages
+                    // set the scroll position to 0 to make sure new sent/received messages
                     // make the view go to the bottom
                     mScrollPosition = 0;
 

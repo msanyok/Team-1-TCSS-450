@@ -38,7 +38,7 @@ public class ChatRecyclerViewAdapter extends
     private final List<ChatMessage> mMessages;
 
     /**
-     * The unique identifier (currently email) that determines if
+     * The unique identifier (currently nickname) that determines if
      * a chat messages should be displayed as a sent or received message.
      */
     private final String mPersonalIdentifier;

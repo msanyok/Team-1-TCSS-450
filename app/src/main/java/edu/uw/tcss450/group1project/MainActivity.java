@@ -358,6 +358,7 @@ public class MainActivity extends ThemedActivity {
      * A helper method for sign-out function.
      */
     private void signOut() {
+        LocalStorageUtils.clearAllNewMessages(this);
         SharedPreferences prefs =
                 getSharedPreferences(
                         getString(R.string.signIn_keys_shared_prefs),
@@ -437,7 +438,7 @@ public class MainActivity extends ThemedActivity {
             }
             // todo: find a way to get the current chat ID so we can add notification
             //       when another chat has a message and we are in a different chat?
-            //       could do this by storing temp chatId in chatViewModle when ChatRoomFragment onCreate()
+            //       could do this by storing temp chatId in chatViewModel when ChatRoomFragment onCreate()
 
             //Inform the view model holding chatroom messages of the new
             //message.
