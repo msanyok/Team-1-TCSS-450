@@ -67,8 +67,7 @@ public final class ChatMessage implements Serializable {
         final JSONObject msg = new JSONObject(theMessageJson);
         return new ChatMessage(msg.getInt("messageid"),
                 msg.getString("message"),
-                msg.getString("email"),
-//                msg.getString("nickname"),  // todo: add this back in after merge
+                msg.getString("nickname"),  // todo: add this back in after merge
                 msg.getString("timestamp"));
     }
 
