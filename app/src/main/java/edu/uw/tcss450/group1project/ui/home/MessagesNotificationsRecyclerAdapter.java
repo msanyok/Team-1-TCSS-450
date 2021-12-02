@@ -5,9 +5,11 @@
 
 package edu.uw.tcss450.group1project.ui.home;
 
+import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.navigation.Navigation;
@@ -119,8 +121,7 @@ public class MessagesNotificationsRecyclerAdapter extends
             // TODO style the same as on chat list frag
             mBinding.chatName.setText(mRoom.getChatName());
             mBinding.currentMessage.setText(mRoom.getMostRecentMessage());
-            mBinding.participantImage.setImageAlpha(150);
-
+            mBinding.participantImage.setImageResource(R.drawable.ic_messages_black_24dp);
         }
     }
 }

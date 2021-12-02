@@ -118,8 +118,7 @@ public class MessagesRecyclerAdapter
 
             // set the text on the chat if there are new messages in the chat
             if (mRoom.getMissedMessageCount() > 0) {
-                // TODO: STYLE ROOM CARD FOR NEW MESSAGE
-                mBinding.participantImage.setImageAlpha(150);
+                mBinding.participantImage.setImageResource(R.drawable.ic_messages_black_24dp);
             }
 
         }
