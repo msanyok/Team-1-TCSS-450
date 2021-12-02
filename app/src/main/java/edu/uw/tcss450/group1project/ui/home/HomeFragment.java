@@ -36,6 +36,7 @@ import edu.uw.tcss450.group1project.model.WeatherDataViewModel;
 import edu.uw.tcss450.group1project.ui.messages.ChatRoom;
 import edu.uw.tcss450.group1project.ui.messages.ChatsListViewModel;
 import edu.uw.tcss450.group1project.ui.messages.MessagesRecyclerAdapter;
+import edu.uw.tcss450.group1project.ui.weather.LatLong;
 import edu.uw.tcss450.group1project.ui.weather.WeatherDataCurrent;
 import edu.uw.tcss450.group1project.utils.WeatherUtils;
 
@@ -79,18 +80,6 @@ public class HomeFragment extends Fragment {
         mUserModel = new ViewModelProvider(getActivity()).get(UserInfoViewModel.class);
         mChatListModel = new ViewModelProvider(getActivity()).get(ChatsListViewModel.class);
 
-
-//        LocationViewModel locModel =
-//                new ViewModelProvider(getActivity()).get(LocationViewModel.class);
-//        locModel.addLocationObserver(getViewLifecycleOwner(), (location) -> {
-//            if (location != null) {
-//                mWeatherModel.connectGet(
-//                        mUserModel.getJwt(), location.getLatitude(), location.getLongitude());
-//            }
-//        });
-//        Location currLoc = locModel.getCurrentLocation();
-//        mWeatherModel.connectGet(
-//                mUserModel.getJwt(), currLoc.getLatitude(), currLoc.getLongitude());
     }
 
 
@@ -107,9 +96,12 @@ public class HomeFragment extends Fragment {
         super.onViewCreated(theView, theSavedInstanceState);
         LocationViewModel locModel =
                 new ViewModelProvider(getActivity()).get(LocationViewModel.class);
-        locModel.addLocationObserver(getViewLifecycleOwner(), (location) -> {
+        locModel.addLocationObserver(getViewLifecycleOwner(), (loc) -> {
+            if (loc != null) {
                 mWeatherModel.connectGet(
-                        mUserModel.getJwt(), location.getLatitude(), location.getLongitude(), true);
+                        mUserModel.getJwt(),
+                        new LatLong(loc.getLatitude(), loc.getLongitude()).toString(), false);
+            }
         });
         UserInfoViewModel userInfo = new ViewModelProvider(this.getActivity())
                 .get(UserInfoViewModel.class);

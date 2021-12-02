@@ -30,7 +30,11 @@
     <fragment
         android:id="@+id/navigation_weather_parent"
         android:name="edu.uw.tcss450.group1project.ui.weather.WeatherParentFragment"
-        android:label="@string/title_weather" />
+        android:label="@string/title_weather" >
+        <action
+            android:id="@+id/action_navigation_weather_parent_to_navigation_weather_location_selection"
+            app:destination="@id/navigation_weather_location_selection" />
+    </fragment>
     <fragment
         android:id="@+id/navigation_settings"
         android:name="edu.uw.tcss450.group1project.ui.settings.SettingsFragment"
@@ -61,6 +65,25 @@
         android:id="@+id/navigation_contacts_parent"
         android:name="edu.uw.tcss450.group1project.ui.contacts.ContactsParentFragment"
         android:label="@string/title_contacts" />
+    <fragment
+        android:id="@+id/navigation_weather_location_selection"
+        android:name="edu.uw.tcss450.group1project.ui.weather.WeatherLocationSelectionFragment"
+        android:label="@string/title_location_selection"
+        tools:layout="@layout/fragment_weather_location_selection" >
+        <action
+            android:id="@+id/action_navigation_weather_location_selection_to_navigation_weather_teaser"
+            app:destination="@id/navigation_weather_teaser" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_weather_teaser"
+        android:name="edu.uw.tcss450.group1project.ui.weather.WeatherTeaserFragment"
+        android:label="{title_name}"
+        tools:layout="@layout/fragment_weather_teaser">
+        <argument
+            android:name="title_name"
+            app:argType="string" />
+    </fragment>
+
 
 
 </navigation>

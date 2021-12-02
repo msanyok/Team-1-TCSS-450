@@ -18,8 +18,10 @@ import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -67,7 +69,7 @@ public class MainActivity extends ThemedActivity {
     /**
      * The desired interval for location updates. Inexact. Updates may be more or less frequent.
      */
-    public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
+    public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 50000;
 
     /**
      * The fastest rate for active location updates. Exact. Updates will never be more frequent
@@ -154,6 +156,17 @@ public class MainActivity extends ThemedActivity {
         NavigationUI.setupActionBarWithNavController(
                 this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
+        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+            int id = destination.getId();
+            if (id == R.id.navigation_home ||
+                    id == R.id.navigation_contacts_parent ||
+                    id == R.id.navigation_messages ||
+                    id == R.id.navigation_weather_parent) {
+                navView.setVisibility(View.VISIBLE);
+            } else {
+                navView.setVisibility(View.GONE);
+            }
+        });
 
         // handles the destination changes that occur in the app and what
         // should happen when it occurs
@@ -204,16 +217,14 @@ public class MainActivity extends ThemedActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(final int requestCode,
+    public void onRequestPermissionsResult(final int theRequestCode,
                                            @NonNull final String[] thePermissions,
                                            @NonNull final int[] theGrantResults) {
-        super.onRequestPermissionsResult(requestCode, thePermissions, theGrantResults);
-        switch (requestCode) {
-            case MY_PERMISSIONS_LOCATIONS: {
-                if (theGrantResults.length > 0
-                        && theGrantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    requestLocation();
-                }
+        super.onRequestPermissionsResult(theRequestCode, thePermissions, theGrantResults);
+        if (theRequestCode == MY_PERMISSIONS_LOCATIONS) {
+            if (theGrantResults.length > 0
+                    && theGrantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                requestLocation();
             }
         }
     }
@@ -232,12 +243,9 @@ public class MainActivity extends ThemedActivity {
                     "User did NOT allow permission to request location!");
         } else {
             mFusedLocationClient.getLastLocation()
-                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                        @Override
-                        public void onSuccess(final Location theLoc) {
-                            if (theLoc != null) {
-                                mLocationModel.setLocation(theLoc);
-                            }
+                    .addOnSuccessListener(this, theLoc -> {
+                        if (theLoc != null) {
+                            mLocationModel.setLocation(theLoc);
                         }
                     });
         }
@@ -333,7 +341,7 @@ public class MainActivity extends ThemedActivity {
         }
         IntentFilter iFilter = new IntentFilter(PushReceiver.NEW_PUSHY_NOTIF);
         registerReceiver(mPushMessageReceiver, iFilter);
-        stopLocationUpdates();
+        startLocationUpdates();
 
     }
 
@@ -343,11 +351,11 @@ public class MainActivity extends ThemedActivity {
         if (mPushMessageReceiver != null){
             unregisterReceiver(mPushMessageReceiver);
         }
-        startLocationUpdates();
+        stopLocationUpdates();
     }
 
     /**
-     * A helper method for signout function.
+     * A helper method for sign-out function.
      */
     private void signOut() {
         SharedPreferences prefs =
@@ -441,7 +449,8 @@ public class MainActivity extends ThemedActivity {
          * @param theContext the context of the application
          * @param theIntent the Intent that stores the Pushy payload
          */
-        private void completeNewContactRequestActions(final Context theContext, final Intent theIntent) {
+        private void completeNewContactRequestActions(final Context theContext,
+                                                      final Intent theIntent) {
 
             // todo: need to implement on screen/off screen functionality with in app notifications
             Log.d("RECIEVE INTENT", "New Contact Request Actions");
@@ -469,7 +478,8 @@ public class MainActivity extends ThemedActivity {
          * @param theContext the context of the application
          * @param theIntent the Intent that stores the Pushy payload
          */
-        private void completeNewContactRequestResponseActions(final Context theContext, final Intent theIntent) {
+        private void completeNewContactRequestResponseActions(final Context theContext,
+                                                              final Intent theIntent) {
             // todo: need to implement on screen/off screen functionality with in app notifications
             Log.d("RECIEVE INTENT", "New Contact Request Response Actions");
 
@@ -503,7 +513,8 @@ public class MainActivity extends ThemedActivity {
          * @param theContext the context of the application
          * @param theIntent the Intent that stores the Pushy payload
          */
-        private void completeNewContactDeleteActions(final Context theContext, final Intent theIntent) {
+        private void completeNewContactDeleteActions(final Context theContext,
+                                                     final Intent theIntent) {
             Log.d("RECIEVE INTENT", "New Contact Delete Actions");
 
             mContactsViewModel.contactsConnect(mUserInfoModel.getJwt());
