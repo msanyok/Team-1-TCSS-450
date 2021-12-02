@@ -59,7 +59,7 @@ public class ContactRequestViewModel extends AndroidViewModel {
      * Creates a new ContactRequestViewModel that is tied to the given application.
      *
      * @param theApplication the Application this ViewModel belongs to
-     * @throws NullPointerException if theApplication is null
+     * @throws NullPointerException if theApplication is null throw a null pointer exception
      */
     public ContactRequestViewModel(@NonNull final Application theApplication) {
         super(Objects.requireNonNull(theApplication, "theApplication can not be null"));
@@ -73,22 +73,6 @@ public class ContactRequestViewModel extends AndroidViewModel {
         mRequestResponse.setValue(new JSONObject());
 
     }
-
-    /**
-     * Adds the given observer to the contact request live data.
-     *
-     * @param theOwner the lifecycle owner of the fragment that contains the observer
-     * @param theObserver the observer that is used when the response data changes state
-     * @throws NullPointerException if theOwner is null
-     * @throws NullPointerException if theObserver is null
-     */
-    public void addRequestObserver(@NonNull final LifecycleOwner theOwner,
-                                   @NonNull final Observer<? super JSONObject> theObserver) {
-        Objects.requireNonNull(theOwner, "theOwner can not be null");
-        Objects.requireNonNull(theObserver, "theObserver can not be null");
-        mContactRequestResponse.observe(theOwner, theObserver);
-    }
-
 
     /**
      * Adds the given observer to the contact request response live data.

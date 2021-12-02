@@ -134,7 +134,6 @@ public class ContactsFragment extends Fragment {
      * Else, sets an error text on the nickname field that requests they enter a valid nickname.
      */
     private void verifyNameWithServer() {
-
         mContactsModel.requestConnect(
                 mBinding.addContactText.getText().toString(), mUserInfo.getJwt());
     }
@@ -202,6 +201,12 @@ public class ContactsFragment extends Fragment {
         }
     }
 
+    /**
+     * Observes the HTTP Response from the web server. If an error occurred, notify the user
+     * accordingly. If it was a success, delete contacts from recycler view
+     *
+     * @param theResponse the Response from the server
+     */
     private void observeDeleteResponse(final JSONObject theResponse) {
         if (theResponse.has("code")) {
             Log.e("Contact List Error", theResponse.toString());
