@@ -358,6 +358,7 @@ public class MainActivity extends ThemedActivity {
      * A helper method for sign-out function.
      */
     private void signOut() {
+        LocalStorageUtils.clearAllNewMessages(this);
         SharedPreferences prefs =
                 getSharedPreferences(
                         getString(R.string.signIn_keys_shared_prefs),
@@ -419,28 +420,22 @@ public class MainActivity extends ThemedActivity {
          */
         private void completeNewMessageActions(final Context theContext, final Intent theIntent) {
 
-            NavController navController =
-                Navigation.findNavController(
-                        MainActivity.this, R.id.nav_host_fragment);
-            NavDestination navDestination = navController.getCurrentDestination();
-
             ChatMessage chatMessage =
                     (ChatMessage) theIntent.getSerializableExtra("chatMessage");
 
-            // If the user is not on the chat screen, update the
-            // NewMessageCountView Model
-            if (navDestination.getId() != R.id.navigation_chat_room) {
-                // notify the new message view model that there is a new message
-                int chatId = theIntent.getIntExtra("chatid", -1);
-                mNewMessageModel.increment(chatId);
-                mChatListViewModel.getChatListData(mUserInfoModel.getJwt());
-            }
-            // todo: find a way to get the current chat ID so we can add notification
-            //       when another chat has a message and we are in a different chat?
-            //       could do this by storing temp chatId in chatViewModle when ChatRoomFragment onCreate()
+            // We will always update the new message view model because we
+            // want to receive messages from other chats even if we are on
+            // the chat fragment for a different chat.
+            // Thus, we ensure to DELETE the added new message in the new message observer
+            // inside the chat fragment. This will occur as a result of
+            // calling addMessage on the chat message view model.
 
-            //Inform the view model holding chatroom messages of the new
-            //message.
+            int chatId = theIntent.getIntExtra("chatid", -1);
+            mNewMessageModel.increment(chatId);
+            mChatListViewModel.getChatListData(mUserInfoModel.getJwt());
+
+            // Inform the view model holding chatroom messages of the new
+            // message.
             mChatMessageViewModel.addMessage(theIntent.getIntExtra("chatid", -1), chatMessage);
 
         }

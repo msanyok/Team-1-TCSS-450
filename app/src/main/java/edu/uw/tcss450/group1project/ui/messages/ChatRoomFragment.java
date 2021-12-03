@@ -6,6 +6,7 @@
 package edu.uw.tcss450.group1project.ui.messages;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import edu.uw.tcss450.group1project.R;
@@ -42,6 +44,15 @@ public class ChatRoomFragment extends Fragment {
 
     /** The unique ChatId for this particular chat */
     private int mChatId;
+
+    /** The position the recycler view should be in */
+    private int mScrollPosition;
+
+    /**
+     * The number of messages that are in the recycler view before a refresh, sent,
+     *  or received message.
+     */
+    private int mPreviousMessageCount;
 
     @Override
     public void onCreate(@Nullable final Bundle theSavedInstanceState) {
@@ -94,27 +105,59 @@ public class ChatRoomFragment extends Fragment {
         // holds.
         messagesRecyclerView.setAdapter(new ChatRecyclerViewAdapter(
                 mChatModel.getMessageListByChatId(mChatId),
-                mUserModel.getEmail()));
+                mUserModel.getNickname()));
 
-        //When the user scrolls to the top of the RV, the swiper list will "refresh"
-        //The user is out of messages, go out to the service and get more
+        // moves the bottom of the chat recycler view up and down when the keyboard is open/closed
+        // defaults to the bottom of the recycler view
+        messagesRecyclerView.addOnLayoutChangeListener((view, left, top, right, bottom, oldLeft,
+                                                        oldTop, oldRight, oldBottom) -> {
+            messagesRecyclerView.scrollToPosition(messagesRecyclerView.getAdapter().getItemCount() - 1);
+        });
+
+        // When the user scrolls to the top of the RV, the swiper list will "refresh"
+        // The user is out of messages, go out to the service and get more
         binding.swipeContainer.setOnRefreshListener(() -> {
+            // set the scroll position so we can maintain our location
+            // with the loaded old messages at the top of the screen.
+            mScrollPosition = 25;
+
+            mPreviousMessageCount = messagesRecyclerView.getAdapter().getItemCount();
             mChatModel.getNextMessages(mChatId, mUserModel.getJwt());
         });
 
+        // fires when a new message attempts to be added. Can occur when a message is sent,
+        // received, or the swipe container is invoked.
         mChatModel.addMessageObserver(mChatId, getViewLifecycleOwner(),
                 list -> {
-                    /* TODO
-                     * This solution needs work on the scroll position. As a group,
-                     * you will need to come up with some solution to manage the
-                     * recyclerview scroll position. You also should consider a
-                     * solution for when the keyboard is on the screen.
-                     */
-                    //inform the RV that the underlying list has (possibly) changed
+                    // we only update the position if the message count changed. We check this
+                    // because we don't want to move anything if we are at the top of
+                    // the message history
+                    int newScrollPosition;
+                    if (mPreviousMessageCount != messagesRecyclerView.getAdapter().getItemCount()) {
+                        // there are new messages, either from a sent, recieved, or
+                        newScrollPosition = mScrollPosition != 0 ? mScrollPosition :
+                                messagesRecyclerView.getAdapter().getItemCount() - 1;
+                    } else {
+                        newScrollPosition = 0;
+                    }
+
                     messagesRecyclerView.getAdapter().notifyDataSetChanged();
-                    messagesRecyclerView.scrollToPosition(
-                            messagesRecyclerView.getAdapter().getItemCount() - 1);
+                    messagesRecyclerView.scrollToPosition(newScrollPosition);
                     binding.swipeContainer.setRefreshing(false);
+
+                    // set the scroll position to 0 to make sure new sent/received messages
+                    // make the view go to the bottom
+                    mScrollPosition = 0;
+
+                    // We allow both view model and local message stores of new chats
+                    // while the app is running. We do so because we want to make
+                    // sure the notification data stays if the user exits the app or get a
+                    // notification from a different chat.
+                    // As a result, when new messages come in for this particular chat
+                    // we must make sure to delete these.
+                    LocalStorageUtils.removeNewMessageStore(this.getContext(), mChatId);
+                    new ViewModelProvider(this.getActivity()).
+                            get(NewMessageCountViewModel.class).clearNewMessages(mChatId);
                 });
 
         //Send button was clicked. Send the message via the SendViewModel
@@ -122,6 +165,8 @@ public class ChatRoomFragment extends Fragment {
             mSendModel.sendMessage(mChatId,
                     mUserModel.getJwt(),
                     binding.editMessage.getText().toString());
+
+
         });
 
         // when we get the response back from the server, clear the edit text

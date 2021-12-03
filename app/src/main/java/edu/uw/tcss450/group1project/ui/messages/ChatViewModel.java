@@ -213,7 +213,7 @@ public class ChatViewModel extends AndroidViewModel {
                 ChatMessage cMessage = new ChatMessage(
                         message.getInt("messageid"),
                         message.getString("message"),
-                        message.getString("email"),
+                        message.getString("nickname"),
                         message.getString("timestamp")
                 );
                 if (!list.contains(cMessage)) {
