@@ -148,7 +148,7 @@ public class WeatherParentFragment extends Fragment {
         WeatherFragmentAdapter adapter = new WeatherFragmentAdapter(
                 getChildFragmentManager(), getLifecycle(), frags);
         viewPager.setAdapter(adapter);
-        viewPager.setOffscreenPageLimit(10);
+        viewPager.setOffscreenPageLimit(5);
         viewPager.setCurrentItem(mViewIndex, true);
         new TabLayoutMediator(tabs, viewPager, (tab, position) -> {}).attach();
         viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
