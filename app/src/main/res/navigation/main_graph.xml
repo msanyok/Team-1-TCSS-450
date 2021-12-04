@@ -30,7 +30,11 @@
     <fragment
         android:id="@+id/navigation_settings"
         android:name="edu.uw.tcss450.group1project.ui.settings.SettingsFragment"
-        android:label="@string/title_settings" />
+        android:label="@string/title_settings" >
+        <action
+            android:id="@+id/action_navigation_settings_to_navigation_password_reset"
+            app:destination="@id/navigation_password_change" />
+    </fragment>
     <fragment
         android:id="@+id/navigation_create_chat_room"
         android:name="edu.uw.tcss450.group1project.ui.messages.CreateChatRoomFragment"
@@ -57,6 +61,17 @@
         android:id="@+id/navigation_contacts_parent"
         android:name="edu.uw.tcss450.group1project.ui.contacts.ContactsParentFragment"
         android:label="@string/title_contacts" />
+    <fragment
+        android:id="@+id/navigation_password_change"
+        android:name="edu.uw.tcss450.group1project.ui.settings.ChangePasswordFragment"
+        android:label="@string/title_change_password"
+        tools:layout="@layout/fragment_password_change">
+        <action
+            android:id="@+id/action_navigation_password_reset_to_navigation_settings"
+            app:destination="@id/navigation_settings"
+            app:popUpTo="@id/navigation_settings"
+            app:popUpToInclusive="true" />
+    </fragment>
 
 
 </navigation>
