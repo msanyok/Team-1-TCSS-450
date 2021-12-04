@@ -41,6 +41,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import edu.uw.tcss450.group1project.services.TypingTimeout;
 import edu.uw.tcss450.group1project.ui.contacts.ContactRequestViewModel;
 import edu.uw.tcss450.group1project.model.LocalStorageUtils;
 import edu.uw.tcss450.group1project.model.LocationViewModel;
@@ -334,6 +335,7 @@ public class MainActivity extends ThemedActivity {
     Log.e("", "ON RESUME");
         // get the notifications that occurred while the app was not in the foreground
         mNewMessageModel.putData(LocalStorageUtils.getMissedMessages(this));
+        TypingTimeout.timeout();
 
 
         if (mPushMessageReceiver == null) {

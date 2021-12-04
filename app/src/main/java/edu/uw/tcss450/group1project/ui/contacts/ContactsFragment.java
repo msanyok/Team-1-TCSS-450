@@ -7,7 +7,9 @@ package edu.uw.tcss450.group1project.ui.contacts;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.Html;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +28,10 @@ import androidx.lifecycle.ViewModelProvider;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
 
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentContactsBinding;
@@ -54,6 +60,8 @@ public class ContactsFragment extends Fragment {
 
     /** The user info view model */
     private UserInfoViewModel mUserInfo;
+
+    private TextWatcher mTextWatcher;
 
     /**
      * Empty public constructor. Does not provide any functionality.
@@ -84,18 +92,94 @@ public class ContactsFragment extends Fragment {
         super.onViewCreated(theView, theSavedInstanceState);
         mContactsModel.addContactListObserver(getViewLifecycleOwner(),
                 this::observeContactResponse);
-        mBinding.contactRequestButton.setOnClickListener(this::requestToBeSent);
-        mContactsModel.addContactRequestObserver(getViewLifecycleOwner(),
-                this::observeResponse);
+//        mBinding.contactRequestButton.setOnClickListener(this::requestToBeSent);
+//        mContactsModel.addContactRequestObserver(getViewLifecycleOwner(),
+//                this::observeResponse);
         mContactsModel.addContactDeleteObserver(getViewLifecycleOwner(),
                 this::observeDeleteResponse);
         mContactsModel.contactsConnect(mUserInfo.getJwt());
 
         Spinner spinner = (Spinner) getView().findViewById(R.id.contact_search_spinner);
+
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.contact_search_array, R.layout.fragment_contacts_spinner);
         adapter.setDropDownViewResource(R.layout.fragment_contacts_spinner_dropdown);
+
+
         spinner.setAdapter(adapter);
+
+        // save instance of this class so we can use it inside
+        final ContactsFragment thisFragment = this;
+        mTextWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                // not used
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                // not used
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence theString, int theStartIndex,
+                                      int theBefore, int count) {
+
+                final String identifierType = spinner.getSelectedItem().toString();
+                final String firstChars = theString.toString().toLowerCase();
+
+                if (!identifierType.equals("Email")) {
+                    // we only want to filter contacts if it is based the nickname,
+                    // first name, or last name
+                    final List<Contact> originalList = mContactsModel.getContactList();
+                    final List<Contact> newList =
+                            originalList.stream().filter((contact) -> {
+
+                                String identifier = "";
+                                if (identifierType.equals("Nickname")) {
+                                    identifier = contact.getNickname();
+                                } else if (identifierType.equals("First Name")) {
+                                    identifier = contact.getFirst();
+                                } else if (identifierType.equals("Last Name")) {
+                                    identifier = contact.getLast();
+                                }
+                                identifier = identifier.toLowerCase(Locale.ROOT);
+
+
+                                return identifier.startsWith(firstChars);
+                            }).collect(Collectors.toList());
+
+
+                    mBinding.contactList.setAdapter(new ContactsRecyclerAdapter(newList,
+                            thisFragment::showContactDeleteAlertDialog));
+                }
+            }
+        };
+
+        // add the change listener that will filter contacts
+        // when the state of the text field changes
+        mBinding.addContactText.addTextChangedListener(mTextWatcher);
+
+        // add actions that occur when the user changes the type of filtering
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView,
+                                       int position, long id) {
+                // the user just changed the type of identifier the user wants to use
+                // to filter contacts, so tell the text listener to refilter.
+                mTextWatcher.onTextChanged(mBinding.addContactText.getText().toString(),
+                        0, 0, 0);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // unused
+            }
+
+        });
+
     }
 
     /**
@@ -189,7 +273,7 @@ public class ContactsFragment extends Fragment {
                 Log.e("Contact List Error", theResponse.toString());
                 // TODO: Handle UI change when the chat list is not received properly?
             } else {
-                mBinding.listRoot.setAdapter(new ContactsRecyclerAdapter(
+                mBinding.contactList.setAdapter(new ContactsRecyclerAdapter(
                         mContactsModel.getContactList(), this::showContactDeleteAlertDialog));
                 mContactsModel.removeData();
                 mBinding.addContactText.setError(null);

@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="?attr/dropdownListPreferredItemHeight"
     style="?attr/spinnerDropDownItemStyle"
-    android:background="@drawable/spinner_dropdown"
     android:textSize="16sp"
     android:textColor="?buttonTextColor">
 </TextView>
