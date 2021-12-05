@@ -7,6 +7,7 @@ package edu.uw.tcss450.group1project.ui.messages;
 
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -107,17 +108,24 @@ public class ChatRecyclerViewAdapter extends
          * @param theMessage
          */
         void setMessage(final ChatMessage theMessage) {
-
             final Resources res = mView.getContext().getResources();
             final MaterialCardView card = mBinding.cardRoot;
 
-            int[] attr = {R.attr.cardColor,
-                    R.attr.colorAccent, R.attr.cardTextColor, R.attr.buttonTextColor};
+            int[] attr = {
+                    R.attr.cardColor,
+                    R.attr.colorAccent,
+                    R.attr.cardTextColor,
+                    R.attr.buttonTextColor,
+                    R.attr.background,
+                    R.attr.adminTextColor
+            };
             TypedArray typedArray = mView.getContext().obtainStyledAttributes(attr);
             int sendCardColor = typedArray.getResourceId(0, R.color.white);
             int receiveCardColor = typedArray.getResourceId(1, R.color.white);
             int sendTextColor = typedArray.getResourceId(2, R.color.black);
             int receiveTextColor = typedArray.getResourceId(3, R.color.black);
+            int backgroundColor = typedArray.getResourceId(4, R.color.white);
+            int adminTextColor = typedArray.getResourceId(5, R.color.white);
             typedArray.recycle();
 
             int standard = (int) res.getDimension(R.dimen.chat_margin);
@@ -128,7 +136,7 @@ public class ChatRecyclerViewAdapter extends
                 mBinding.textMessage.setText(theMessage.getMessage());
                 ViewGroup.MarginLayoutParams layoutParams =
                         (ViewGroup.MarginLayoutParams) card.getLayoutParams();
-                //Set the left margin
+                // Set the left margin
                 layoutParams.setMargins(extended, standard, standard, standard);
                 // Set this View to the right (end) side
                 ((FrameLayout.LayoutParams) card.getLayoutParams()).gravity =
@@ -141,6 +149,27 @@ public class ChatRecyclerViewAdapter extends
 
                 card.requestLayout();
 
+            } else if (theMessage.getSender().equals("TalkBox Admin")) {
+                Log.d("ADMIN", "ADMIN");
+                // This message is from the admin. Format it as such
+                mBinding.textMessage.setText(theMessage.getMessage());
+                ViewGroup.MarginLayoutParams layoutParams =
+                        (ViewGroup.MarginLayoutParams) card.getLayoutParams();
+
+                // Set the right margin
+                layoutParams.setMargins(standard, standard, standard, standard);
+                // Set this View to the middle
+                ((FrameLayout.LayoutParams) card.getLayoutParams()).gravity =
+                        Gravity.CENTER;
+
+                card.setCardBackgroundColor(
+                        ColorUtils.setAlphaComponent(
+                                res.getColor(backgroundColor, null),255));
+
+                mBinding.textMessage.setTextColor(
+                        res.getColor(adminTextColor, null));
+
+                card.requestLayout();
             } else {
 
                 //This message is from another user. Format it as such
@@ -160,7 +189,7 @@ public class ChatRecyclerViewAdapter extends
                                 res.getColor(receiveCardColor, null),255));
 
                 mBinding.textMessage.setTextColor(
-                        res.getColor(receiveTextColor, null)); // todo: set color properly
+                        res.getColor(receiveTextColor, null));
 
                 card.requestLayout();
             }
