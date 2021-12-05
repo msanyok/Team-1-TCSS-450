@@ -55,12 +55,10 @@ public class ContactsFragment extends Fragment {
     /** ViewModel for contacts */
     private ContactsViewModel mContactsModel;
 
-    /** ViewModel for contacts */
-    private ContactsViewModel mContactDeleteModel;
-
     /** The user info view model */
     private UserInfoViewModel mUserInfo;
 
+    /** The TextWatcher that filters the contacts list */
     private TextWatcher mTextWatcher;
 
     /**
@@ -132,32 +130,26 @@ public class ContactsFragment extends Fragment {
                 final String identifierType = spinner.getSelectedItem().toString();
                 final String firstChars = theEnteredText.toString().toLowerCase();
 
-                // we only want to filter contacts if it is based the nickname,
-                // first name, or last name
-                if (!identifierType.equals("Email")) {
+                final List<Contact> originalList = mContactsModel.getContactList();
+                final List<Contact> newList =
+                        originalList.stream().filter((contact) -> {
 
-                    final List<Contact> originalList = mContactsModel.getContactList();
-                    final List<Contact> newList =
-                            originalList.stream().filter((contact) -> {
-
-                                String identifier = "";
-                                if (identifierType.equals("Nickname")) {
-                                    identifier = contact.getNickname();
-                                } else if (identifierType.equals("First Name")) {
-                                    identifier = contact.getFirst();
-                                } else if (identifierType.equals("Last Name")) {
-                                    identifier = contact.getLast();
-                                }
-                                identifier = identifier.toLowerCase(Locale.ROOT);
+                            String identifier = "";
+                            if (identifierType.equals("Nickname")) {
+                                identifier = contact.getNickname();
+                            } else if (identifierType.equals("First Name")) {
+                                identifier = contact.getFirst();
+                            } else if (identifierType.equals("Last Name")) {
+                                identifier = contact.getLast();
+                            }
+                            identifier = identifier.toLowerCase(Locale.ROOT);
 
 
-                                return identifier.startsWith(firstChars);
-                            }).collect(Collectors.toList());
+                            return identifier.startsWith(firstChars);
+                        }).collect(Collectors.toList());
 
-
-                    mBinding.contactList.setAdapter(new ContactsRecyclerAdapter(newList,
-                            thisFragment::showContactDeleteAlertDialog));
-                }
+                mBinding.contactList.setAdapter(new ContactsRecyclerAdapter(newList,
+                        thisFragment::showContactDeleteAlertDialog));
             }
         };
 
@@ -172,7 +164,7 @@ public class ContactsFragment extends Fragment {
             public void onItemSelected(final AdapterView<?> theParentView,
                                        final View theSelectedItemView,
                                        final int thePosition,
-                                       long theId) {
+                                       final long theId) {
                 // the user just changed the type of identifier the user wants to use
                 // to filter contacts, so tell the text listener to refilter.
                 mTextWatcher.onTextChanged(mBinding.addContactText.getText().toString(),
@@ -186,7 +178,10 @@ public class ContactsFragment extends Fragment {
 
         });
 
+
     }
+
+
 
     /**
      * Observes the HTTP Response from the web server. If an error occurred, notify the user
@@ -205,6 +200,8 @@ public class ContactsFragment extends Fragment {
                         mContactsModel.getContactList(), this::showContactDeleteAlertDialog));
                 mContactsModel.removeData();
                 mBinding.addContactText.setError(null);
+                mTextWatcher.onTextChanged(mBinding.addContactText.getText().toString(),
+                        0, 0, 0);
             }
         } else {
             // no response from the request

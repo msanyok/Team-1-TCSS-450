@@ -74,7 +74,6 @@
         <item>Nickname</item>
         <item>First Name</item>
         <item>Last Name</item>
-        <item>Email</item>
     </string-array>
     <string name="title_activity_maps">MapsActivity</string>
 

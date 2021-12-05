@@ -150,8 +150,8 @@ public class ChatRecyclerViewAdapter extends
 
                 card.requestLayout();
 
-            } else if (theMessage.getSender().equals(R.string.admin_nickname)) {
-                Log.e("ADMIN", "ADMIN");
+            } else if (theMessage.getSender().equals("TalkBox Admin")) {
+
                 // This message is from the admin. Format it as such
                 mBinding.textMessage.setText(theMessage.getMessage());
                 ViewGroup.MarginLayoutParams layoutParams =
