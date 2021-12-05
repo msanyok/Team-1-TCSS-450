@@ -132,10 +132,11 @@ public class ChatRecyclerViewAdapter extends
             int extended = (int) res.getDimension(R.dimen.chat_margin_sided);
 
             if (mPersonalIdentifier.equals(theMessage.getSender())) {
-                //This message is from the user. Format it as such
+                // This message is from the user. Format it as such
                 mBinding.textMessage.setText(theMessage.getMessage());
                 ViewGroup.MarginLayoutParams layoutParams =
                         (ViewGroup.MarginLayoutParams) card.getLayoutParams();
+
                 // Set the left margin
                 layoutParams.setMargins(extended, standard, standard, standard);
                 // Set this View to the right (end) side
@@ -162,7 +163,6 @@ public class ChatRecyclerViewAdapter extends
                 ((FrameLayout.LayoutParams) card.getLayoutParams()).gravity =
                         Gravity.CENTER;
 
-//                card.setTextAlignment();
                 mBinding.textMessage.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
                 card.setCardBackgroundColor(
@@ -175,13 +175,13 @@ public class ChatRecyclerViewAdapter extends
                 card.requestLayout();
             } else {
 
-                //This message is from another user. Format it as such
+                // This message is from another user. Format it as such
                 mBinding.textMessage.setText(theMessage.getSender() +
                         ": " + theMessage.getMessage());
                 ViewGroup.MarginLayoutParams layoutParams =
                         (ViewGroup.MarginLayoutParams) card.getLayoutParams();
 
-                //Set the right margin
+                // Set the right margin
                 layoutParams.setMargins(standard, standard, extended, standard);
                 // Set this View to the left (start) side
                 ((FrameLayout.LayoutParams) card.getLayoutParams()).gravity =

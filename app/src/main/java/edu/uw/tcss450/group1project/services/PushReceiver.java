@@ -108,7 +108,6 @@ public class PushReceiver extends BroadcastReceiver {
             //Web service sent us something unexpected...I can't deal with this.
             throw new IllegalStateException("Error from Web Service. Contact Dev Support");
         }
-Log.e("IN NEW MESSAGE", message.getSender());
 
         // get tools to check if the user is in the app or not
         ActivityManager.RunningAppProcessInfo appProcessInfo =
