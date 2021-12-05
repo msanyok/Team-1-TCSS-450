@@ -77,4 +77,7 @@
         <item>Email</item>
     </string-array>
     <string name="title_activity_maps">MapsActivity</string>
+
+
+    <string name="admin_nickname">TalkBox Admin</string>
 </resources>

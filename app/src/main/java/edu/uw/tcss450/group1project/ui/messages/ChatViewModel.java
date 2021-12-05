@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.io.RequestQueueSingleton;
 
 /**
@@ -178,8 +179,6 @@ public class ChatViewModel extends AndroidViewModel {
         //Instantiate the RequestQueue and add the request to the queue
         RequestQueueSingleton.getInstance(getApplication().getApplicationContext())
                 .addToRequestQueue(request);
-
-        //code here will run
     }
 
     /**
@@ -190,9 +189,15 @@ public class ChatViewModel extends AndroidViewModel {
      * @param theMessage the message to be added
      */
     public void addMessage(final int theChatId, final ChatMessage theMessage) {
-        List<ChatMessage> list = getMessageListByChatId(theChatId);
-        list.add(theMessage);
-        getOrCreateMapEntry(theChatId).setValue(list);
+        final List<ChatMessage> list = getMessageListByChatId(theChatId);
+
+        // there are some instances where a message may be added to the message list due
+        // to navigation BEFORE a pushy notification makes it to the app.
+        // In those cases, we should prevent that message from happening twice
+        if (list.size() > 0 && theMessage.getMessageId() != list.get(list.size() - 1).getMessageId()) {
+            list.add(theMessage);
+            getOrCreateMapEntry(theChatId).setValue(list);
+        }
     }
 
     /**

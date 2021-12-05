@@ -150,7 +150,7 @@ public class ChatRecyclerViewAdapter extends
                 card.requestLayout();
 
             } else if (theMessage.getSender().equals("TalkBox Admin")) {
-                Log.d("ADMIN", "ADMIN");
+                Log.e("ADMIN", "ADMIN");
                 // This message is from the admin. Format it as such
                 mBinding.textMessage.setText(theMessage.getMessage());
                 ViewGroup.MarginLayoutParams layoutParams =
@@ -161,6 +161,9 @@ public class ChatRecyclerViewAdapter extends
                 // Set this View to the middle
                 ((FrameLayout.LayoutParams) card.getLayoutParams()).gravity =
                         Gravity.CENTER;
+
+//                card.setTextAlignment();
+                mBinding.textMessage.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
                 card.setCardBackgroundColor(
                         ColorUtils.setAlphaComponent(

@@ -439,7 +439,6 @@ public class MainActivity extends ThemedActivity {
             // Inform the view model holding chatroom messages of the new
             // message.
             mChatMessageViewModel.addMessage(theIntent.getIntExtra("chatid", -1), chatMessage);
-
         }
 
         /**
