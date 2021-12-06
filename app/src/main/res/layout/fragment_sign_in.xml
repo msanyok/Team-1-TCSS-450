@@ -104,7 +104,7 @@
         </androidx.appcompat.widget.SwitchCompat>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-    
+
     <Button
         android:id="@+id/button_reset_password"
         android:layout_width="wrap_content"

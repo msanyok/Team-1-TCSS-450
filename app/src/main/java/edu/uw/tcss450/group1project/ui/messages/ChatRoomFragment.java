@@ -109,15 +109,17 @@ public class ChatRoomFragment extends Fragment {
 
         // Set the Adapter to hold a reference to the list FOR THIS chat ID that the ViewModel
         // holds.
-        messagesRecyclerView.setAdapter(new ChatRecyclerViewAdapter(
+        ChatRecyclerViewAdapter adapter = new ChatRecyclerViewAdapter(
                 mChatModel.getMessageListByChatId(mChatId),
-                mUserModel.getNickname()));
+                mUserModel.getNickname());
+        messagesRecyclerView.setAdapter(adapter);
 
         // moves the bottom of the chat recycler view up and down when the keyboard is open/closed
         // defaults to the bottom of the recycler view
         messagesRecyclerView.addOnLayoutChangeListener((view, left, top, right, bottom, oldLeft,
                                                         oldTop, oldRight, oldBottom) -> {
-            messagesRecyclerView.scrollToPosition(messagesRecyclerView.getAdapter().getItemCount() - 1);
+            messagesRecyclerView.scrollToPosition(
+                    messagesRecyclerView.getAdapter().getItemCount() - 1);
         });
 
         // When the user scrolls to the top of the RV, the swiper list will "refresh"
@@ -146,7 +148,7 @@ public class ChatRoomFragment extends Fragment {
                     } else {
                         newScrollPosition = 0;
                     }
-
+                    adapter.constructCornerMapping();
                     messagesRecyclerView.getAdapter().notifyDataSetChanged();
                     messagesRecyclerView.scrollToPosition(newScrollPosition);
                     binding.swipeContainer.setRefreshing(false);

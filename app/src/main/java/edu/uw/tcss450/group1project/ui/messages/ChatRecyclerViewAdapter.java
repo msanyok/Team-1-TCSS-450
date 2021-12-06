@@ -7,6 +7,7 @@ package edu.uw.tcss450.group1project.ui.messages;
 
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,12 +15,17 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.ColorUtils;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.shape.CornerFamily;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentChatMessageBinding;
@@ -43,6 +49,8 @@ public class ChatRecyclerViewAdapter extends
      */
     private final String mPersonalIdentifier;
 
+    private Map<Integer, int[]> mCornerMap;
+
     /**
      * Creates a new ChatRecyclerViewAdapter that shows the given messages for a particular chat.
      * The account's (email) thePersonalIdentifier is
@@ -55,6 +63,61 @@ public class ChatRecyclerViewAdapter extends
                                    final String thePersonalIdentifier) {
         this.mMessages = theMessages;
         mPersonalIdentifier = thePersonalIdentifier;
+        mCornerMap = new HashMap<>();
+        System.out.println("constructor call");
+        constructCornerMapping();
+    }
+
+    public void constructCornerMapping() {
+        System.out.println("called");
+        for (int i = 0; i < mMessages.size(); i++) {
+            ChatMessage message = mMessages.get(i);
+            int[] dimensions = new int[4];
+
+            // top corners first
+            if (i == 0) {
+                dimensions[0] = 15;
+                dimensions[1] = 15;
+            } else {
+                String currSender = message.getSender();
+                String prevSender = mMessages.get(i - 1).getSender();
+                if (((currSender.equals(mPersonalIdentifier) &&
+                        prevSender.equals(mPersonalIdentifier)) ||
+                        (!currSender.equals(mPersonalIdentifier) &&
+                                !prevSender.equals(mPersonalIdentifier))) &&
+                        !prevSender.equals("TalkBox Admin")) {
+                    dimensions[0] = 0;
+                    dimensions[1] = 0;
+                } else {
+                    dimensions[0] = 15;
+                    dimensions[1] = 15;
+                }
+            }
+
+            // bottom corners
+            if (i == mMessages.size() - 1) {
+                dimensions[2] = 15;
+                dimensions[3] = 15;
+            } else {
+                String currSender = message.getSender();
+                String nextSender = mMessages.get(i + 1).getSender();
+                if (((currSender.equals(mPersonalIdentifier) &&
+                        nextSender.equals(mPersonalIdentifier)) ||
+                        (!currSender.equals(mPersonalIdentifier) &&
+                                !nextSender.equals(mPersonalIdentifier))) &&
+                        !nextSender.equals("TalkBox Admin")) {
+                    dimensions[2] = 0;
+                    dimensions[3] = 0;
+                } else {
+                    dimensions[2] = 15;
+                    dimensions[3] = 15;
+                }
+            }
+
+            mCornerMap.put(message.getMessageId(), dimensions);
+        }
+        System.out.println("DONE");
+        System.out.println(mCornerMap.size());
     }
 
     @NonNull
@@ -70,6 +133,7 @@ public class ChatRecyclerViewAdapter extends
     public void onBindViewHolder(@NonNull final MessageViewHolder theHolder,
                                  final int thePosition) {
         theHolder.setMessage(mMessages.get(thePosition));
+//        System.out.println("Position: " + thePosition + " , Message : " + mMessages.get(thePosition).getMessage());
     }
 
     @Override
@@ -91,6 +155,8 @@ public class ChatRecyclerViewAdapter extends
         /** The View Binding the the chat message card */
         private FragmentChatMessageBinding mBinding;
 
+        private ChatMessage mChatMessage;
+
         /**
          * Creates a new View Holder
          *
@@ -107,9 +173,77 @@ public class ChatRecyclerViewAdapter extends
          * @param theMessage
          */
         void setMessage(final ChatMessage theMessage) {
-
+            mChatMessage = theMessage;
             final Resources res = mView.getContext().getResources();
             final MaterialCardView card = mBinding.cardRoot;
+
+            System.out.println("setting message #" + getAdapterPosition());
+
+//            System.out.println("Position " + thePos + " MESSAGE SET: " + mViewHolderMap.get(thePos));
+//            if (mViewHolderMap.containsKey(thePos - 1)) {
+//                System.out.println("Next = " + (thePos - 1) + " : " +  mViewHolderMap.get(thePos - 1));
+//            }
+//            if (mViewHolderMap.containsKey(thePos + 1)) {
+//                System.out.println("Previous = " + (thePos + 1) + " : " +  mViewHolderMap.get(thePos + 1));
+//            }
+
+//            if (mViewHolderMap.containsKey(thePos + 1)) {
+//                MessageViewHolder nextHolder = mViewHolderMap.get(thePos + 1);
+//                MaterialCardView nextCard = nextHolder.mBinding.cardRoot;
+//                boolean nextIsUser = mMessages.get(thePos + 1).getSender().equals(mPersonalIdentifier);
+//                boolean currIsUser = mChatMessage.getSender().equals(mPersonalIdentifier);
+//
+//                if (currIsUser && nextIsUser) {
+////                    System.out.println("my index: " + thePos);
+////                    System.out.println("my message: " + mChatMessage.getMessage());
+//                    card.setShapeAppearanceModel(
+//                            card.getShapeAppearanceModel()
+//                            .toBuilder()
+////                            .setTopLeftCornerSize(0)
+////                            .setTopRightCornerSize(0)
+//                            .setBottomLeftCornerSize(0)
+//                            .setBottomRightCornerSize(0)
+//                            .build()
+//                    );
+//                    nextCard.setShapeAppearanceModel(
+//                            nextCard.getShapeAppearanceModel()
+//                            .toBuilder()
+//                            .setTopLeftCornerSize(0)
+//                            .setTopRightCornerSize(0)
+////                            .setBottomLeftCorner(CornerFamily.ROUNDED, 15)
+////                            .setBottomRightCorner(CornerFamily.ROUNDED, 15)
+//                            .build()
+//                    );
+//                } else if (currIsUser && !nextIsUser) {
+//
+//                } else if (!currIsUser && nextIsUser) {
+//
+//                } else {
+//
+//                }
+//            } else {
+//                card.setShapeAppearanceModel(
+//                        card.getShapeAppearanceModel()
+//                        .toBuilder()
+//                        .setBottomLeftCorner(CornerFamily.ROUNDED, 15)
+//                        .setBottomRightCorner(CornerFamily.ROUNDED, 15)
+//                        .build()
+//                );
+//            }
+
+
+
+            int[] corners = mCornerMap.get(theMessage.getMessageId());
+            System.out.println(Arrays.toString(corners));
+            card.setShapeAppearanceModel(
+                    card.getShapeAppearanceModel()
+                    .toBuilder()
+                    .setTopLeftCorner(CornerFamily.ROUNDED, corners[0])
+                    .setTopRightCorner(CornerFamily.ROUNDED, corners[1])
+                    .setBottomLeftCorner(CornerFamily.ROUNDED, corners[2])
+                    .setBottomRightCorner(CornerFamily.ROUNDED, corners[3])
+                    .build()
+            );
 
             int[] attr = {R.attr.cardColor,
                     R.attr.colorAccent, R.attr.cardTextColor, R.attr.buttonTextColor};
