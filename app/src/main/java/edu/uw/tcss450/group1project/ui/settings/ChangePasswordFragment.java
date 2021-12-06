@@ -1,3 +1,7 @@
+/*
+ * TCSS450 Mobile Applications
+ * Fall 2021
+ */
 package edu.uw.tcss450.group1project.ui.settings;
 
 import static edu.uw.tcss450.group1project.utils.PasswordValidator.checkClientPredicate;

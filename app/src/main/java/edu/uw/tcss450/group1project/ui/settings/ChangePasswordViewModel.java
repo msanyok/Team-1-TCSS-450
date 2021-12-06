@@ -1,4 +1,8 @@
-package edu.uw.tcss450.group1project.ui.settings;
+
+/*
+ * TCSS450 Mobile Applications
+ * Fall 2021
+ */package edu.uw.tcss450.group1project.ui.settings;
 
 import android.app.Application;
 import android.util.Log;
