@@ -14,12 +14,19 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.Map;
+import java.util.Set;
+import java.util.Timer;
+import java.util.TreeSet;
+
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentChatroomBinding;
+import edu.uw.tcss450.group1project.model.IsTypingViewModel;
 import edu.uw.tcss450.group1project.model.LocalStorageUtils;
 import edu.uw.tcss450.group1project.model.NewMessageCountViewModel;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
@@ -41,6 +48,9 @@ public class ChatRoomFragment extends Fragment {
 
     /** The View Model that stores information about the user */
     private UserInfoViewModel mUserModel;
+
+    /** The View Model that handles iw typing  */
+    private IsTypingViewModel mTypingModel;
 
     /** The unique ChatId for this particular chat */
     private int mChatId;
@@ -67,6 +77,7 @@ public class ChatRoomFragment extends Fragment {
         final ViewModelProvider provider = new ViewModelProvider(getActivity());
         mUserModel = provider.get(UserInfoViewModel.class);
         mChatModel = provider.get(ChatViewModel.class);
+        mTypingModel = provider.get(IsTypingViewModel.class);
 
         // update the new message counts now that we have navigated to a chat room.
         // if this chat room had new messages, the view model will remove the counts.
@@ -172,6 +183,43 @@ public class ChatRoomFragment extends Fragment {
         // when we get the response back from the server, clear the edit text
         mSendModel.addResponseObserver(getViewLifecycleOwner(), response ->
                 binding.editMessage.setText(""));
+
+        mTypingModel.addTimersObserver(getViewLifecycleOwner(), responseMap -> {
+
+//            for (Map.Entry<Integer, Map<String, Timer>> entry : responseMap.entrySet()) {
+//                for (Map.Entry<String, Timer> innerEntry : entry.getValue().entrySet()) {
+//                    Log.e("Nicknames typing:", ""+ innerEntry.getKey());
+//                }
+//            }
+
+            if (responseMap.containsKey(mChatId) && responseMap.get(mChatId).size() > 0) {
+                Map<String, Timer> nicknameMap = responseMap.get(mChatId);
+                TreeSet<String> nicknames = new TreeSet<>(nicknameMap.keySet());
+
+                String notifText = "";
+                if (nicknames.size() == 1) {
+                    notifText = nicknames.pollFirst() + " is typing...";
+                } else if (nicknames.size() == 2) {
+                    notifText = nicknames.pollFirst() + " and " + nicknames.pollFirst() +
+                           " are typing...";
+                } else if (nicknames.size() == 3) {
+                   notifText = nicknames.pollFirst() + ", " + nicknames.pollFirst() +
+                           " and 1 other are typing...";
+                } else {
+                    // number of people typing is > 3
+                    notifText = nicknames.pollFirst() + ", " + nicknames.pollFirst() + " and " +
+                           (nicknames.size() - 2) + " others are typing...";
+                }
+                binding.userTypingText.setText(notifText);
+                binding.userTypingText.setVisibility(View.VISIBLE);
+
+            } else {
+                // no typers in the chat
+                binding.userTypingText.setText("");
+                binding.userTypingText.setVisibility(View.GONE);
+            }
+
+        });
     }
 
 }

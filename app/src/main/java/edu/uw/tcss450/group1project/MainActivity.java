@@ -38,6 +38,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import edu.uw.tcss450.group1project.model.IsTypingViewModel;
 import edu.uw.tcss450.group1project.ui.contacts.ContactRequestViewModel;
 import edu.uw.tcss450.group1project.model.LocalStorageUtils;
 import edu.uw.tcss450.group1project.model.LocationViewModel;
@@ -108,8 +109,8 @@ public class MainActivity extends ThemedActivity {
     /** Keeps track of contacts */
     private ContactsViewModel mContactsViewModel;
 
-// todo: might need for navigation badges
-//    private ActivityMainBinding mBinding;
+    /** Keeps track of typing actions */
+    private IsTypingViewModel mTypingModel;
 
     /**
      * The configuration for the bottom navigation displayed
@@ -136,6 +137,7 @@ public class MainActivity extends ThemedActivity {
         mContactRequestViewModel = new ViewModelProvider(this).get(ContactRequestViewModel.class);
         mContactsViewModel = new ViewModelProvider(this).get(ContactsViewModel.class);
         mChatListViewModel = new ViewModelProvider(this).get(ChatsListViewModel.class);
+        mTypingModel = new ViewModelProvider(this).get(IsTypingViewModel.class);
 
         applyTheme();
         setContentView(R.layout.activity_main);
@@ -392,7 +394,7 @@ public class MainActivity extends ThemedActivity {
 
             final String type = theIntent.getStringExtra("type");
 
-            Log.d("RECIEVE INTENT", "Type: " + type);
+            Log.d("RECEIVE INTENT", "Type: " + type);
 
             // figure out what kind of pushy notification was sent, then do the corresponding tasks.
             if (type.equals(PushReceiver.NEW_MESSAGE)) {
@@ -405,6 +407,8 @@ public class MainActivity extends ThemedActivity {
                 completeNewContactDeleteActions(theContext, theIntent);
             } else if (type.equals(PushReceiver.CONTACT_REQUEST_DELETE)) {
                 completeNewContactRequestDeleteActions(theContext, theIntent);
+            } else if (type.equals(PushReceiver.TYPING)) {
+                completeNewTypingActions(theContext, theIntent);
             }
 
         }
@@ -448,14 +452,6 @@ public class MainActivity extends ThemedActivity {
             // todo: need to implement on screen/off screen functionality with in app notifications
             Log.d("RECIEVE INTENT", "New Contact Request Actions");
 
-//            NavController navController =
-//                Navigation.findNavController(
-//                        MainActivity.this, R.id.nav_host_fragment);
-//            NavDestination navDestination = navController.getCurrentDestination();
-//
-//            final String memberId = mUserInfoModel.getMemberId();
-//            final String fromId = theIntent.getStringExtra("fromId");
-            //update the contacts viewmodel
             mContactRequestViewModel.allContactRequests(mUserInfoModel.getJwt());
 
         }
@@ -468,16 +464,7 @@ public class MainActivity extends ThemedActivity {
          */
         private void completeNewContactRequestResponseActions(final Context theContext,
                                                               final Intent theIntent) {
-            // todo: need to implement on screen/off screen functionality with in app notifications
             Log.d("RECIEVE INTENT", "New Contact Request Response Actions");
-
-//            NavController navController =
-//                    Navigation.findNavController(
-//                            MainActivity.this, R.id.nav_host_fragment);
-//            NavDestination navDestination = navController.getCurrentDestination();
-//
-//            final String memberId = mUserInfoModel.getMemberId();
-//            final String fromId = theIntent.getStringExtra("fromId");
 
             mContactRequestViewModel.allContactRequests(mUserInfoModel.getJwt());
 
@@ -517,6 +504,12 @@ public class MainActivity extends ThemedActivity {
 
             // todo: offscreen in app notifs? perhaps not.
 
+        }
+
+        private void completeNewTypingActions(Context theContext, Intent theIntent) {
+            Log.d("RECIEVE INTENT", "New Typing Actions");
+            mTypingModel.putTyping(theIntent.getIntExtra("chatId", 0),
+                    theIntent.getStringExtra("nickname"));
         }
 
     }

@@ -77,6 +77,8 @@
     </string-array>
     <string name="title_activity_maps">MapsActivity</string>
 
+    <string name="notification_someone_typing">Someone is typing...</string>
+
 
     <string name="admin_nickname">TalkBox Admin</string>
 </resources>

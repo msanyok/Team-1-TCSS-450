@@ -5,7 +5,7 @@
 
 package edu.uw.tcss450.group1project.ui.contacts;
 
-import android.content.Context;
+
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.Html;
@@ -14,7 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
+
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
@@ -26,7 +26,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import org.json.JSONException;
+
 import org.json.JSONObject;
 
 import java.util.List;
@@ -36,8 +36,6 @@ import java.util.stream.Collectors;
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentContactsBinding;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
-import edu.uw.tcss450.group1project.utils.TextFieldHints;
-import edu.uw.tcss450.group1project.utils.TextFieldValidators;
 
 /**
  * A {@link Fragment} subclass that is responsible for the contacts page.

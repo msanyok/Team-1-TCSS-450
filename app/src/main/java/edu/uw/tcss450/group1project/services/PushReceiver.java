@@ -60,6 +60,9 @@ public class PushReceiver extends BroadcastReceiver {
     /** The String that notifies a contact request was deleted from pushy */
     public static final String CONTACT_REQUEST_DELETE = "contactRequestDeleted";
 
+    /** The String that notifies a typing message came from pushy */
+    public static final String TYPING = "typing";
+
     /** The ID for the channel used for notifications */
     private static final String CHANNEL_ID = "1";
 
@@ -84,12 +87,15 @@ public class PushReceiver extends BroadcastReceiver {
         } else if (typeOfMessage.equals(CONTACT_DELETE)) {
             acceptContactDeletePushy(theContext, theIntent);
         } else if (typeOfMessage.equals(CONTACT_REQUEST_DELETE)) {
-                acceptContactRequestDeletePushy(theContext, theIntent);
+            acceptContactRequestDeletePushy(theContext, theIntent);
+        } else if (typeOfMessage.equals(TYPING)) {
+            acceptTypingPushy(theContext, theIntent);
         } else {
             // unexpected pushy
             Log.d("PUSH RECEIVE", "UNEXPECTED PUSHY RECEIVED");
         }
     }
+
 
     /**
      * Handles what should occur when this device receives a message from a Pushy payload.
@@ -378,6 +384,28 @@ public class PushReceiver extends BroadcastReceiver {
         }
 
         // we don't want any kind of outside-app notifications when someone gets deleted
+
+    }
+
+    private void acceptTypingPushy(final Context theContext, final Intent theIntent) {
+
+        // get tools to check if the user is in the app or not
+        ActivityManager.RunningAppProcessInfo appProcessInfo =
+                new ActivityManager.RunningAppProcessInfo();
+        ActivityManager.getMyMemoryState(appProcessInfo);
+
+        if (appProcessInfo.importance == IMPORTANCE_FOREGROUND ||
+                appProcessInfo.importance == IMPORTANCE_VISIBLE) {
+            // only send to main activity if it exists
+            Intent intent = new Intent(NEW_PUSHY_NOTIF);
+            intent.putExtra("type", TYPING);
+            intent.putExtra("chatId", theIntent.getIntExtra("chatId", 0));
+            intent.putExtra("nickname", theIntent.getStringExtra("nickname"));
+            intent.putExtras(theIntent.getExtras());
+
+            // send to MainActivity
+            theContext.sendBroadcast(intent);
+        }
 
     }
 
