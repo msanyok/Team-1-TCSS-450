@@ -29,16 +29,19 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/**
+ * A View Model designed to store and handle typing notifications for chats.
+ *
+ * @author Austn Attaway
+ * @version Fall 2021
+ */
 public class IsTypingViewModel extends AndroidViewModel {
 
     /** The amount of time it takes for a timer to notify the server the user is done typing */
     private static final int TIMER_TIMEOUT = 10000; // 10 seconds
 
     /** The live data that stores the current valid typing timers */
-//    private MutableLiveData<Map<Integer, Timer>> mTimers;
     private MutableLiveData<Map<Integer, Map<String, Timer>>> mTimers;
-
-//    Map<Integer, Map<String, Timer>>
 
     /**
      * Constructor that sets default values
@@ -49,7 +52,13 @@ public class IsTypingViewModel extends AndroidViewModel {
         mTimers.setValue(new HashMap<>());
     }
 
-    // add a new timer
+    /**
+     * Adds a new typing timer for the given chatId that notes the given user theNickname
+     * has started typing.
+     *
+     * @param theChatId the chat id the user is typing in
+     * @param theNickname the nickname of the user who started typing
+     */
     public void putTyping(final int theChatId, final String theNickname) {
 
         final Map<Integer, Map<String, Timer>> chatIdMap = mTimers.getValue();
@@ -63,7 +72,12 @@ public class IsTypingViewModel extends AndroidViewModel {
 
         // create a new timer for the given chat id
         final Timer timer = new Timer();
-        final TimerTask newTask = this.createTask(theChatId, theNickname);
+        final TimerTask newTask = new TimerTask() {
+            @Override
+            public void run() {
+                stopTyping(theChatId, theNickname);
+            }
+        };
         timer.schedule(newTask, TIMER_TIMEOUT);
         nicknameMap.put(theNickname, timer);
         chatIdMap.put(theChatId, nicknameMap);
@@ -71,36 +85,46 @@ public class IsTypingViewModel extends AndroidViewModel {
 
     }
 
-    private TimerTask createTask(final int theChatId, final String theNickname) {
-        return new TimerTask() {
-            @Override
-            public void run() {
-                // this code will run when the timer is out of time
-                final Map<Integer, Map<String, Timer>> chatIdMap = mTimers.getValue();
-                final Map<String, Timer> nicknameMap = chatIdMap.getOrDefault(theChatId, new HashMap<>());
+    /**
+     * Cancels and removes the timer corresponding to the chatId and nickname if one exists,
+     * notifying that the user has stopped typing in that chat.
+     *
+     * @param theChatId the chat id of the chat the user stopped typing in
+     * @param theNickname the nickname of the user who stopped typing
+     */
+    public void stopTyping(final int theChatId, final String theNickname) {
+        final Map<Integer, Map<String, Timer>> chatIdMap = mTimers.getValue();
 
-
-                // this may be an unneeded check
-                if (nicknameMap.containsKey(theNickname)) {
-                    Log.wtf("HERE", "REMOVING");
-                    nicknameMap.remove(theNickname);
-                }
-
+        if (chatIdMap.containsKey(theChatId)) {
+            final Map<String, Timer> nicknameMap = chatIdMap.getOrDefault(theChatId,
+                    new HashMap<>());
+            if (nicknameMap.containsKey(theNickname)) {
+                nicknameMap.get(theNickname).cancel();
+                nicknameMap.remove(theNickname);
                 chatIdMap.put(theChatId, nicknameMap);
                 mTimers.postValue(chatIdMap);
             }
-        };
+        }
+
     }
 
-
-
-    public void sendTypingNotification(final int theChatId, final String theJwt) {
-
+    /**
+     * Sends a typing notification to the server that will send pushy
+     * notifications to the users in the chat.
+     *
+     * @param theChatId the chat id of the chat we want to send the notifications to
+     * @param theJwt the user's jwt to verify them
+     * @param theUserIsTyping whether or not this user is typing or not
+     */
+    public void sendTypingNotification(final int theChatId,
+                                       final String theJwt,
+                                       final boolean theUserIsTyping) {
         final String url = "https://team-1-tcss-450-server.herokuapp.com/messages/typing";
 
         final JSONObject body = new JSONObject();
         try {
             body.put("chatId", theChatId);
+            body.put("isStartingToType", theUserIsTyping);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -128,9 +152,15 @@ public class IsTypingViewModel extends AndroidViewModel {
                 .add(request);
     }
 
-
+    /**
+     * Adds the given observer to the typing timers map.
+     *
+     * @param theOwner the lifecycle owner
+     * @param theObserver the observer that observes the map
+     */
     public void addTimersObserver(@NonNull final LifecycleOwner theOwner,
                                   @NonNull final Observer<? super Map<Integer, Map<String, Timer>>> theObserver) {
         mTimers.observe(theOwner, theObserver);
     }
+
 }

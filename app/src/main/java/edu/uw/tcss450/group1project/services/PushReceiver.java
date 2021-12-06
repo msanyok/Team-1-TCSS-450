@@ -184,7 +184,6 @@ public class PushReceiver extends BroadcastReceiver {
      * @param theContext the context of the application
      * @param theIntent the Intent that stores the Pushy payload
      */
-//todo: do we need to set the values beforehand? -- update, idk what this todo is for anymore, subject to deletion
     private void acceptNewContactRequestPushy(final Context theContext, final Intent theIntent) {
         String toId = theIntent.getStringExtra("toId");
         String fromId = theIntent.getStringExtra("fromId");
@@ -387,6 +386,12 @@ public class PushReceiver extends BroadcastReceiver {
 
     }
 
+    /**
+     * Handles when this device receives a typing notification from a Pushy payload.
+     *
+     * @param theContext the context of the application
+     * @param theIntent the Intent that stores the Pushy payload
+     */
     private void acceptTypingPushy(final Context theContext, final Intent theIntent) {
 
         // get tools to check if the user is in the app or not
@@ -401,6 +406,7 @@ public class PushReceiver extends BroadcastReceiver {
             intent.putExtra("type", TYPING);
             intent.putExtra("chatId", theIntent.getIntExtra("chatId", 0));
             intent.putExtra("nickname", theIntent.getStringExtra("nickname"));
+            intent.putExtra("isTyping", theIntent.getBooleanExtra("isTyping", false));
             intent.putExtras(theIntent.getExtras());
 
             // send to MainActivity

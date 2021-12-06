@@ -451,10 +451,9 @@ public class MainActivity extends ThemedActivity {
 
             // todo: need to implement on screen/off screen functionality with in app notifications
             Log.d("RECIEVE INTENT", "New Contact Request Actions");
-
             mContactRequestViewModel.allContactRequests(mUserInfoModel.getJwt());
-
         }
+
         /**
          * Handles updating the devices contacts and contacts
          * requests when a request is accepted/declined.
@@ -465,16 +464,14 @@ public class MainActivity extends ThemedActivity {
         private void completeNewContactRequestResponseActions(final Context theContext,
                                                               final Intent theIntent) {
             Log.d("RECIEVE INTENT", "New Contact Request Response Actions");
-
             mContactRequestViewModel.allContactRequests(mUserInfoModel.getJwt());
-
 
             // update the contacts list for both users if the contact request is accepted
             if (theIntent.getBooleanExtra("isAccept", false)) {
                 mContactsViewModel.contactsConnect(mUserInfoModel.getJwt());
             }
-
         }
+
         /**
          * Handles updating the devices contacts when a delete request is recieved.
          *
@@ -484,32 +481,43 @@ public class MainActivity extends ThemedActivity {
         private void completeNewContactDeleteActions(final Context theContext,
                                                      final Intent theIntent) {
             Log.d("RECIEVE INTENT", "New Contact Delete Actions");
-
             mContactsViewModel.contactsConnect(mUserInfoModel.getJwt());
-
-            // todo: offscreen in app notifs? perhaps not.
 
         }
 
         /**
-         * Handles updating the devices outgoing contact requests when a delete request is recieved.
+         * Handles updating the devices outgoing contact requests when a delete request is received.
          *
          * @param theContext the context of the application
          * @param theIntent the Intent that stores the Pushy payload
          */
-        private void completeNewContactRequestDeleteActions(final Context theContext, final Intent theIntent) {
-            Log.d("RECIEVE INTENT", "New Contact Request Delete Actions");
-
+        private void completeNewContactRequestDeleteActions(final Context theContext,
+                                                            final Intent theIntent) {
+            Log.d("RECEIVE INTENT", "New Contact Request Delete Actions");
             mContactRequestViewModel.allContactRequests(mUserInfoModel.getJwt());
-
-            // todo: offscreen in app notifs? perhaps not.
 
         }
 
-        private void completeNewTypingActions(Context theContext, Intent theIntent) {
-            Log.d("RECIEVE INTENT", "New Typing Actions");
-            mTypingModel.putTyping(theIntent.getIntExtra("chatId", 0),
-                    theIntent.getStringExtra("nickname"));
+        /**
+         * Handles updating the devices typing timers when typing notification is received.
+         *
+         * @param theContext the context of the application
+         * @param theIntent the Intent that stores the Pushy payload
+         */
+        private void completeNewTypingActions(final Context theContext,
+                                              final Intent theIntent) {
+            Log.d("RECEIVE INTENT", "New Typing Actions");
+
+            if (theIntent.getBooleanExtra("isTyping", false)) {
+                // a notification came that tells us a user is typing
+                mTypingModel.putTyping(theIntent.getIntExtra("chatId", 0),
+                        theIntent.getStringExtra("nickname"));
+            } else {
+                // a notification came that tells us a user has stopped typing
+                mTypingModel.stopTyping(theIntent.getIntExtra("chatId", 0),
+                        theIntent.getStringExtra("nickname"));
+            }
+
         }
 
     }
