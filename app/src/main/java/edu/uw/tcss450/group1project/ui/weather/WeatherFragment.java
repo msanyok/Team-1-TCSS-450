@@ -42,6 +42,7 @@ public class WeatherFragment extends Fragment {
     /** The weather data view model */
     private WeatherDataViewModel mModel;
 
+    /** The location list view model */
     private WeatherLocationListViewModel mLocationsModel;
 
     /** The user info view model */
