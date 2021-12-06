@@ -58,5 +58,10 @@ public class SettingsFragment extends Fragment {
             ((MainActivity) getActivity()).changeTheme(R.style.AppTheme3);
             getActivity().recreate();
         });
+
+        binding.buttonTheme4.setOnClickListener(button -> {
+            ((MainActivity) getActivity()).changeTheme(R.style.AppTheme4);
+            getActivity().recreate();
+        });
     }
 }

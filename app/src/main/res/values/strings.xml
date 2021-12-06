@@ -52,6 +52,7 @@
     <string name="title_theme_1">Slate Berry</string>
     <string name="title_theme_2">Midnight Rose</string>
     <string name="title_theme_3">Husky Pride</string>
+    <string name="title_theme_4">Terminator</string>
     <string name="title_reset_password">Enter your account email:</string>
     <string name="title_code_comfirm">
         Enter the code sent to your email and choose a new password!</string>
