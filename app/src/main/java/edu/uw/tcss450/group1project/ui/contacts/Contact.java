@@ -7,6 +7,7 @@ package edu.uw.tcss450.group1project.ui.contacts;
 
 import androidx.annotation.NonNull;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
@@ -15,7 +16,7 @@ import java.util.Objects;
  * @author Parker Rosengreen
  * @version Fall 2021
  */
-public class Contact {
+public class Contact implements Serializable {
 
     /** The Member ID */
     private final String mMemberId;
@@ -35,6 +36,7 @@ public class Contact {
      * @param theFirst the first name
      * @param theLast the last name
      * @param theNickname the nickname
+     * @param theID the member ID
      */
     public Contact(final String theFirst, final String theLast,
                    final String theNickname, final String theID) {

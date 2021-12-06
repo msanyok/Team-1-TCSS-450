@@ -5,11 +5,9 @@
 
 package edu.uw.tcss450.group1project.ui.home;
 
-import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.navigation.Navigation;
@@ -18,9 +16,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import edu.uw.tcss450.group1project.R;
-import edu.uw.tcss450.group1project.databinding.FragmentHomeMessageNotificationCardBinding;
+import edu.uw.tcss450.group1project.databinding.FragmentChatRoomCardBinding;
 import edu.uw.tcss450.group1project.ui.messages.ChatRoom;
-import edu.uw.tcss450.group1project.ui.messages.ChatsFragmentDirections;
 
 /**
  * MessagesNotificationsRecyclerAdapter provides an adapter for the HomeFragment
@@ -50,7 +47,7 @@ public class MessagesNotificationsRecyclerAdapter extends
                                                               final int theViewType) {
         return new MessagesNotificationsViewHolder(LayoutInflater
                 .from(theParent.getContext())
-                .inflate(R.layout.fragment_home_message_notification_card,
+                .inflate(R.layout.fragment_chat_room_card,
                          theParent, false));
     }
 
@@ -78,7 +75,7 @@ public class MessagesNotificationsRecyclerAdapter extends
         private final View mView;
 
         /** The ViewBinding corresponded to a new message RecyclerView card */
-        private final FragmentHomeMessageNotificationCardBinding mBinding;
+        private final FragmentChatRoomCardBinding mBinding;
 
         /** The chat room assigned to this ViewHolder */
         private ChatRoom mRoom;
@@ -91,12 +88,12 @@ public class MessagesNotificationsRecyclerAdapter extends
         public MessagesNotificationsViewHolder(@NonNull final View theItemView) {
             super(theItemView);
             mView = theItemView;
-            mBinding = FragmentHomeMessageNotificationCardBinding.bind(theItemView);
+            mBinding = FragmentChatRoomCardBinding.bind(theItemView);
 
             // navigate to a chat room fragment when the chat room card is pressed.
             // send the chat name and the chat ID through action params, important state the
             // fragment needs.
-            mBinding.homeChatsNavigation.setOnClickListener(button -> {
+            mBinding.chatroomNavigation.setOnClickListener(button -> {
 
                 HomeFragmentDirections.ActionNavigationHomeChatsToNavigationChatRoom action =
                         HomeFragmentDirections

@@ -62,17 +62,17 @@
         <item name="android:textColorPrimary">@color/black</item>
         <item name="android:textViewStyle">@style/TextViewStyleTheme2</item>
         <item name="android:switchStyle">@style/SwitchStyleTheme2</item>
-        <item name="android:itemBackground">@color/maroon</item>
+        <item name="android:itemBackground">@color/rose</item>
         <item name="popupMenuBackground">@drawable/toolbar_dropdown</item>
-        <item name="colorSurface">@color/maroon</item>
-        <item name="colorAccent">@color/stone</item>
+        <item name="colorSurface">@color/rose</item>
+        <item name="colorAccent">@color/midnight</item>
         <item name="title_icon">@drawable/logo_theme_2</item>
         <item name="titleTextColor">@color/black</item>
         <item name="colorPrimary">@android:color/transparent</item>
         <item name="editTextStyle">@style/EditTextStyleTheme2</item>
         <item name="cardViewStyle">@style/CardStyleTheme1</item>
         <item name="buttonTextColor">@color/white</item>
-        <item name="cardColor">@color/maroon</item>
+        <item name="cardColor">@color/rose</item>
         <item name="cardTextColor">@color/white</item>
         <item name="cardImageColor">@color/white</item>
         <item name="tabDeselectedColor">@color/black_transparent</item>
@@ -97,8 +97,8 @@
     </style>
 
     <style name="SwitchStyleTheme2" parent="SwitchStyleTheme1">
-        <item name="colorControlActivated">@color/maroon</item>
-        <item name="colorSwitchThumbNormal">@color/maroon</item>
+        <item name="colorControlActivated">@color/rose</item>
+        <item name="colorSwitchThumbNormal">@color/rose</item>
     </style>
 
     <style name="AppTheme3" parent="AppTheme1">

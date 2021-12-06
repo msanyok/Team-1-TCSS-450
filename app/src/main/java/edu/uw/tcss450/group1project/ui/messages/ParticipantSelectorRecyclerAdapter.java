@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Set;
 
 import edu.uw.tcss450.group1project.R;
-import edu.uw.tcss450.group1project.databinding.FragmentCreateChatRoomContactCardBinding;
+import edu.uw.tcss450.group1project.databinding.FragmentAddContactCardBinding;
 import edu.uw.tcss450.group1project.ui.contacts.Contact;
 
 /**
@@ -55,7 +55,7 @@ public class ParticipantSelectorRecyclerAdapter
                                                     final int theViewType) {
         return new ParticipantViewHolder(LayoutInflater
                 .from(theParent.getContext())
-                .inflate(R.layout.fragment_create_chat_room_contact_card, theParent, false));
+                .inflate(R.layout.fragment_add_contact_card, theParent, false));
     }
 
     @Override
@@ -82,7 +82,7 @@ public class ParticipantSelectorRecyclerAdapter
         private final View mView;
 
         /** The corresponding view binding */
-        private final FragmentCreateChatRoomContactCardBinding mBinding;
+        private final FragmentAddContactCardBinding mBinding;
 
         /** The assigned contact */
         private Contact mContact;
@@ -95,7 +95,7 @@ public class ParticipantSelectorRecyclerAdapter
         public ParticipantViewHolder(@NonNull final View theItemView) {
             super(theItemView);
             mView = theItemView;
-            mBinding = FragmentCreateChatRoomContactCardBinding.bind(theItemView);
+            mBinding = FragmentAddContactCardBinding.bind(theItemView);
             mBinding.toggleButton.setOnClickListener(button -> {
                 if (mParticipants.contains(mContact)) {
                     mParticipants.remove(mContact);
@@ -126,7 +126,11 @@ public class ParticipantSelectorRecyclerAdapter
                     mContact.getLast()));
             mBinding.contactNickname.setText(mContact.getNickname());
             if (mParticipants.contains(mContact)) {
-                mBinding.selectionImage.setImageResource(R.drawable.ic_check_green_24dp);
+                mBinding.selectionImage.setImageIcon(
+                        Icon.createWithResource(
+                                mView.getContext(), R.drawable.ic_check_green_24dp));
+            } else {
+                mBinding.selectionImage.setImageIcon(null);
             }
         }
     }

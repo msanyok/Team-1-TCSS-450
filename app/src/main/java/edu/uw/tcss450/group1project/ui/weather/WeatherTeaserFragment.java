@@ -19,7 +19,6 @@ import androidx.navigation.Navigation;
 
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentWeatherBinding;
-import edu.uw.tcss450.group1project.model.WeatherDataViewModel;
 import edu.uw.tcss450.group1project.utils.WeatherUtils;
 
 /**

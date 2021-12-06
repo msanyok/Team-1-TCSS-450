@@ -60,6 +60,9 @@
         <argument
             android:name="chat_room_id"
             app:argType="string" />
+        <action
+            android:id="@+id/action_navigation_chat_room_to_chatRoomSettingsFragment"
+            app:destination="@id/navigation_chat_room_info" />
     </fragment>
     <fragment
         android:id="@+id/navigation_contacts_parent"
@@ -83,7 +86,27 @@
             android:name="title_name"
             app:argType="string" />
     </fragment>
-
+    <fragment
+        android:id="@+id/navigation_chat_room_info"
+        android:name="edu.uw.tcss450.group1project.ui.messages.ChatRoomInfoFragment"
+        android:label="{chat_room_name}" >
+        <argument
+            android:name="chat_room_name"
+            app:argType="string" />
+        <argument
+            android:name="chat_room_id"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_navigation_chat_room_info_to_navigation_messages"
+            app:destination="@id/navigation_messages"
+            app:popUpTo="@id/navigation_messages"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <action
+        android:id="@+id/action_global_navigation_settings"
+        app:destination="@id/navigation_settings"
+        app:popUpTo="@id/navigation_settings"
+        app:popUpToInclusive="true" />
 
 
 </navigation>

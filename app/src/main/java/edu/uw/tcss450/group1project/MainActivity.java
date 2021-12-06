@@ -19,15 +19,14 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
-import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
@@ -37,7 +36,6 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -166,6 +164,11 @@ public class MainActivity extends ThemedActivity {
             } else {
                 navView.setVisibility(View.GONE);
             }
+            if (id == R.id.navigation_chat_room_info || id == R.id.navigation_contacts_parent) {
+                getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+            } else {
+                getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+            }
         });
 
         // handles the destination changes that occur in the app and what
@@ -288,6 +291,7 @@ public class MainActivity extends ThemedActivity {
 
     @Override
     public boolean onCreateOptionsMenu(final Menu theMenu) {
+        System.out.println("menu created");
         getMenuInflater().inflate(R.menu.toolbar, theMenu);
         return true;
     }
@@ -297,13 +301,24 @@ public class MainActivity extends ThemedActivity {
         int id = theItem.getItemId();
         if (id == R.id.action_settings) {
             Navigation.findNavController(this, R.id.nav_host_fragment)
-                    .navigate(R.id.navigation_settings);
+                    .navigate(R.id.action_global_navigation_settings);
             return true;
         }
         if (id == R.id.action_sign_out){
-            signOut();
+            displaySignOutDialog();
         }
         return super.onOptionsItemSelected(theItem);
+    }
+
+    private void displaySignOutDialog() {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+        alertDialog.setMessage(Html.fromHtml("<font color='#000000'>" +
+                "Are you sure you want to sign out?" + "</font>"));
+        alertDialog.setPositiveButton(Html.fromHtml("<font color='000000'>Ok</font>"),
+                (dialog, which) -> signOut());
+        alertDialog.setNegativeButton(Html.fromHtml("<font color='000000'>Cancel</font>"),
+                (dialog, which) -> {});
+        alertDialog.show();
     }
 
     @Override
@@ -331,18 +346,14 @@ public class MainActivity extends ThemedActivity {
     @Override
     public void onResume() {
         super.onResume();
-    Log.e("", "ON RESUME");
         // get the notifications that occurred while the app was not in the foreground
         mNewMessageModel.putData(LocalStorageUtils.getMissedMessages(this));
-
-
         if (mPushMessageReceiver == null) {
             mPushMessageReceiver = new MainPushMessageReceiver();
         }
         IntentFilter iFilter = new IntentFilter(PushReceiver.NEW_PUSHY_NOTIF);
         registerReceiver(mPushMessageReceiver, iFilter);
         startLocationUpdates();
-
     }
 
     @Override

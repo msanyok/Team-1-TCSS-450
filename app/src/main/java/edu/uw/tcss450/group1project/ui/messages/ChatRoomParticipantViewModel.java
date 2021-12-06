@@ -1,8 +1,3 @@
-/*
- * TCSS450 Mobile Applications
- * Fall 2021
- */
-
 package edu.uw.tcss450.group1project.ui.messages;
 
 import android.app.Application;
@@ -21,52 +16,70 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import edu.uw.tcss450.group1project.ui.contacts.Contact;
 
-/**
- * ChatRoomParticipantViewModel is a fragment-level view model for creating chat rooms and
- * adding participants to an existing chat room.
- *
- * @author Parker Rosengreen
- * @version Fall 2021
- */
 public class ChatRoomParticipantViewModel extends AndroidViewModel {
-
-    /** The JSONObject response assigned to chat room creation */
-    private MutableLiveData<JSONObject> mCreateRoomResponse;
 
     /** The JSONObject response assigned to chat room participant additions */
     private MutableLiveData<JSONObject> mAddParticipantsResponse;
 
-    /**
-     * Creates a new chat room participant view model
-     *
-     * @param theApplication the corresponding application
-     */
+    private MutableLiveData<JSONObject> mGetParticipantsResponse;
+
+    private MutableLiveData<JSONObject> mLeaveRoomResponse;
+
+    private List<Contact> mParticipants;
+
+    private List<Contact> mSelected;
+
     public ChatRoomParticipantViewModel(@NonNull final Application theApplication) {
         super(theApplication);
-        mCreateRoomResponse = new MutableLiveData<>();
         mAddParticipantsResponse = new MutableLiveData<>();
-        mCreateRoomResponse.setValue(new JSONObject());
+        mAddParticipantsResponse.setValue(new JSONObject());
+        mGetParticipantsResponse = new MutableLiveData<>();
+        mGetParticipantsResponse.setValue(new JSONObject());
+        mLeaveRoomResponse = new MutableLiveData<>();
+        mLeaveRoomResponse.setValue(new JSONObject());
+        mParticipants = new ArrayList<>();
+        mSelected = new ArrayList<>();
+    }
+
+    public List<Contact> getSelected() {
+        return new LinkedList<>(mSelected);
+    }
+
+    public List<Contact> getParticipants() {
+        return new LinkedList<>(mParticipants);
+    }
+
+    public void setSelected(final List<Contact> theSelected) {
+        mSelected = theSelected;
+    }
+
+    public boolean containsReadableParticipants() {
+        return !mParticipants.isEmpty();
+    }
+
+    public void clearGetResponse() {
+        mGetParticipantsResponse.setValue(new JSONObject());
+    }
+
+    public void clearAddResponse() {
         mAddParticipantsResponse.setValue(new JSONObject());
     }
 
-    /**
-     * Adds an observer to the JSONObject response assigned to chat room creation
-     *
-     * @param theOwner the lifecycle owner
-     * @param theObserver the observer to be assigned
-     */
-    public void addChatRoomCreationResponseObserver(
-            @NonNull final LifecycleOwner theOwner,
-            @NonNull final Observer<? super JSONObject> theObserver) {
-        mCreateRoomResponse.observe(theOwner, theObserver);
+    public void clearLeaveResponse() {
+        mLeaveRoomResponse.setValue(new JSONObject());
     }
 
     /**
@@ -82,28 +95,54 @@ public class ChatRoomParticipantViewModel extends AndroidViewModel {
     }
 
     /**
-     * Sends a request to create a new chat room with the provided room name
+     * Adds an observer to the JSONObject response assigned to chat room participant retrieval
      *
-     * @param theJwt the user's JWT
-     * @param theEmail the email of the user creating the chat room
-     * @param theRoomName the name of the room to be created
-     * @param theParticipants the participants to be added to the room
+     * @param theOwner the lifecycle owner
+     * @param theObserver the observer to be assigned
      */
-    public void createChatRoom(final String theJwt, final String theEmail, final String theRoomName,
-                               final Set<Contact> theParticipants) {
+    public void addGetParticipantsResponseObserver(
+            @NonNull final LifecycleOwner theOwner,
+            @NonNull final Observer<? super JSONObject> theObserver) {
+        mGetParticipantsResponse.observe(theOwner, theObserver);
+    }
+
+    /**
+     * Adds an observer to the JSONObject response assigned to leaving a chat room
+     *
+     * @param theOwner the lifecycle owner
+     * @param theObserver the observer to be assigned
+     */
+    public void addLeaveRoomResponseObserver(
+            @NonNull final LifecycleOwner theOwner,
+            @NonNull final Observer<? super JSONObject> theObserver) {
+        mLeaveRoomResponse.observe(theOwner, theObserver);
+    }
+
+    /**
+     * Adds a set of participants to an existing chat room.
+     *
+     * @param theJwt the JWT of the user
+     * @param theNickname the nickname of the user adding ot the chat room
+     * @param theChatRoomId the id of the chat room to be added to
+     * @param theParticipants the participants to be added
+     */
+    public void connectAddParticipants(final String theJwt,
+                                       final String theNickname,
+                                       final int theChatRoomId,
+                                       final Set<Contact> theParticipants) {
         String url = "https://team-1-tcss-450-server.herokuapp.com/chats";
         Map<String, Object> bodyMap = new HashMap<>();
-        bodyMap.put("name", theRoomName);
         bodyMap.put("memberIds", createMemberIdArray(theParticipants));
-        bodyMap.put("firstMessage", constructFirstMessage(theParticipants, theEmail));
+        bodyMap.put("chatId", theChatRoomId);
+        bodyMap.put("message", constructAddMessage(theParticipants, theNickname));
         JSONObject body = new JSONObject(bodyMap);
 
         Request request = new JsonObjectRequest(
-                Request.Method.POST,
+                Request.Method.PUT,
                 url,
                 body,
-                mCreateRoomResponse::setValue,
-                this::handleRoomCreationError) {
+                mAddParticipantsResponse::setValue,
+                this::handleAddParticipantsError) {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
@@ -122,15 +161,135 @@ public class ChatRoomParticipantViewModel extends AndroidViewModel {
     }
 
     /**
-     * Adds a set of participants to an existing chat room.
+     * Retrieves the set of existing participants in a given chat room.
      *
      * @param theJwt the JWT of the user
-     * @param theChatRoomId the id of the chat room to be added to
-     * @param theParticipants the participants to be added
+     * @param theChatRoomId the id of the chat room
      */
-    public void addParticipants(final String theJwt, final int theChatRoomId,
-                                final Set<Contact> theParticipants) {
+    public void connectGetParticipants(final String theJwt, final int theChatRoomId) {
+        String url =
+                "https://team-1-tcss-450-server.herokuapp.com/chats/chat_members/" + theChatRoomId;
+        Request request = new JsonObjectRequest(
+                Request.Method.GET,
+                url,
+                null,
+                this::handleGetParticipantsSuccess,
+                this::handleGetParticipantsError) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                // add headers <key,value>
+                headers.put("Authorization", theJwt);
+                return headers;
+            }
+        };
+        request.setRetryPolicy(new DefaultRetryPolicy(
+                10_000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        //Instantiate the RequestQueue and add the request to the queue
+        Volley.newRequestQueue(getApplication().getApplicationContext())
+                .add(request);
+    }
 
+    public void connectLeaveRoom(final String theJwt, final int theChatRoomId,
+                                 final String theEmail, final String theNickname) {
+        String message = theNickname + " has left the chat room.";
+        String base = "https://team-1-tcss-450-server.herokuapp.com/chats";
+        String url = String.format("%s/%d/%s/%s", base, theChatRoomId, theEmail, message);
+        Request request = new JsonObjectRequest(
+                Request.Method.DELETE,
+                url,
+                null,
+                mLeaveRoomResponse::setValue,
+                this::handleLeaveError) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                // add headers <key,value>
+                headers.put("Authorization", theJwt);
+                return headers;
+            }
+        };
+        request.setRetryPolicy(new DefaultRetryPolicy(
+                10_000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        //Instantiate the RequestQueue and add the request to the queue
+        Volley.newRequestQueue(getApplication().getApplicationContext())
+                .add(request);
+    }
+
+    private void handleLeaveError(final VolleyError theError) {
+        Map<String, Object> map = new HashMap<>();
+        if (theError.networkResponse != null) {
+            map.put("code", String.valueOf(theError.networkResponse.statusCode));
+            try {
+                String data = new String(theError.networkResponse.data, Charset.defaultCharset())
+                        .replace('\"', '\'');
+                map.put("data", theError.networkResponse.data == null ? new JSONObject() :
+                        new JSONObject(data));
+            } catch (JSONException ex) {
+                Log.e("JSON PARSE ERROR IN LEAVE ROOM ERROR HANDLER", ex.getMessage());
+            }
+        }
+        mLeaveRoomResponse.setValue(new JSONObject(map));
+    }
+
+    private void handleGetParticipantsSuccess(final JSONObject theResponse) {
+        List<Contact> participants = new ArrayList<>();
+        try {
+            JSONArray participantArray = theResponse.getJSONArray("chatMembersList");
+            for (int i = 0; i < participantArray.length(); i++) {
+                JSONObject participant = (JSONObject) participantArray.get(i);
+                Contact contact = new Contact(
+                     participant.getString("firstname"),
+                     participant.getString("lastname"),
+                     participant.getString("nickname"),
+                     participant.getString("memberid")
+                );
+                participants.add(contact);
+            }
+            mParticipants = participants;
+            mGetParticipantsResponse.setValue(theResponse);
+        } catch (JSONException ex) {
+            Map<String, String> map = new HashMap<>();
+            map.put("code", "JSON parse error: " + ex.getMessage());
+            mGetParticipantsResponse.setValue(new JSONObject(map));
+            ex.printStackTrace();
+        }
+    }
+
+    private void handleGetParticipantsError(final VolleyError theError) {
+        Map<String, Object> map = new HashMap<>();
+        if (theError.networkResponse != null) {
+            map.put("code", String.valueOf(theError.networkResponse.statusCode));
+            try {
+                String data = new String(theError.networkResponse.data, Charset.defaultCharset())
+                        .replace('\"', '\'');
+                map.put("data", theError.networkResponse.data == null ? new JSONObject() :
+                        new JSONObject(data));
+            } catch (JSONException ex) {
+                Log.e("JSON PARSE ERROR IN GETPARTICIPANTS ERROR HANDLER", ex.getMessage());
+            }
+        }
+        mGetParticipantsResponse.setValue(new JSONObject(map));
+    }
+
+    private void handleAddParticipantsError(final VolleyError theError) {
+        Map<String, Object> map = new HashMap<>();
+        if (theError.networkResponse != null) {
+            map.put("code", String.valueOf(theError.networkResponse.statusCode));
+            try {
+                String data = new String(theError.networkResponse.data, Charset.defaultCharset())
+                        .replace('\"', '\'');
+                map.put("data", theError.networkResponse.data == null ? new JSONObject() :
+                        new JSONObject(data));
+            } catch (JSONException ex) {
+                Log.e("JSON PARSE ERROR IN ADDPARTICIPANTS ERROR HANDLER", ex.getMessage());
+            }
+        }
+        mAddParticipantsResponse.setValue(new JSONObject(map));
     }
 
     /**
@@ -148,43 +307,27 @@ public class ChatRoomParticipantViewModel extends AndroidViewModel {
     }
 
     /**
-     * Creates an initial chat room message informing participants of creation
+     * Creates an chat room message informing participants of added members
      *
      * @param theParticipants the participants to be added
-     * @param theNickname the nickname of the user creating the chat room
+     * @param theNickname the nickname of the user adding to the chat room
      * @return the formatted message String
      */
-    private String constructFirstMessage(final Set<Contact> theParticipants,
-                                         final String theNickname) {
+    private String constructAddMessage(final Set<Contact> theParticipants,
+                                       final String theNickname) {
         StringBuilder builder = new StringBuilder();
         int size = theParticipants.size();
-        if (size == 0) {
-            builder.append("Hey! You have created an empty TalkBox chat room.");
-        } else {
-            builder.append("Hey! " + theNickname + " has created a TalkBox chat room with ");
-            int i = 0;
-            for (Contact cont : theParticipants) {
-                if (i < size - 1) {
-                    builder.append(cont.getNickname() + (size == 2 ? " and " : ", "));
-                } else {
-                    builder.append((size > 2 ? "and " : "") + cont.getNickname());
-                }
-                i++;
+        builder.append(theNickname + " added ");
+        int i = 0;
+        for (Contact cont : theParticipants) {
+            if (i < size - 1) {
+                builder.append(cont.getNickname() + (size == 2 ? " and " : ", "));
+            } else {
+                builder.append((size > 2 ? "and " : "") + cont.getNickname());
             }
-            builder.append(".");
+            i++;
         }
+        builder.append(" to the chat room.");
         return builder.toString();
-    }
-
-    /**
-     * Adds an error code field to the JSONObject response for chat room creation and
-     * logs the volley error sent back by a failed server request
-     *
-     * @param theError the returned volley error
-     */
-    private void handleRoomCreationError(final VolleyError theError) {
-        Map<String, String> map = new HashMap<>();
-        map.put("code", "Server error: " + theError.getLocalizedMessage());
-        mCreateRoomResponse.setValue(new JSONObject(map));
     }
 }

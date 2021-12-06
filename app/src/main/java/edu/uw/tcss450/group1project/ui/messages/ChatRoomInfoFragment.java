@@ -1,30 +1,25 @@
-/*
- * TCSS450 Mobile Applications
- * Fall 2021
- */
-
 package edu.uw.tcss450.group1project.ui.messages;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -36,53 +31,52 @@ import java.util.stream.Collectors;
 
 import edu.uw.tcss450.group1project.MainActivity;
 import edu.uw.tcss450.group1project.R;
-import edu.uw.tcss450.group1project.databinding.FragmentCreateChatroomBinding;
+import edu.uw.tcss450.group1project.databinding.FragmentChatroomInfoBinding;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
 import edu.uw.tcss450.group1project.ui.contacts.Contact;
 import edu.uw.tcss450.group1project.ui.contacts.ContactsViewModel;
 
-/**
- * CreateChatroomFragment provides a new chatroom after clicking the create button.
- *
- * @author Parker Rosengreen
- * @author Chris Ding
- * @version Fall 2021
- */
-public class CreateChatRoomFragment extends Fragment {
+public class ChatRoomInfoFragment extends Fragment {
 
-    /** The chat room participant view model */
-    private ChatRoomCreationViewModel mCreationModel;
+    private ChatRoomParticipantViewModel mParticipantModel;
 
-    /** The contacts view model */
     private ContactsViewModel mContactsModel;
 
-    /** The user info view model */
     private UserInfoViewModel mUserModel;
 
-    /** The set of added participants */
-    private Set<Contact> mAdditions;
-
-    /** The view binding */
-    private FragmentCreateChatroomBinding mBinding;
+    private FragmentChatroomInfoBinding mBinding;
 
     private List<Contact> mParticipantOptions;
 
+    private Set<Contact> mAdditions;
+
     private TextWatcher mTextWatcher;
 
+    private int mChatId;
+
+    public ChatRoomInfoFragment() {
+        // Required empty public constructor
+    }
+
+    public int getChatId() {
+        return mChatId;
+    }
+
     @Override
-    public void onCreate(@Nullable final Bundle theSavedInstanceState) {
+    public void onCreate(final Bundle theSavedInstanceState) {
         super.onCreate(theSavedInstanceState);
-        mCreationModel =
-                new ViewModelProvider(this).get(ChatRoomCreationViewModel.class);
-        mContactsModel = new ViewModelProvider(getActivity()).get(ContactsViewModel.class);
+        final ChatRoomInfoFragmentArgs args =
+                ChatRoomInfoFragmentArgs.fromBundle(getArguments());
+        mChatId = Integer.valueOf(args.getChatRoomId());
         mUserModel = new ViewModelProvider(getActivity()).get(UserInfoViewModel.class);
-        mAdditions = new HashSet<>(mCreationModel.getSelected());
-        mContactsModel.contactsConnect(mUserModel.getJwt());
+        mContactsModel = new ViewModelProvider(getActivity()).get(ContactsViewModel.class);
+        mParticipantModel = new ViewModelProvider(this).get(ChatRoomParticipantViewModel.class);
+        mAdditions = new HashSet<>(mParticipantModel.getSelected());
     }
 
     @Override
     public void onSaveInstanceState(@NonNull final Bundle theSavedInstanceState) {
-        mCreationModel.setSelected(new ArrayList<>(mAdditions));
+        mParticipantModel.setSelected(new ArrayList<>(mAdditions));
         super.onSaveInstanceState(theSavedInstanceState);
     }
 
@@ -90,24 +84,29 @@ public class CreateChatRoomFragment extends Fragment {
     public View onCreateView(final LayoutInflater theInflater, final ViewGroup theContainer,
                              final Bundle theSavedInstanceState) {
         // Inflate the layout for this fragment
-        return theInflater.inflate(R.layout.fragment_create_chatroom, theContainer, false);
+        return theInflater.inflate(R.layout.fragment_chatroom_info, theContainer, false);
     }
 
     @Override
     public void onViewCreated(@NonNull final View theView,
                               @Nullable final Bundle theSavedInstanceState) {
-        super.onViewCreated(theView, theSavedInstanceState);
-        mBinding = FragmentCreateChatroomBinding.bind(getView());
+        mContactsModel.contactsConnect(mUserModel.getJwt());
+        mBinding = FragmentChatroomInfoBinding.bind(theView);
         mContactsModel.addContactListObserver(
-                getViewLifecycleOwner(), this::observeContactResponse);
-        mCreationModel.addChatRoomCreationResponseObserver(
-                getViewLifecycleOwner(), this::observeCreationResponse);
-        mBinding.createButton.setOnClickListener(this::processCreateRequest);
+                getViewLifecycleOwner(), this::observeContactsResponse);
+        mParticipantModel.addGetParticipantsResponseObserver(
+                getViewLifecycleOwner(), this::observeCurrentParticipantResponse);
         Spinner spinner = (Spinner) getView().findViewById(R.id.contact_search_spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.contact_search_array, R.layout.fragment_contacts_spinner);
         adapter.setDropDownViewResource(R.layout.fragment_contacts_spinner_dropdown);
         spinner.setAdapter(adapter);
+        mBinding.addButton.setOnClickListener(this::initializeParticipantAddition);
+        mParticipantModel.addParticipantAdditionResponseObserver(
+                getViewLifecycleOwner(), this::observeParticipantAdditionResponse);
+        mParticipantModel.addLeaveRoomResponseObserver(
+                getViewLifecycleOwner(), this::observeLeaveResponse);
+        mBinding.leaveButton.setOnClickListener(button -> displayLeaveDialog());
 
         // create a text watcher that will filter the contact list
         // when the user types into the filter text
@@ -151,7 +150,7 @@ public class CreateChatRoomFragment extends Fragment {
                                 return identifier.startsWith(firstChars);
                             }).collect(Collectors.toList());
 
-                    mBinding.listRoot.setAdapter(new ParticipantSelectorRecyclerAdapter(
+                    mBinding.listNewParticipants.setAdapter(new ParticipantSelectorRecyclerAdapter(
                             newList, mAdditions));
                 }
             }
@@ -185,119 +184,97 @@ public class CreateChatRoomFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        mBinding.chatRoomNameText.setError(null);
+        mBinding.contactSearchText.setError(null);
     }
 
-    /**
-     * Starts processing a request to create a chat room, beginning with chat room name
-     * checking
-     *
-     * @param theButton the create button which was clicked
-     */
-    private void processCreateRequest(final View theButton) {
-        //hides keyboard
-        InputMethodManager imm = (InputMethodManager)getActivity()
-                .getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (getActivity().getCurrentFocus() != null) {
-            imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),0);
-        }
-        validateChatRoomName();
-    }
-
-    /**
-     * Validates an entered chat room name
-     */
-    private void validateChatRoomName() {
-        final String nameText = mBinding.chatRoomNameText.getText().toString().trim();
-        boolean valid = !nameText.isEmpty();
-        if (valid) {
-            for (char c : nameText.toCharArray()) {
-                valid = (Character.isLetter(c) || Character.isDigit(c) || c == ' ') && valid;
-            }
-            if (valid) {
-                initiateChatRoomCreation(nameText);
-            } else {
-                mBinding.chatRoomNameText.setError(
-                        "Room names must only contain letters or digits!");
-            }
+    private void initializeParticipantAddition(final View theButton) {
+        if (mAdditions.isEmpty()) {
+            mBinding.contactSearchText.setError("Please select at least 1 participant.");
         } else {
-            mBinding.chatRoomNameText.setError("Room names must be at least one character!");
+            mParticipantModel.connectAddParticipants(
+                    mUserModel.getJwt(), mUserModel.getNickname(), mChatId, mAdditions);
         }
     }
 
-    /**
-     * Sends a request to the server to create a new chat room
-     *
-     * @param theRoomName the name of the chat room to be created
-     */
-    private void initiateChatRoomCreation(final String theRoomName) {
-        mCreationModel.createChatRoom(mUserModel.getJwt(), mUserModel.getNickname(),
-                theRoomName, mAdditions);
+    private void displayLeaveDialog() {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
+        alertDialog.setMessage(Html.fromHtml("<font color='#000000'>Are you sure " +
+                "you want to leave the chat room?</font>"));
+        alertDialog.setPositiveButton(Html.fromHtml("<font color='000000'>Leave</font>"),
+                (dialog, which) -> {
+                    mParticipantModel.connectLeaveRoom(mUserModel.getJwt(),
+                            mChatId, mUserModel.getEmail(), mUserModel.getNickname());
+                });
+        alertDialog.setNegativeButton(Html.fromHtml("<font color='#000000'>Cancel</font>"),
+                (dialog, which) -> {});
+        alertDialog.show();
     }
 
-    /**
-     * Executed when observers of the JSONObject contact list response are fired
-     *
-     * @param theResponse the observed JSONObject response
-     */
-    private void observeContactResponse(final JSONObject theResponse) {
+    private void observeLeaveResponse(final JSONObject theResponse) {
+        if (theResponse.has("code")) {
+            Log.e("LEAVE ROOM ERROR", theResponse.toString());
+            displayErrorDialog(
+                    "An unexpected error occured when leaving the room. Please try again.");
+            mParticipantModel.clearLeaveResponse();
+        } else if (theResponse.length() != 0) {
+            mParticipantModel.clearLeaveResponse();
+            Toast.makeText(getContext(), "You have left the chat room.", Toast.LENGTH_SHORT).show();
+            Navigation.findNavController(getView()).navigate(
+                    R.id.action_navigation_chat_room_info_to_navigation_messages);
+        }
+    }
+
+    private void observeContactsResponse(final JSONObject theResponse) {
         if (theResponse.has("code") || theResponse.has("error")) {
             Log.e("CONTACT LIST REQUEST ERROR", theResponse.toString());
-            displayErrorDialog("Unexpected error when loading contacts. Please try again.");
+            displayErrorDialog("An unexpected error occurred when loading current " +
+                    "contacts. Please try again.");
             mContactsModel.removeData();
         }
         if (mContactsModel.containsReadableContacts()) {
-            mParticipantOptions = mContactsModel.getContactList();
-            displayParticipantOptions();
+            mParticipantModel.connectGetParticipants(mUserModel.getJwt(), mChatId);
         }
     }
 
-    /**
-     * Executed when observers of the JSONObject chat room creation response are fired
-     *
-     * @param theResponse the observed JSONObject response
-     */
-    private void observeCreationResponse(final JSONObject theResponse) {
+    private void observeCurrentParticipantResponse(final JSONObject theResponse) {
         if (theResponse.has("code")) {
-            Log.e("CHAT ROOM CREATION REQUEST ERROR", theResponse.toString());
-            displayErrorDialog("Unexpected error when creating chat room. Please try again.");
-            mCreationModel.clearCreationResponse();
-        } else if (theResponse.length() != 0) {
-            try {
-                int roomId = theResponse.getInt("chatID");
-                String roomName = theResponse.getString("chatName");
-                CreateChatRoomFragmentDirections
-                        .ActionNavigationCreateChatRoomToNavigationChatRoom action =
-                        CreateChatRoomFragmentDirections
-                                .actionNavigationCreateChatRoomToNavigationChatRoom(roomName,
-                                        String.valueOf(roomId));
-                Navigation.findNavController(getView()).navigate(action);
-            } catch (JSONException ex) {
-                mCreationModel.clearCreationResponse();
-                displayErrorDialog(
-                        "Unexpected error when creating chat room. Please try again.");
-                ex.printStackTrace();
-            }
+            Log.e("PARTICIPANT LIST REQUEST ERROR", theResponse.toString());
+            displayErrorDialog("An unexpected error occurred when loading chat room " +
+                    "participants. Please try again.");
+            mParticipantModel.clearGetResponse();
+        }
+        if (mParticipantModel.containsReadableParticipants()) {
+            setViewComponents();
         }
     }
 
-    /**
-     * Displays contacts/optional participants to be added to a new chat room
-     */
-    private void displayParticipantOptions() {
-        mBinding.listRoot.setAdapter(
-                new ParticipantSelectorRecyclerAdapter(
-                        mParticipantOptions, mAdditions));
-        mTextWatcher.onTextChanged(mBinding.contactSearchText.getText().toString(),
-                0, 0, 0);
+    private void observeParticipantAdditionResponse(final JSONObject theResponse) {
+        if (theResponse.has("code")) {
+            Log.e("PARTICIPANT ADDITION ERROR TO EXISTING CHAT ROOM", theResponse.toString());
+            displayErrorDialog("Unexpected error when adding members. Please try again.");
+            mParticipantModel.clearAddResponse();
+        } else if (theResponse.length() != 0) {
+            mParticipantModel.clearAddResponse();
+            Toast.makeText(getContext(), "Members added successfully.", Toast.LENGTH_SHORT).show();
+            mContactsModel.contactsConnect(mUserModel.getJwt());
+        }
     }
 
-    /**
-     * Displays an error dialog to the user when a specific error occurs
-     *
-     * @param theMessage the custom message
-     */
     private void displayErrorDialog(final String theMessage) {
         ((MainActivity) getActivity()).displayErrorDialog(theMessage);
+    }
+
+    private void setViewComponents() {
+        List<Contact> allContacts = mContactsModel.getContactList();
+        List<Contact> currentParticipants = mParticipantModel.getParticipants();
+        allContacts.removeIf(currentParticipants::contains);
+        mAdditions.removeIf(contact -> !allContacts.contains(contact));
+        mParticipantOptions = allContacts;
+        mBinding.listNewParticipants.setAdapter(
+                new ParticipantSelectorRecyclerAdapter(allContacts, mAdditions));
+        mBinding.listCurrentMembers.setAdapter(
+                new ChatRoomParticipantRecyclerAdapter(currentParticipants));
+        mTextWatcher.onTextChanged(mBinding.contactSearchText.getText().toString(),
+                0, 0, 0);
     }
 }
