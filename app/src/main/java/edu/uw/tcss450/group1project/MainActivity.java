@@ -479,37 +479,21 @@ public class MainActivity extends ThemedActivity {
                             MainActivity.this, R.id.nav_host_fragment);
             final NavDestination navDestination = navController.getCurrentDestination();
 
+            boolean onFragment = false;
             if (navDestination.getId() == R.id.navigation_contacts_parent) {
-                System.out.println("ON PARENT FRAG");
-                Fragment navHostFragment = getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
-//                String tabString = ((ContactsParentFragment) navHostFragment.getChildFragmentManager().findFragmentById(R.id.navigation_contacts_parent)    ).getCurrentTabString();
-//                ((ContactsParentFragment) navHostFragment.getChildFragmentManager().getFragments()Fragments())
-                System.out.println(navHostFragment.getChildFragmentManager().getFragments());
+
+                final Fragment navHostFragment =
+                        getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+                String tabString =
+                        ((ContactsParentFragment) navHostFragment.getChildFragmentManager().
+                                getFragments().get(0)).getCurrentTabString();
+                onFragment = tabString.equals(ContactsParentFragment.REQUESTS);
             }
 
-            System.out.println("GOT A CONTACT REQUEST");
-//            try {
-//                String tabString = ((ContactsParentFragment) getSupportFragmentManager().
-//                        findFragmentById(R.id.navigation_contacts_parent)).getCurrentTabString();
-//
-//                if (tabString.equals(ContactsParentFragment.REQUESTS)) {
-//                    System.out.println("ON THE REQUESTS");
-//                    mContactTabNewCountViewModel.addNotification(ContactsParentFragment.REQUESTS);
-//                } else {
-//                    System.out.println("NOT THE REQUESTS");
-//                }
-//
-//
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-
-
-
-
-
-
-            //
+            if (!onFragment) {
+                System.out.println("ON FRAGMENT");
+                mContactTabNewCountViewModel.addNotification(ContactsParentFragment.REQUESTS);
+            }
         }
 
         /**
@@ -526,7 +510,32 @@ public class MainActivity extends ThemedActivity {
 
             // update the contacts list for both users if the contact request is accepted
             if (theIntent.getBooleanExtra("isAccept", false)) {
+                //update the user's list of contacts
                 mContactsViewModel.contactsConnect(mUserInfoModel.getJwt());
+
+                // if the user is not on the contacts fragment we want to make a notification
+                // for that tab and bottom navigation
+                final NavController navController =
+                        Navigation.findNavController(
+                                MainActivity.this, R.id.nav_host_fragment);
+                final NavDestination navDestination = navController.getCurrentDestination();
+
+                boolean onFragment = false;
+                if (navDestination.getId() == R.id.navigation_contacts_parent) {
+
+                    final Fragment navHostFragment =
+                            getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+                    String tabString =
+                            ((ContactsParentFragment) navHostFragment.getChildFragmentManager().
+                                    getFragments().get(0)).getCurrentTabString();
+                    onFragment = tabString.equals(ContactsParentFragment.ALL_CONTACTS);
+                }
+
+                if (!onFragment) {
+                    System.out.println("ON FRAGMENT");
+                    mContactTabNewCountViewModel.addNotification(ContactsParentFragment.ALL_CONTACTS);
+                }
+
             }
         }
 

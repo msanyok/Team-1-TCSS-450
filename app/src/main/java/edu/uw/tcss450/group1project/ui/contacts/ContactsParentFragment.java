@@ -99,20 +99,10 @@ public class ContactsParentFragment extends Fragment {
                 String selectedTab = tab.getText().toString();
                 // todo: remove if they go onto this tab
                 if (selectedTab.equals(ALL_CONTACTS)) {
-                    System.out.println(ALL_CONTACTS);
                     notifViewModel.removeTabNotifications(ALL_CONTACTS);
-                    notifViewModel.addNotification(REQUESTS);
                 } else if (selectedTab.equals(REQUESTS)) {
-                    System.out.println(REQUESTS);
                     notifViewModel.removeTabNotifications(REQUESTS);
-                    notifViewModel.addNotification(ALL_CONTACTS);
-                } else if (selectedTab.equals(NEW_REQUESTS)) {
-                    System.out.println(NEW_REQUESTS);
-                    notifViewModel.removeTabNotifications(REQUESTS);
-                    notifViewModel.removeTabNotifications(ALL_CONTACTS);
                 }
-
-
             }
 
             @Override
