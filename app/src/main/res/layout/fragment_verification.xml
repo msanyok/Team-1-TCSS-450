@@ -7,92 +7,98 @@
     android:layout_height="match_parent"
     tools:context=".ui.auth.verification.RegisterVerificationFragment">
 
-    <TextView
-        android:id="@+id/message_verification_greeting"
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
-        android:gravity="center"
-        android:text="@string/message_verification_greeting"
-        android:textAlignment="center"
-        android:textColor="?android:textColorPrimary"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" >
-    </TextView>
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
 
-    <TextView
-        android:id="@+id/message_verification_instructions"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:gravity="center"
-        android:text="@string/message_verification_instructions"
-        android:textAlignment="center"
-        android:textSize="16sp"
-        android:textColor="?android:textColorPrimary"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/message_verification_greeting" >
-    </TextView>
+        <TextView
+            android:id="@+id/message_verification_greeting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/message_verification_greeting"
+            android:textColor="?android:textColorPrimary"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" >
+        </TextView>
 
-    <TextView
-        android:id="@+id/message_resend_code_instructions"
-        android:layout_width="249dp"
-        android:layout_height="47dp"
-        android:layout_marginTop="92dp"
-        android:gravity="center"
-        android:text="@string/message_resend_code_instructions"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        android:textColor="?android:textColorPrimary"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_verification" >
-    </TextView>
+        <TextView
+            android:id="@+id/message_verification_instructions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:gravity="center"
+            android:text="@string/message_verification_instructions"
+            android:textAlignment="center"
+            android:textSize="16sp"
+            android:textColor="?android:textColorPrimary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/message_verification_greeting" >
+        </TextView>
 
-    <EditText
-        android:id="@+id/edit_verification_code"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:ems="10"
-        android:inputType = "number"
-        android:hint="@string/hint_verification_code"
-        android:textAlignment="center"
-        android:gravity="center"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/message_verification_instructions" />
+        <TextView
+            android:id="@+id/message_resend_code_instructions"
+            android:layout_width="249dp"
+            android:layout_height="47dp"
+            android:layout_marginTop="92dp"
+            android:gravity="center"
+            android:text="@string/message_resend_code_instructions"
+            android:textAlignment="center"
+            android:textSize="20sp"
+            android:textColor="?android:textColorPrimary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/button_verification" >
+        </TextView>
 
-    <Button
-        android:id="@+id/button_verification"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="@string/action_send_code"
-        android:textColor="?buttonTextColor"
-        android:gravity="center"
-        android:backgroundTint="?android:colorAccent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_verification_code"
-        app:layout_constraintVertical_bias="0.0" />
+        <EditText
+            android:id="@+id/edit_verification_code"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:ems="10"
+            android:inputType = "number"
+            android:hint="@string/hint_verification_code"
+            android:textAlignment="center"
+            android:gravity="center"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/message_verification_instructions" />
 
-    <Button
-        android:id="@+id/button_resend_code"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/action_resend_code"
-        android:textColor="?buttonTextColor"
-        android:backgroundTint="?android:colorAccent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/message_resend_code_instructions"
-        app:layout_constraintVertical_bias="0.0" />
+        <Button
+            android:id="@+id/button_verification"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/action_send_code"
+            android:textColor="?buttonTextColor"
+            android:gravity="center"
+            android:backgroundTint="?android:colorAccent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/edit_verification_code"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <Button
+            android:id="@+id/button_resend_code"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/action_resend_code"
+            android:textColor="?buttonTextColor"
+            android:backgroundTint="?android:colorAccent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/message_resend_code_instructions"
+            app:layout_constraintVertical_bias="0.0" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
