@@ -57,6 +57,7 @@ public class WeatherParentFragment extends Fragment {
      * Required empty constructor
      */
     public WeatherParentFragment() {
+
     }
 
     @Override
@@ -101,7 +102,8 @@ public class WeatherParentFragment extends Fragment {
     private void observeLocationListResponse(final JSONObject theResponse) {
         if (theResponse.has("code")) {
             Log.e("WEATHER LOCATION LIST REQUEST ERROR", theResponse.toString());
-            displayErrorDialog("Unexpected error when loading saved locations. Please try again.");
+            displayErrorDialog(
+                    "Unexpected error when loading saved locations. Please try again.");
             mLocationModel.clearResponse();
         } else if (theResponse.length() != 0) {
             mLocationModel.clearResponse();

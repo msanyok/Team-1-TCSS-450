@@ -27,6 +27,7 @@ import org.json.JSONObject;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +47,8 @@ public class ChatRoomCreationViewModel extends AndroidViewModel {
     /** The JSONObject response assigned to chat room creation */
     private MutableLiveData<JSONObject> mCreateRoomResponse;
 
-    private List<Contact> mSelected;
+    /** The set of selected participants to be added */
+    private Set<Contact> mSelected;
 
     /**
      * Creates a new chat room participant view model
@@ -57,15 +59,16 @@ public class ChatRoomCreationViewModel extends AndroidViewModel {
         super(theApplication);
         mCreateRoomResponse = new MutableLiveData<>();
         mCreateRoomResponse.setValue(new JSONObject());
-        mSelected = new ArrayList<>();
+        mSelected = new HashSet<>();
     }
 
-    public List<Contact> getSelected() {
-        return new LinkedList<>(mSelected);
-    }
-
-    public void setSelected(final List<Contact> theSelected) {
-        mSelected = theSelected;
+    /**
+     * Provides the list of selected contacts to be added
+     *
+     * @return the list of selected contacts
+     */
+    public Set<Contact> getSelected() {
+        return mSelected;
     }
 
     /**
@@ -80,6 +83,9 @@ public class ChatRoomCreationViewModel extends AndroidViewModel {
         mCreateRoomResponse.observe(theOwner, theObserver);
     }
 
+    /**
+     * Clears this view model's creation response from the server
+     */
     public void clearCreationResponse() {
         mCreateRoomResponse.setValue(new JSONObject());
     }
@@ -90,15 +96,15 @@ public class ChatRoomCreationViewModel extends AndroidViewModel {
      * @param theJwt the user's JWT
      * @param theNickname the nickname of the user creating the chat room
      * @param theRoomName the name of the room to be created
-     * @param theParticipants the participants to be added to the room
      */
-    public void createChatRoom(final String theJwt, final String theNickname,
-                               final String theRoomName, final Set<Contact> theParticipants) {
+    public void createChatRoom(final String theJwt,
+                               final String theNickname,
+                               final String theRoomName) {
         String url = "https://team-1-tcss-450-server.herokuapp.com/chats";
         Map<String, Object> bodyMap = new HashMap<>();
         bodyMap.put("name", theRoomName);
-        bodyMap.put("memberIds", createMemberIdArray(theParticipants));
-        bodyMap.put("firstMessage", constructFirstMessage(theParticipants, theNickname));
+        bodyMap.put("memberIds", createMemberIdArray(mSelected));
+        bodyMap.put("firstMessage", constructFirstMessage(mSelected, theNickname));
         JSONObject body = new JSONObject(bodyMap);
 
         Request request = new JsonObjectRequest(
@@ -174,9 +180,6 @@ public class ChatRoomCreationViewModel extends AndroidViewModel {
      * @param theError the returned volley error
      */
     private void handleRoomCreationError(final VolleyError theError) {
-//        Map<String, String> map = new HashMap<>();
-//        map.put("code", "Server error: " + theError.getLocalizedMessage());
-//        mCreateRoomResponse.setValue(new JSONObject(map));
         Map<String, Object> map = new HashMap<>();
         if (theError.networkResponse != null) {
             map.put("code", String.valueOf(theError.networkResponse.statusCode));

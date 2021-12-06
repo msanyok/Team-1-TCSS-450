@@ -19,7 +19,8 @@ import edu.uw.tcss450.group1project.databinding.FragmentContactsCardBinding;
 import edu.uw.tcss450.group1project.ui.contacts.Contact;
 
 /**
- * ContactRecyclerAdapter provides an adapter for the ContactsFragment RecyclerView.
+ * ChatRoomParticipantRecyclerAdapter provides an adapter for the ChatRoomInfoFragment
+ * current members recycler view.
  *
  * @author Parker Rosengreen
  * @version Fall 2021
@@ -31,7 +32,7 @@ public class ChatRoomParticipantRecyclerAdapter
     private final List<Contact> mContacts;
 
     /**
-     * Creates a new ContactsRecyclerAdapter with a provided list of contacts
+     * Creates a new ChatRoomParticipantRecyclerAdapter with a provided list of contacts
      *
      * @param theContacts the list of contacts
      */
@@ -63,7 +64,7 @@ public class ChatRoomParticipantRecyclerAdapter
 
     /**
      * ParticipantViewHolder is a class defining an individual ViewHolder for the
-     * ChatRoomSettingFragment participant recycler view.
+     * ChatRoomInfoFragment current member recycler view.
      *
      * @author Parker Rosengreen
      * @version Fall 2021
@@ -73,7 +74,7 @@ public class ChatRoomParticipantRecyclerAdapter
         /** The assigned view */
         private final View mView;
 
-        /** The ViewBinding corresponded to a participant RecyclerView card */
+        /** The ViewBinding corresponded to a current member recycler view card */
         private final FragmentContactsCardBinding mBinding;
 
         /** The contact assigned to this ViewHolder */
@@ -101,7 +102,7 @@ public class ChatRoomParticipantRecyclerAdapter
         }
 
         /**
-         * Displays all contact data and image views for a single participant card
+         * Displays all contact data and image views for a single current member card
          */
         private void display() {
             mBinding.contactName.setText(String.format("%s %s", mContact.getFirst(),

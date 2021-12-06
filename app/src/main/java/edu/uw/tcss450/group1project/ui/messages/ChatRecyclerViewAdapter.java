@@ -49,6 +49,7 @@ public class ChatRecyclerViewAdapter extends
      */
     private final String mPersonalIdentifier;
 
+    /** A mapping of how each message's corners are to be shaped */
     private Map<Integer, int[]> mCornerMap;
 
     /**
@@ -67,6 +68,9 @@ public class ChatRecyclerViewAdapter extends
         constructCornerMapping();
     }
 
+    /**
+     * Updates the corner mapping of each message in this adapter
+     */
     public void constructCornerMapping() {
         for (int i = 0; i < mMessages.size(); i++) {
             ChatMessage message = mMessages.get(i);
@@ -133,7 +137,6 @@ public class ChatRecyclerViewAdapter extends
     public void onBindViewHolder(@NonNull final MessageViewHolder theHolder,
                                  final int thePosition) {
         theHolder.setMessage(mMessages.get(thePosition));
-//        System.out.println("Position: " + thePosition + " , Message : " + mMessages.get(thePosition).getMessage());
     }
 
     @Override

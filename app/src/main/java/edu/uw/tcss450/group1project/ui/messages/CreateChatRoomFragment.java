@@ -59,14 +59,15 @@ public class CreateChatRoomFragment extends Fragment {
     /** The user info view model */
     private UserInfoViewModel mUserModel;
 
-    /** The set of added participants */
-    private Set<Contact> mAdditions;
-
     /** The view binding */
     private FragmentCreateChatroomBinding mBinding;
 
     private List<Contact> mParticipantOptions;
 
+    /** The set of added participants */
+    private Set<Contact> mAdditions;
+
+    /** The text watcher which listens to changes in user input in the contact search bar */
     private TextWatcher mTextWatcher;
 
     @Override
@@ -76,14 +77,8 @@ public class CreateChatRoomFragment extends Fragment {
                 new ViewModelProvider(this).get(ChatRoomCreationViewModel.class);
         mContactsModel = new ViewModelProvider(getActivity()).get(ContactsViewModel.class);
         mUserModel = new ViewModelProvider(getActivity()).get(UserInfoViewModel.class);
-        mAdditions = new HashSet<>(mCreationModel.getSelected());
+        mAdditions = mCreationModel.getSelected();
         mContactsModel.contactsConnect(mUserModel.getJwt());
-    }
-
-    @Override
-    public void onSaveInstanceState(@NonNull final Bundle theSavedInstanceState) {
-        mCreationModel.setSelected(new ArrayList<>(mAdditions));
-        super.onSaveInstanceState(theSavedInstanceState);
     }
 
     @Override
@@ -231,8 +226,7 @@ public class CreateChatRoomFragment extends Fragment {
      * @param theRoomName the name of the chat room to be created
      */
     private void initiateChatRoomCreation(final String theRoomName) {
-        mCreationModel.createChatRoom(mUserModel.getJwt(), mUserModel.getNickname(),
-                theRoomName, mAdditions);
+        mCreationModel.createChatRoom(mUserModel.getJwt(), mUserModel.getNickname(), theRoomName);
     }
 
     /**

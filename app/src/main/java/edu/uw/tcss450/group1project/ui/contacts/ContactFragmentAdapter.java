@@ -42,8 +42,8 @@ public class ContactFragmentAdapter extends FragmentStateAdapter {
 
     @NonNull
     @Override
-    public Fragment createFragment(int position) {
-        return mFrags.get(position);
+    public Fragment createFragment(final int thePosition) {
+        return mFrags.get(thePosition);
     }
 
     @Override

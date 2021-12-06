@@ -1,3 +1,8 @@
+/*
+ * TCSS450 Mobile Applications
+ * Fall 2021
+ */
+
 package edu.uw.tcss450.group1project.ui.messages;
 
 import android.app.Application;
@@ -22,6 +27,7 @@ import org.json.JSONObject;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -29,19 +35,35 @@ import java.util.Set;
 
 import edu.uw.tcss450.group1project.ui.contacts.Contact;
 
+/**
+ * ChatRoomParticipantViewModel is a class for storing data pertaining to chat room
+ * participant additions and selections.
+ *
+ * @author Parker Rosengreen
+ * @version Fall 2021
+ */
 public class ChatRoomParticipantViewModel extends AndroidViewModel {
 
     /** The JSONObject response assigned to chat room participant additions */
     private MutableLiveData<JSONObject> mAddParticipantsResponse;
 
+    /** The JSONObject response assigned to chat room participant "gets" */
     private MutableLiveData<JSONObject> mGetParticipantsResponse;
 
+    /** The JSONObject response assigned to leaving a particular chat room */
     private MutableLiveData<JSONObject> mLeaveRoomResponse;
 
+    /** The list of current participants */
     private List<Contact> mParticipants;
 
-    private List<Contact> mSelected;
+    /** The list of selected participants to be added */
+    private Set<Contact> mSelected;
 
+    /**
+     * Constructs a new ChatRoomParticipantViewModel with the provided application
+     *
+     * @param theApplication the application
+     */
     public ChatRoomParticipantViewModel(@NonNull final Application theApplication) {
         super(theApplication);
         mAddParticipantsResponse = new MutableLiveData<>();
@@ -51,33 +73,53 @@ public class ChatRoomParticipantViewModel extends AndroidViewModel {
         mLeaveRoomResponse = new MutableLiveData<>();
         mLeaveRoomResponse.setValue(new JSONObject());
         mParticipants = new ArrayList<>();
-        mSelected = new ArrayList<>();
+        mSelected = new HashSet<>();
     }
 
-    public List<Contact> getSelected() {
-        return new LinkedList<>(mSelected);
+    /**
+     * Provides the set of contacts selected to be added
+     *
+     * @return the set of contacts
+     */
+    public Set<Contact> getSelected() {
+        return mSelected;
     }
 
+    /**
+     * Provides a copy of the list of current participants
+     *
+     * @return the list of current participants
+     */
     public List<Contact> getParticipants() {
         return new LinkedList<>(mParticipants);
     }
 
-    public void setSelected(final List<Contact> theSelected) {
-        mSelected = theSelected;
-    }
-
+    /**
+     * Indicates whether there are contacts in this view model's current participant list
+     *
+     * @return true if participants exist, false otherwise
+     */
     public boolean containsReadableParticipants() {
         return !mParticipants.isEmpty();
     }
 
+    /**
+     * Clears the response associated with current participant "get" requests
+     */
     public void clearGetResponse() {
         mGetParticipantsResponse.setValue(new JSONObject());
     }
 
+    /**
+     * Clears the response associated with new participant addition requests
+     */
     public void clearAddResponse() {
         mAddParticipantsResponse.setValue(new JSONObject());
     }
 
+    /**
+     * Clears the response associated with leaving a specific chat room
+     */
     public void clearLeaveResponse() {
         mLeaveRoomResponse.setValue(new JSONObject());
     }
@@ -119,22 +161,21 @@ public class ChatRoomParticipantViewModel extends AndroidViewModel {
     }
 
     /**
-     * Adds a set of participants to an existing chat room.
+     * Creates a request to add this view model's set of selected
+     * participants to an existing chat room.
      *
      * @param theJwt the JWT of the user
      * @param theNickname the nickname of the user adding ot the chat room
      * @param theChatRoomId the id of the chat room to be added to
-     * @param theParticipants the participants to be added
      */
     public void connectAddParticipants(final String theJwt,
                                        final String theNickname,
-                                       final int theChatRoomId,
-                                       final Set<Contact> theParticipants) {
+                                       final int theChatRoomId) {
         String url = "https://team-1-tcss-450-server.herokuapp.com/chats";
         Map<String, Object> bodyMap = new HashMap<>();
-        bodyMap.put("memberIds", createMemberIdArray(theParticipants));
+        bodyMap.put("memberIds", createMemberIdArray(mSelected));
         bodyMap.put("chatId", theChatRoomId);
-        bodyMap.put("message", constructAddMessage(theParticipants, theNickname));
+        bodyMap.put("message", constructAddMessage(mSelected, theNickname));
         JSONObject body = new JSONObject(bodyMap);
 
         Request request = new JsonObjectRequest(
@@ -161,7 +202,7 @@ public class ChatRoomParticipantViewModel extends AndroidViewModel {
     }
 
     /**
-     * Retrieves the set of existing participants in a given chat room.
+     * Creates a request to retrieve the set of existing participants in a given chat room.
      *
      * @param theJwt the JWT of the user
      * @param theChatRoomId the id of the chat room
@@ -192,6 +233,14 @@ public class ChatRoomParticipantViewModel extends AndroidViewModel {
                 .add(request);
     }
 
+    /**
+     * Creates a request to leave a particular chat room
+     *
+     * @param theJwt the user's JWT
+     * @param theChatRoomId the id of the chat room to be left
+     * @param theEmail the user's email
+     * @param theNickname the user's nickname
+     */
     public void connectLeaveRoom(final String theJwt, final int theChatRoomId,
                                  final String theEmail, final String theNickname) {
         String message = theNickname + " has left the chat room.";
@@ -236,6 +285,11 @@ public class ChatRoomParticipantViewModel extends AndroidViewModel {
         mLeaveRoomResponse.setValue(new JSONObject(map));
     }
 
+    /**
+     * Handles a successful response for retrieving a chat room's current participants
+     *
+     * @param theResponse the server response
+     */
     private void handleGetParticipantsSuccess(final JSONObject theResponse) {
         List<Contact> participants = new ArrayList<>();
         try {
@@ -260,6 +314,11 @@ public class ChatRoomParticipantViewModel extends AndroidViewModel {
         }
     }
 
+    /**
+     * Handles an unsuccessful response for retrieving a chat room's current participants
+     *
+     * @param theError the returned error
+     */
     private void handleGetParticipantsError(final VolleyError theError) {
         Map<String, Object> map = new HashMap<>();
         if (theError.networkResponse != null) {
@@ -276,6 +335,11 @@ public class ChatRoomParticipantViewModel extends AndroidViewModel {
         mGetParticipantsResponse.setValue(new JSONObject(map));
     }
 
+    /**
+     * Handles an unsuccessful response for adding participants to a chat room
+     *
+     * @param theError the returned error
+     */
     private void handleAddParticipantsError(final VolleyError theError) {
         Map<String, Object> map = new HashMap<>();
         if (theError.networkResponse != null) {

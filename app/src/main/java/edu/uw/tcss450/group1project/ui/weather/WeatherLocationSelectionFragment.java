@@ -202,38 +202,35 @@ public class WeatherLocationSelectionFragment
         if (getActivity().getCurrentFocus() != null) {
             imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),0);
         }
-        boolean valid = false;
-        if (mMarker != null) {
-            valid = true;
-            if (mLocationString.isEmpty()) {
+        boolean valid = mLocationString.isEmpty();
+        if (valid) {
+            if (mMarker != null) {
                 mLocationString = new LatLong(mMarker.getPosition().latitude,
-                    mMarker.getPosition().longitude).toString();
+                        mMarker.getPosition().longitude).toString();
                 mSaveChecked = mBinding.saveCheckbox.isChecked();
-            }
-        } else {
-            int zipCode = 0;
-            String input = mBinding.searchText.getText().toString().trim();
-            if (input.length() == 5) {
-                try {
-                    zipCode = Integer.valueOf(input);
-                    if (zipCode >= 0) {
-                        valid = true;
+            } else {
+                int zipCode = 0;
+                String input = mBinding.searchText.getText().toString().trim();
+                if (input.length() == 5) {
+                    try {
+                        zipCode = Integer.valueOf(input);
+                        if (zipCode < 0) {
+                            valid = false;
+                        }
+                    } catch (NumberFormatException ex) {
+                        // the user did not enter a number
                     }
-                } catch (NumberFormatException ex) {
-                    // the user did not enter a number
+                }
+                if (valid) {
+                    mLocationString = String.valueOf(zipCode);
+                    mSaveChecked = mBinding.saveCheckbox.isChecked();
+                } else {
+                    mBinding.searchText.setError("Zip code must be a positive, 5 digit value!");
                 }
             }
             if (valid) {
-                if (mLocationString.isEmpty()) {
-                    mLocationString = String.valueOf(zipCode);
-                    mSaveChecked = mBinding.saveCheckbox.isChecked();
-                }
-            } else {
-                mBinding.searchText.setError("Zip code must be a positive, 5 digit value!");
+                mWeatherModel.connectGet(mUserModel.getJwt(), mLocationString, true);
             }
-        }
-        if (valid) {
-            mWeatherModel.connectGet(mUserModel.getJwt(), mLocationString, true);
         }
     }
 

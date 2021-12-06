@@ -16,7 +16,7 @@ import java.util.Objects;
  * @author Parker Rosengreen
  * @version Fall 2021
  */
-public class Contact implements Serializable {
+public class Contact {
 
     /** The Member ID */
     private final String mMemberId;

@@ -76,7 +76,6 @@ public class HomeFragment extends Fragment {
         mWeatherModel = new ViewModelProvider(getActivity()).get(WeatherDataViewModel.class);
         mUserModel = new ViewModelProvider(getActivity()).get(UserInfoViewModel.class);
         mChatListModel = new ViewModelProvider(getActivity()).get(ChatsListViewModel.class);
-
     }
 
 
@@ -101,7 +100,8 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        mChatListModel.addResponseObserver(getViewLifecycleOwner(), this::observerMissedChatsResponse);
+        mChatListModel.addResponseObserver(
+                getViewLifecycleOwner(), this::observerMissedChatsResponse);
         mChatListModel.getChatListData(mUserModel.getJwt());
 
         mWeatherModel.addResponseObserver(getViewLifecycleOwner(), this::observeWeatherResponse);
@@ -111,7 +111,6 @@ public class HomeFragment extends Fragment {
 
         mBinding.listNewMessages.setAdapter(
                 new MessagesNotificationsRecyclerAdapter(new ArrayList<>()));
-
     }
 
 

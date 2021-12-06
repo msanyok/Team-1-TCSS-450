@@ -1,3 +1,8 @@
+/*
+ * TCSS450 Mobile Applications
+ * Fall 2021
+ */
+
 package edu.uw.tcss450.group1project.ui.messages;
 
 import android.os.Bundle;
@@ -36,30 +41,44 @@ import edu.uw.tcss450.group1project.model.UserInfoViewModel;
 import edu.uw.tcss450.group1project.ui.contacts.Contact;
 import edu.uw.tcss450.group1project.ui.contacts.ContactsViewModel;
 
+/**
+ * ChatRoomInfoFragment is a class for displaying information data for a specific chat room.
+ * Functionality includes adding new members, viewing current members, and leaving.
+ *
+ * @author Parker Rosengreen
+ * @version Fall 2021
+ */
 public class ChatRoomInfoFragment extends Fragment {
 
+    /** The participant view model */
     private ChatRoomParticipantViewModel mParticipantModel;
 
+    /** The contacts view model */
     private ContactsViewModel mContactsModel;
 
+    /** The user info view model */
     private UserInfoViewModel mUserModel;
 
+    /** The view binding */
     private FragmentChatroomInfoBinding mBinding;
 
+    /** The list of participants that can be added to this chat room */
     private List<Contact> mParticipantOptions;
 
+    /** The set of contacts that are being added to this chat room */
     private Set<Contact> mAdditions;
 
+    /** The text watcher which listens to changes in user contact searches */
     private TextWatcher mTextWatcher;
 
+    /** The id of the chat room for which this fragment is displaying info for */
     private int mChatId;
 
+    /**
+     * Required empty public constructor
+     */
     public ChatRoomInfoFragment() {
         // Required empty public constructor
-    }
-
-    public int getChatId() {
-        return mChatId;
     }
 
     @Override
@@ -71,13 +90,7 @@ public class ChatRoomInfoFragment extends Fragment {
         mUserModel = new ViewModelProvider(getActivity()).get(UserInfoViewModel.class);
         mContactsModel = new ViewModelProvider(getActivity()).get(ContactsViewModel.class);
         mParticipantModel = new ViewModelProvider(this).get(ChatRoomParticipantViewModel.class);
-        mAdditions = new HashSet<>(mParticipantModel.getSelected());
-    }
-
-    @Override
-    public void onSaveInstanceState(@NonNull final Bundle theSavedInstanceState) {
-        mParticipantModel.setSelected(new ArrayList<>(mAdditions));
-        super.onSaveInstanceState(theSavedInstanceState);
+        mAdditions = mParticipantModel.getSelected();
     }
 
     @Override
@@ -187,15 +200,23 @@ public class ChatRoomInfoFragment extends Fragment {
         mBinding.contactSearchText.setError(null);
     }
 
+    /**
+     * Initializes a participant addition request to the server
+     *
+     * @param theButton the pressed "add" button
+     */
     private void initializeParticipantAddition(final View theButton) {
         if (mAdditions.isEmpty()) {
             mBinding.contactSearchText.setError("Please select at least 1 participant.");
         } else {
             mParticipantModel.connectAddParticipants(
-                    mUserModel.getJwt(), mUserModel.getNickname(), mChatId, mAdditions);
+                    mUserModel.getJwt(), mUserModel.getNickname(), mChatId);
         }
     }
 
+    /**
+     * Displays a dialog to the user confirming that they would like to leave the chat room
+     */
     private void displayLeaveDialog() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
         alertDialog.setMessage(Html.fromHtml("<font color='#000000'>Are you sure " +
@@ -210,6 +231,11 @@ public class ChatRoomInfoFragment extends Fragment {
         alertDialog.show();
     }
 
+    /**
+     * Observes responses from the server corresponding to leave requests
+     *
+     * @param theResponse the observed response
+     */
     private void observeLeaveResponse(final JSONObject theResponse) {
         if (theResponse.has("code")) {
             Log.e("LEAVE ROOM ERROR", theResponse.toString());
@@ -224,6 +250,11 @@ public class ChatRoomInfoFragment extends Fragment {
         }
     }
 
+    /**
+     * Observes responses from the server corresponding to contact "gets"
+     *
+     * @param theResponse the observed response
+     */
     private void observeContactsResponse(final JSONObject theResponse) {
         if (theResponse.has("code") || theResponse.has("error")) {
             Log.e("CONTACT LIST REQUEST ERROR", theResponse.toString());
@@ -236,6 +267,11 @@ public class ChatRoomInfoFragment extends Fragment {
         }
     }
 
+    /**
+     * Observes responses from the server corresponding to chat room participant "gets"
+     *
+     * @param theResponse the observed response
+     */
     private void observeCurrentParticipantResponse(final JSONObject theResponse) {
         if (theResponse.has("code")) {
             Log.e("PARTICIPANT LIST REQUEST ERROR", theResponse.toString());
@@ -248,6 +284,11 @@ public class ChatRoomInfoFragment extends Fragment {
         }
     }
 
+    /**
+     * Observes responses from the server corresponding to chat room participant additions
+     *
+     * @param theResponse the observed response
+     */
     private void observeParticipantAdditionResponse(final JSONObject theResponse) {
         if (theResponse.has("code")) {
             Log.e("PARTICIPANT ADDITION ERROR TO EXISTING CHAT ROOM", theResponse.toString());
@@ -260,10 +301,19 @@ public class ChatRoomInfoFragment extends Fragment {
         }
     }
 
+    /**
+     * Displays an error dialog to the user with a supplied custom message
+     *
+     * @param theMessage the custom message
+     */
     private void displayErrorDialog(final String theMessage) {
         ((MainActivity) getActivity()).displayErrorDialog(theMessage);
     }
 
+    /**
+     * Sets the view components of this fragment, filtering current contacts against
+     * existing chat room members
+     */
     private void setViewComponents() {
         List<Contact> allContacts = mContactsModel.getContactList();
         List<Contact> currentParticipants = mParticipantModel.getParticipants();
