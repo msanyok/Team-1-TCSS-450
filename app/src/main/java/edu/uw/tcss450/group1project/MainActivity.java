@@ -24,8 +24,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
@@ -38,6 +40,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import edu.uw.tcss450.group1project.model.ContactTabNewCountViewModel;
 import edu.uw.tcss450.group1project.model.IsTypingViewModel;
 import edu.uw.tcss450.group1project.ui.contacts.ContactRequestViewModel;
 import edu.uw.tcss450.group1project.model.LocalStorageUtils;
@@ -46,6 +49,7 @@ import edu.uw.tcss450.group1project.model.NewMessageCountViewModel;
 import edu.uw.tcss450.group1project.model.PushyTokenViewModel;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
 import edu.uw.tcss450.group1project.services.PushReceiver;
+import edu.uw.tcss450.group1project.ui.contacts.ContactsParentFragment;
 import edu.uw.tcss450.group1project.ui.contacts.ContactsViewModel;
 import edu.uw.tcss450.group1project.ui.messages.ChatMessage;
 import edu.uw.tcss450.group1project.ui.messages.ChatViewModel;
@@ -100,6 +104,8 @@ public class MainActivity extends ThemedActivity {
     /** Keeps track of the new messages */
     private NewMessageCountViewModel mNewMessageModel;
 
+    private ContactTabNewCountViewModel mContactTabNewCountViewModel;
+
     /** Keeps track of the new contact requests */
     private ContactRequestViewModel mContactRequestViewModel;
 
@@ -131,6 +137,7 @@ public class MainActivity extends ThemedActivity {
         mLocationModel =
                 new ViewModelProvider(MainActivity.this).get(LocationViewModel.class);
         mNewMessageModel = new ViewModelProvider(this).get(NewMessageCountViewModel.class);
+        mContactTabNewCountViewModel = new ViewModelProvider(this).get(ContactTabNewCountViewModel.class);
         mUserInfoModel = new ViewModelProvider(this,
                 new UserInfoViewModel.UserInfoViewModelFactory(args.getJwt()))
                         .get(UserInfoViewModel.class);
@@ -173,7 +180,7 @@ public class MainActivity extends ThemedActivity {
             // todo: need for navigation for in app badges?
         });
 
-        // Handles the notification badge drawing
+        // Handles the notification badge drawing for new messages
         mNewMessageModel.addMessageCountObserver(this, count -> {
             BadgeDrawable badge = navView.getOrCreateBadge(R.id.navigation_messages);
             badge.setMaxCharacterCount(2);
@@ -183,6 +190,20 @@ public class MainActivity extends ThemedActivity {
                 badge.setVisible(true);
             } else {
                 // user did some action to clear the new messages, remove the badge
+                badge.clearNumber();
+                badge.setVisible(false);
+            }
+        });
+
+        // Handles the notification badge drawing for contacts
+        mContactTabNewCountViewModel.addContactNotifObserver(this, map -> {
+            int totalCount = map.getOrDefault(ContactTabNewCountViewModel.TOTAL_KEY, 0);
+            BadgeDrawable badge = navView.getOrCreateBadge(R.id.navigation_contacts_parent);
+            badge.setMaxCharacterCount(2);
+            if (totalCount > 0) {
+                badge.setNumber(totalCount);
+                badge.setVisible(true);
+            } else {
                 badge.clearNumber();
                 badge.setVisible(false);
             }
@@ -448,10 +469,47 @@ public class MainActivity extends ThemedActivity {
          */
         private void completeNewContactRequestActions(final Context theContext,
                                                       final Intent theIntent) {
-
-            // todo: need to implement on screen/off screen functionality with in app notifications
-            Log.d("RECIEVE INTENT", "New Contact Request Actions");
+            // notify that there is a new contact request
             mContactRequestViewModel.allContactRequests(mUserInfoModel.getJwt());
+
+            // if the user is not on the sent/received requests page,
+            // update the new count view model
+            final NavController navController =
+                    Navigation.findNavController(
+                            MainActivity.this, R.id.nav_host_fragment);
+            final NavDestination navDestination = navController.getCurrentDestination();
+
+            if (navDestination.getId() == R.id.navigation_contacts_parent) {
+                System.out.println("ON PARENT FRAG");
+                Fragment navHostFragment = getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+//                String tabString = ((ContactsParentFragment) navHostFragment.getChildFragmentManager().findFragmentById(R.id.navigation_contacts_parent)    ).getCurrentTabString();
+//                ((ContactsParentFragment) navHostFragment.getChildFragmentManager().getFragments()Fragments())
+                System.out.println(navHostFragment.getChildFragmentManager().getFragments());
+            }
+
+            System.out.println("GOT A CONTACT REQUEST");
+//            try {
+//                String tabString = ((ContactsParentFragment) getSupportFragmentManager().
+//                        findFragmentById(R.id.navigation_contacts_parent)).getCurrentTabString();
+//
+//                if (tabString.equals(ContactsParentFragment.REQUESTS)) {
+//                    System.out.println("ON THE REQUESTS");
+//                    mContactTabNewCountViewModel.addNotification(ContactsParentFragment.REQUESTS);
+//                } else {
+//                    System.out.println("NOT THE REQUESTS");
+//                }
+//
+//
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+
+
+
+
+
+
+            //
         }
 
         /**
