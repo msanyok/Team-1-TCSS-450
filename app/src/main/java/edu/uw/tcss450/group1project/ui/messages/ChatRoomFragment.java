@@ -6,7 +6,8 @@
 package edu.uw.tcss450.group1project.ui.messages;
 
 import android.os.Bundle;
-import android.util.Log;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +16,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.TreeSet;
 
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentChatroomBinding;
+import edu.uw.tcss450.group1project.model.IsTypingViewModel;
 import edu.uw.tcss450.group1project.model.LocalStorageUtils;
 import edu.uw.tcss450.group1project.model.NewMessageCountViewModel;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
@@ -41,6 +47,9 @@ public class ChatRoomFragment extends Fragment {
 
     /** The View Model that stores information about the user */
     private UserInfoViewModel mUserModel;
+
+    /** The View Model that handles iw typing  */
+    private IsTypingViewModel mTypingModel;
 
     /** The unique ChatId for this particular chat */
     private int mChatId;
@@ -67,6 +76,7 @@ public class ChatRoomFragment extends Fragment {
         final ViewModelProvider provider = new ViewModelProvider(getActivity());
         mUserModel = provider.get(UserInfoViewModel.class);
         mChatModel = provider.get(ChatViewModel.class);
+        mTypingModel = provider.get(IsTypingViewModel.class);
 
         // update the new message counts now that we have navigated to a chat room.
         // if this chat room had new messages, the view model will remove the counts.
@@ -162,16 +172,118 @@ public class ChatRoomFragment extends Fragment {
 
         //Send button was clicked. Send the message via the SendViewModel
         binding.buttonSend.setOnClickListener(button -> {
+            // tell the server that this user is done typing
+            mTypingModel.sendTypingNotification(mChatId, mUserModel.getJwt(), false);
+
             mSendModel.sendMessage(mChatId,
                     mUserModel.getJwt(),
                     binding.editMessage.getText().toString());
-
-
         });
 
         // when we get the response back from the server, clear the edit text
         mSendModel.addResponseObserver(getViewLifecycleOwner(), response ->
                 binding.editMessage.setText(""));
+
+        // add a typing listener that sends notification that the user is typing
+        binding.editMessage.addTextChangedListener(new TextWatcher() {
+
+            /** The amount of time required between sending isTyping notifications */
+            private static final int TYPING_TIMER_TIMEOUT = 5000; // 5 seconds
+
+            /** The timer that handles setting the canType field to true once the time runs out */
+            private Timer mTypingTimer = new Timer();
+
+            /** Whether or not we can send a typing notification when the user types */
+            private boolean mCanType = true;
+
+            @Override
+            public void beforeTextChanged(final CharSequence theCharSequence,
+                                          final int theI,
+                                          final int theI2,
+                                          final int theCounter) {
+                // unused
+            }
+
+            @Override
+            public void onTextChanged(final CharSequence theCharSequence,
+                                      final int theStart,
+                                      final int theBefore,
+                                      final int theCount) {
+
+
+                // only send typing notifications if the timer allows us to and we
+                // actually added a character (no notifs from deletes)
+                if (mCanType && theCount != 0) {
+
+                    // set canType to false, the timer will set
+                    // it back to true once enough time passes
+                    mCanType = false;
+                    mTypingTimer.schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            mCanType = true;
+                        }
+                    }, TYPING_TIMER_TIMEOUT);
+
+                    // send the notification that this user is typing
+                    mTypingModel.sendTypingNotification(mChatId, mUserModel.getJwt(), true);
+
+                } else if (!mCanType && theCharSequence.length() == 0) {
+
+                    // if the textfield is empty from deletions, notify that user is not typing
+                    mTypingModel.sendTypingNotification(mChatId, mUserModel.getJwt(), false);
+
+                    // we also want to be able to notify people if we start typing again
+                    // immediately (rather than having to wait for the timer to run out)
+                    // todo:
+                    mTypingTimer = new Timer();
+                    mCanType = true;
+                }
+
+            }
+
+            @Override
+            public void afterTextChanged(final Editable theEditable) {
+                // unused
+            }
+        });
+
+
+        // add an observer to the typing timers map, when the dataset changes,
+        // we should update the "user is typing... text"
+        mTypingModel.addTimersObserver(getViewLifecycleOwner(), responseMap -> {
+
+            // ensure the map contains this chatId and there is at least one
+            // nickname that is typing in this chat
+            if (responseMap.containsKey(mChatId) && responseMap.get(mChatId).size() > 0) {
+                final Map<String, Timer> nicknameMap = responseMap.get(mChatId);
+                final TreeSet<String> nicknames = new TreeSet<>(nicknameMap.keySet());
+
+                String notifText = "";
+                if (nicknames.size() == 1) {
+                    notifText = nicknames.pollFirst() + " is typing...";
+                } else if (nicknames.size() == 2) {
+                    notifText = nicknames.pollFirst() + " and " + nicknames.pollFirst() +
+                           " are typing...";
+                } else if (nicknames.size() == 3) {
+                   notifText = nicknames.pollFirst() + ", " + nicknames.pollFirst() +
+                           " and 1 other are typing...";
+                } else {
+                    // number of people typing is > 3
+                    notifText = nicknames.pollFirst() + ", " + nicknames.pollFirst() + " and " +
+                           (nicknames.size() - 2) + " others are typing...";
+                }
+
+                binding.userTypingText.setText(notifText);
+                binding.userTypingText.setVisibility(View.VISIBLE);
+
+            } else {
+                // no typers in the chat
+                binding.userTypingText.setText("");
+                binding.userTypingText.setVisibility(View.GONE);
+            }
+
+        });
     }
 
 }

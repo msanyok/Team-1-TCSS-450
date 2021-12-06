@@ -5,14 +5,16 @@
 
 package edu.uw.tcss450.group1project.ui.contacts;
 
-import android.content.Context;
+
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.Html;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
+
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
@@ -24,14 +26,16 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import org.json.JSONException;
+
 import org.json.JSONObject;
+
+import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
 
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentContactsBinding;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
-import edu.uw.tcss450.group1project.utils.TextFieldHints;
-import edu.uw.tcss450.group1project.utils.TextFieldValidators;
 
 /**
  * A {@link Fragment} subclass that is responsible for the contacts page.
@@ -49,11 +53,11 @@ public class ContactsFragment extends Fragment {
     /** ViewModel for contacts */
     private ContactsViewModel mContactsModel;
 
-    /** ViewModel for contacts */
-    private ContactsViewModel mContactDeleteModel;
-
     /** The user info view model */
     private UserInfoViewModel mUserInfo;
+
+    /** The TextWatcher that filters the contacts list */
+    private TextWatcher mTextWatcher;
 
     /**
      * Empty public constructor. Does not provide any functionality.
@@ -84,97 +88,98 @@ public class ContactsFragment extends Fragment {
         super.onViewCreated(theView, theSavedInstanceState);
         mContactsModel.addContactListObserver(getViewLifecycleOwner(),
                 this::observeContactResponse);
-        mBinding.contactRequestButton.setOnClickListener(this::requestToBeSent);
-        mContactsModel.addContactRequestObserver(getViewLifecycleOwner(),
-                this::observeResponse);
         mContactsModel.addContactDeleteObserver(getViewLifecycleOwner(),
                 this::observeDeleteResponse);
         mContactsModel.contactsConnect(mUserInfo.getJwt());
 
         Spinner spinner = (Spinner) getView().findViewById(R.id.contact_search_spinner);
+
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.contact_search_array, R.layout.fragment_contacts_spinner);
         adapter.setDropDownViewResource(R.layout.fragment_contacts_spinner_dropdown);
+
+
         spinner.setAdapter(adapter);
-    }
 
-    /**
-     * Starts the attempt to validate the Nickname before sending the request.
-     *
-     * @param theButton the Button that was pressed to invoke this method.
-     */
-    private void requestToBeSent(final View theButton) {
-        //hides keyboard
-        InputMethodManager imm = (InputMethodManager)getActivity()
-                .getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (getActivity().getCurrentFocus() != null) {
-            imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),0);
-        }
-        validateNickname();
-    }
+        // save instance of this class so we can use it inside
+        final ContactsFragment thisFragment = this;
 
-    /**
-     * Attempts to validate the text inputted for the user's nickname.
-     *
-     * If the validation succeeds, attempts send
-     * Else, sets an error text on the nickname field that requests they enter a valid nickname.
-     */
-    private void validateNickname() {
-        final String nickNameText = mBinding.addContactText.getText().toString().trim();
-        TextFieldValidators.NAME_VALIDATOR.processResult(
-                TextFieldValidators.NAME_VALIDATOR.apply(nickNameText),
-                this::verifyNameWithServer,
-                result -> mBinding.addContactText.setError(TextFieldHints.getNameHint(nickNameText)));
-    }
-
-    /**
-     * Attempts to validate the Nickname and Jwt that is provided.
-     *
-     * If the validation succeeds, attempts send
-     * Else, sets an error text on the nickname field that requests they enter a valid nickname.
-     */
-    private void verifyNameWithServer() {
-        mContactsModel.requestConnect(
-                mBinding.addContactText.getText().toString(), mUserInfo.getJwt());
-    }
-
-    /**
-     * Observes the HTTP Response from the web server. If an error occurred, notify the user
-     * accordingly. If it was a success, minimize keyboard and send a toast notification.
-     *
-     * @param theResponse the Response from the server
-     */
-    private void observeResponse(final JSONObject theResponse) {
-        if (theResponse.length() > 0) {
-            if (theResponse.has("code")) {
-                try {
-
-                    final String message =
-                            theResponse.getJSONObject("data").get("message").toString();
-
-                    if (message.equals("Nickname does not exist")) {
-                        mBinding.addContactText.setError("Nickname does not exist");
-                    } else if (message.equals("Can not create contact with oneself")) {
-                        mBinding.addContactText.setError("Cannot be friends with yourself");
-                    } else if (message.equals("Members are already contacts")) {
-                        mBinding.addContactText.setError("Members are already contacts");
-                    } else if (message.equals("Contact request already exists")) {
-                        mBinding.addContactText.setError("Contact request already exists");
-                    } else {
-                        mBinding.addContactText.setError("Other error. Check logs.");
-                    }
-
-                } catch (JSONException exception) {
-                    Log.e("JSON Parse Error", exception.getMessage());
-                }
-            } else {
-                    Toast.makeText(getContext(),"A contact request has been sent",
-                            Toast.LENGTH_SHORT).show();
+        // create a text watcher that will filter the contact list
+        // when the user types into the filter text
+        mTextWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(final CharSequence theCharSequence,
+                                          final int theI,
+                                          final int theI1,
+                                          final int theI2) {
+                // not used
             }
-        } else {
-            Log.d("Registration JSON Response", "No Response");
-        }
+            @Override
+            public void afterTextChanged(final Editable theEditable) {
+                // not used
+            }
+
+            @Override
+            public void onTextChanged(final CharSequence theEnteredText,
+                                      final int theStartIndex,
+                                      final int theBefore,
+                                      final int theCount) {
+
+                final String identifierType = spinner.getSelectedItem().toString();
+                final String firstChars = theEnteredText.toString().toLowerCase();
+
+                final List<Contact> originalList = mContactsModel.getContactList();
+                final List<Contact> newList =
+                        originalList.stream().filter((contact) -> {
+
+                            String identifier = "";
+                            if (identifierType.equals("Nickname")) {
+                                identifier = contact.getNickname();
+                            } else if (identifierType.equals("First Name")) {
+                                identifier = contact.getFirst();
+                            } else if (identifierType.equals("Last Name")) {
+                                identifier = contact.getLast();
+                            }
+                            identifier = identifier.toLowerCase(Locale.ROOT);
+
+
+                            return identifier.startsWith(firstChars);
+                        }).collect(Collectors.toList());
+
+                mBinding.contactList.setAdapter(new ContactsRecyclerAdapter(newList,
+                        thisFragment::showContactDeleteAlertDialog));
+            }
+        };
+
+        // add the change listener that will filter contacts
+        // when the state of the text field changes
+        mBinding.addContactText.addTextChangedListener(mTextWatcher);
+
+        // add actions that occur when the user changes the type of filtering
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(final AdapterView<?> theParentView,
+                                       final View theSelectedItemView,
+                                       final int thePosition,
+                                       final long theId) {
+                // the user just changed the type of identifier the user wants to use
+                // to filter contacts, so tell the text listener to refilter.
+                mTextWatcher.onTextChanged(mBinding.addContactText.getText().toString(),
+                        0, 0, 0);
+            }
+
+            @Override
+            public void onNothingSelected(final AdapterView<?> theParentView) {
+                // unused
+            }
+
+        });
+
+
     }
+
+
 
     /**
      * Observes the HTTP Response from the web server. If an error occurred, notify the user
@@ -189,10 +194,12 @@ public class ContactsFragment extends Fragment {
                 Log.e("Contact List Error", theResponse.toString());
                 // TODO: Handle UI change when the chat list is not received properly?
             } else {
-                mBinding.listRoot.setAdapter(new ContactsRecyclerAdapter(
+                mBinding.contactList.setAdapter(new ContactsRecyclerAdapter(
                         mContactsModel.getContactList(), this::showContactDeleteAlertDialog));
                 mContactsModel.removeData();
                 mBinding.addContactText.setError(null);
+                mTextWatcher.onTextChanged(mBinding.addContactText.getText().toString(),
+                        0, 0, 0);
             }
         } else {
             // no response from the request

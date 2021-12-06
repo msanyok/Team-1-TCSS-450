@@ -21,6 +21,8 @@
         <item name="cardTextColor">@color/black</item>
         <item name="cardImageColor">@color/black</item>
         <item name="tabDeselectedColor">@color/white_transparent</item>
+        <item name="background">@color/slate_blue</item>
+        <item name="adminTextColor">@color/white</item>
         <item name="bottomNavigationStyle">@style/BottomNavStyleTheme1</item>
     </style>
 
@@ -76,6 +78,8 @@
         <item name="cardTextColor">@color/white</item>
         <item name="cardImageColor">@color/white</item>
         <item name="tabDeselectedColor">@color/black_transparent</item>
+        <item name="background">@color/cream</item>
+        <item name="adminTextColor">@color/black</item>
         <item name="bottomNavigationStyle">@style/BottomNavStyleTheme2</item>
     </style>\
 
@@ -114,6 +118,8 @@
         <item name="cardViewStyle">@style/CardStyleTheme1</item>
         <item name="cardColor">@color/gold</item>
         <item name="buttonTextColor">@color/black</item>
+        <item name="background">@color/purple</item>
+        <item name="adminTextColor">@color/white</item>
         <item name="bottomNavigationStyle">@style/BottomNavStyleTheme1</item>
     </style>
 
