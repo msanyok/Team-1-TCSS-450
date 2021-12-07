@@ -14,6 +14,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import edu.uw.tcss450.group1project.ui.contacts.ContactsParentFragment;
+
 /**
  * Provides utility methods for storing small amounts of data locally.
  * These functions should only be used when the app is not in the foreground.
@@ -27,8 +29,12 @@ import java.util.Set;
  */
 public final class LocalStorageUtils {
 
-    /** The Shared Pref. key that is used to determine storage for new messages */
+    /** The Shared Pref. key that is used to determine storage for new message notifications */
     private static final String NEW_MESSAGES_KEY = "NewMessages";
+
+    /** The Shared Pref. key that is used to determine storage for new contact notifications */
+    private static final String NEW_CONTACTS_KEY = "NewMessages";
+
 
     /** The key of the String set used to store the current chatIds with new messages */
     private static final String NEW_MESSAGE_STRING_SET = "chatIds";
@@ -116,5 +122,80 @@ public final class LocalStorageUtils {
     }
 
 
+    public static void putContactNotification(final Context theContext,
+                                              final String theTabString) {
+        final SharedPreferences contactsStorage =
+                theContext.getSharedPreferences(NEW_CONTACTS_KEY, Context.MODE_PRIVATE);
+        final SharedPreferences.Editor editor = contactsStorage.edit();
+
+        // increment the store for the tab
+        editor.putInt(theTabString, contactsStorage.getInt(theTabString, 0) + 1);
+        editor.apply();
+    }
+
+
+    public static void deleteContactNotifications(final Context theContext,
+                                                  final String theTabString) {
+        final SharedPreferences contactsStorage =
+                theContext.getSharedPreferences(NEW_CONTACTS_KEY, Context.MODE_PRIVATE);
+        final SharedPreferences.Editor editor = contactsStorage.edit();
+
+        // increment the store for the tab
+        editor.putInt(theTabString, 0);
+        editor.apply();
+    }
+
+    public static Map<String, Integer> getMissedContacts(final Context theContext) {
+
+        final Map<String, Integer> contactsMap = new HashMap<>();
+        final SharedPreferences missedContactsStorage =
+                theContext.getSharedPreferences(NEW_CONTACTS_KEY, Context.MODE_PRIVATE);
+
+        contactsMap.put(ContactsParentFragment.ALL_CONTACTS,
+                missedContactsStorage.getInt(ContactsParentFragment.ALL_CONTACTS, 0));
+        contactsMap.put(ContactsParentFragment.REQUESTS,
+                missedContactsStorage.getInt(ContactsParentFragment.REQUESTS, 0));
+
+        int total = missedContactsStorage.getInt(ContactsParentFragment.ALL_CONTACTS, 0) +
+                missedContactsStorage.getInt(ContactsParentFragment.REQUESTS, 0);
+        contactsMap.put("TOTAL", total);
+
+        return contactsMap;
+    }
+
+    public static void saveContactsData(final Context theContext,
+                                        final Map<String, Integer> theMap) {
+
+        final SharedPreferences contactsStorage =
+                theContext.getSharedPreferences(NEW_CONTACTS_KEY, Context.MODE_PRIVATE);
+        final SharedPreferences.Editor editor = contactsStorage.edit();
+
+        int total = 0;
+        for (Map.Entry<String, Integer> entry : theMap.entrySet()) {
+            String key = entry.getKey();
+            int value = entry.getValue();
+            editor.putInt(key, value);
+        }
+        editor.putInt("TOTAL", total);
+
+        editor.apply();
+
+    }
+
+//    public static void clearAllContactNotifications(final Context theContext,
+//    final String theTabString) {
+//        final SharedPreferences contactsStorage =
+//                theContext.getSharedPreferences(NEW_CONTACTS_KEY, Context.MODE_PRIVATE);
+//        final SharedPreferences.Editor editor = contactsStorage.edit();
+//
+//        // increment the store for the tab
+//        editor.putInt(theTabString, 0);
+//        editor.apply();
+
+    /*
+    putContactNotification(theTabString) increments the value for the tab
+    deleteContactNotification(theTabString)
+    clearAllContactNotifications
+     */
 
 }

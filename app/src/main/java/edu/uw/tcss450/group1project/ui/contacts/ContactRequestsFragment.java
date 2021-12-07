@@ -24,6 +24,7 @@ import org.json.JSONObject;
 
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentContactRequestsBinding;
+import edu.uw.tcss450.group1project.model.ContactTabNewCountViewModel;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
 
 /**
@@ -72,18 +73,18 @@ public class ContactRequestsFragment extends Fragment {
         mRequestModel.addRequestResponseObserver(getViewLifecycleOwner(),
                 this::observeRequestResponse);
         mRequestModel.allContactRequests(mUserModel.getJwt());
+
     }
 
     /**
      * Sets the adapter and added the contacts requests to the contact request fragment
-     *
      */
     private void setContactListComponents() {
         mBinding.listContactRequests.setAdapter(new ContactRequestRecyclerAdapter(
                 mRequestModel.getContactList(), mRequestModel, mUserModel));
         mBinding.listOutgoingContactRequests.setAdapter(
                 new OutgoingRequestRecyclerAdapter(
-                        mRequestModel.getOutgoingRequestList(),this::deleteSentRequest));
+                        mRequestModel.getOutgoingRequestList(), this::deleteSentRequest));
     }
 
     /**

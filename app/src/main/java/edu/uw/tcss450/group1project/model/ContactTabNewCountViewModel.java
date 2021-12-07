@@ -46,10 +46,17 @@ public class ContactTabNewCountViewModel extends AndroidViewModel {
 
     }
 
+    public void putData(final Map<String, Integer> theContactNotificationMap) {
+        mTabCounts.setValue(theContactNotificationMap);
+    }
+
     public void addContactNotifObserver(@NonNull final LifecycleOwner theOwner,
                                   @NonNull final Observer<? super Map<String, Integer>> theObserver) {
         mTabCounts.observe(theOwner, theObserver);
     }
 
 
+    public Map<String, Integer> getData() {
+        return mTabCounts.getValue();
+    }
 }

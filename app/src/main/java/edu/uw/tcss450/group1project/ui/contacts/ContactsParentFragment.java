@@ -5,6 +5,7 @@
 
 package edu.uw.tcss450.group1project.ui.contacts;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +27,7 @@ import java.util.Map;
 
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.model.ContactTabNewCountViewModel;
+import edu.uw.tcss450.group1project.model.LocalStorageUtils;
 
 /**
  * ContactsParentFragment is a class for containing child data fragments via a view pager.
@@ -93,6 +95,8 @@ public class ContactsParentFragment extends Fragment {
         final ContactTabNewCountViewModel notifViewModel = new ViewModelProvider(getActivity()).
                 get(ContactTabNewCountViewModel.class);
 
+        // store context so it can be used inside the listener
+        Context thisContext = this.getContext();
         mTabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -100,8 +104,10 @@ public class ContactsParentFragment extends Fragment {
                 // todo: remove if they go onto this tab
                 if (selectedTab.equals(ALL_CONTACTS)) {
                     notifViewModel.removeTabNotifications(ALL_CONTACTS);
+                    LocalStorageUtils.deleteContactNotifications(thisContext, ALL_CONTACTS);
                 } else if (selectedTab.equals(REQUESTS)) {
                     notifViewModel.removeTabNotifications(REQUESTS);
+                    LocalStorageUtils.deleteContactNotifications(thisContext, REQUESTS);
                 }
             }
 

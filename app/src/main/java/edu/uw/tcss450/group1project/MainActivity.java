@@ -83,9 +83,6 @@ public class MainActivity extends ThemedActivity {
     /** A constant int for the permissions request code. Must be a 16 bit number. */
     private static final int MY_PERMISSIONS_LOCATIONS = 8414;
 
-    /** A Channel ID for app notifications*/
-    private static final String CHANNEL_ID = "9898983213213421321";
-
     /** The location request */
     private LocationRequest mLocationRequest;
 
@@ -174,11 +171,12 @@ public class MainActivity extends ThemedActivity {
             }
         });
 
-        // handles the destination changes that occur in the app and what
-        // should happen when it occurs
-        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
-            // todo: need for navigation for in app badges?
-        });
+//        // handles the destination changes that occur in the app and what
+//        // should happen when it occurs
+//        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+//            // todo: need for navigation for in app badges?
+//        });
+
 
         // Handles the notification badge drawing for new messages
         mNewMessageModel.addMessageCountObserver(this, count -> {
@@ -351,10 +349,10 @@ public class MainActivity extends ThemedActivity {
     @Override
     public void onResume() {
         super.onResume();
-    Log.e("", "ON RESUME");
+Log.e("", "ON RESUME");
         // get the notifications that occurred while the app was not in the foreground
         mNewMessageModel.putData(LocalStorageUtils.getMissedMessages(this));
-
+        mContactTabNewCountViewModel.putData(LocalStorageUtils.getMissedContacts(this));
 
         if (mPushMessageReceiver == null) {
             mPushMessageReceiver = new MainPushMessageReceiver();
@@ -367,6 +365,7 @@ public class MainActivity extends ThemedActivity {
 
     @Override
     public void onPause() {
+        LocalStorageUtils.saveContactsData(this, mContactTabNewCountViewModel.getData());
         super.onPause();
         if (mPushMessageReceiver != null){
             unregisterReceiver(mPushMessageReceiver);

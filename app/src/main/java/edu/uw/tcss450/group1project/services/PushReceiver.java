@@ -25,6 +25,7 @@ import edu.uw.tcss450.group1project.AuthActivity;
 import edu.uw.tcss450.group1project.MainActivity;
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.model.LocalStorageUtils;
+import edu.uw.tcss450.group1project.ui.contacts.ContactsParentFragment;
 import edu.uw.tcss450.group1project.ui.messages.ChatMessage;
 import me.pushy.sdk.Pushy;
 
@@ -173,9 +174,6 @@ public class PushReceiver extends BroadcastReceiver {
         // the saved notification data is not lost. Note: we only want to store the
         // missed messages if we are not in the chat fragment.
         LocalStorageUtils.putMissedMessage(theContext, String.valueOf(chatId));
-        // todo: fix bug where if the user is already in the chat fragment the message gets
-        //  added to local storage but never deleted (might want to hit LocalStorage.delete
-        //  when a new message comes and we are in the same chat)
     }
 
     /**
@@ -211,6 +209,9 @@ public class PushReceiver extends BroadcastReceiver {
         } else {
             // user is outside of the app
             Log.d("PUSHY", "New Contact Request received in background");
+
+            // store the notification locally so it can be loaded when the app restarts
+            LocalStorageUtils.putContactNotification(theContext, ContactsParentFragment.REQUESTS);
 
             // set up the intent
             Intent intent = new Intent(theContext, AuthActivity.class);
@@ -277,12 +278,14 @@ public class PushReceiver extends BroadcastReceiver {
             theContext.sendBroadcast(intent);
 
         } else if (isAccept) {
-
             // we know that the user is outside of the app,
             // so send a notification ONLY IF it is an acceptance notification.
             // we don't want to send a notification if the user is not accepted.
-
             Log.d("PUSHY", "New Contact Request Response received in background");
+
+            // store the notification locally so it can be loaded when the app restarts
+            LocalStorageUtils.putContactNotification(theContext,
+                    ContactsParentFragment.ALL_CONTACTS);
 
             // set up the intent
             Intent intent = new Intent(theContext, AuthActivity.class);

@@ -35,6 +35,7 @@ import java.util.stream.Collectors;
 
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentContactsBinding;
+import edu.uw.tcss450.group1project.model.ContactTabNewCountViewModel;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
 
 /**

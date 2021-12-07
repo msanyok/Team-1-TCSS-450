@@ -267,10 +267,10 @@ public class ChatRoomFragment extends Fragment {
                            " are typing...";
                 } else if (nicknames.size() == 3) {
                    notifText = nicknames.pollFirst() + ", " + nicknames.pollFirst() +
-                           " and 1 other are typing...";
+                           ", and 1 other are typing...";
                 } else {
                     // number of people typing is > 3
-                    notifText = nicknames.pollFirst() + ", " + nicknames.pollFirst() + " and " +
+                    notifText = nicknames.pollFirst() + ", " + nicknames.pollFirst() + ", and " +
                            (nicknames.size() - 2) + " others are typing...";
                 }
 
