@@ -15,26 +15,13 @@
         android:hint="@string/hint_add_new_contact"
         android:inputType="text"
         android:textSize="16sp"
-        android:drawableStart="@drawable/ic_search_grey_24dp"
         android:layout_margin="5dp"
+        android:textAlignment="center"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/contact_request_button"
+        app:layout_constraintBottom_toTopOf="@id/contact_list"
         app:layout_constraintRight_toLeftOf="@id/contact_search_spinner"
         app:layout_constraintLeft_toLeftOf="parent">
     </EditText>
-
-    <Button
-        android:id="@+id/contact_request_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:text="@string/action_send_contact_request"
-        android:textColor="?buttonTextColor"
-        android:backgroundTint="?android:colorAccent"
-        app:layout_constraintTop_toBottomOf="@id/add_contact_text"
-        app:layout_constraintBottom_toTopOf="@id/list_root"
-        app:layout_constraintLeft_toLeftOf="parent">
-    </Button>
 
     <Spinner
         android:id="@+id/contact_search_spinner"
@@ -44,19 +31,19 @@
         android:backgroundTint="?android:textColorPrimary"
         android:popupBackground="@drawable/spinner_dropdown"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/contact_request_button"
+        app:layout_constraintBottom_toTopOf="@id/contact_list"
         app:layout_constraintLeft_toRightOf="@id/add_contact_text"
         app:layout_constraintRight_toRightOf="parent">
     </Spinner>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/list_root"
+        android:id="@+id/contact_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_margin="5dp"
         android:orientation="vertical"
         app:layoutManager="LinearLayoutManager"
-        app:layout_constraintTop_toBottomOf="@id/contact_request_button"
+        app:layout_constraintTop_toBottomOf="@id/add_contact_text"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:context="edu.uw.tcss450.group1project.ui.contacts.ContactsFragment"
         tools:listitem="@layout/fragment_contacts_card" />

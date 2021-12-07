@@ -25,6 +25,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -39,6 +40,8 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import edu.uw.tcss450.group1project.model.ContactNotificationViewModel;
+import edu.uw.tcss450.group1project.model.IsTypingViewModel;
 import edu.uw.tcss450.group1project.ui.contacts.ContactRequestViewModel;
 import edu.uw.tcss450.group1project.model.LocalStorageUtils;
 import edu.uw.tcss450.group1project.model.LocationViewModel;
@@ -46,6 +49,7 @@ import edu.uw.tcss450.group1project.model.NewMessageCountViewModel;
 import edu.uw.tcss450.group1project.model.PushyTokenViewModel;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
 import edu.uw.tcss450.group1project.services.PushReceiver;
+import edu.uw.tcss450.group1project.ui.contacts.ContactsParentFragment;
 import edu.uw.tcss450.group1project.ui.contacts.ContactsViewModel;
 import edu.uw.tcss450.group1project.ui.contacts.NewContactsRequestViewModel;
 import edu.uw.tcss450.group1project.ui.messages.ChatMessage;
@@ -80,9 +84,6 @@ public class MainActivity extends ThemedActivity {
     /** A constant int for the permissions request code. Must be a 16 bit number. */
     private static final int MY_PERMISSIONS_LOCATIONS = 8414;
 
-    /** A Channel ID for app notifications*/
-    private static final String CHANNEL_ID = "9898983213213421321";
-
     /** The location request */
     private LocationRequest mLocationRequest;
 
@@ -98,8 +99,11 @@ public class MainActivity extends ThemedActivity {
     /** Used to receive push notifications from PUSHY */
     private MainPushMessageReceiver mPushMessageReceiver;
 
-    /** Keeps track of the new messages */
+    /** Keeps track of the new message notifications */
     private NewMessageCountViewModel mNewMessageModel;
+
+    /** Keeps track of the new contacts notifications (new contact, new contact req sent/received */
+    private ContactNotificationViewModel mContactTabNewCountViewModel;
 
     /** Keeps track of the new contact requests */
     private ContactRequestViewModel mContactRequestViewModel;
@@ -110,10 +114,11 @@ public class MainActivity extends ThemedActivity {
     /** Keeps track of contacts */
     private ContactsViewModel mContactsViewModel;
 
-    private NewContactsRequestViewModel mNewContactsRequestViewModel;
+    /** Keeps track of typing actions */
+    private IsTypingViewModel mTypingModel;
 
-// todo: might need for navigation badges
-//    private ActivityMainBinding mBinding;
+    /** The new contact requests view model */
+    private NewContactsRequestViewModel mNewContactsRequestViewModel;
 
     /**
      * The configuration for the bottom navigation displayed
@@ -134,12 +139,14 @@ public class MainActivity extends ThemedActivity {
         mLocationModel =
                 new ViewModelProvider(MainActivity.this).get(LocationViewModel.class);
         mNewMessageModel = new ViewModelProvider(this).get(NewMessageCountViewModel.class);
+        mContactTabNewCountViewModel = new ViewModelProvider(this).get(ContactNotificationViewModel.class);
         mUserInfoModel = new ViewModelProvider(this,
                 new UserInfoViewModel.UserInfoViewModelFactory(args.getJwt()))
                         .get(UserInfoViewModel.class);
         mContactRequestViewModel = new ViewModelProvider(this).get(ContactRequestViewModel.class);
         mContactsViewModel = new ViewModelProvider(this).get(ContactsViewModel.class);
         mChatListViewModel = new ViewModelProvider(this).get(ChatsListViewModel.class);
+        mTypingModel = new ViewModelProvider(this).get(IsTypingViewModel.class);
         mNewContactsRequestViewModel = new ViewModelProvider(this).get(NewContactsRequestViewModel.class);
 
         applyTheme();
@@ -175,13 +182,7 @@ public class MainActivity extends ThemedActivity {
             }
         });
 
-        // handles the destination changes that occur in the app and what
-        // should happen when it occurs
-        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
-            // todo: need for navigation for in app badges?
-        });
-
-        // Handles the notification badge drawing
+        // Handles the notification badge drawing for new messages
         mNewMessageModel.addMessageCountObserver(this, count -> {
             BadgeDrawable badge = navView.getOrCreateBadge(R.id.navigation_messages);
             badge.setMaxCharacterCount(2);
@@ -191,6 +192,20 @@ public class MainActivity extends ThemedActivity {
                 badge.setVisible(true);
             } else {
                 // user did some action to clear the new messages, remove the badge
+                badge.clearNumber();
+                badge.setVisible(false);
+            }
+        });
+
+        // Handles the notification badge drawing for contacts
+        mContactTabNewCountViewModel.addContactNotifObserver(this, map -> {
+            int totalCount = map.getOrDefault(ContactNotificationViewModel.TOTAL_KEY, 0);
+            BadgeDrawable badge = navView.getOrCreateBadge(R.id.navigation_contacts_parent);
+            badge.setMaxCharacterCount(2);
+            if (totalCount > 0) {
+                badge.setNumber(totalCount);
+                badge.setVisible(true);
+            } else {
                 badge.clearNumber();
                 badge.setVisible(false);
             }
@@ -292,7 +307,6 @@ public class MainActivity extends ThemedActivity {
         mFusedLocationClient.removeLocationUpdates(mLocationCallback);
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(final Menu theMenu) {
         System.out.println("menu created");
@@ -315,6 +329,9 @@ public class MainActivity extends ThemedActivity {
         return super.onOptionsItemSelected(theItem);
     }
 
+    /**
+     * Displays a dialog to check if the user really wants to sign out
+     */
     private void displaySignOutDialog() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
         alertDialog.setMessage(Html.fromHtml("<font color='#000000'>" +
@@ -351,8 +368,11 @@ public class MainActivity extends ThemedActivity {
     @Override
     public void onResume() {
         super.onResume();
+
         // get the notifications that occurred while the app was not in the foreground
         mNewMessageModel.putData(LocalStorageUtils.getMissedMessages(this));
+        mContactTabNewCountViewModel.putData(LocalStorageUtils.getMissedContacts(this));
+
         if (mPushMessageReceiver == null) {
             mPushMessageReceiver = new MainPushMessageReceiver();
         }
@@ -363,6 +383,7 @@ public class MainActivity extends ThemedActivity {
 
     @Override
     public void onPause() {
+        LocalStorageUtils.saveContactsData(this, mContactTabNewCountViewModel.getData());
         super.onPause();
         if (mPushMessageReceiver != null){
             unregisterReceiver(mPushMessageReceiver);
@@ -374,7 +395,9 @@ public class MainActivity extends ThemedActivity {
      * A helper method for sign-out function.
      */
     private void signOut() {
-        LocalStorageUtils.clearAllNewMessages(this);
+        // remove the locally stored notification data
+        LocalStorageUtils.clearAllStoredNotifications(this);
+
         SharedPreferences prefs =
                 getSharedPreferences(
                         getString(R.string.signIn_keys_shared_prefs),
@@ -411,7 +434,7 @@ public class MainActivity extends ThemedActivity {
 
             final String type = theIntent.getStringExtra("type");
 
-            Log.d("RECIEVE INTENT", "Type: " + type);
+            Log.d("RECEIVE INTENT", "Type: " + type);
 
             // figure out what kind of pushy notification was sent, then do the corresponding tasks.
             if (type.equals(PushReceiver.NEW_MESSAGE)) {
@@ -424,6 +447,8 @@ public class MainActivity extends ThemedActivity {
                 completeNewContactDeleteActions(theContext, theIntent);
             } else if (type.equals(PushReceiver.CONTACT_REQUEST_DELETE)) {
                 completeNewContactRequestDeleteActions(theContext, theIntent);
+            } else if (type.equals(PushReceiver.TYPING)) {
+                completeNewTypingActions(theContext, theIntent);
             }
 
         }
@@ -453,7 +478,6 @@ public class MainActivity extends ThemedActivity {
             // Inform the view model holding chatroom messages of the new
             // message.
             mChatMessageViewModel.addMessage(theIntent.getIntExtra("chatid", -1), chatMessage);
-
         }
 
         /**
@@ -464,20 +488,35 @@ public class MainActivity extends ThemedActivity {
          */
         private void completeNewContactRequestActions(final Context theContext,
                                                       final Intent theIntent) {
-
-            // todo: need to implement on screen/off screen functionality with in app notifications
-            Log.d("RECIEVE INTENT", "New Contact Request Actions : " + theIntent.getExtras());
-
-//            NavController navController =
-//                Navigation.findNavController(
-//                        MainActivity.this, R.id.nav_host_fragment);
-//            NavDestination navDestination = navController.getCurrentDestination();
-//
-//            final String memberId = mUserInfoModel.getMemberId();
-//            final String fromId = theIntent.getStringExtra("fromId");
-            //update the contacts viewmodel
+            // notify that there is a new contact request
             mContactRequestViewModel.allContactRequests(mUserInfoModel.getJwt());
+
+            // if the user is not on the sent/received requests page,
+            // update the new count view model
+            final NavController navController =
+                    Navigation.findNavController(
+                            MainActivity.this, R.id.nav_host_fragment);
+            final NavDestination navDestination = navController.getCurrentDestination();
+
+            boolean onFragment = false;
+            if (navDestination.getId() == R.id.navigation_contacts_parent) {
+
+                final Fragment navHostFragment =
+                        getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+                String tabString =
+                        ((ContactsParentFragment) navHostFragment.getChildFragmentManager().
+                                getFragments().get(0)).getCurrentTabString();
+                onFragment = tabString.equals(ContactsParentFragment.REQUESTS);
+            }
+
+            boolean isARequestWeSent = theIntent.getStringExtra("fromNickname").
+                    equals(mUserInfoModel.getNickname());
+            if (!onFragment && !isARequestWeSent) {
+                System.out.println("ON FRAGMENT");
+                mContactTabNewCountViewModel.addNotification(ContactsParentFragment.REQUESTS);
+            }
         }
+
         /**
          * Handles updating the devices contacts and contacts
          * requests when a request is accepted/declined.
@@ -487,26 +526,43 @@ public class MainActivity extends ThemedActivity {
          */
         private void completeNewContactRequestResponseActions(final Context theContext,
                                                               final Intent theIntent) {
-            // todo: need to implement on screen/off screen functionality with in app notifications
             Log.d("RECIEVE INTENT", "New Contact Request Response Actions");
-
-//            NavController navController =
-//                    Navigation.findNavController(
-//                            MainActivity.this, R.id.nav_host_fragment);
-//            NavDestination navDestination = navController.getCurrentDestination();
-//
-//            final String memberId = mUserInfoModel.getMemberId();
-//            final String fromId = theIntent.getStringExtra("fromId");
-
             mContactRequestViewModel.allContactRequests(mUserInfoModel.getJwt());
 
+            // remove any notifications from the requests tab UI
+            mContactTabNewCountViewModel.removeTabNotifications(ContactsParentFragment.REQUESTS);
 
             // update the contacts list for both users if the contact request is accepted
             if (theIntent.getBooleanExtra("isAccept", false)) {
+                //update the user's list of contacts
                 mContactsViewModel.contactsConnect(mUserInfoModel.getJwt());
-            }
 
+                // if the user is not on the contacts fragment we want to make a notification
+                // for that tab and bottom navigation
+                final NavController navController =
+                        Navigation.findNavController(
+                                MainActivity.this, R.id.nav_host_fragment);
+                final NavDestination navDestination = navController.getCurrentDestination();
+
+                boolean onFragment = false;
+                if (navDestination.getId() == R.id.navigation_contacts_parent) {
+
+                    final Fragment navHostFragment =
+                            getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+                    String tabString =
+                            ((ContactsParentFragment) navHostFragment.getChildFragmentManager().
+                                    getFragments().get(0)).getCurrentTabString();
+                    onFragment = tabString.equals(ContactsParentFragment.ALL_CONTACTS);
+                }
+
+                if (!onFragment) {
+                    System.out.println("ON FRAGMENT");
+                    mContactTabNewCountViewModel.addNotification(ContactsParentFragment.ALL_CONTACTS);
+                }
+
+            }
         }
+
         /**
          * Handles updating the devices contacts when a delete request is recieved.
          *
@@ -516,25 +572,42 @@ public class MainActivity extends ThemedActivity {
         private void completeNewContactDeleteActions(final Context theContext,
                                                      final Intent theIntent) {
             Log.d("RECIEVE INTENT", "New Contact Delete Actions");
-
             mContactsViewModel.contactsConnect(mUserInfoModel.getJwt());
-
-            // todo: offscreen in app notifs? perhaps not.
 
         }
 
         /**
-         * Handles updating the devices outgoing contact requests when a delete request is recieved.
+         * Handles updating the devices outgoing contact requests when a delete request is received.
          *
          * @param theContext the context of the application
          * @param theIntent the Intent that stores the Pushy payload
          */
-        private void completeNewContactRequestDeleteActions(final Context theContext, final Intent theIntent) {
-            Log.d("RECIEVE INTENT", "New Contact Request Delete Actions");
-
+        private void completeNewContactRequestDeleteActions(final Context theContext,
+                                                            final Intent theIntent) {
+            Log.d("RECEIVE INTENT", "New Contact Request Delete Actions");
             mContactRequestViewModel.allContactRequests(mUserInfoModel.getJwt());
 
-            // todo: offscreen in app notifs? perhaps not.
+        }
+
+        /**
+         * Handles updating the devices typing timers when typing notification is received.
+         *
+         * @param theContext the context of the application
+         * @param theIntent the Intent that stores the Pushy payload
+         */
+        private void completeNewTypingActions(final Context theContext,
+                                              final Intent theIntent) {
+            Log.d("RECEIVE INTENT", "New Typing Actions");
+
+            if (theIntent.getBooleanExtra("isTyping", false)) {
+                // a notification came that tells us a user is typing
+                mTypingModel.putTyping(theIntent.getIntExtra("chatId", 0),
+                        theIntent.getStringExtra("nickname"));
+            } else {
+                // a notification came that tells us a user has stopped typing
+                mTypingModel.stopTyping(theIntent.getIntExtra("chatId", 0),
+                        theIntent.getStringExtra("nickname"));
+            }
 
         }
 

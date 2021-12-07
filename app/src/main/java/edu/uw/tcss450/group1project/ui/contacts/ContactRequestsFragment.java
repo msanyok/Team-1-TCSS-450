@@ -18,12 +18,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import org.json.JSONObject;
 
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentContactRequestsBinding;
+import edu.uw.tcss450.group1project.model.ContactNotificationViewModel;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
 
 /**
@@ -75,16 +75,27 @@ public class ContactRequestsFragment extends Fragment {
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        // update the contact request list so if we got a request while onPause,
+        // the list will update
+        mRequestModel.allContactRequests(mUserModel.getJwt());
+
+        // remove the notifications from this tab if there are any
+        new ViewModelProvider(this.getActivity()).get(ContactNotificationViewModel.class).
+                removeTabNotifications(ContactsParentFragment.REQUESTS);
+    }
+
     /**
      * Sets the adapter and added the contacts requests to the contact request fragment
-     *
      */
     private void setContactListComponents() {
         mBinding.listContactRequests.setAdapter(new ContactRequestRecyclerAdapter(
                 mRequestModel.getContactList(), mRequestModel, mUserModel));
         mBinding.listOutgoingContactRequests.setAdapter(
                 new OutgoingRequestRecyclerAdapter(
-                        mRequestModel.getOutgoingRequestList(),this::deleteSentRequest));
+                        mRequestModel.getOutgoingRequestList(), this::deleteSentRequest));
     }
 
     /**

@@ -25,6 +25,7 @@ import edu.uw.tcss450.group1project.AuthActivity;
 import edu.uw.tcss450.group1project.MainActivity;
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.model.LocalStorageUtils;
+import edu.uw.tcss450.group1project.ui.contacts.ContactsParentFragment;
 import edu.uw.tcss450.group1project.ui.messages.ChatMessage;
 import me.pushy.sdk.Pushy;
 
@@ -60,6 +61,9 @@ public class PushReceiver extends BroadcastReceiver {
     /** The String that notifies a contact request was deleted from pushy */
     public static final String CONTACT_REQUEST_DELETE = "contactRequestDeleted";
 
+    /** The String that notifies a typing message came from pushy */
+    public static final String TYPING = "typing";
+
     /** The ID for the channel used for notifications */
     private static final String CHANNEL_ID = "1";
 
@@ -84,12 +88,15 @@ public class PushReceiver extends BroadcastReceiver {
         } else if (typeOfMessage.equals(CONTACT_DELETE)) {
             acceptContactDeletePushy(theContext, theIntent);
         } else if (typeOfMessage.equals(CONTACT_REQUEST_DELETE)) {
-                acceptContactRequestDeletePushy(theContext, theIntent);
+            acceptContactRequestDeletePushy(theContext, theIntent);
+        } else if (typeOfMessage.equals(TYPING)) {
+            acceptTypingPushy(theContext, theIntent);
         } else {
             // unexpected pushy
             Log.d("PUSH RECEIVE", "UNEXPECTED PUSHY RECEIVED");
         }
     }
+
 
     /**
      * Handles what should occur when this device receives a message from a Pushy payload.
@@ -108,7 +115,6 @@ public class PushReceiver extends BroadcastReceiver {
             //Web service sent us something unexpected...I can't deal with this.
             throw new IllegalStateException("Error from Web Service. Contact Dev Support");
         }
-
 
         // get tools to check if the user is in the app or not
         ActivityManager.RunningAppProcessInfo appProcessInfo =
@@ -168,9 +174,6 @@ public class PushReceiver extends BroadcastReceiver {
         // the saved notification data is not lost. Note: we only want to store the
         // missed messages if we are not in the chat fragment.
         LocalStorageUtils.putMissedMessage(theContext, String.valueOf(chatId));
-        // todo: fix bug where if the user is already in the chat fragment the message gets
-        //  added to local storage but never deleted (might want to hit LocalStorage.delete
-        //  when a new message comes and we are in the same chat)
     }
 
     /**
@@ -179,7 +182,6 @@ public class PushReceiver extends BroadcastReceiver {
      * @param theContext the context of the application
      * @param theIntent the Intent that stores the Pushy payload
      */
-//todo: do we need to set the values beforehand? -- update, idk what this todo is for anymore, subject to deletion
     private void acceptNewContactRequestPushy(final Context theContext, final Intent theIntent) {
         String toId = theIntent.getStringExtra("toId");
         String fromId = theIntent.getStringExtra("fromId");
@@ -207,6 +209,9 @@ public class PushReceiver extends BroadcastReceiver {
         } else {
             // user is outside of the app
             Log.d("PUSHY", "New Contact Request received in background");
+
+            // store the notification locally so it can be loaded when the app restarts
+            LocalStorageUtils.putContactNotification(theContext, ContactsParentFragment.REQUESTS);
 
             // set up the intent
             Intent intent = new Intent(theContext, AuthActivity.class);
@@ -273,12 +278,14 @@ public class PushReceiver extends BroadcastReceiver {
             theContext.sendBroadcast(intent);
 
         } else if (isAccept) {
-
             // we know that the user is outside of the app,
             // so send a notification ONLY IF it is an acceptance notification.
             // we don't want to send a notification if the user is not accepted.
-
             Log.d("PUSHY", "New Contact Request Response received in background");
+
+            // store the notification locally so it can be loaded when the app restarts
+            LocalStorageUtils.putContactNotification(theContext,
+                    ContactsParentFragment.ALL_CONTACTS);
 
             // set up the intent
             Intent intent = new Intent(theContext, AuthActivity.class);
@@ -379,6 +386,35 @@ public class PushReceiver extends BroadcastReceiver {
         }
 
         // we don't want any kind of outside-app notifications when someone gets deleted
+
+    }
+
+    /**
+     * Handles when this device receives a typing notification from a Pushy payload.
+     *
+     * @param theContext the context of the application
+     * @param theIntent the Intent that stores the Pushy payload
+     */
+    private void acceptTypingPushy(final Context theContext, final Intent theIntent) {
+
+        // get tools to check if the user is in the app or not
+        ActivityManager.RunningAppProcessInfo appProcessInfo =
+                new ActivityManager.RunningAppProcessInfo();
+        ActivityManager.getMyMemoryState(appProcessInfo);
+
+        if (appProcessInfo.importance == IMPORTANCE_FOREGROUND ||
+                appProcessInfo.importance == IMPORTANCE_VISIBLE) {
+            // only send to main activity if it exists
+            Intent intent = new Intent(NEW_PUSHY_NOTIF);
+            intent.putExtra("type", TYPING);
+            intent.putExtra("chatId", theIntent.getIntExtra("chatId", 0));
+            intent.putExtra("nickname", theIntent.getStringExtra("nickname"));
+            intent.putExtra("isTyping", theIntent.getBooleanExtra("isTyping", false));
+            intent.putExtras(theIntent.getExtras());
+
+            // send to MainActivity
+            theContext.sendBroadcast(intent);
+        }
 
     }
 

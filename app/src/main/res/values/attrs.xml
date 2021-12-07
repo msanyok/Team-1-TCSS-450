@@ -7,4 +7,6 @@
     <attr name="buttonTextColor" format="reference" />
     <attr name="title_icon" format="reference" />
     <attr name="tabDeselectedColor" format="reference" />
+    <attr name="background" format="reference" />
+    <attr name="adminTextColor" format="reference"/>
 </resources>
