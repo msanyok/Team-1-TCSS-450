@@ -36,6 +36,7 @@ import edu.uw.tcss450.group1project.ui.messages.ChatRoom;
 import edu.uw.tcss450.group1project.ui.messages.ChatsListViewModel;
 import edu.uw.tcss450.group1project.ui.weather.LatLong;
 import edu.uw.tcss450.group1project.ui.weather.WeatherDataCurrent;
+import edu.uw.tcss450.group1project.ui.weather.WeatherErrorViewModel;
 import edu.uw.tcss450.group1project.utils.WeatherUtils;
 
 /**
@@ -50,6 +51,9 @@ public class HomeFragment extends Fragment {
 
     /** Weather View Model */
     private WeatherDataViewModel mWeatherModel;
+
+    /** The weather data error view model */
+    private WeatherErrorViewModel mWeatherErrorModel;
 
     /** Contact Requests view Model*/
     private ContactRequestViewModel mRequestModel;
@@ -78,7 +82,6 @@ public class HomeFragment extends Fragment {
         mChatListModel = new ViewModelProvider(getActivity()).get(ChatsListViewModel.class);
     }
 
-
     @Override
     public View onCreateView(final LayoutInflater theInflater, final ViewGroup theContainer,
                              final Bundle theSavedInstanceState) {
@@ -90,6 +93,9 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull final View theView,
                               @Nullable final Bundle theSavedInstanceState) {
         super.onViewCreated(theView, theSavedInstanceState);
+        mWeatherErrorModel =
+                new ViewModelProvider(this).get(WeatherErrorViewModel.class);
+        mWeatherErrorModel.resetErrorFlag();
         LocationViewModel locModel =
                 new ViewModelProvider(getActivity()).get(LocationViewModel.class);
         locModel.addLocationObserver(getViewLifecycleOwner(), (loc) -> {
@@ -105,6 +111,11 @@ public class HomeFragment extends Fragment {
         mChatListModel.getChatListData(mUserModel.getJwt());
 
         mWeatherModel.addResponseObserver(getViewLifecycleOwner(), this::observeWeatherResponse);
+        mWeatherErrorModel.addErrorFlagObserver(getViewLifecycleOwner(), flag -> {
+            if (flag && !mWeatherErrorModel.isErrorReceived()) {
+                displayWeatherErrorDialog();
+            }
+        });
 
         mBinding = FragmentHomeBinding.bind(getView());
         mBinding.welcomeText.setText(String.format("Welcome, %s!", mUserModel.getNickname()));
@@ -123,7 +134,7 @@ public class HomeFragment extends Fragment {
     private void observeWeatherResponse(final JSONObject theResponse) {
         if (theResponse.has("code")) {
             Log.e("WEATHER REQUEST ERROR", theResponse.toString());
-            displayWeatherErrorDialog();
+            mWeatherErrorModel.notifyErrorFlag();
             mWeatherModel.clearResponse();
         }
         if (mWeatherModel.containsReadableData()) {

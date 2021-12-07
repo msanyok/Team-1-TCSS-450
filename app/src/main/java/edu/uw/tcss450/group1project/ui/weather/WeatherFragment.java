@@ -42,6 +42,9 @@ public class WeatherFragment extends Fragment {
     /** The weather data view model */
     private WeatherDataViewModel mModel;
 
+    /** The view model for identifying data retrieval errors */
+    private WeatherErrorViewModel mErrorModel;
+
     /** The location list view model */
     private WeatherLocationListViewModel mLocationsModel;
 
@@ -112,13 +115,14 @@ public class WeatherFragment extends Fragment {
     public void onViewCreated(@NonNull final View theView,
                               @Nullable final Bundle theSavedInstanceState) {
         super.onViewCreated(theView, theSavedInstanceState);
-
         Fragment parentFrag = getParentFragment();
         NavController navController = Navigation.findNavController(parentFrag.getView());
         NavBackStackEntry backStackEntry =
                 navController.getBackStackEntry(R.id.navigation_weather_parent);
         mLocationsModel =
                 new ViewModelProvider(backStackEntry).get(WeatherLocationListViewModel.class);
+        mErrorModel =
+                new ViewModelProvider(parentFrag).get(WeatherErrorViewModel.class);
         mBinding = FragmentWeatherBinding.bind(getView());
         mModel.addResponseObserver(getViewLifecycleOwner(), this::observeResponse);
         if (!mDeletable) {
@@ -157,7 +161,8 @@ public class WeatherFragment extends Fragment {
     private void observeResponse(final JSONObject theResponse) {
         if (theResponse.has("code")) {
             Log.e("WEATHER REQUEST ERROR", theResponse.toString());
-            displayErrorDialog();
+//            displayErrorDialog();
+            mErrorModel.notifyErrorFlag();
             mModel.clearResponse();
         }
         if (mModel.containsReadableData()) {

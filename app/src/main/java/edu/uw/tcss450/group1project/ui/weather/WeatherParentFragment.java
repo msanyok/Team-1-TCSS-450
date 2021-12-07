@@ -47,6 +47,9 @@ public class WeatherParentFragment extends Fragment {
     /** The location list view model */
     private WeatherLocationListViewModel mLocationModel;
 
+    /** The weather data error view model */
+    private WeatherErrorViewModel mErrorModel;
+
     /** The user info view model */
     private UserInfoViewModel mUserModel;
 
@@ -76,6 +79,9 @@ public class WeatherParentFragment extends Fragment {
                 navController.getBackStackEntry(R.id.navigation_weather_parent);
         mLocationModel =
                 new ViewModelProvider(backStackEntry).get(WeatherLocationListViewModel.class);
+        mErrorModel =
+                new ViewModelProvider(this).get(WeatherErrorViewModel.class);
+        mErrorModel.resetErrorFlag();
         mUserModel = new ViewModelProvider(getActivity()).get(UserInfoViewModel.class);
         if (mLocationModel.containsReadableLocations() && !mLocationModel.isListModified()) {
             setViewComponents();
@@ -92,6 +98,12 @@ public class WeatherParentFragment extends Fragment {
         });
         mLocationModel.addDeletionResponseObserver(getViewLifecycleOwner(),
                 this::observeDeleteResponse);
+        mErrorModel.addErrorFlagObserver(getViewLifecycleOwner(), flag -> {
+            if (flag && !mErrorModel.isErrorReceived()) {
+                displayErrorDialog("An unexpected error occurred when loading data " +
+                        "for one or more saved locations. Please try again.");
+            }
+        });
     }
 
     /**
