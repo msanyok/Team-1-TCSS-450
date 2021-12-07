@@ -49,6 +49,7 @@ import edu.uw.tcss450.group1project.model.PushyTokenViewModel;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
 import edu.uw.tcss450.group1project.services.PushReceiver;
 import edu.uw.tcss450.group1project.ui.contacts.ContactsViewModel;
+import edu.uw.tcss450.group1project.ui.contacts.NewContactsRequestViewModel;
 import edu.uw.tcss450.group1project.ui.messages.ChatMessage;
 import edu.uw.tcss450.group1project.ui.messages.ChatViewModel;
 import edu.uw.tcss450.group1project.ui.messages.ChatsListViewModel;
@@ -111,6 +112,8 @@ public class MainActivity extends ThemedActivity {
     /** Keeps track of contacts */
     private ContactsViewModel mContactsViewModel;
 
+    private NewContactsRequestViewModel mNewContactsRequestViewModel;
+
 // todo: might need for navigation badges
 //    private ActivityMainBinding mBinding;
 
@@ -139,6 +142,7 @@ public class MainActivity extends ThemedActivity {
         mContactRequestViewModel = new ViewModelProvider(this).get(ContactRequestViewModel.class);
         mContactsViewModel = new ViewModelProvider(this).get(ContactsViewModel.class);
         mChatListViewModel = new ViewModelProvider(this).get(ChatsListViewModel.class);
+        mNewContactsRequestViewModel = new ViewModelProvider(this).get(NewContactsRequestViewModel.class);
 
         applyTheme();
         setContentView(R.layout.activity_main);
@@ -451,7 +455,7 @@ public class MainActivity extends ThemedActivity {
                                                       final Intent theIntent) {
 
             // todo: need to implement on screen/off screen functionality with in app notifications
-            Log.d("RECIEVE INTENT", "New Contact Request Actions");
+            Log.d("RECIEVE INTENT", "New Contact Request Actions : " + theIntent.getExtras());
 
 //            NavController navController =
 //                Navigation.findNavController(
@@ -462,7 +466,6 @@ public class MainActivity extends ThemedActivity {
 //            final String fromId = theIntent.getStringExtra("fromId");
             //update the contacts viewmodel
             mContactRequestViewModel.allContactRequests(mUserInfoModel.getJwt());
-
         }
         /**
          * Handles updating the devices contacts and contacts
