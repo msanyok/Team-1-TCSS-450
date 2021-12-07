@@ -15,14 +15,14 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
-        android:drawableStart="@drawable/ic_search_grey_24dp"
+        android:textAlignment="center"
         android:hint="@string/hint_search_new_contact"
         android:inputType="text"
         android:minHeight="48dp"
         android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@id/list_root"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/contact_search_spinner"
+        app:layout_constraintRight_toLeftOf="@id/request_search_spinner"
         app:layout_constraintTop_toTopOf="parent">
     </EditText>
 
@@ -63,6 +63,6 @@
         app:layout_constraintTop_toBottomOf="@id/add_contact_text"
         tools:context="edu.uw.tcss450.group1project.ui.contacts.NewContactRequestFragment"
         tools:layout_editor_absoluteX="5dp"
-        tools:listitem="@layout/fragment_create_chat_room_contact_card" />
+        tools:listitem="@layout/fragment_add_contact_card" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
