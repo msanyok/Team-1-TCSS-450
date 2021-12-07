@@ -18,13 +18,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import org.json.JSONObject;
 
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentContactRequestsBinding;
-import edu.uw.tcss450.group1project.model.ContactTabNewCountViewModel;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
 
 /**

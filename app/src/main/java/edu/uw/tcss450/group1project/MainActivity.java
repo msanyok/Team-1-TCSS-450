@@ -40,7 +40,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import edu.uw.tcss450.group1project.model.ContactTabNewCountViewModel;
+import edu.uw.tcss450.group1project.model.ContactNotificationViewModel;
 import edu.uw.tcss450.group1project.model.IsTypingViewModel;
 import edu.uw.tcss450.group1project.ui.contacts.ContactRequestViewModel;
 import edu.uw.tcss450.group1project.model.LocalStorageUtils;
@@ -98,10 +98,11 @@ public class MainActivity extends ThemedActivity {
     /** Used to receive push notifications from PUSHY */
     private MainPushMessageReceiver mPushMessageReceiver;
 
-    /** Keeps track of the new messages */
+    /** Keeps track of the new message notifications */
     private NewMessageCountViewModel mNewMessageModel;
 
-    private ContactTabNewCountViewModel mContactTabNewCountViewModel;
+    /** Keeps track of the new contacts notifications (new contact, new contact req sent/received */
+    private ContactNotificationViewModel mContactTabNewCountViewModel;
 
     /** Keeps track of the new contact requests */
     private ContactRequestViewModel mContactRequestViewModel;
@@ -134,7 +135,7 @@ public class MainActivity extends ThemedActivity {
         mLocationModel =
                 new ViewModelProvider(MainActivity.this).get(LocationViewModel.class);
         mNewMessageModel = new ViewModelProvider(this).get(NewMessageCountViewModel.class);
-        mContactTabNewCountViewModel = new ViewModelProvider(this).get(ContactTabNewCountViewModel.class);
+        mContactTabNewCountViewModel = new ViewModelProvider(this).get(ContactNotificationViewModel.class);
         mUserInfoModel = new ViewModelProvider(this,
                 new UserInfoViewModel.UserInfoViewModelFactory(args.getJwt()))
                         .get(UserInfoViewModel.class);
@@ -195,7 +196,7 @@ public class MainActivity extends ThemedActivity {
 
         // Handles the notification badge drawing for contacts
         mContactTabNewCountViewModel.addContactNotifObserver(this, map -> {
-            int totalCount = map.getOrDefault(ContactTabNewCountViewModel.TOTAL_KEY, 0);
+            int totalCount = map.getOrDefault(ContactNotificationViewModel.TOTAL_KEY, 0);
             BadgeDrawable badge = navView.getOrCreateBadge(R.id.navigation_contacts_parent);
             badge.setMaxCharacterCount(2);
             if (totalCount > 0) {
@@ -377,7 +378,9 @@ Log.e("", "ON RESUME");
      * A helper method for sign-out function.
      */
     private void signOut() {
-        LocalStorageUtils.clearAllNewMessages(this);
+        // remove the locally stored notification data
+        LocalStorageUtils.clearAllStoredNotifications(this);
+
         SharedPreferences prefs =
                 getSharedPreferences(
                         getString(R.string.signIn_keys_shared_prefs),

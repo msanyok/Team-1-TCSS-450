@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -26,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.uw.tcss450.group1project.R;
-import edu.uw.tcss450.group1project.model.ContactTabNewCountViewModel;
+import edu.uw.tcss450.group1project.model.ContactNotificationViewModel;
 import edu.uw.tcss450.group1project.model.LocalStorageUtils;
 
 /**
@@ -45,10 +44,11 @@ public class ContactsParentFragment extends Fragment {
     /** The String shown at the top of the new requests tab */
     public static final String NEW_REQUESTS = "New Request";
 
+    /** The tab layout that stores the tabs */
     private TabLayout mTabs;
 
+    /** The view pager */
     private ViewPager2 mViewPager;
-
 
     /**
      * Required empty constructor
@@ -91,43 +91,46 @@ public class ContactsParentFragment extends Fragment {
             }
         }).attach();
 
-
-        final ContactTabNewCountViewModel notifViewModel = new ViewModelProvider(getActivity()).
-                get(ContactTabNewCountViewModel.class);
+        final ContactNotificationViewModel contactNotificationViewModel =
+                new ViewModelProvider(getActivity()).get(ContactNotificationViewModel.class);
+        contactNotificationViewModel.addContactNotifObserver(getViewLifecycleOwner(),
+                this::observeNotificationChange);
 
         // store context so it can be used inside the listener
         Context thisContext = this.getContext();
         mTabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                String selectedTab = tab.getText().toString();
-                // todo: remove if they go onto this tab
+                final String selectedTab = tab.getText().toString();
+
                 if (selectedTab.equals(ALL_CONTACTS)) {
-                    notifViewModel.removeTabNotifications(ALL_CONTACTS);
+                    contactNotificationViewModel.removeTabNotifications(ALL_CONTACTS);
                     LocalStorageUtils.deleteContactNotifications(thisContext, ALL_CONTACTS);
                 } else if (selectedTab.equals(REQUESTS)) {
-                    notifViewModel.removeTabNotifications(REQUESTS);
+                    contactNotificationViewModel.removeTabNotifications(REQUESTS);
                     LocalStorageUtils.deleteContactNotifications(thisContext, REQUESTS);
                 }
             }
 
             @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
+            public void onTabUnselected(final TabLayout.Tab theTab) {
                 // unused
             }
 
             @Override
-            public void onTabReselected(TabLayout.Tab tab) {
+            public void onTabReselected(final TabLayout.Tab theTab) {
                 // unused
             }
         });
 
-        notifViewModel.addContactNotifObserver(getViewLifecycleOwner(),
-                this::observeNotificationChange);
-
-
     }
 
+    /**
+     * Completes actions that should occur when the contacts view model data changes state.
+     * Will set the badges depending on the state of the view model.
+     *
+     * @param theMap the map that represents the view model data
+     */
     private void observeNotificationChange(final Map<String, Integer> theMap) {
 
         int contactCount = theMap.getOrDefault(ALL_CONTACTS, 0);
@@ -148,9 +151,13 @@ public class ContactsParentFragment extends Fragment {
 
     }
 
+    /**
+     * Returns the title text of the tab that is currently active.
+     *
+     * @return the title text of the tab that is currently active.
+     */
     public String getCurrentTabString() {
         return mTabs.getTabAt(mViewPager.getCurrentItem()).getText().toString();
     }
-
 
 }

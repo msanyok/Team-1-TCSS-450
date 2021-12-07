@@ -209,8 +209,6 @@ public class ChatRoomFragment extends Fragment {
                                       final int theStart,
                                       final int theBefore,
                                       final int theCount) {
-
-
                 // only send typing notifications if the timer allows us to and we
                 // actually added a character (no notifs from deletes)
                 if (mCanType && theCount != 0) {

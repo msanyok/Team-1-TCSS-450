@@ -7,7 +7,6 @@ package edu.uw.tcss450.group1project.model;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,8 +20,8 @@ import edu.uw.tcss450.group1project.ui.contacts.ContactsParentFragment;
  * These functions should only be used when the app is not in the foreground.
  *
  * Note: This approach does not work when users are logging in and
- * out of the service on the same device. It is essential to call
- * clearAllNewMessages() when the user logs out
+ * out of the service on the same device. It is important to call
+ * clearAllStoredNotifications() when the user logs out
  *
  * @author Austn Attaway
  * @version Fall 2021
@@ -100,15 +99,16 @@ public final class LocalStorageUtils {
     }
 
     /**
-     * Clears all new message data for this user. MUST do this action when
+     * Clears all new message and contact notification data for this user. MUST do this action when
      * the account is logged out.
      *
      * @param theContext
      */
-    public static void clearAllNewMessages(final Context theContext) {
+    public static void clearAllStoredNotifications(final Context theContext) {
+        // remove the messages notifications
         final SharedPreferences newMessagesStorage =
                 theContext.getSharedPreferences(NEW_MESSAGES_KEY, Context.MODE_PRIVATE);
-        final SharedPreferences.Editor editor = newMessagesStorage.edit();
+        SharedPreferences.Editor editor = newMessagesStorage.edit();
 
         Set<String> chatIdKeys = newMessagesStorage.getStringSet(NEW_MESSAGE_STRING_SET,
                 new HashSet<>());
@@ -117,11 +117,25 @@ public final class LocalStorageUtils {
             editor.remove(chatId);
         }
         editor.remove(NEW_MESSAGE_STRING_SET);
+        editor.apply();
+
+        // remove the contacts notifications
+        final SharedPreferences contactsStorage =
+                theContext.getSharedPreferences(NEW_CONTACTS_KEY, Context.MODE_PRIVATE);
+        editor = contactsStorage.edit();
+        editor.remove(ContactsParentFragment.ALL_CONTACTS);
+        editor.remove(ContactsParentFragment.REQUESTS);
+        editor.remove(ContactNotificationViewModel.TOTAL_KEY);
 
         editor.apply();
     }
 
-
+    /**
+     * Increments the contact notification count for the given tab.
+     *
+     * @param theContext the context of where the put is being called
+     * @param theTabString the tab that identifies which navigation tab the notification is for
+     */
     public static void putContactNotification(final Context theContext,
                                               final String theTabString) {
         final SharedPreferences contactsStorage =
@@ -133,7 +147,12 @@ public final class LocalStorageUtils {
         editor.apply();
     }
 
-
+    /**
+     * Clears the contact notification count for the given tab.
+     *
+     * @param theContext the context of where the delete is being called
+     * @param theTabString the tab that identifies which navigation tab should be cleared
+     */
     public static void deleteContactNotifications(final Context theContext,
                                                   final String theTabString) {
         final SharedPreferences contactsStorage =
@@ -145,6 +164,12 @@ public final class LocalStorageUtils {
         editor.apply();
     }
 
+    /**
+     * Returns the contact notifications that are stored in storage.
+     *
+     * @param theContext the context of where the get is being called
+     * @return the contact notifications that are stored in storage.
+     */
     public static Map<String, Integer> getMissedContacts(final Context theContext) {
 
         final Map<String, Integer> contactsMap = new HashMap<>();
@@ -158,11 +183,18 @@ public final class LocalStorageUtils {
 
         int total = missedContactsStorage.getInt(ContactsParentFragment.ALL_CONTACTS, 0) +
                 missedContactsStorage.getInt(ContactsParentFragment.REQUESTS, 0);
-        contactsMap.put("TOTAL", total);
+        contactsMap.put(ContactNotificationViewModel.TOTAL_KEY, total);
 
         return contactsMap;
     }
 
+    /**
+     * Saves the given contact notification map on the device
+     * storage so it can be loaded when the app runs again.
+     *
+     * @param theContext the context of where the save is being called
+     * @param theMap the map to be saved
+     */
     public static void saveContactsData(final Context theContext,
                                         final Map<String, Integer> theMap) {
 
@@ -176,26 +208,10 @@ public final class LocalStorageUtils {
             int value = entry.getValue();
             editor.putInt(key, value);
         }
-        editor.putInt("TOTAL", total);
+        editor.putInt(ContactNotificationViewModel.TOTAL_KEY, total);
 
         editor.apply();
 
     }
-
-//    public static void clearAllContactNotifications(final Context theContext,
-//    final String theTabString) {
-//        final SharedPreferences contactsStorage =
-//                theContext.getSharedPreferences(NEW_CONTACTS_KEY, Context.MODE_PRIVATE);
-//        final SharedPreferences.Editor editor = contactsStorage.edit();
-//
-//        // increment the store for the tab
-//        editor.putInt(theTabString, 0);
-//        editor.apply();
-
-    /*
-    putContactNotification(theTabString) increments the value for the tab
-    deleteContactNotification(theTabString)
-    clearAllContactNotifications
-     */
 
 }
