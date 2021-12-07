@@ -127,6 +127,7 @@
         <item name="cardViewStyle">@style/CardStyleTheme1</item>
         <item name="cardColor">@color/dark_gray</item>
         <item name="buttonTextColor">@color/black</item>
+        <item name="background">@color/black</item>
         <item name="cardTextColor">@color/white</item>
         <item name="cardImageColor">@color/white</item>
         <item name="bottomNavigationStyle">@style/BottomNavStyleTheme1</item>
