@@ -10,13 +10,16 @@
     <string name="hint_verification_code">Verification Code</string>
     <string name="hint_weather_location">Enter a new location.</string>
     <string name="hint_add_new_contact">Filter existing contacts.</string>
-    <string name="hint_search_contacts">Search for contacts.</string>
     <string name="hint_search_add_members">Search and add members.</string>
+    <string name="hint_search_new_contact">Search for new contacts.</string>
     <string name="hint_chat_room_name">Your chat room name.</string>
     <string name="hint_reset_email">Enter email</string>
     <string name="hint_reset_code">Enter code</string>
     <string name="hint_reset_password">New password</string>
     <string name="hint_retype_reset_password">Confirm password</string>
+    <string name="hint_old_password">Enter your old password</string>
+    <string name="hint_set_new_password">Enter your new password</string>
+    <string name="hint_confirm_new_password">Confirm your new password</string>
 
     <string name="action_sign_in_short">Sign in</string>
     <string name="action_register_short">Register</string>
@@ -43,6 +46,7 @@
     <string name="title_register">Register for TalkBox</string>
     <string name="title_weather">Weather</string>
     <string name="title_settings">Settings</string>
+    <string name="title_change_password">Change Password</string>
     <string name="title_missed_messages">Missed messages</string>
     <string name="title_contact_requests">Incoming Contact Requests</string>
     <string name="title_outgoing_contact_requests">Outgoing Contact Requests</string>
@@ -57,9 +61,11 @@
     <string name="title_code_comfirm">
         Enter the code sent to your email and choose a new password!</string>
     <string name="title_search_by">Search by:</string>
+    <string name="title_password_reset"> Want To Reset Password?</string>
+    <string name="title_password_reset_toolbar">
+        Reset password? Enter your credentials below...</string>
     <string name="title_zip_search">Search by zip code</string>
     <string name="title_pin_search">No zip code? Drop a pin!</string>
-
     <string name="message_verification_greeting">Hey! We sent you an email.</string>
     <string name="message_resend_code_instructions">Need a new code?</string>
     <string name="message_verification_instructions">

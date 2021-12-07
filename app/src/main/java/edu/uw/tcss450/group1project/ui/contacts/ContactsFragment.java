@@ -13,7 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
+
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -85,8 +85,6 @@ public class ContactsFragment extends Fragment {
         mContactsModel.addContactListObserver(getViewLifecycleOwner(),
                 this::observeContactResponse);
         mBinding.contactRequestButton.setOnClickListener(this::requestToBeSent);
-        mContactsModel.addContactRequestObserver(getViewLifecycleOwner(),
-                this::observeResponse);
         mContactsModel.addContactDeleteObserver(getViewLifecycleOwner(),
                 this::observeDeleteResponse);
         mContactsModel.contactsConnect(mUserInfo.getJwt());
@@ -136,44 +134,6 @@ public class ContactsFragment extends Fragment {
     private void verifyNameWithServer() {
         mContactsModel.requestConnect(
                 mBinding.addContactText.getText().toString(), mUserInfo.getJwt());
-    }
-
-    /**
-     * Observes the HTTP Response from the web server. If an error occurred, notify the user
-     * accordingly. If it was a success, minimize keyboard and send a toast notification.
-     *
-     * @param theResponse the Response from the server
-     */
-    private void observeResponse(final JSONObject theResponse) {
-        if (theResponse.length() > 0) {
-            if (theResponse.has("code")) {
-                try {
-
-                    final String message =
-                            theResponse.getJSONObject("data").get("message").toString();
-
-                    if (message.equals("Nickname does not exist")) {
-                        mBinding.addContactText.setError("Nickname does not exist");
-                    } else if (message.equals("Can not create contact with oneself")) {
-                        mBinding.addContactText.setError("Cannot be friends with yourself");
-                    } else if (message.equals("Members are already contacts")) {
-                        mBinding.addContactText.setError("Members are already contacts");
-                    } else if (message.equals("Contact request already exists")) {
-                        mBinding.addContactText.setError("Contact request already exists");
-                    } else {
-                        mBinding.addContactText.setError("Other error. Check logs.");
-                    }
-
-                } catch (JSONException exception) {
-                    Log.e("JSON Parse Error", exception.getMessage());
-                }
-            } else {
-                    Toast.makeText(getContext(),"A contact request has been sent",
-                            Toast.LENGTH_SHORT).show();
-            }
-        } else {
-            Log.d("Registration JSON Response", "No Response");
-        }
     }
 
     /**
