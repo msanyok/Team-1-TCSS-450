@@ -122,7 +122,7 @@
         <item name="android:switchStyle">@style/SwitchStyleTheme4</item>
         <item name="popupMenuBackground">@drawable/toolbar_dropdown</item>
         <item name="colorAccent">@color/neon_green</item>
-        <item name="title_icon">@drawable/logo_theme_3</item>
+        <item name="title_icon">@drawable/logo_theme_4</item>
         <item name="editTextStyle">@style/EditTextStyleTheme1</item>
         <item name="cardViewStyle">@style/CardStyleTheme1</item>
         <item name="cardColor">@color/dark_gray</item>
