@@ -304,7 +304,6 @@ public class MainActivity extends ThemedActivity {
         mFusedLocationClient.removeLocationUpdates(mLocationCallback);
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(final Menu theMenu) {
         getMenuInflater().inflate(R.menu.toolbar, theMenu);
@@ -492,7 +491,9 @@ Log.e("", "ON RESUME");
                 onFragment = tabString.equals(ContactsParentFragment.REQUESTS);
             }
 
-            if (!onFragment) {
+            boolean isARequestWeSent = theIntent.getStringExtra("fromNickname").
+                    equals(mUserInfoModel.getNickname());
+            if (!onFragment && !isARequestWeSent) {
                 System.out.println("ON FRAGMENT");
                 mContactTabNewCountViewModel.addNotification(ContactsParentFragment.REQUESTS);
             }
@@ -509,6 +510,9 @@ Log.e("", "ON RESUME");
                                                               final Intent theIntent) {
             Log.d("RECIEVE INTENT", "New Contact Request Response Actions");
             mContactRequestViewModel.allContactRequests(mUserInfoModel.getJwt());
+
+            // remove any notifications from the requests tab UI
+            mContactTabNewCountViewModel.removeTabNotifications(ContactsParentFragment.REQUESTS);
 
             // update the contacts list for both users if the contact request is accepted
             if (theIntent.getBooleanExtra("isAccept", false)) {

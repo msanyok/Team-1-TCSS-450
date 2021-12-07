@@ -23,6 +23,7 @@ import org.json.JSONObject;
 
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentContactRequestsBinding;
+import edu.uw.tcss450.group1project.model.ContactNotificationViewModel;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
 
 /**
@@ -71,7 +72,18 @@ public class ContactRequestsFragment extends Fragment {
         mRequestModel.addRequestResponseObserver(getViewLifecycleOwner(),
                 this::observeRequestResponse);
         mRequestModel.allContactRequests(mUserModel.getJwt());
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        // update the contact request list so if we got a request while onPause,
+        // the list will update
+        mRequestModel.allContactRequests(mUserModel.getJwt());
+
+        // remove the notifications from this tab if there are any
+        new ViewModelProvider(this.getActivity()).get(ContactNotificationViewModel.class).
+                removeTabNotifications(ContactsParentFragment.REQUESTS);
     }
 
     /**

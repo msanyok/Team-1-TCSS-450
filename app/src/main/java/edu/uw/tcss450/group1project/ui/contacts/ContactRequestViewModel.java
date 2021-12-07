@@ -73,7 +73,6 @@ public class ContactRequestViewModel extends AndroidViewModel {
 
         mRequestResponse = new MutableLiveData<>();
         mRequestResponse.setValue(new JSONObject());
-
     }
 
     /**

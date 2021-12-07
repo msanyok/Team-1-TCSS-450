@@ -35,6 +35,7 @@ import java.util.stream.Collectors;
 
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentContactsBinding;
+import edu.uw.tcss450.group1project.model.ContactNotificationViewModel;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
 
 /**
@@ -177,6 +178,18 @@ public class ContactsFragment extends Fragment {
         });
 
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // update the contact list so if we got a contact list change while onPause,
+        // the list will update
+        mContactsModel.contactsConnect(mUserInfo.getJwt());
+
+        // remove the notifications from this tab if there are any
+        new ViewModelProvider(this.getActivity()).get(ContactNotificationViewModel.class).
+                removeTabNotifications(ContactsParentFragment.ALL_CONTACTS);
     }
 
 
