@@ -209,13 +209,14 @@ public class WeatherLocationSelectionFragment
                         mMarker.getPosition().longitude).toString();
                 mSaveChecked = mBinding.saveCheckbox.isChecked();
             } else {
+                valid = false;
                 int zipCode = 0;
                 String input = mBinding.searchText.getText().toString().trim();
                 if (input.length() == 5) {
                     try {
                         zipCode = Integer.valueOf(input);
-                        if (zipCode < 0) {
-                            valid = false;
+                        if (zipCode >= 0) {
+                            valid = true;
                         }
                     } catch (NumberFormatException ex) {
                         // the user did not enter a number
@@ -244,6 +245,7 @@ public class WeatherLocationSelectionFragment
             Log.e("SERVER FAILURE TO SUPPORT LOCATION", theResponse.toString());
             displayErrorDialog("The supplied location " +
                     "is not currently supported. Please try again.");
+            mLocationString = "";
             mWeatherModel.clearResponse();
         } else if (theResponse.length() != 0) {
             if (mSaveChecked) {
@@ -289,6 +291,7 @@ public class WeatherLocationSelectionFragment
                     Log.e("JSON PARSE ERROR IN LOCATION ADD OBSERVER", ex.getMessage());
                 }
             }
+            mLocationString = "";
             displayErrorDialog(message);
             mLocationListModel.clearAdditionResponse();
         }
