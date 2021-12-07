@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -27,7 +28,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
-import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
@@ -51,6 +51,7 @@ import edu.uw.tcss450.group1project.model.UserInfoViewModel;
 import edu.uw.tcss450.group1project.services.PushReceiver;
 import edu.uw.tcss450.group1project.ui.contacts.ContactsParentFragment;
 import edu.uw.tcss450.group1project.ui.contacts.ContactsViewModel;
+import edu.uw.tcss450.group1project.ui.contacts.NewContactsRequestViewModel;
 import edu.uw.tcss450.group1project.ui.messages.ChatMessage;
 import edu.uw.tcss450.group1project.ui.messages.ChatViewModel;
 import edu.uw.tcss450.group1project.ui.messages.ChatsListViewModel;
@@ -116,6 +117,9 @@ public class MainActivity extends ThemedActivity {
     /** Keeps track of typing actions */
     private IsTypingViewModel mTypingModel;
 
+    /** The new contact requests view model */
+    private NewContactsRequestViewModel mNewContactsRequestViewModel;
+
     /**
      * The configuration for the bottom navigation displayed
      * on fragments in this activity
@@ -143,6 +147,7 @@ public class MainActivity extends ThemedActivity {
         mContactsViewModel = new ViewModelProvider(this).get(ContactsViewModel.class);
         mChatListViewModel = new ViewModelProvider(this).get(ChatsListViewModel.class);
         mTypingModel = new ViewModelProvider(this).get(IsTypingViewModel.class);
+        mNewContactsRequestViewModel = new ViewModelProvider(this).get(NewContactsRequestViewModel.class);
 
         applyTheme();
         setContentView(R.layout.activity_main);
@@ -170,14 +175,12 @@ public class MainActivity extends ThemedActivity {
             } else {
                 navView.setVisibility(View.GONE);
             }
+            if (id == R.id.navigation_chat_room_info || id == R.id.navigation_contacts_parent) {
+                getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+            } else {
+                getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+            }
         });
-
-//        // handles the destination changes that occur in the app and what
-//        // should happen when it occurs
-//        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
-//            // todo: need for navigation for in app badges?
-//        });
-
 
         // Handles the notification badge drawing for new messages
         mNewMessageModel.addMessageCountObserver(this, count -> {
@@ -306,6 +309,7 @@ public class MainActivity extends ThemedActivity {
 
     @Override
     public boolean onCreateOptionsMenu(final Menu theMenu) {
+        System.out.println("menu created");
         getMenuInflater().inflate(R.menu.toolbar, theMenu);
         return true;
     }
@@ -315,13 +319,28 @@ public class MainActivity extends ThemedActivity {
         int id = theItem.getItemId();
         if (id == R.id.action_settings) {
             Navigation.findNavController(this, R.id.nav_host_fragment)
-                    .navigate(R.id.navigation_settings);
+                    .navigate(R.id.action_global_navigation_settings);
             return true;
         }
         if (id == R.id.action_sign_out){
-            signOut();
+            displaySignOutDialog();
         }
+
         return super.onOptionsItemSelected(theItem);
+    }
+
+    /**
+     * Displays a dialog to check if the user really wants to sign out
+     */
+    private void displaySignOutDialog() {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+        alertDialog.setMessage(Html.fromHtml("<font color='#000000'>" +
+                "Are you sure you want to sign out?" + "</font>"));
+        alertDialog.setPositiveButton(Html.fromHtml("<font color='000000'>Ok</font>"),
+                (dialog, which) -> signOut());
+        alertDialog.setNegativeButton(Html.fromHtml("<font color='000000'>Cancel</font>"),
+                (dialog, which) -> {});
+        alertDialog.show();
     }
 
     @Override
@@ -349,7 +368,7 @@ public class MainActivity extends ThemedActivity {
     @Override
     public void onResume() {
         super.onResume();
-Log.e("", "ON RESUME");
+
         // get the notifications that occurred while the app was not in the foreground
         mNewMessageModel.putData(LocalStorageUtils.getMissedMessages(this));
         mContactTabNewCountViewModel.putData(LocalStorageUtils.getMissedContacts(this));
@@ -360,7 +379,6 @@ Log.e("", "ON RESUME");
         IntentFilter iFilter = new IntentFilter(PushReceiver.NEW_PUSHY_NOTIF);
         registerReceiver(mPushMessageReceiver, iFilter);
         startLocationUpdates();
-
     }
 
     @Override

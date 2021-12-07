@@ -72,6 +72,7 @@ public class ContactRequestsFragment extends Fragment {
         mRequestModel.addRequestResponseObserver(getViewLifecycleOwner(),
                 this::observeRequestResponse);
         mRequestModel.allContactRequests(mUserModel.getJwt());
+
     }
 
     @Override

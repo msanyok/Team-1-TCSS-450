@@ -98,7 +98,6 @@ public class MessagesRecyclerAdapter
                                         mRoom.getChatID());
                 Navigation.findNavController(theItemView).navigate(action);
             });
-
         }
 
         /**
@@ -120,7 +119,6 @@ public class MessagesRecyclerAdapter
             if (mRoom.getMissedMessageCount() > 0) {
                 mBinding.participantImage.setImageResource(R.drawable.ic_messages_black_24dp);
             }
-
         }
     }
 }

@@ -3,43 +3,44 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/auth_graph"
-    app:startDestination="@id/SignInFragment">
+    app:startDestination="@id/navigation_sign_in">
 
     <fragment
-        android:id="@+id/SignInFragment"
+        android:id="@+id/navigation_sign_in"
         android:name="edu.uw.tcss450.group1project.ui.auth.signin.SignInFragment"
-        android:label="fragment_login"
-        tools:layout="@layout/fragment_sign_in" >
+        android:label=""
+        tools:layout="@layout/fragment_sign_in">
         <action
             android:id="@+id/action_loginFragment_to_registerFragment"
-            app:destination="@id/registerFragment" />
+            app:destination="@id/navigation_register" />
         <action
             android:id="@+id/action_loginFragment_to_mainActivity"
             app:destination="@id/mainActivity" />
         <argument
             android:name="email"
-            app:argType="string"
-            android:defaultValue="default" />
+            android:defaultValue="default"
+            app:argType="string" />
         <argument
             android:name="password"
-            app:argType="string"
-            android:defaultValue="default" />
+            android:defaultValue="default"
+            app:argType="string" />
         <action
             android:id="@+id/action_SignInFragment_to_registerVerificationFragment"
-            app:destination="@id/registerVerificationFragment" />
+            app:destination="@id/navigation_verify" />
         <action
             android:id="@+id/action_SignInFragment_to_enterEmailFragment"
-            app:destination="@id/enterEmailFragment" />
+            app:destination="@id/navigation_email_entry" />
 
     </fragment>
     <fragment
-        android:id="@+id/registerFragment"
+        android:id="@+id/navigation_register"
+        android:label=""
         android:name="edu.uw.tcss450.group1project.ui.auth.register.RegisterFragment"
-        android:label="fragment_register"
         tools:layout="@layout/fragment_register">
         <action
             android:id="@+id/action_registerFragment_to_registerVerificationFragment"
-            app:destination="@id/registerVerificationFragment" />
+            app:popUpTo="@id/navigation_sign_in"
+            app:destination="@id/navigation_verify" />
     </fragment>
     <activity
         android:id="@+id/mainActivity"
@@ -50,12 +51,12 @@
             app:argType="string" />
     </activity>
     <fragment
-        android:id="@+id/registerVerificationFragment"
-        android:name="edu.uw.tcss450.group1project.ui.auth.verification.RegisterVerificationFragment"
-        android:label="fragment_verification">
+        android:id="@+id/navigation_verify"
+        android:label=""
+        android:name="edu.uw.tcss450.group1project.ui.auth.verification.RegisterVerificationFragment">
         <action
             android:id="@+id/action_registerVerificationFragment_to_SignInFragment"
-            app:destination="@id/SignInFragment" />
+            app:destination="@id/navigation_sign_in" />
         <argument
             android:name="email"
             app:argType="string" />
@@ -64,27 +65,27 @@
             app:argType="string" />
     </fragment>
     <fragment
-        android:id="@+id/enterEmailFragment"
+        android:id="@+id/navigation_email_entry"
+        android:label=""
         android:name="edu.uw.tcss450.group1project.ui.auth.resetpassword.EnterEmailFragment"
-        android:label="fragment_enter_email"
-        tools:layout="@layout/fragment_enter_email" >
+        tools:layout="@layout/fragment_enter_email">
         <action
             android:id="@+id/action_enterEmailFragment_to_passwordResetFragment"
-            app:destination="@id/passwordResetFragment" />
+            app:destination="@id/navigation_password_reset" />
         <argument
             android:name="email"
             app:argType="string" />
     </fragment>
     <fragment
-        android:id="@+id/passwordResetFragment"
+        android:id="@+id/navigation_password_reset"
+        android:label=""
         android:name="edu.uw.tcss450.group1project.ui.auth.resetpassword.PasswordResetFragment"
-        android:label="fragment_password_reset"
-        tools:layout="@layout/fragment_password_reset" >
+        tools:layout="@layout/fragment_password_reset">
         <argument
             android:name="email"
             app:argType="string" />
         <action
             android:id="@+id/action_passwordResetFragment_to_SignInFragment"
-            app:destination="@id/SignInFragment" />
+            app:destination="@id/navigation_sign_in" />
     </fragment>
 </navigation>

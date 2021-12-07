@@ -11,14 +11,12 @@
         android:id="@+id/edit_message"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:ems="10"
         android:inputType="textPersonName"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/button_send"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/button_info"
         android:autofillHints="" />
 
     <ImageButton
@@ -26,12 +24,13 @@
         style="@style/Widget.App.Button.OutlinedButton.IconOnly"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:contentDescription="TODO"
         android:src="@drawable/ic_send_black_24dp"
         app:tint="?android:textColorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/edit_message"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
@@ -69,5 +68,20 @@
             tools:context="edu.uw.tcss450.uiandnavigationlab.ui.blog.BlogListFragment"
             tools:listitem="@layout/fragment_chat_message"/>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <ImageButton
+        android:id="@+id/button_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:src="@drawable/ic_info_black_24dp"
+        style="@style/Widget.App.Button.OutlinedButton.IconOnly"
+        app:tint="?android:textColorPrimary"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/edit_message"
+        app:layout_constraintBottom_toBottomOf="parent">
+    </ImageButton>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

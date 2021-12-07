@@ -6,6 +6,7 @@
 package edu.uw.tcss450.group1project.ui.weather;
 
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,20 +14,20 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavBackStackEntry;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import org.json.JSONObject;
-
-import java.io.Serializable;
-import java.util.function.Consumer;
 
 import edu.uw.tcss450.group1project.MainActivity;
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentWeatherBinding;
 import edu.uw.tcss450.group1project.model.LocationViewModel;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
-import edu.uw.tcss450.group1project.model.WeatherDataViewModel;
 import edu.uw.tcss450.group1project.utils.WeatherUtils;
 
 /**
@@ -41,6 +42,12 @@ public class WeatherFragment extends Fragment {
     /** The weather data view model */
     private WeatherDataViewModel mModel;
 
+    /** The view model for identifying data retrieval errors */
+    private WeatherErrorViewModel mErrorModel;
+
+    /** The location list view model */
+    private WeatherLocationListViewModel mLocationsModel;
+
     /** The user info view model */
     private UserInfoViewModel mUserModel;
 
@@ -52,9 +59,6 @@ public class WeatherFragment extends Fragment {
 
     /** Indicates whether or not this fragment is deletable from saved weather locations */
     private boolean mDeletable;
-
-    /** The consumer responsible for deleting this fragment from parent view pager */
-    private Consumer<LatLong> mConsumer;
 
     /**
      * Required empty constructor
@@ -68,26 +72,30 @@ public class WeatherFragment extends Fragment {
      *
      * @param theLatLong the lat long to be assigned
      * @param theDeletable indicates whether this fragment is deletable from saved locations
-     * @param theConsumer the consumer responsible for deleting this location
      * @return the weather fragment instance
      */
-    public static WeatherFragment newInstance(final LatLong theLatLong, final boolean theDeletable,
-                                              final Consumer<LatLong> theConsumer) {
+    public static WeatherFragment newInstance(final LatLong theLatLong,
+                                              final boolean theDeletable) {
         WeatherFragment newFrag = new WeatherFragment();
-        Bundle args = new Bundle();
-        args.putSerializable("mLatLong", theLatLong);
-        args.putBoolean("mDeletable", theDeletable);
-        args.putSerializable("mConsumer", (Consumer<LatLong> & Serializable) theConsumer);
-        newFrag.setArguments(args);
+        newFrag.mLatLong = theLatLong;
+        newFrag.mDeletable = theDeletable;
         return newFrag;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull final Bundle theBundle) {
+        theBundle.putSerializable("mLatLong", mLatLong);
+        theBundle.putBoolean("mDeletable", mDeletable);
+        super.onSaveInstanceState(theBundle);
     }
 
     @Override
     public void onCreate(@Nullable final Bundle theSavedInstanceState) {
         super.onCreate(theSavedInstanceState);
-        mLatLong = (LatLong) getArguments().getSerializable("mLatLong");
-        mDeletable = getArguments().getBoolean("mDeletable");
-        mConsumer = (Consumer<LatLong>) getArguments().getSerializable("mConsumer");
+        if (theSavedInstanceState != null) {
+            mLatLong = (LatLong) theSavedInstanceState.getSerializable("mLatLong");
+            mDeletable = theSavedInstanceState.getBoolean("mDeletable");
+        }
         mModel = !mDeletable ?
                 new ViewModelProvider(getActivity()).get(WeatherDataViewModel.class) :
                 new ViewModelProvider(this).get(WeatherDataViewModel.class);
@@ -107,6 +115,14 @@ public class WeatherFragment extends Fragment {
     public void onViewCreated(@NonNull final View theView,
                               @Nullable final Bundle theSavedInstanceState) {
         super.onViewCreated(theView, theSavedInstanceState);
+        Fragment parentFrag = getParentFragment();
+        NavController navController = Navigation.findNavController(parentFrag.getView());
+        NavBackStackEntry backStackEntry =
+                navController.getBackStackEntry(R.id.navigation_weather_parent);
+        mLocationsModel =
+                new ViewModelProvider(backStackEntry).get(WeatherLocationListViewModel.class);
+        mErrorModel =
+                new ViewModelProvider(parentFrag).get(WeatherErrorViewModel.class);
         mBinding = FragmentWeatherBinding.bind(getView());
         mModel.addResponseObserver(getViewLifecycleOwner(), this::observeResponse);
         if (!mDeletable) {
@@ -120,8 +136,21 @@ public class WeatherFragment extends Fragment {
                 }
             });
         } else {
-            mBinding.locationDeleteButton.setOnClickListener(button -> mConsumer.accept(mLatLong));
+            mBinding.locationDeleteButton.setOnClickListener(this::displayLocationDeleteDialog);
         }
+    }
+
+    private void displayLocationDeleteDialog(final View theButton) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
+        alertDialog.setMessage(Html.fromHtml("<font color='#000000'>Are you sure " +
+                "you want to delete this location?</font>"));
+        alertDialog.setPositiveButton(Html.fromHtml("<font color='000000'>Delete</font>"),
+                (dialog, which) -> {
+                    mLocationsModel.connectDelete(mUserModel.getJwt(), mLatLong.toString());
+                });
+        alertDialog.setNegativeButton(Html.fromHtml("<font color='#000000'>Cancel</font>"),
+                (dialog, which) -> {});
+        alertDialog.show();
     }
 
     /**
@@ -132,7 +161,8 @@ public class WeatherFragment extends Fragment {
     private void observeResponse(final JSONObject theResponse) {
         if (theResponse.has("code")) {
             Log.e("WEATHER REQUEST ERROR", theResponse.toString());
-            displayErrorDialog();
+//            displayErrorDialog();
+            mErrorModel.notifyErrorFlag();
             mModel.clearResponse();
         }
         if (mModel.containsReadableData()) {
@@ -161,13 +191,5 @@ public class WeatherFragment extends Fragment {
                 .setAdapter(new WeatherRecyclerAdapterHourly(mModel.getHourlyData()));
         mBinding.listDailyForecast
                 .setAdapter(new WeatherRecyclerAdapterDaily(mModel.getDailyData()));
-    }
-
-    /**
-     * Displays an error dialog when an error occurs in retrieving weather data
-     */
-    private void displayErrorDialog() {
-        String message = "Unexpected error when loading weather. Please try again.";
-        ((MainActivity) getActivity()).displayErrorDialog(message);
     }
 }

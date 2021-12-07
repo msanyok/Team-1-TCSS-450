@@ -27,6 +27,7 @@ import org.json.JSONObject;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -133,7 +134,7 @@ public class ContactsViewModel extends AndroidViewModel {
 
 
     /**
-     * Sends an HTTP POST request to the server attempting to get all contacts
+     * Sends an HTTP GET request to the server attempting to get all contacts
      *
      * @param theJwt JWT token to be passed to server
      * @throws NullPointerException if theNickname is null
@@ -210,10 +211,10 @@ public class ContactsViewModel extends AndroidViewModel {
 
     /**
      * Returns the current list of contacts
-     * @return
+     * @return the contact list
      */
     public List<Contact> getContactList() {
-        return mContactList;
+        return new LinkedList<>(mContactList);
     }
 
     /**

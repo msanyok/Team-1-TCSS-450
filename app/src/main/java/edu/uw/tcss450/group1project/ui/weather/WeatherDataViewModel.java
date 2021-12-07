@@ -3,7 +3,7 @@
  * Fall 2021
  */
 
-package edu.uw.tcss450.group1project.model;
+package edu.uw.tcss450.group1project.ui.weather;
 
 import android.app.Application;
 import android.util.Log;
@@ -27,6 +27,7 @@ import org.json.JSONObject;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -63,6 +64,8 @@ public class WeatherDataViewModel extends AndroidViewModel {
         super(theApplication);
         mResponse = new MutableLiveData<>();
         mResponse.setValue(new JSONObject());
+        mHourlyData = new ArrayList<>();
+        mDailyData = new ArrayList<>();
     }
 
     /**
@@ -91,7 +94,7 @@ public class WeatherDataViewModel extends AndroidViewModel {
      * @return the hourly weather data
      */
     public List<WeatherData> getHourlyData() {
-        return mHourlyData;
+        return new LinkedList<>(mHourlyData);
     }
 
     /**
@@ -100,16 +103,16 @@ public class WeatherDataViewModel extends AndroidViewModel {
      * @return the daily weather data
      */
     public List<WeatherData> getDailyData() {
-        return mDailyData;
+        return new LinkedList<>(mDailyData);
     }
 
     /**
-     * Determines if this view model's data fields are readable (i.e. non-null)
+     * Determines if this view model's data fields are readable
      *
      * @return true if readable, false otherwise
      */
     public boolean containsReadableData() {
-        return mCurrentData != null && mHourlyData != null && mDailyData != null;
+        return mCurrentData != null && !mHourlyData.isEmpty() && !mDailyData.isEmpty();
     }
 
     /**

@@ -6,6 +6,7 @@
 package edu.uw.tcss450.group1project.ui.weather;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
@@ -24,6 +25,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -42,7 +44,6 @@ import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentWeatherLocationSelectionBinding;
 import edu.uw.tcss450.group1project.model.LocationViewModel;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
-import edu.uw.tcss450.group1project.model.WeatherDataViewModel;
 
 /**
  * WeatherLocationSelectionFragment is a class for selecting and/or saving new weather locations.
@@ -62,12 +63,6 @@ public class WeatherLocationSelectionFragment
     /** Indicates whether or not the user's location has been determined */
     private boolean mLocationSet;
 
-    /** Indicates whether or not an observer is assigned to observe weather data */
-    private boolean mDataObserverAssigned;
-
-    /** Indicates whether or not an observer is assigned to observe weather location additions */
-    private boolean mLocationAdditionObserverAssigned;
-
     /** The view model responsible for data retrieval */
     private WeatherDataViewModel mWeatherModel;
 
@@ -80,6 +75,12 @@ public class WeatherLocationSelectionFragment
     /** The view binding */
     private FragmentWeatherLocationSelectionBinding mBinding;
 
+    /** The user location input string-formatted */
+    private String mLocationString;
+
+    /** Indicates if the user would like to save the chosen location */
+    private boolean mSaveChecked;
+
     /**
      * Required empty constructor
      */
@@ -91,6 +92,8 @@ public class WeatherLocationSelectionFragment
     public void onCreate(final Bundle theSavedInstanceState) {
         super.onCreate(theSavedInstanceState);
         mLocationSet = false;
+        mLocationString = "";
+        mSaveChecked = false;
     }
 
     @Override
@@ -105,8 +108,6 @@ public class WeatherLocationSelectionFragment
     public void onViewCreated(@NonNull final View theView,
                               @Nullable final Bundle theSavedInstanceState) {
         super.onViewCreated(theView, theSavedInstanceState);
-        mDataObserverAssigned = false;
-        mLocationAdditionObserverAssigned = false;
         NavController navController = Navigation.findNavController(theView);
         NavBackStackEntry backStackEntry =
                 navController.getBackStackEntry(R.id.navigation_weather_location_selection);
@@ -144,6 +145,10 @@ public class WeatherLocationSelectionFragment
             @Override
             public void afterTextChanged(final Editable theEditable) {}
         });
+        mWeatherModel.addResponseObserver(
+                getViewLifecycleOwner(), this::observeSearchAttemptResponse);
+        mLocationListModel.addAdditionResponseObserver(
+                            getViewLifecycleOwner(), this::observeLocationAdditionResponse);
     }
 
     @Override
@@ -192,41 +197,40 @@ public class WeatherLocationSelectionFragment
      * Begins a weather location search request either by lat long or zip code.
      */
     private void initiateSearchRequest() {
-        boolean valid = false;
-        String location = "";
-        if (mMarker != null) {
-            valid = true;
-            location = new LatLong(mMarker.getPosition().latitude,
-                    mMarker.getPosition().longitude).toString();
-        } else {
-            int zipCode = 0;
-            String input = mBinding.searchText.getText().toString().trim();
-            if (input.length() == 5) {
-                try {
-                    zipCode = Integer.valueOf(input);
-                    if (zipCode >= 0) {
-                        valid = true;
+        InputMethodManager imm = (InputMethodManager)getActivity()
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (getActivity().getCurrentFocus() != null) {
+            imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),0);
+        }
+        boolean valid = mLocationString.isEmpty();
+        if (valid) {
+            if (mMarker != null) {
+                mLocationString = new LatLong(mMarker.getPosition().latitude,
+                        mMarker.getPosition().longitude).toString();
+                mSaveChecked = mBinding.saveCheckbox.isChecked();
+            } else {
+                int zipCode = 0;
+                String input = mBinding.searchText.getText().toString().trim();
+                if (input.length() == 5) {
+                    try {
+                        zipCode = Integer.valueOf(input);
+                        if (zipCode < 0) {
+                            valid = false;
+                        }
+                    } catch (NumberFormatException ex) {
+                        // the user did not enter a number
                     }
-                } catch (NumberFormatException ex) {
-                    // the user did not enter a number
+                }
+                if (valid) {
+                    mLocationString = String.valueOf(zipCode);
+                    mSaveChecked = mBinding.saveCheckbox.isChecked();
+                } else {
+                    mBinding.searchText.setError("Zip code must be a positive, 5 digit value!");
                 }
             }
             if (valid) {
-                location = String.valueOf(zipCode);
-            } else {
-                mBinding.searchText.setError("Zip code must be a positive, 5 digit value!");
+                mWeatherModel.connectGet(mUserModel.getJwt(), mLocationString, true);
             }
-        }
-        if (valid) {
-            String finalLocation = location;
-            if (!mDataObserverAssigned) {
-                mDataObserverAssigned = true;
-                mWeatherModel.addResponseObserver(
-                        getViewLifecycleOwner(),
-                        response -> observeSearchAttemptResponse(
-                                response, mBinding.saveCheckbox.isChecked(), finalLocation));
-            }
-            mWeatherModel.connectGet(mUserModel.getJwt(), finalLocation, true);
         }
     }
 
@@ -234,18 +238,18 @@ public class WeatherLocationSelectionFragment
      * Observes a server response from a weather location data search
      *
      * @param theResponse the observed response
-     * @param theChecked indicates whether the user would like to save the location
-     * @param theLocation the location to be saved
      */
-    private void observeSearchAttemptResponse(final JSONObject theResponse,
-                                              final boolean theChecked, final String theLocation) {
+    private void observeSearchAttemptResponse(final JSONObject theResponse) {
         if (theResponse.has("code")) {
             Log.e("SERVER FAILURE TO SUPPORT LOCATION", theResponse.toString());
             displayErrorDialog("The supplied location " +
                     "is not currently supported. Please try again.");
             mWeatherModel.clearResponse();
         } else if (theResponse.length() != 0) {
-            Runnable navRun = () -> {
+            if (mSaveChecked) {
+                mLocationListModel.connectPost(mUserModel.getJwt(), mLocationString);
+            } else {
+                mLocationString = "";
                 String city = mWeatherModel.getCurrentData().getCity().split(",")[0];
                 WeatherLocationSelectionFragmentDirections.
                         ActionNavigationWeatherLocationSelectionToNavigationWeatherTeaser action =
@@ -253,17 +257,6 @@ public class WeatherLocationSelectionFragment
                                 actionNavigationWeatherLocationSelectionToNavigationWeatherTeaser(
                                         "Weather for " + city);
                 Navigation.findNavController(getView()).navigate(action);
-            };
-            if (theChecked) {
-                if (!mLocationAdditionObserverAssigned) {
-                    mLocationAdditionObserverAssigned = true;
-                    mLocationListModel.addAdditionResponseObserver(
-                            getViewLifecycleOwner(),
-                            response -> observeLocationAdditionResponse(response, navRun));
-                }
-                mLocationListModel.connectPost(mUserModel.getJwt(), theLocation);
-            } else {
-                navRun.run();
             }
         }
     }
@@ -272,12 +265,11 @@ public class WeatherLocationSelectionFragment
      * Observes a server response for adding a saved weather location
      *
      * @param theResponse the observed response
-     * @param theNavRun the runnable to be executed if the addition was successful
      */
-    private void observeLocationAdditionResponse(final JSONObject theResponse,
-                                                 final Runnable theNavRun) {
+    private void observeLocationAdditionResponse(final JSONObject theResponse) {
+        boolean displayToast = true;
         if (theResponse.has("code")) { // error or list size limit met
-            System.out.println("error!");
+            displayToast = false;
             String message = "An unexpected error occurred when adding to saved locations. " +
                 "Please try again.";
             if (theResponse.has("data")) {
@@ -301,8 +293,17 @@ public class WeatherLocationSelectionFragment
             mLocationListModel.clearAdditionResponse();
         }
         if (theResponse.length() != 0) {
-            Toast.makeText(getContext(),"Location saved", Toast.LENGTH_SHORT).show();
-            theNavRun.run();
+            mLocationString = "";
+            if (displayToast) {
+                Toast.makeText(getContext(),"Location saved", Toast.LENGTH_SHORT).show();
+            }
+            String city = mWeatherModel.getCurrentData().getCity().split(",")[0];
+            WeatherLocationSelectionFragmentDirections.
+                    ActionNavigationWeatherLocationSelectionToNavigationWeatherTeaser action =
+                    WeatherLocationSelectionFragmentDirections.
+                            actionNavigationWeatherLocationSelectionToNavigationWeatherTeaser(
+                                    "Weather for " + city);
+            Navigation.findNavController(getView()).navigate(action);
         }
     }
 

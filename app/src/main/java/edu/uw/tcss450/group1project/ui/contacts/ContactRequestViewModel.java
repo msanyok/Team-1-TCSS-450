@@ -234,7 +234,7 @@ public class ContactRequestViewModel extends AndroidViewModel {
 
 
     /**
-     * Sends an HTTP POST request to the server attempts to accept/decline
+     * Sends an HTTP Delete request to the server and attempts to delete a request
      *
      * @param theJwt JWT token to be passed to server
      * @throws NullPointerException if theNickname is null
@@ -274,7 +274,6 @@ public class ContactRequestViewModel extends AndroidViewModel {
                     .add(request);
         
     }
-    
     
 
     /**

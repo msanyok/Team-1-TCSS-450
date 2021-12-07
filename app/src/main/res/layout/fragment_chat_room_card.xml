@@ -5,12 +5,12 @@
     android:id="@+id/fragment_messages_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="2dp"
-    app:contentPadding="10dp">
+    android:layout_margin="2dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:padding="10dp">
 
         <ImageView
             android:id="@+id/participant_image"
@@ -20,17 +20,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:tint="?cardImageColor">
-        </ImageView>
-
-        <ImageView
-            android:id="@+id/arrow_image"
-            android:src="@drawable/ic_arrow_right__black_24dp"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:tint="?cardImageColor">
         </ImageView>
 
@@ -48,7 +37,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@id/current_message"
             app:layout_constraintLeft_toRightOf="@+id/participant_image"
-            app:layout_constraintRight_toLeftOf="@id/arrow_image">
+            app:layout_constraintRight_toRightOf="parent">
         </TextView>
 
         <TextView
@@ -64,18 +53,20 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/chat_name"
             app:layout_constraintLeft_toRightOf="@+id/participant_image"
-            app:layout_constraintRight_toLeftOf="@id/arrow_image">
+            app:layout_constraintRight_toRightOf="parent">
         </TextView>
 
-        <Button
-            android:id="@+id/chatroom_navigation"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/transparent"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toRightOf="parent">
-        </Button>
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <Button
+        android:id="@+id/chatroom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+    </Button>
+
 </androidx.cardview.widget.CardView>

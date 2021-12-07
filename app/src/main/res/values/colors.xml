@@ -11,13 +11,17 @@
   <color name="berry">#9e4e6e</color>
 
   <!-- Theme 2 Colors -->
-  <color name="maroon">#611427</color>
+  <color name="rose">#611427</color>
   <color name="cream">#dddcc5</color>
-  <color name="stone">#1d2326</color>
+  <color name="midnight">#182740</color>
 
   <!-- Theme 3 Colors -->
   <color name="purple">#4b2e83</color>
   <color name="gold">#b7a57a</color>
   <color name="gray">#d3d3d3</color>
+
+  <!-- Theme 4 Colors -->
+  <color name="neon_green">#a7e556</color>
+  <color name="dark_gray">#1B1B1B</color>
 
 </resources>

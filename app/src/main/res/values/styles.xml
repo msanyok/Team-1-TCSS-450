@@ -7,9 +7,7 @@
         <item name="android:fontFamily">@font/font_balsamiq_sans</item>
         <item name="android:windowBackground">@color/slate_blue</item>
         <item name="android:textColorPrimary">@color/white</item>
-        <item name="android:textViewStyle">@style/TextViewStyleTheme1</item>
         <item name="android:switchStyle">@style/SwitchStyleTheme1</item>
-        <item name="android:itemBackground">@color/white</item>
         <item name="popupMenuBackground">@drawable/toolbar_dropdown</item>
         <item name="colorAccent">@color/berry</item>
         <item name="title_icon">@drawable/logo_theme_1</item>
@@ -46,10 +44,6 @@
         <item name="android:textCursorDrawable">@drawable/text_cursor_white</item>
     </style>
 
-    <style name="TextViewStyleTheme1" parent="Widget.AppCompat.TextView">
-        <item name="android:textColor">@color/black</item>
-    </style>
-
     <style name="SwitchStyleTheme1">
         <item name="colorControlActivated">@color/white</item>
         <item name="android:colorForeground">@android:color/transparent</item>
@@ -62,19 +56,17 @@
         <item name="android:fontFamily">@font/font_balsamiq_sans</item>
         <item name="android:windowBackground">@color/cream</item>
         <item name="android:textColorPrimary">@color/black</item>
-        <item name="android:textViewStyle">@style/TextViewStyleTheme2</item>
         <item name="android:switchStyle">@style/SwitchStyleTheme2</item>
-        <item name="android:itemBackground">@color/maroon</item>
         <item name="popupMenuBackground">@drawable/toolbar_dropdown</item>
-        <item name="colorSurface">@color/maroon</item>
-        <item name="colorAccent">@color/stone</item>
+        <item name="colorSurface">@color/rose</item>
+        <item name="colorAccent">@color/midnight</item>
         <item name="title_icon">@drawable/logo_theme_2</item>
         <item name="titleTextColor">@color/black</item>
         <item name="colorPrimary">@android:color/transparent</item>
         <item name="editTextStyle">@style/EditTextStyleTheme2</item>
         <item name="cardViewStyle">@style/CardStyleTheme1</item>
         <item name="buttonTextColor">@color/white</item>
-        <item name="cardColor">@color/maroon</item>
+        <item name="cardColor">@color/rose</item>
         <item name="cardTextColor">@color/white</item>
         <item name="cardImageColor">@color/white</item>
         <item name="tabDeselectedColor">@color/black_transparent</item>
@@ -96,20 +88,14 @@
         <item name="android:textCursorDrawable">@drawable/text_cursor_black</item>
     </style>
 
-    <style name="TextViewStyleTheme2" parent="TextViewStyleTheme1">
-        <item name="android:textColor">@color/white</item>
-    </style>
-
     <style name="SwitchStyleTheme2" parent="SwitchStyleTheme1">
-        <item name="colorControlActivated">@color/maroon</item>
-        <item name="colorSwitchThumbNormal">@color/maroon</item>
+        <item name="colorControlActivated">@color/rose</item>
+        <item name="colorSwitchThumbNormal">@color/rose</item>
     </style>
 
     <style name="AppTheme3" parent="AppTheme1">
         <item name="android:windowBackground">@color/purple</item>
         <item name="android:textColorPrimary">@color/white</item>
-        <item name="android:itemBackground">@color/gold</item>
-        <item name="android:textViewStyle">@style/TextViewStyleTheme3</item>
         <item name="android:switchStyle">@style/SwitchStyleTheme3</item>
         <item name="popupMenuBackground">@drawable/toolbar_dropdown</item>
         <item name="colorAccent">@color/gray</item>
@@ -123,13 +109,32 @@
         <item name="bottomNavigationStyle">@style/BottomNavStyleTheme1</item>
     </style>
 
-    <style name="TextViewStyleTheme3" parent="TextViewStyleTheme1">
-        <item name="android:textColor">@color/black</item>
-    </style>
 
     <style name="SwitchStyleTheme3" parent="SwitchStyleTheme1">
         <item name="colorControlActivated">@color/gold</item>
         <item name="colorSwitchThumbNormal">@color/gold</item>
+    </style>
+
+    <style name="AppTheme4" parent="AppTheme1">
+        <item name="android:windowBackground">@color/black</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:itemBackground">@color/dark_gray</item>
+        <item name="android:switchStyle">@style/SwitchStyleTheme4</item>
+        <item name="popupMenuBackground">@drawable/toolbar_dropdown</item>
+        <item name="colorAccent">@color/neon_green</item>
+        <item name="title_icon">@drawable/logo_theme_3</item>
+        <item name="editTextStyle">@style/EditTextStyleTheme1</item>
+        <item name="cardViewStyle">@style/CardStyleTheme1</item>
+        <item name="cardColor">@color/dark_gray</item>
+        <item name="buttonTextColor">@color/black</item>
+        <item name="cardTextColor">@color/white</item>
+        <item name="cardImageColor">@color/white</item>
+        <item name="bottomNavigationStyle">@style/BottomNavStyleTheme1</item>
+    </style>
+
+    <style name="SwitchStyleTheme4" parent="SwitchStyleTheme1">
+        <item name="colorControlActivated">@color/white</item>
+        <item name="colorSwitchThumbNormal">@color/white</item>
     </style>
 
     <style name="AppThemePlain" parent="AppTheme1">
@@ -149,5 +154,9 @@
 
     <style name="FabShape">
         <item name="cornerFamily">rounded</item>
+    </style>
+
+    <style name="ContactsTabTextStyle">
+        <item name="android:textSize">16sp</item>
     </style>
 </resources>

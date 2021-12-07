@@ -14,8 +14,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.AdapterView;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -25,7 +25,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-
 
 import org.json.JSONObject;
 
@@ -89,6 +88,8 @@ public class ContactsFragment extends Fragment {
         super.onViewCreated(theView, theSavedInstanceState);
         mContactsModel.addContactListObserver(getViewLifecycleOwner(),
                 this::observeContactResponse);
+
+        mBinding.contactRequestButton.setOnClickListener(this::requestToBeSent);
         mContactsModel.addContactDeleteObserver(getViewLifecycleOwner(),
                 this::observeDeleteResponse);
         mContactsModel.contactsConnect(mUserInfo.getJwt());
@@ -98,7 +99,6 @@ public class ContactsFragment extends Fragment {
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.contact_search_array, R.layout.fragment_contacts_spinner);
         adapter.setDropDownViewResource(R.layout.fragment_contacts_spinner_dropdown);
-
 
         spinner.setAdapter(adapter);
 
@@ -176,8 +176,6 @@ public class ContactsFragment extends Fragment {
             }
 
         });
-
-
     }
 
     @Override
@@ -191,9 +189,7 @@ public class ContactsFragment extends Fragment {
         new ViewModelProvider(this.getActivity()).get(ContactNotificationViewModel.class).
                 removeTabNotifications(ContactsParentFragment.ALL_CONTACTS);
     }
-
-
-
+  
     /**
      * Observes the HTTP Response from the web server. If an error occurred, notify the user
      * accordingly. If it was a success, add contacts to recycler view

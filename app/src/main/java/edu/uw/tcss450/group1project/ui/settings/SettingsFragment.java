@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import edu.uw.tcss450.group1project.MainActivity;
 import edu.uw.tcss450.group1project.R;
@@ -58,5 +59,13 @@ public class SettingsFragment extends Fragment {
             ((MainActivity) getActivity()).changeTheme(R.style.AppTheme3);
             getActivity().recreate();
         });
+        binding.buttonTheme4.setOnClickListener(button -> {
+            ((MainActivity) getActivity()).changeTheme(R.style.AppTheme4);
+            getActivity().recreate();
+        });
+        binding.buttonResetPasswordSetting.setOnClickListener(button ->
+                Navigation.findNavController(getView()).navigate(
+                SettingsFragmentDirections.actionNavigationSettingsToNavigationPasswordReset())
+        );
     }
 }
