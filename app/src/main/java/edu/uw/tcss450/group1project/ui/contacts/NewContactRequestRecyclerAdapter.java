@@ -11,8 +11,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import edu.uw.tcss450.group1project.R;
-import edu.uw.tcss450.group1project.databinding.FragmentCreateChatRoomContactCardBinding;
-
+import edu.uw.tcss450.group1project.databinding.FragmentAddContactCardBinding;
 
 /**
  * ContactAdapter provides an adapter for the Fragment RecyclerView.
@@ -50,7 +49,7 @@ public class NewContactRequestRecyclerAdapter
 
         return new ContactsViewHolder(LayoutInflater
                 .from(theParent.getContext())
-                .inflate(R.layout.fragment_create_chat_room_contact_card,
+                .inflate(R.layout.fragment_add_contact_card,
                         theParent, false));
 
     }
@@ -79,7 +78,7 @@ public class NewContactRequestRecyclerAdapter
         private final View mView;
 
         /** The ViewBinding corresponded to a contact RecyclerView card */
-        private final FragmentCreateChatRoomContactCardBinding mBinding;
+        private final FragmentAddContactCardBinding mBinding;
 
         /** The contact assigned to this ViewHolder */
         private Contact mContact;
@@ -92,7 +91,7 @@ public class NewContactRequestRecyclerAdapter
         public ContactsViewHolder(@NonNull final View theItemView) {
             super(theItemView);
             mView = theItemView;
-            mBinding = FragmentCreateChatRoomContactCardBinding.bind(theItemView);
+            mBinding = FragmentAddContactCardBinding.bind(theItemView);
             mBinding.toggleButton.setOnClickListener(button -> mConsumer.accept(mContact));
         }
 

@@ -27,15 +27,14 @@ import java.util.List;
 import edu.uw.tcss450.group1project.MainActivity;
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentHomeBinding;
-import edu.uw.tcss450.group1project.ui.contacts.ContactRequestViewModel;
 import edu.uw.tcss450.group1project.model.LocationViewModel;
 import edu.uw.tcss450.group1project.model.NewMessageCountViewModel;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
-import edu.uw.tcss450.group1project.ui.weather.WeatherDataViewModel;
 import edu.uw.tcss450.group1project.ui.messages.ChatRoom;
 import edu.uw.tcss450.group1project.ui.messages.ChatsListViewModel;
 import edu.uw.tcss450.group1project.ui.weather.LatLong;
 import edu.uw.tcss450.group1project.ui.weather.WeatherDataCurrent;
+import edu.uw.tcss450.group1project.ui.weather.WeatherDataViewModel;
 import edu.uw.tcss450.group1project.ui.weather.WeatherErrorViewModel;
 import edu.uw.tcss450.group1project.utils.WeatherUtils;
 
@@ -54,9 +53,6 @@ public class HomeFragment extends Fragment {
 
     /** The weather data error view model */
     private WeatherErrorViewModel mWeatherErrorModel;
-
-    /** Contact Requests view Model*/
-    private ContactRequestViewModel mRequestModel;
 
     /** User View Model for Jwt*/
     private UserInfoViewModel mUserModel;
@@ -124,7 +120,6 @@ public class HomeFragment extends Fragment {
                 new MessagesNotificationsRecyclerAdapter(new ArrayList<>()));
     }
 
-
     /**
      * Observes the HTTP Response from the web server. If an error occurred, notify the user
      * accordingly. If it was a success, set the weather view component.
@@ -161,7 +156,6 @@ public class HomeFragment extends Fragment {
         String message = "Unexpected error when loading local weather. Please try again.";
         ((MainActivity) getActivity()).displayErrorDialog(message);
     }
-
 
     /**
      * Observe the response from getting the chat room list
@@ -224,10 +218,7 @@ public class HomeFragment extends Fragment {
             // should we do something specific here if the json isn't parsed properly/
             exception.printStackTrace();
         }
-
-        mBinding.listNewMessages.setAdapter(new MessagesNotificationsRecyclerAdapter(newMessagesChatList));
+        mBinding.listNewMessages.setAdapter(
+                new MessagesNotificationsRecyclerAdapter(newMessagesChatList));
     }
-
-
-
 }

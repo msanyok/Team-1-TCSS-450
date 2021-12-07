@@ -88,8 +88,6 @@ public class ContactsFragment extends Fragment {
         super.onViewCreated(theView, theSavedInstanceState);
         mContactsModel.addContactListObserver(getViewLifecycleOwner(),
                 this::observeContactResponse);
-
-        mBinding.contactRequestButton.setOnClickListener(this::requestToBeSent);
         mContactsModel.addContactDeleteObserver(getViewLifecycleOwner(),
                 this::observeDeleteResponse);
         mContactsModel.contactsConnect(mUserInfo.getJwt());
