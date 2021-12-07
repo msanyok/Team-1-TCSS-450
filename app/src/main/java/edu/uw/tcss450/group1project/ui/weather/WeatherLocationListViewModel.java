@@ -27,6 +27,7 @@ import org.json.JSONObject;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -51,8 +52,8 @@ public class WeatherLocationListViewModel extends AndroidViewModel {
     /** The list of LatLong locations */
     private List<LatLong> mLocations;
 
-    /** Indicates whether this view model's location list has been added to */
-    private boolean mAdditionFlag;
+    /** Indicates whether this view model's location list has been modified */
+    private boolean mModificationFlag;
 
     /**
      * Constructs a new weather location list view model with the provided application
@@ -67,6 +68,7 @@ public class WeatherLocationListViewModel extends AndroidViewModel {
         mAdditionResponse.setValue(new JSONObject());
         mDeleteResponse = new MutableLiveData<>();
         mDeleteResponse.setValue(new JSONObject());
+        mLocations = new ArrayList<>();
     }
 
     /**
@@ -105,12 +107,12 @@ public class WeatherLocationListViewModel extends AndroidViewModel {
     }
 
     /**
-     * Determines if this view model's data fields are readable (i.e. non-null)
+     * Determines if this view model's data fields are readable
      *
      * @return true if readable, false otherwise
      */
-    public boolean containsReadableData() {
-        return mLocations != null;
+    public boolean containsReadableLocations() {
+        return !mLocations.isEmpty();
     }
 
     /**
@@ -140,23 +142,23 @@ public class WeatherLocationListViewModel extends AndroidViewModel {
      * @return the list of LatLongs
      */
     public List<LatLong> getLocations() {
-        return new ArrayList<>(mLocations);
+        return new LinkedList<>(mLocations);
     }
 
     /**
-     * Indicates whether this view model's list has been added to
+     * Indicates whether this view model's list has modified
      *
      * @return true if added to, false otherwise
      */
-    public boolean isListExpanded() {
-        return mAdditionFlag;
+    public boolean isListModified() {
+        return mModificationFlag;
     }
 
     /**
-     * Informs this view model that new additions have been noted
+     * Informs this view model that new modifications have been noted
      */
-    public void checkAdditions() {
-        mAdditionFlag = false;
+    public void checkModifications() {
+        mModificationFlag = false;
     }
 
     /**
@@ -211,7 +213,7 @@ public class WeatherLocationListViewModel extends AndroidViewModel {
                 body,
                 response -> {
                     mAdditionResponse.setValue(response);
-                    mAdditionFlag = true;
+                    mModificationFlag = true;
                 },
                 this::handleAddError) {
             @Override
@@ -243,7 +245,10 @@ public class WeatherLocationListViewModel extends AndroidViewModel {
                 Request.Method.DELETE,
                 url,
                 null,
-                mDeleteResponse::setValue,
+                response -> {
+                    mModificationFlag = true;
+                    mDeleteResponse.setValue(response);
+                },
                 this::handleDeleteError) {
             @Override
             public Map<String, String> getHeaders() {
@@ -318,7 +323,7 @@ public class WeatherLocationListViewModel extends AndroidViewModel {
     private void handleAddError(final VolleyError theError) {
         Map<String, Object> map = new HashMap<>();
         if (theError.networkResponse != null) {
-            map.put("code", String.valueOf(theError.networkResponse));
+            map.put("code", String.valueOf(theError.networkResponse.statusCode));
             try {
                 String data = new String(theError.networkResponse.data, Charset.defaultCharset())
                         .replace('\"', '\'');

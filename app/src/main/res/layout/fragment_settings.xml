@@ -65,6 +65,20 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/button_theme_2"
+            app:layout_constraintBottom_toTopOf="@id/button_theme_4">
+        </Button>
+
+        <Button
+            android:id="@+id/button_theme_4"
+            android:layout_width="180dp"
+            android:layout_height="50dp"
+            android:layout_margin="5dp"
+            android:text="@string/title_theme_4"
+            android:textColor="?buttonTextColor"
+            android:backgroundTint="?android:colorAccent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/button_theme_3"
             app:layout_constraintBottom_toBottomOf="parent">
         </Button>
 

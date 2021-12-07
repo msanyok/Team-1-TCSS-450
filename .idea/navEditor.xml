@@ -70,8 +70,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="455" />
-                            <option name="y" value="346" />
+                            <option name="x" value="524" />
+                            <option name="y" value="545" />
                           </Point>
                         </option>
                       </LayoutPositions>
@@ -124,8 +124,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="499" />
-                            <option name="y" value="103" />
+                            <option name="x" value="474" />
+                            <option name="y" value="-215" />
                           </Point>
                         </option>
                         <option name="myPositions">
@@ -150,6 +150,11 @@
             <LayoutPositions>
               <option name="myPositions">
                 <map>
+                  <entry key="action_global_navigation_settings">
+                    <value>
+                      <LayoutPositions />
+                    </value>
+                  </entry>
                   <entry key="navigation_chat_room">
                     <value>
                       <LayoutPositions>
@@ -159,6 +164,36 @@
                             <option name="y" value="-335" />
                           </Point>
                         </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_navigation_chat_room_to_chatRoomSettingsFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="navigation_chat_room_info">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="687" />
+                            <option name="y" value="-384" />
+                          </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_navigation_chat_room_info_to_navigation_messages">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
                       </LayoutPositions>
                     </value>
                   </entry>
@@ -167,8 +202,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="437" />
-                            <option name="y" value="-333" />
+                            <option name="x" value="-221" />
+                            <option name="y" value="-324" />
                           </Point>
                         </option>
                       </LayoutPositions>
@@ -200,9 +235,18 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="12" />
-                            <option name="y" value="12" />
+                            <option name="x" value="-163" />
+                            <option name="y" value="32" />
                           </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_navigation_home_chats_to_navigation_chat_room">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
                         </option>
                       </LayoutPositions>
                     </value>
@@ -212,8 +256,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="251" />
-                            <option name="y" value="18" />
+                            <option name="x" value="335" />
+                            <option name="y" value="-308" />
                           </Point>
                         </option>
                         <option name="myPositions">

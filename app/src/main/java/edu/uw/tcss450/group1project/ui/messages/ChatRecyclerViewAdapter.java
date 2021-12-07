@@ -7,6 +7,7 @@ package edu.uw.tcss450.group1project.ui.messages;
 
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,12 +15,17 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.ColorUtils;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.shape.CornerFamily;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentChatMessageBinding;
@@ -43,6 +49,9 @@ public class ChatRecyclerViewAdapter extends
      */
     private final String mPersonalIdentifier;
 
+    /** A mapping of how each message's corners are to be shaped */
+    private Map<Integer, int[]> mCornerMap;
+
     /**
      * Creates a new ChatRecyclerViewAdapter that shows the given messages for a particular chat.
      * The account's (email) thePersonalIdentifier is
@@ -55,6 +64,64 @@ public class ChatRecyclerViewAdapter extends
                                    final String thePersonalIdentifier) {
         this.mMessages = theMessages;
         mPersonalIdentifier = thePersonalIdentifier;
+        mCornerMap = new HashMap<>();
+        constructCornerMapping();
+    }
+
+    /**
+     * Updates the corner mapping of each message in this adapter
+     */
+    public void constructCornerMapping() {
+        for (int i = 0; i < mMessages.size(); i++) {
+            ChatMessage message = mMessages.get(i);
+            int[] dimensions = new int[4];
+            if (message.getSender().equals("TalkBox Admin")) {
+                dimensions [0] = 15;
+                dimensions[1] = 15;
+                dimensions[2] = 15;
+                dimensions[3] = 15;
+            } else {
+                // top corners first
+                if (i == 0) {
+                    dimensions[0] = 15;
+                    dimensions[1] = 15;
+                } else {
+                    String currSender = message.getSender();
+                    String prevSender = mMessages.get(i - 1).getSender();
+                    if (((currSender.equals(mPersonalIdentifier) &&
+                            prevSender.equals(mPersonalIdentifier)) ||
+                            (!currSender.equals(mPersonalIdentifier) &&
+                                    !prevSender.equals(mPersonalIdentifier))) &&
+                            !prevSender.equals("TalkBox Admin")) {
+                        dimensions[0] = 0;
+                        dimensions[1] = 0;
+                    } else {
+                        dimensions[0] = 15;
+                        dimensions[1] = 15;
+                    }
+                }
+                // bottom corners
+                if (i == mMessages.size() - 1) {
+                    dimensions[2] = 15;
+                    dimensions[3] = 15;
+                } else {
+                    String currSender = message.getSender();
+                    String nextSender = mMessages.get(i + 1).getSender();
+                    if (((currSender.equals(mPersonalIdentifier) &&
+                            nextSender.equals(mPersonalIdentifier)) ||
+                            (!currSender.equals(mPersonalIdentifier) &&
+                                    !nextSender.equals(mPersonalIdentifier))) &&
+                            !nextSender.equals("TalkBox Admin")) {
+                        dimensions[2] = 0;
+                        dimensions[3] = 0;
+                    } else {
+                        dimensions[2] = 15;
+                        dimensions[3] = 15;
+                    }
+                }
+            }
+            mCornerMap.put(message.getMessageId(), dimensions);
+        }
     }
 
     @NonNull
@@ -91,6 +158,8 @@ public class ChatRecyclerViewAdapter extends
         /** The View Binding the the chat message card */
         private FragmentChatMessageBinding mBinding;
 
+        private ChatMessage mChatMessage;
+
         /**
          * Creates a new View Holder
          *
@@ -107,9 +176,20 @@ public class ChatRecyclerViewAdapter extends
          * @param theMessage
          */
         void setMessage(final ChatMessage theMessage) {
-
+            mChatMessage = theMessage;
             final Resources res = mView.getContext().getResources();
             final MaterialCardView card = mBinding.cardRoot;
+
+            int[] corners = mCornerMap.get(theMessage.getMessageId());
+            card.setShapeAppearanceModel(
+                    card.getShapeAppearanceModel()
+                    .toBuilder()
+                    .setTopLeftCorner(CornerFamily.ROUNDED, corners[0])
+                    .setTopRightCorner(CornerFamily.ROUNDED, corners[1])
+                    .setBottomLeftCorner(CornerFamily.ROUNDED, corners[2])
+                    .setBottomRightCorner(CornerFamily.ROUNDED, corners[3])
+                    .build()
+            );
 
             int[] attr = {R.attr.cardColor,
                     R.attr.colorAccent, R.attr.cardTextColor, R.attr.buttonTextColor};
