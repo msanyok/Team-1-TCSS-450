@@ -71,17 +71,6 @@ public class CreateChatRoomFragment extends Fragment {
     private TextWatcher mTextWatcher;
 
     @Override
-    public void onCreate(@Nullable final Bundle theSavedInstanceState) {
-        super.onCreate(theSavedInstanceState);
-        mCreationModel =
-                new ViewModelProvider(this).get(ChatRoomCreationViewModel.class);
-        mContactsModel = new ViewModelProvider(getActivity()).get(ContactsViewModel.class);
-        mUserModel = new ViewModelProvider(getActivity()).get(UserInfoViewModel.class);
-        mAdditions = mCreationModel.getSelected();
-        mContactsModel.contactsConnect(mUserModel.getJwt());
-    }
-
-    @Override
     public View onCreateView(final LayoutInflater theInflater, final ViewGroup theContainer,
                              final Bundle theSavedInstanceState) {
         // Inflate the layout for this fragment
@@ -93,10 +82,20 @@ public class CreateChatRoomFragment extends Fragment {
                               @Nullable final Bundle theSavedInstanceState) {
         super.onViewCreated(theView, theSavedInstanceState);
         mBinding = FragmentCreateChatroomBinding.bind(getView());
+
+        mUserModel = new ViewModelProvider(getActivity()).get(UserInfoViewModel.class);
+
+        mContactsModel = new ViewModelProvider(getActivity()).get(ContactsViewModel.class);
+        mContactsModel.contactsConnect(mUserModel.getJwt());
         mContactsModel.addContactListObserver(
                 getViewLifecycleOwner(), this::observeContactResponse);
+
+        mCreationModel =
+                new ViewModelProvider(this).get(ChatRoomCreationViewModel.class);
         mCreationModel.addChatRoomCreationResponseObserver(
                 getViewLifecycleOwner(), this::observeCreationResponse);
+        mAdditions = mCreationModel.getSelected();
+
         mBinding.createButton.setOnClickListener(this::processCreateRequest);
         Spinner spinner = (Spinner) getView().findViewById(R.id.contact_search_spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),

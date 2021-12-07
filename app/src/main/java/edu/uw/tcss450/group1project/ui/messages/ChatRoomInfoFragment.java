@@ -87,10 +87,6 @@ public class ChatRoomInfoFragment extends Fragment {
         final ChatRoomInfoFragmentArgs args =
                 ChatRoomInfoFragmentArgs.fromBundle(getArguments());
         mChatId = Integer.valueOf(args.getChatRoomId());
-        mUserModel = new ViewModelProvider(getActivity()).get(UserInfoViewModel.class);
-        mContactsModel = new ViewModelProvider(getActivity()).get(ContactsViewModel.class);
-        mParticipantModel = new ViewModelProvider(this).get(ChatRoomParticipantViewModel.class);
-        mAdditions = mParticipantModel.getSelected();
     }
 
     @Override
@@ -103,12 +99,20 @@ public class ChatRoomInfoFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull final View theView,
                               @Nullable final Bundle theSavedInstanceState) {
-        mContactsModel.contactsConnect(mUserModel.getJwt());
         mBinding = FragmentChatroomInfoBinding.bind(theView);
-        mContactsModel.addContactListObserver(
-                getViewLifecycleOwner(), this::observeContactsResponse);
+
+        mUserModel = new ViewModelProvider(getActivity()).get(UserInfoViewModel.class);
+
+        mParticipantModel = new ViewModelProvider(this).get(ChatRoomParticipantViewModel.class);
         mParticipantModel.addGetParticipantsResponseObserver(
                 getViewLifecycleOwner(), this::observeCurrentParticipantResponse);
+        mAdditions = mParticipantModel.getSelected();
+
+        mContactsModel = new ViewModelProvider(getActivity()).get(ContactsViewModel.class);
+        mContactsModel.contactsConnect(mUserModel.getJwt());
+        mContactsModel.addContactListObserver(
+                getViewLifecycleOwner(), this::observeContactsResponse);
+
         Spinner spinner = (Spinner) getView().findViewById(R.id.contact_search_spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.contact_search_array, R.layout.fragment_contacts_spinner);
