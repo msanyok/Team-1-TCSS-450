@@ -176,7 +176,8 @@ public class MainActivity extends ThemedActivity {
             } else {
                 navView.setVisibility(View.GONE);
             }
-            if (id == R.id.navigation_chat_room_info || id == R.id.navigation_contacts_parent) {
+            if (id == R.id.navigation_chat_room_info || id == R.id.navigation_contacts_parent ||
+                id == R.id.navigation_password_change) {
                 getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
             } else {
                 getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
