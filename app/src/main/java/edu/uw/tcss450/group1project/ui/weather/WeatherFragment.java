@@ -192,12 +192,4 @@ public class WeatherFragment extends Fragment {
         mBinding.listDailyForecast
                 .setAdapter(new WeatherRecyclerAdapterDaily(mModel.getDailyData()));
     }
-
-    /**
-     * Displays an error dialog when an error occurs in retrieving weather data
-     */
-    private void displayErrorDialog() {
-        String message = "Unexpected error when loading weather. Please try again.";
-        ((MainActivity) getActivity()).displayErrorDialog(message);
-    }
 }
