@@ -40,7 +40,7 @@
     </Button>
 
     <Spinner
-        android:id="@+id/contact_search_spinner"
+        android:id="@+id/request_search_spinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"

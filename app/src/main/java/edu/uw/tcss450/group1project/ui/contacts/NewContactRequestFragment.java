@@ -96,9 +96,9 @@ public class NewContactRequestFragment extends Fragment {
         mContactsRequestModel.addContactAddObserver(getViewLifecycleOwner(),
                 this::observeContactResponse);
 
-        Spinner spinner = (Spinner) getView().findViewById(R.id.contact_search_spinner);
+        Spinner spinner = (Spinner) getView().findViewById(R.id.request_search_spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
-                R.array.contact_search_array, R.layout.fragment_contacts_spinner);
+                R.array.request_search_array, R.layout.fragment_contacts_spinner);
         adapter.setDropDownViewResource(R.layout.fragment_contacts_spinner_dropdown);
         spinner.setAdapter(adapter);
 
@@ -118,7 +118,7 @@ public class NewContactRequestFragment extends Fragment {
                 if(theString.toString().isEmpty()) {
                     mBinding.listRoot.setAdapter(null);
                 } else {
-                    int thePosition = mBinding.contactSearchSpinner.getSelectedItemPosition();
+                    int thePosition = mBinding.requestSearchSpinner.getSelectedItemPosition();
                     if(thePosition== 0) {
                         mContactsRequestModel.requestConnect("nickname", theString.toString(),
                                 mUserModel.getJwt());
@@ -238,7 +238,7 @@ public class NewContactRequestFragment extends Fragment {
                         Toast.LENGTH_SHORT).show();
 
                 String theString = mBinding.addContactText.getText().toString();
-                int thePosition = mBinding.contactSearchSpinner.getSelectedItemPosition();
+                int thePosition = mBinding.requestSearchSpinner.getSelectedItemPosition();
                 if(thePosition== 0) {
                     mContactsRequestModel.requestConnect("nickname", theString,
                             mUserModel.getJwt());
