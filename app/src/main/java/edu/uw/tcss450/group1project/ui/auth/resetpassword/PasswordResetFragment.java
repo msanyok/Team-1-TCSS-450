@@ -99,11 +99,11 @@ public class PasswordResetFragment extends Fragment {
      * Else, sets an error on the first password field asking the user to input a valid password.
      */
     private void validateNewPassword() {
-        final String passwordText = mBinding.buttonResetPasswordDone.getText().toString();
+        final String passwordText = mBinding.newPasswordText.getText().toString();
         TextFieldValidators.PASSWORD_VALIDATOR.processResult(
                 TextFieldValidators.PASSWORD_VALIDATOR.apply(passwordText),
                 this::newPasswordMatch,
-                result -> mBinding.buttonResetPasswordDone.setError(
+                result -> mBinding.newPasswordText.setError(
                         TextFieldHints.getPasswordHint(passwordText)));
     }
 
@@ -117,12 +117,12 @@ public class PasswordResetFragment extends Fragment {
         PasswordValidator matchValidator =
                 checkClientPredicate(
                         pwd -> pwd.equals(
-                                mBinding.retypeResetPassword.getText().toString().trim()));
+                                mBinding.retypeNewPasswordText.getText().toString().trim()));
 
         TextFieldValidators.EMAIL_VALIDATOR.processResult(
-                matchValidator.apply(mBinding.buttonResetPasswordDone.getText().toString().trim()),
+                matchValidator.apply(mBinding.newPasswordText.getText().toString().trim()),
                 this::verifyWithServer,
-                result -> mBinding.buttonResetPasswordDone.setError("Passwords must match."));
+                result -> mBinding.newPasswordText.setError("Passwords must match."));
     }
 
     /**
@@ -134,7 +134,7 @@ public class PasswordResetFragment extends Fragment {
                 PasswordResetFragmentArgs.fromBundle(getArguments());
 
         mPasswordResetModel.connect(args.getEmail(),
-                mBinding.buttonResetPasswordDone.getText().toString(),
+                mBinding.newPasswordText.getText().toString(),
                 mBinding.resetComfirmationCode.getText().toString().trim()
         );
     }
@@ -152,7 +152,7 @@ public class PasswordResetFragment extends Fragment {
                         .actionPasswordResetFragmentToSignInFragment();
 
         directions.setEmail(args.getEmail());
-        directions.setPassword(mBinding.buttonResetPasswordDone.getText().toString());
+        directions.setPassword(mBinding.newPasswordText.getText().toString());
 
         Navigation.findNavController(getView()).navigate(directions);
 
