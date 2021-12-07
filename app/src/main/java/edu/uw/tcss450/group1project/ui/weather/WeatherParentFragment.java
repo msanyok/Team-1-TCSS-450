@@ -7,26 +7,36 @@ package edu.uw.tcss450.group1project.ui.weather;
 
 import android.location.Location;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.viewpager.widget.ViewPager;
+import androidx.navigation.NavBackStackEntry;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 import org.json.JSONObject;
 
-import java.util.ArrayList;
+import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import edu.uw.tcss450.group1project.MainActivity;
 import edu.uw.tcss450.group1project.R;
+import edu.uw.tcss450.group1project.databinding.FragmentWeatherParentBinding;
 import edu.uw.tcss450.group1project.model.LocationViewModel;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
 
@@ -44,30 +54,33 @@ public class WeatherParentFragment extends Fragment {
     /** The user info view model */
     private UserInfoViewModel mUserModel;
 
-    /** The weather fragment view pager */
-    private ViewPager mPager;
+    /** Indicates whether a delete observer has been assigned to the current view life cycle */
+    private boolean mDeleteObserverAssigned;
 
-    /** The tab layout to accompany the weather fragment view pager */
-    private TabLayout mTabs;
+    /** The view index of this fragment's weather fragment view pager */
+    private int mViewIndex;
 
     /**
      * Required empty constructor
      */
     public WeatherParentFragment() {
-        // Required empty public constructor
     }
 
     @Override
     public void onCreate(final Bundle theSavedInstanceState) {
-        super.onCreate(null);
-        mLocationModel = new ViewModelProvider(this).get(WeatherLocationListViewModel.class);
-        mUserModel = new ViewModelProvider(getActivity()).get(UserInfoViewModel.class);
+        super.onCreate(theSavedInstanceState);
+        mViewIndex = theSavedInstanceState == null ? 0 : theSavedInstanceState.getInt("mViewIndex");
+    }
+
+    @Override
+    public void onSaveInstanceState(final Bundle theBundle) {
+        super.onSaveInstanceState(theBundle);
+        theBundle.putInt("mViewIndex", mViewIndex);
     }
 
     @Override
     public View onCreateView(final LayoutInflater theInflater, final ViewGroup theContainer,
                              final Bundle theSavedInstanceState) {
-        System.out.println("creating weather parent view");
         // Inflate the layout for this fragment
         return theInflater.inflate(R.layout.fragment_weather_parent, theContainer, false);
     }
@@ -76,11 +89,26 @@ public class WeatherParentFragment extends Fragment {
     public void onViewCreated(@NonNull final View theView,
                               @Nullable final Bundle theSavedInstanceState) {
         super.onViewCreated(theView, theSavedInstanceState);
-        mLocationModel.connectGet(mUserModel.getJwt());
-        mLocationModel.addResponseObserver(getViewLifecycleOwner(),
-                this::observeLocationListResponse);
-        mPager = getView().findViewById(R.id.view_pager);
-        mTabs = getView().findViewById(R.id.tab_layout);
+        mDeleteObserverAssigned = false;
+        NavController navController = Navigation.findNavController(theView);
+        NavBackStackEntry backStackEntry =
+                navController.getBackStackEntry(R.id.navigation_weather_parent);
+        mLocationModel =
+                new ViewModelProvider(backStackEntry).get(WeatherLocationListViewModel.class);
+        mUserModel = new ViewModelProvider(getActivity()).get(UserInfoViewModel.class);
+        if (mLocationModel.containsReadableData() && !mLocationModel.isListExpanded()) {
+            setViewComponents();
+        } else {
+            mLocationModel.checkAdditions();
+            mLocationModel.connectGet(mUserModel.getJwt());
+            mLocationModel.addResponseObserver(getViewLifecycleOwner(),
+                    this::observeLocationListResponse);
+        }
+        FragmentWeatherParentBinding binding = FragmentWeatherParentBinding.bind(theView);
+        binding.searchButton.setOnClickListener(button -> {
+            Navigation.findNavController(theView).navigate(
+                    R.id.action_navigation_weather_parent_to_navigation_weather_location_selection);
+        });
     }
 
     /**
@@ -91,10 +119,9 @@ public class WeatherParentFragment extends Fragment {
     private void observeLocationListResponse(final JSONObject theResponse) {
         if (theResponse.has("code")) {
             Log.e("WEATHER LOCATION LIST REQUEST ERROR", theResponse.toString());
-            displayErrorDialog();
+            displayErrorDialog("Unexpected error when loading saved locations. Please try again.");
             mLocationModel.clearResponse();
-        }
-        if (mLocationModel.containsReadableData()) {
+        } else if (theResponse.length() != 0) {
             setViewComponents();
         }
     }
@@ -103,29 +130,80 @@ public class WeatherParentFragment extends Fragment {
      * Sets this fragment's view components which include its view pager and tab view
      */
     private void setViewComponents() {
-        List<Fragment> frags = new ArrayList<>();
+        List<WeatherFragment> frags = new LinkedList<>();
         LocationViewModel locModel =
                 new ViewModelProvider(getActivity()).get(LocationViewModel.class);
         Location loc = locModel.getCurrentLocation();
         if (loc != null) {
-            Fragment myLocFrag = new WeatherFragment(
-                        new LatLong(loc.getLatitude(), loc.getLongitude()), true);
-            frags.add(myLocFrag);
+            frags.add(WeatherFragment.newInstance(
+                    new LatLong(loc.getLatitude(), loc.getLongitude()), false,
+                    (Consumer<LatLong> & Serializable) this::displayLocationDeleteDialog));
         }
         for (final LatLong ltlng : mLocationModel.getLocations()) {
-            frags.add(new WeatherFragment(ltlng, false));
+            frags.add(WeatherFragment.newInstance(ltlng, true,
+                    (Consumer<LatLong> & Serializable) this::displayLocationDeleteDialog));
         }
-        WeatherFragmentPagerAdapter pagerAdapter =
-                new WeatherFragmentPagerAdapter(getChildFragmentManager(), frags);
-        mPager.setAdapter(pagerAdapter);
-        mTabs.setupWithViewPager(mPager);
+        ViewPager2 viewPager = getView().findViewById(R.id.view_pager);
+        TabLayout tabs = getView().findViewById(R.id.tab_layout);
+        WeatherFragmentAdapter adapter = new WeatherFragmentAdapter(
+                getChildFragmentManager(), getLifecycle(), frags);
+        viewPager.setAdapter(adapter);
+        viewPager.setOffscreenPageLimit(5);
+        viewPager.setCurrentItem(mViewIndex, true);
+        new TabLayoutMediator(tabs, viewPager, (tab, position) -> {}).attach();
+        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                mViewIndex = position;
+            }
+        });
     }
 
     /**
      * Displays an error dialog when an error occurs in retrieving weather location data
+     *
+     * @param theMessage the message to display
      */
-    private void displayErrorDialog() {
-        String message = "Unexpected error when loading saved locations. Please try again.";
-        ((MainActivity) getActivity()).displayErrorDialog(message);
+    private void displayErrorDialog(final String theMessage) {
+        ((MainActivity) getActivity()).displayErrorDialog(theMessage);
+    }
+
+    private void displayLocationDeleteDialog(final LatLong theLatLong) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
+        alertDialog.setMessage(Html.fromHtml("<font color='#000000'>Are you sure " +
+                "you want to delete this location?</font>"));
+        alertDialog.setPositiveButton(Html.fromHtml("<font color='000000'>Delete</font>"),
+                (dialog, which) -> {
+                    if (!mDeleteObserverAssigned) {
+                        mDeleteObserverAssigned = true;
+                        mLocationModel.addDeletionResponseObserver(getViewLifecycleOwner(),
+                                this::observeDeleteResponse);
+                    }
+                    mLocationModel.connectDelete(mUserModel.getJwt(), theLatLong.toString());
+                });
+        alertDialog.setNegativeButton(Html.fromHtml("<font color='#000000'>Cancel</font>"),
+                (dialog, which) -> {});
+        alertDialog.show();
+    }
+
+    /**
+     * Observes server responses for deleting a selected weather location
+     *
+     * @param theResponse the observed response
+     */
+    private void observeDeleteResponse(final JSONObject theResponse) {
+        if (theResponse.has("code")) {
+            Log.e("LOCATION DELETE ERROR", theResponse.toString());
+            displayErrorDialog("An unexpected error occurred when deleting location." +
+                    " Please try again.");
+            mLocationModel.clearDeletionResponse();
+        } else if (theResponse.length() != 0) {
+            mLocationModel.clearDeletionResponse();
+            mViewIndex--;
+            mLocationModel.connectGet(mUserModel.getJwt());
+            Toast.makeText(getContext(), "Location deleted.",
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 }

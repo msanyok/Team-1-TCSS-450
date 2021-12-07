@@ -10,6 +10,7 @@
     <string name="hint_verification_code">Verification Code</string>
     <string name="hint_weather_location">Enter a new location.</string>
     <string name="hint_add_new_contact">Filter existing contacts.</string>
+    <string name="hint_search_new_contact">Search for contacts.</string>
     <string name="hint_chat_room_name">Your chat room name.</string>
     <string name="hint_reset_email">Enter email</string>
     <string name="hint_reset_code">Enter code</string>
@@ -34,6 +35,8 @@
     <string name="title_contacts">Contacts</string>
     <string name="title_contact_info">Contact Info</string>
     <string name="title_messages">Chat Rooms</string>
+    <string name="title_location_selection">Choose a New Location</string>
+    <string name="title_save_location">Add to saved locations</string>
     <string name="title_create_chat_room">Create a Chat Room</string>
     <string name="title_select_participants">Select participants</string>
     <string name="title_register">Register for TalkBox</string>
@@ -41,7 +44,8 @@
     <string name="title_settings">Settings</string>
     <string name="title_change_password">Change Password</string>
     <string name="title_missed_messages">Missed messages</string>
-    <string name="title_contact_requests">New contact requests</string>
+    <string name="title_contact_requests">Incoming Contact Requests</string>
+    <string name="title_outgoing_contact_requests">Outgoing Contact Requests</string>
     <string name="title_24hr_forecast">24-hour forecast</string>
     <string name="title_10day_forecast">7-day forecast</string>
     <string name="title_change_theme">Change Theme</string>
@@ -55,7 +59,8 @@
     <string name="title_password_reset"> Want To Reset Password?</string>
     <string name="title_password_reset_toolbar">
         Reset password? Enter your credentials below...</string>
-
+    <string name="title_zip_search">Search by zip code</string>
+    <string name="title_pin_search">No zip code? Drop a pin!</string>
     <string name="message_verification_greeting">Hey! We sent you an email.</string>
     <string name="message_resend_code_instructions">Need a new code?</string>
     <string name="message_verification_instructions">
@@ -75,4 +80,5 @@
         <item>Last Name</item>
         <item>Email</item>
     </string-array>
+    <string name="title_activity_maps">MapsActivity</string>
 </resources>

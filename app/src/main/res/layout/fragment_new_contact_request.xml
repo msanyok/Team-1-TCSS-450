@@ -1,14 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.contacts.NewContactRequestFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="hello_blank_fragment" />
+    <EditText
+        android:id="@+id/add_contact_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:drawableStart="@drawable/ic_search_grey_24dp"
+        android:hint="@string/hint_add_new_contact"
+        android:inputType="text"
+        android:minHeight="48dp"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@id/contact_request_button"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/contact_search_spinner"
+        app:layout_constraintTop_toTopOf="parent">
+    </EditText>
 
-</FrameLayout>
+    <Button
+        android:id="@+id/contact_request_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:text="@string/action_send_contact_request"
+        android:textColor="?buttonTextColor"
+        android:backgroundTint="?android:colorAccent"
+        app:layout_constraintTop_toBottomOf="@id/add_contact_text"
+        app:layout_constraintBottom_toTopOf="@id/list_root"
+        app:layout_constraintLeft_toLeftOf="parent">
+    </Button>
+
+    <Spinner
+        android:id="@+id/contact_search_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:backgroundTint="?android:textColorPrimary"
+        android:popupBackground="@drawable/spinner_dropdown"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/contact_request_button"
+        app:layout_constraintLeft_toRightOf="@id/add_contact_text"
+        app:layout_constraintRight_toRightOf="parent">
+    </Spinner>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/list_root"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="5dp"
+        android:orientation="vertical"
+        app:layoutManager="LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/contact_request_button"
+        tools:context="edu.uw.tcss450.group1project.ui.contacts.ContactsFragment"
+        tools:layout_editor_absoluteX="5dp"
+        tools:listitem="@layout/fragment_contact_request_search" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

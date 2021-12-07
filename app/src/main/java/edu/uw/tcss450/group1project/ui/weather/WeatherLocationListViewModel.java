@@ -6,6 +6,7 @@
 package edu.uw.tcss450.group1project.ui.weather;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -23,6 +24,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,8 +42,17 @@ public class WeatherLocationListViewModel extends AndroidViewModel {
     /** The mutable live data JSONObject response */
     private final MutableLiveData<JSONObject> mResponse;
 
+    /** The mutable live data JSONObject addition response */
+    private final MutableLiveData<JSONObject> mAdditionResponse;
+
+    /** The mutable live data JSONObject addition deletion */
+    private final MutableLiveData<JSONObject> mDeleteResponse;
+
     /** The list of LatLong locations */
     private List<LatLong> mLocations;
+
+    /** Indicates whether this view model's location list has been added to */
+    private boolean mAdditionFlag;
 
     /**
      * Constructs a new weather location list view model with the provided application
@@ -52,6 +63,10 @@ public class WeatherLocationListViewModel extends AndroidViewModel {
         super(theApplication);
         mResponse = new MutableLiveData<>();
         mResponse.setValue(new JSONObject());
+        mAdditionResponse = new MutableLiveData<>();
+        mAdditionResponse.setValue(new JSONObject());
+        mDeleteResponse = new MutableLiveData<>();
+        mDeleteResponse.setValue(new JSONObject());
     }
 
     /**
@@ -63,6 +78,30 @@ public class WeatherLocationListViewModel extends AndroidViewModel {
     public void addResponseObserver(@NonNull final LifecycleOwner theOwner,
                                     @NonNull final Observer<? super JSONObject> theObserver) {
         mResponse.observe(theOwner, theObserver);
+    }
+
+    /**
+     * Adds an observer to this view model's mutable JSONObject location addition response
+     *
+     * @param theOwner the lifecycle owner
+     * @param theObserver the observer to be assigned
+     */
+    public void addAdditionResponseObserver(
+            @NonNull final LifecycleOwner theOwner,
+            @NonNull final Observer<? super JSONObject> theObserver) {
+        mAdditionResponse.observe(theOwner, theObserver);
+    }
+
+    /**
+     * Adds an observer to this view model's mutable JSONObject location deletion response
+     *
+     * @param theOwner the lifecycle owner
+     * @param theObserver the observer to be assigned
+     */
+    public void addDeletionResponseObserver(
+            @NonNull final LifecycleOwner theOwner,
+            @NonNull final Observer<? super JSONObject> theObserver) {
+        mDeleteResponse.observe(theOwner, theObserver);
     }
 
     /**
@@ -82,12 +121,42 @@ public class WeatherLocationListViewModel extends AndroidViewModel {
     }
 
     /**
+     * Clears this view model's JSONObject location addition response
+     */
+    public void clearAdditionResponse() {
+        mAdditionResponse.setValue(new JSONObject());
+    }
+
+    /**
+     * Clears this view model's JSONObject location deletion response
+     */
+    public void clearDeletionResponse() {
+        mDeleteResponse.setValue(new JSONObject());
+    }
+
+    /**
      * Provides the list of latitude longitude locations stored in this view model
      *
      * @return the list of LatLongs
      */
     public List<LatLong> getLocations() {
-        return mLocations;
+        return new ArrayList<>(mLocations);
+    }
+
+    /**
+     * Indicates whether this view model's list has been added to
+     *
+     * @return true if added to, false otherwise
+     */
+    public boolean isListExpanded() {
+        return mAdditionFlag;
+    }
+
+    /**
+     * Informs this view model that new additions have been noted
+     */
+    public void checkAdditions() {
+        mAdditionFlag = false;
     }
 
     /**
@@ -121,13 +190,86 @@ public class WeatherLocationListViewModel extends AndroidViewModel {
     }
 
     /**
+     * Initiates a request to the web service to retrieve saved weather locations
+     *
+     * @param theJwt the user's JWT
+     */
+    public void connectPost(final String theJwt, final String theLocation) {
+        String url = "https://team-1-tcss-450-server.herokuapp.com/weather/locations";
+        Map<String, String> bodyMap = new HashMap<>();
+        if (theLocation.contains(":")) { // a lat long
+            String[] latLong = theLocation.split(":");
+            bodyMap.put("lat", latLong[0]);
+            bodyMap.put("long", latLong[1]);
+        } else { // a zip code
+            bodyMap.put("zip", theLocation);
+        }
+        JSONObject body = new JSONObject(bodyMap);
+        Request request = new JsonObjectRequest(
+                Request.Method.POST,
+                url,
+                body,
+                response -> {
+                    mAdditionResponse.setValue(response);
+                    mAdditionFlag = true;
+                },
+                this::handleAddError) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                // add headers <key,value>
+                headers.put("Authorization", theJwt);
+                return headers;
+            }
+        };
+        request.setRetryPolicy(new DefaultRetryPolicy(
+                10_000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        //Instantiate the RequestQueue and add the request to the queue
+        Volley.newRequestQueue(getApplication().getApplicationContext())
+                .add(request);
+    }
+
+    /**
+     * Initiates a request to the web service to retrieve saved weather locations
+     *
+     * @param theJwt the user's JWT
+     */
+    public void connectDelete(final String theJwt, final String theLocation) {
+        String url = "https://team-1-tcss-450-server.herokuapp.com/weather/locations/"
+                + theLocation;
+        Request request = new JsonObjectRequest(
+                Request.Method.DELETE,
+                url,
+                null,
+                mDeleteResponse::setValue,
+                this::handleDeleteError) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                // add headers <key,value>
+                headers.put("Authorization", theJwt);
+                return headers;
+            }
+        };
+        request.setRetryPolicy(new DefaultRetryPolicy(
+                10_000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        //Instantiate the RequestQueue and add the request to the queue
+        Volley.newRequestQueue(getApplication().getApplicationContext())
+                .add(request);
+    }
+
+    /**
      * Handles a result returned from the web service weather endpoint and parses needed data
      *
      * @param theResult the result to be parsed
      */
     private void handleResult(final JSONObject theResult) {
-        List<LatLong> locations = new ArrayList<>();
         System.out.println(theResult);
+        List<LatLong> locations = new ArrayList<>();
         try {
             JSONArray locArray = theResult.getJSONArray("data");
             for (int i = 0; i < locArray.length(); i++) {
@@ -155,5 +297,37 @@ public class WeatherLocationListViewModel extends AndroidViewModel {
         Map<String, String> map = new HashMap<>();
         map.put("code", theError.getLocalizedMessage());
         mResponse.setValue(new JSONObject(map));
+    }
+
+    /**
+     * Handles errors generated when deleting a saved weather location from the server
+     *
+     * @param theError the resulting Volley error to be handled
+     */
+    private void handleDeleteError(final VolleyError theError) {
+        Map<String, String> map = new HashMap<>();
+        map.put("code", theError.getLocalizedMessage());
+        mDeleteResponse.setValue(new JSONObject(map));
+    }
+
+    /**
+     * Handles errors generated when adding a saved weather location
+     *
+     * @param theError the resulting Volley error to be handled
+     */
+    private void handleAddError(final VolleyError theError) {
+        Map<String, Object> map = new HashMap<>();
+        if (theError.networkResponse != null) {
+            map.put("code", String.valueOf(theError.networkResponse));
+            try {
+                String data = new String(theError.networkResponse.data, Charset.defaultCharset())
+                        .replace('\"', '\'');
+                map.put("data", theError.networkResponse.data == null ? new JSONObject() :
+                        new JSONObject(data));
+            } catch (JSONException ex) {
+                Log.e("JSON PARSE ERROR IN ERROR HANDLER", ex.getMessage());
+            }
+        }
+        mAdditionResponse.setValue(new JSONObject(map));
     }
 }

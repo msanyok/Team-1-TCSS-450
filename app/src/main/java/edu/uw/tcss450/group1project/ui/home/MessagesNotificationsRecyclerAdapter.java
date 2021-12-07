@@ -5,11 +5,14 @@
 
 package edu.uw.tcss450.group1project.ui.home;
 
+import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -17,6 +20,7 @@ import java.util.List;
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentHomeMessageNotificationCardBinding;
 import edu.uw.tcss450.group1project.ui.messages.ChatRoom;
+import edu.uw.tcss450.group1project.ui.messages.ChatsFragmentDirections;
 
 /**
  * MessagesNotificationsRecyclerAdapter provides an adapter for the HomeFragment
@@ -88,6 +92,18 @@ public class MessagesNotificationsRecyclerAdapter extends
             super(theItemView);
             mView = theItemView;
             mBinding = FragmentHomeMessageNotificationCardBinding.bind(theItemView);
+
+            // navigate to a chat room fragment when the chat room card is pressed.
+            // send the chat name and the chat ID through action params, important state the
+            // fragment needs.
+            mBinding.homeChatsNavigation.setOnClickListener(button -> {
+
+                HomeFragmentDirections.ActionNavigationHomeChatsToNavigationChatRoom action =
+                        HomeFragmentDirections
+                                .actionNavigationHomeChatsToNavigationChatRoom(mRoom.getChatName(),
+                                        mRoom.getChatID());
+                Navigation.findNavController(theItemView).navigate(action);
+            });
         }
 
         /**
@@ -102,7 +118,10 @@ public class MessagesNotificationsRecyclerAdapter extends
 
         /** Displays all chat room data and image views for a single new message card */
         private void display() {
-            // TODO implement code for live chat room data
+            // TODO style the same as on chat list frag
+            mBinding.chatName.setText(mRoom.getChatName());
+            mBinding.currentMessage.setText(mRoom.getMostRecentMessage());
+            mBinding.participantImage.setImageResource(R.drawable.ic_messages_black_24dp);
         }
     }
 }

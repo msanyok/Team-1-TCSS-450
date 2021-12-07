@@ -9,7 +9,11 @@
         android:id="@+id/navigation_home"
         android:name="edu.uw.tcss450.group1project.ui.home.HomeFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_navigation_home_chats_to_navigation_chat_room"
+            app:destination="@id/navigation_chat_room" />
+    </fragment>
     <fragment
         android:id="@+id/navigation_messages"
         android:name="edu.uw.tcss450.group1project.ui.messages.ChatsFragment"
@@ -26,7 +30,11 @@
     <fragment
         android:id="@+id/navigation_weather_parent"
         android:name="edu.uw.tcss450.group1project.ui.weather.WeatherParentFragment"
-        android:label="@string/title_weather" />
+        android:label="@string/title_weather" >
+        <action
+            android:id="@+id/action_navigation_weather_parent_to_navigation_weather_location_selection"
+            app:destination="@id/navigation_weather_location_selection" />
+    </fragment>
     <fragment
         android:id="@+id/navigation_settings"
         android:name="edu.uw.tcss450.group1project.ui.settings.SettingsFragment"
@@ -72,6 +80,23 @@
             app:popUpTo="@id/navigation_settings"
             app:popUpToInclusive="true" />
     </fragment>
-
+    <fragment
+        android:id="@+id/navigation_weather_location_selection"
+        android:name="edu.uw.tcss450.group1project.ui.weather.WeatherLocationSelectionFragment"
+        android:label="@string/title_location_selection"
+        tools:layout="@layout/fragment_weather_location_selection" >
+        <action
+            android:id="@+id/action_navigation_weather_location_selection_to_navigation_weather_teaser"
+            app:destination="@id/navigation_weather_teaser" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_weather_teaser"
+        android:name="edu.uw.tcss450.group1project.ui.weather.WeatherTeaserFragment"
+        android:label="{title_name}"
+        tools:layout="@layout/fragment_weather_teaser">
+        <argument
+            android:name="title_name"
+            app:argType="string" />
+    </fragment>
 
 </navigation>
