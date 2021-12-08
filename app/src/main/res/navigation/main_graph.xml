@@ -96,7 +96,7 @@
         android:id="@+id/navigation_weather_teaser"
         android:name="edu.uw.tcss450.group1project.ui.weather.WeatherTeaserFragment"
         android:label="{title_name}"
-        tools:layout="@layout/fragment_weather_teaser">
+        tools:layout="@layout/fragment_weather">
         <argument
             android:name="title_name"
             app:argType="string" />

@@ -218,15 +218,6 @@ public class ContactsViewModel extends AndroidViewModel {
     }
 
     /**
-     * Determines if this view model's data contacts are readable (i.e. non-null)
-     *
-     * @return true if readable, false otherwise
-     */
-    public boolean containsReadableContacts() {
-        return mContactList != null;
-    }
-
-    /**
      * Observes the HTTP Response from the web server. If an error occurred, notify the user
      * accordingly. If it was a success, parse the contact information.
      *

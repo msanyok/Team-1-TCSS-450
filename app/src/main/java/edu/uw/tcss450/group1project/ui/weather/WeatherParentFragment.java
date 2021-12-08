@@ -79,11 +79,13 @@ public class WeatherParentFragment extends Fragment {
                 navController.getBackStackEntry(R.id.navigation_weather_parent);
         mLocationModel =
                 new ViewModelProvider(backStackEntry).get(WeatherLocationListViewModel.class);
+        mLocationModel.clearResponse();
+        mLocationModel.clearDeletionResponse();
         mErrorModel =
                 new ViewModelProvider(this).get(WeatherErrorViewModel.class);
         mErrorModel.resetErrorFlag();
         mUserModel = new ViewModelProvider(getActivity()).get(UserInfoViewModel.class);
-        if (mLocationModel.containsReadableLocations() && !mLocationModel.isListModified()) {
+        if (!mLocationModel.isListModified()) {
             setViewComponents();
         } else {
             mLocationModel.checkModifications();
@@ -116,9 +118,7 @@ public class WeatherParentFragment extends Fragment {
             Log.e("WEATHER LOCATION LIST REQUEST ERROR", theResponse.toString());
             displayErrorDialog(
                     "Unexpected error when loading saved locations. Please try again.");
-            mLocationModel.clearResponse();
         } else if (theResponse.length() != 0) {
-            mLocationModel.clearResponse();
             setViewComponents();
         }
     }
@@ -153,6 +153,7 @@ public class WeatherParentFragment extends Fragment {
                 mViewIndex = position;
             }
         });
+        mLocationModel.checkModifications();
     }
 
     /**
@@ -174,11 +175,8 @@ public class WeatherParentFragment extends Fragment {
             Log.e("LOCATION DELETE ERROR", theResponse.toString());
             displayErrorDialog("An unexpected error occurred when deleting location." +
                     " Please try again.");
-            mLocationModel.clearDeletionResponse();
         } else if (theResponse.length() != 0) {
-            mLocationModel.clearDeletionResponse();
             mViewIndex--;
-            mLocationModel.checkModifications();
             mLocationModel.connectGet(mUserModel.getJwt());
             Toast.makeText(getContext(), "Location deleted.",
                     Toast.LENGTH_SHORT).show();

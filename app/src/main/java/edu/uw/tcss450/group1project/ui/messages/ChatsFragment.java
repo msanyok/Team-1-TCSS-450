@@ -6,6 +6,8 @@
 package edu.uw.tcss450.group1project.ui.messages;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,12 +26,15 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentChatRoomsBinding;
 import edu.uw.tcss450.group1project.model.NewMessageCountViewModel;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
+import edu.uw.tcss450.group1project.ui.contacts.Contact;
 
 /**
  * A {@link Fragment} subclass that is responsible for the showing a user's available chats.
@@ -45,6 +50,12 @@ public class ChatsFragment extends Fragment {
 
     /** ChatListViewModel that contains the state of the viewmodel */
     private ChatsListViewModel mChatListsModel;
+
+    /** The text watcher which listens to user chat room searches */
+    private TextWatcher mTextWatcher;
+
+    /** The list of chat rooms */
+    private List<ChatRoom> mChatRoomList;
 
     /**
      * Empty public constructor. Does not provide any functionality.
@@ -78,6 +89,38 @@ public class ChatsFragment extends Fragment {
             Navigation.findNavController(theView).
                     navigate(R.id.action_navigation_chats_to_createChatroomFragment);
         });
+
+        mTextWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(final CharSequence theCharSequence,
+                                          final int theI,
+                                          final int theI1,
+                                          final int theI2) {
+                // not used
+            }
+            @Override
+            public void afterTextChanged(final Editable theEditable) {
+                // not used
+            }
+
+            @Override
+            public void onTextChanged(final CharSequence theEnteredText,
+                                      final int theStartIndex,
+                                      final int theBefore,
+                                      final int theCount) {
+                final String firstChars = theEnteredText.toString().toLowerCase();
+                if (mChatRoomList != null) {
+                    List<ChatRoom> originalList = mChatRoomList;
+                    final List<ChatRoom> newList =
+                            originalList.stream().filter(room ->
+                                    room.getChatName()
+                                            .toLowerCase(Locale.ROOT).startsWith(firstChars)
+                            ).collect(Collectors.toList());
+                    mBinding.listRoot.setAdapter(new MessagesRecyclerAdapter(newList));
+                }
+            }
+        };
+        mBinding.roomSearchText.addTextChangedListener(mTextWatcher);
     }
 
     /**
@@ -113,8 +156,8 @@ public class ChatsFragment extends Fragment {
      */
     private void parseAndSetChatList(final JSONObject theResponse) {
 
-        // parse the response and turn it into a new ChatRoom list
-        final List<ChatRoom> mChatRoomList = new ArrayList<>();
+        // parse the response and set mChatRoomList
+        mChatRoomList = new ArrayList<>();
         NewMessageCountViewModel newMessageModel =
                 new ViewModelProvider(getActivity()).get(NewMessageCountViewModel.class);
 
@@ -141,8 +184,9 @@ public class ChatsFragment extends Fragment {
             // should we do something specific here if the json isn't parsed properly/
             exception.printStackTrace();
         }
-
         mBinding.listRoot.setAdapter(new MessagesRecyclerAdapter(mChatRoomList));
+        mTextWatcher.onTextChanged(mBinding.roomSearchText.getText().toString(),
+                0, 0, 0);
     }
 
 }

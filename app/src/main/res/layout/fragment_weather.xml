@@ -15,8 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         app:contentPadding="10dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:cardBackgroundColor="@color/white">
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -34,7 +33,7 @@
                 android:textStyle="bold"
                 android:textAlignment="center"
                 android:textSize="23sp"
-                android:textColor="@color/black"
+                android:textColor="?cardTextColor"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/layout_precipitation_info"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -48,7 +47,7 @@
                 android:src="@drawable/ic_delete_black_24dp"
                 android:backgroundTint="@android:color/transparent"
                 android:layout_margin="5dp"
-                app:tint="@color/black"
+                app:tint="?cardImageColor"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/layout_precipitation_info">
@@ -70,7 +69,7 @@
                     android:layout_margin="5dp"
                     android:gravity="center"
                     android:textSize="25sp"
-                    android:textColor="@color/black"
+                    android:textColor="?cardTextColor"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toLeftOf="@id/title_weather_icon"
                     app:layout_constraintTop_toTopOf="parent"
@@ -82,6 +81,7 @@
                     android:layout_width="55dp"
                     android:layout_height="55dp"
                     android:layout_margin="5dp"
+                    app:tint="?cardImageColor"
                     app:layout_constraintLeft_toRightOf="@id/title_temperature"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -103,7 +103,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
-                    android:textColor="@color/black"
+                    android:textColor="?cardTextColor"
                     android:textSize="16sp"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
@@ -115,7 +115,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
-                    android:textColor="@color/black"
+                    android:textColor="?cardTextColor"
                     android:textSize="16sp"
                     app:layout_constraintTop_toBottomOf="@id/title_feels_like"
                     app:layout_constraintLeft_toLeftOf="parent"
@@ -128,7 +128,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:textSize="16sp"
-                    android:textColor="@color/black"
+                    android:textColor="?cardTextColor"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/title_chance_rain"
                     app:layout_constraintBottom_toBottomOf="parent">
@@ -142,7 +142,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        app:cardBackgroundColor="@color/white"
         app:contentPadding="10dp"
         app:layout_constraintTop_toBottomOf="@id/current_card">
 
@@ -159,7 +158,7 @@
                 android:textStyle="bold"
                 android:textAlignment="center"
                 android:text="@string/title_24hr_forecast"
-                android:textColor="@color/black"
+                android:textColor="?cardTextColor"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -184,7 +183,6 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_margin="10dp"
-        app:cardBackgroundColor="@color/white"
         app:contentPadding="10dp"
         app:layout_constraintTop_toBottomOf="@id/hourly_card"
         app:layout_constraintBottom_toBottomOf="parent">
@@ -202,7 +200,7 @@
                 android:textStyle="bold"
                 android:textAlignment="center"
                 android:text="@string/title_10day_forecast"
-                android:textColor="@color/black"
+                android:textColor="?cardTextColor"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"

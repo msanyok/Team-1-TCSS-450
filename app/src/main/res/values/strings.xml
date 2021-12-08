@@ -21,6 +21,7 @@
     <string name="hint_old_password">Enter your old password</string>
     <string name="hint_set_new_password">Enter your new password</string>
     <string name="hint_confirm_new_password">Confirm your new password</string>
+    <string name="hint_search_chat_room">Search for a chat room.</string>
 
     <string name="action_sign_in_short">Sign in</string>
     <string name="action_register_short">Register</string>
