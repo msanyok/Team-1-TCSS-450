@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.badge.BadgeDrawable;
@@ -137,6 +138,8 @@ public class ContactsParentFragment extends Fragment {
         mBadgeTextColor = tA.getResourceId(1, R.color.white);
         tA.recycle();
 
+        ContactsParentFragmentArgs args = ContactsParentFragmentArgs.fromBundle(getArguments());
+        mViewPager.setCurrentItem(args.getViewPagerIndex(), false);
     }
 
     /**

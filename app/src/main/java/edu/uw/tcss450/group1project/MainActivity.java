@@ -137,6 +137,9 @@ public class MainActivity extends ThemedActivity {
     protected void onCreate(final Bundle theSavedInstanceState) {
         super.onCreate(theSavedInstanceState);
 
+
+        //onNewIntent(getIntent());
+
         MainActivityArgs args = MainActivityArgs.fromBundle(getIntent().getExtras());
 
         // set up all of the view models
@@ -252,6 +255,7 @@ public class MainActivity extends ThemedActivity {
             };
         };
         createLocationRequest();
+
     }
 
     @Override
@@ -622,6 +626,24 @@ public class MainActivity extends ThemedActivity {
                 mTypingModel.stopTyping(theIntent.getIntExtra("chatId", 0),
                         theIntent.getStringExtra("nickname"));
             }
+        }
+    }
+
+    @Override
+    protected void onNewIntent(final Intent theIntent) {
+        super.onNewIntent(theIntent);
+
+        if (theIntent.hasExtra("newContact")) {
+            Navigation.findNavController(
+                    this, R.id.nav_host_fragment).navigate(R.id.action_contacts_global);
+
+        } else if (theIntent.hasExtra("chatId")) {
+            MainGraphDirections.ActionChatroomGlobal actionNavigation =
+                    MainGraphDirections.actionChatroomGlobal(theIntent.getStringExtra("chatName"),
+                    String.valueOf(theIntent.getIntExtra("chatId", -1)));
+
+            Navigation.findNavController(
+                    this, R.id.nav_host_fragment).navigate(actionNavigation);
 
         }
 

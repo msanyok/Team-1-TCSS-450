@@ -71,7 +71,12 @@
     <fragment
         android:id="@+id/navigation_contacts_parent"
         android:name="edu.uw.tcss450.group1project.ui.contacts.ContactsParentFragment"
-        android:label="@string/title_contacts" />
+        android:label="@string/title_contacts" >
+        <argument
+            android:name="view_pager_index"
+            app:argType="integer"
+            android:defaultValue="0" />
+    </fragment>
     <fragment
         android:id="@+id/navigation_password_change"
         android:name="edu.uw.tcss450.group1project.ui.settings.ChangePasswordFragment"
@@ -122,4 +127,15 @@
         app:destination="@id/navigation_settings"
         app:popUpTo="@id/navigation_settings"
         app:popUpToInclusive="true" />
+    <action
+        android:id="@+id/action_chatroom_global"
+        app:destination="@id/navigation_chat_room"
+        app:launchSingleTop="false" />
+    <action
+        android:id="@+id/action_contacts_global"
+        app:destination="@id/navigation_contacts_parent" >
+        <argument
+            android:name="view_pager_index"
+            android:defaultValue="1" />
+    </action>
 </navigation>

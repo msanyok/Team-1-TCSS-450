@@ -5,6 +5,9 @@
 
 package edu.uw.tcss450.group1project;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,7 +17,10 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.auth0.android.jwt.JWT;
+
 import edu.uw.tcss450.group1project.model.PushyTokenViewModel;
+import edu.uw.tcss450.group1project.ui.auth.signin.SignInFragmentDirections;
 import me.pushy.sdk.Pushy;
 
 /**
@@ -46,6 +52,10 @@ public class AuthActivity extends ThemedActivity {
         Pushy.listen(this);
 
         initiatePushyTokenRequest();
+
+        onNewIntent(getIntent());
+
+
     }
 
     @Override
@@ -62,4 +72,35 @@ public class AuthActivity extends ThemedActivity {
     private void initiatePushyTokenRequest() {
         new ViewModelProvider(this).get(PushyTokenViewModel.class).retrieveToken();
     }
+
+
+    @Override
+    protected void onNewIntent(final Intent theIntent) {
+        super.onNewIntent(theIntent);
+        SharedPreferences prefs =
+                getSharedPreferences(
+                        getString(R.string.signIn_keys_shared_prefs),
+                        Context.MODE_PRIVATE);
+        if (prefs.contains(getString(R.string.signIn_keys_prefs_jwt))) {
+            String token = prefs.getString(getString(R.string.signIn_keys_prefs_jwt), "");
+            JWT jwt = new JWT(token);
+            // Check to see if the web token is still valid or not. To make a JWT expire after a
+            // longer or shorter time period, change the expiration time when the JWT is
+            // created on the web service.
+            if (!jwt.isExpired(0)) {
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.putExtra("jwt", token);
+                System.out.println("HERE: " + theIntent.getStringExtra( "newContact"));
+                if (theIntent.hasExtra("newContact")) {
+                    intent.putExtras(theIntent.getExtras());
+                } else if (theIntent.hasExtra("chatId")) {
+                    intent.putExtras(theIntent.getExtras());
+                }
+                startActivity(intent);
+                return;
+            }
+        }
+
+    }
+
 }
