@@ -143,10 +143,12 @@ public class PushReceiver extends BroadcastReceiver {
 
             // set up the intent
             Intent intent = new Intent(theContext, AuthActivity.class);
+            intent.putExtra("chatId", chatId);
+            intent.putExtra("chatName", theIntent.getStringExtra("chatName"));
             intent.putExtras(theIntent.getExtras());
-
             PendingIntent pendingIntent = PendingIntent.getActivity(theContext, 0,
                     intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
 
             //Build notification
             NotificationCompat.Builder builder =
@@ -157,6 +159,7 @@ public class PushReceiver extends BroadcastReceiver {
                             .setContentText(message.getMessage())
                             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                             .setContentIntent(pendingIntent);
+
 
             // Automatically configure a ChatMessageNotification Channel
             Pushy.setNotificationChannel(builder, theContext);
@@ -215,6 +218,7 @@ public class PushReceiver extends BroadcastReceiver {
 
             // set up the intent
             Intent intent = new Intent(theContext, AuthActivity.class);
+            intent.putExtra("newContact", "theValue");
             intent.putExtras(theIntent.getExtras());
 
             PendingIntent pendingIntent = PendingIntent.getActivity(theContext, 0,
@@ -224,7 +228,7 @@ public class PushReceiver extends BroadcastReceiver {
             NotificationCompat.Builder builder =
                     new NotificationCompat.Builder(theContext, CHANNEL_ID)
                             .setAutoCancel(true)
-                            .setSmallIcon(R.drawable.ic_messages_black_24dp)
+                            .setSmallIcon(R.drawable.ic_baseline_person_24)
                             .setContentTitle("Contact Request")
                             .setContentText(fromNickname + " sent you a contact request")
                             .setPriority(NotificationCompat.PRIORITY_DEFAULT)

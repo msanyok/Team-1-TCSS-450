@@ -114,7 +114,6 @@ public class NewContactRequestFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence theString, int start, int before, int count) {
-                Log.d("TEXT CHANGED", theString.toString());
                 if(theString.toString().isEmpty()) {
                     mBinding.listRoot.setAdapter(null);
                 } else {
@@ -130,7 +129,6 @@ public class NewContactRequestFragment extends Fragment {
                                 mUserModel.getJwt());
                     }
                 }
-
             }
 
             @Override
@@ -155,12 +153,22 @@ public class NewContactRequestFragment extends Fragment {
                     }
                     mBinding.contactRequestButton.setVisibility(View.GONE);
                     mBinding.listRoot.setVisibility(View.VISIBLE);
-
+                    String theString = mBinding.addContactText.getText().toString();
+                    if(thePosition== 0) {
+                        mContactsRequestModel.requestConnect("nickname", theString.toString(),
+                                mUserModel.getJwt());
+                    } else if (thePosition == 1) { ;
+                        mContactsRequestModel.requestConnect("firstname", theString.toString(),
+                                mUserModel.getJwt());
+                    } else if (thePosition == 2) {
+                        mContactsRequestModel.requestConnect("lastname", theString.toString(),
+                                mUserModel.getJwt());
+                    }
                 } else {
                     mBinding.contactRequestButton.setVisibility(View.VISIBLE);
                     mBinding.listRoot.setVisibility(View.INVISIBLE);
-
                 }
+
             }
 
             @Override
@@ -193,9 +201,11 @@ public class NewContactRequestFragment extends Fragment {
                 // a 400 error occurred, so log it.
                 Log.e("REQUEST ERROR", theResponse.toString());
             } else if (theResponse.length() != 0) {
-                mBinding.listRoot.setAdapter(new NewContactRequestRecyclerAdapter(
-                        mContactsRequestModel.getContactList(), this::setRequests));
 
+                if (!mBinding.addContactText.getText().toString().isEmpty()) {
+                    mBinding.listRoot.setAdapter(new NewContactRequestRecyclerAdapter(
+                        mContactsRequestModel.getContactList(), this::setRequests));
+                }
             }
         } else {
             // no response from the request
@@ -232,10 +242,6 @@ public class NewContactRequestFragment extends Fragment {
                 }
                 Log.e("REQUEST ERROR", theResponse.toString());
             } else {
-                //toast for contact
-                Toast toast = new Toast(getContext());
-                toast.makeText(getContext(),"A contact request has been sent",
-                        Toast.LENGTH_SHORT).show();
 
                 String theString = mBinding.addContactText.getText().toString();
                 int thePosition = mBinding.requestSearchSpinner.getSelectedItemPosition();
@@ -249,6 +255,11 @@ public class NewContactRequestFragment extends Fragment {
                     mContactsRequestModel.requestConnect("lastname", theString,
                             mUserModel.getJwt());
                 }
+                //toast for contact
+                Toast toast = new Toast(getContext());
+                toast.makeText(getContext(),"A contact request has been sent",
+                        Toast.LENGTH_SHORT).show();
+                mContactsRequestModel.removeData();
             }
         } else {
             // no response from the request
