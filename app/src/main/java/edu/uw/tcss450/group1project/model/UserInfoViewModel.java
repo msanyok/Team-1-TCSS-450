@@ -97,6 +97,24 @@ public class UserInfoViewModel extends ViewModel {
     }
 
     /**
+     * Provides the user's first name
+     *
+     * @return the first name
+     */
+    public String getFirstName() {
+        return mFirstName;
+    }
+
+    /**
+     * Provides the user's last name
+     *
+     * @return the last name
+     */
+    public String getLastName() {
+        return mLastName;
+    }
+
+    /**
      * A factory class that creates {@link UserInfoViewModel} instances.
      *
      * @author Charles Bryan

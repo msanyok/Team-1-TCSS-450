@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.TypedArray;
 import android.location.Location;
 import android.os.Bundle;
 import android.text.Html;
@@ -26,17 +27,13 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavAction;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.auth0.android.jwt.JWT;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -45,27 +42,19 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import java.sql.SQLOutput;
-
 import edu.uw.tcss450.group1project.model.ContactNotificationViewModel;
 import edu.uw.tcss450.group1project.model.IsTypingViewModel;
-import edu.uw.tcss450.group1project.ui.contacts.ContactRequestViewModel;
 import edu.uw.tcss450.group1project.model.LocalStorageUtils;
 import edu.uw.tcss450.group1project.model.LocationViewModel;
 import edu.uw.tcss450.group1project.model.NewMessageCountViewModel;
 import edu.uw.tcss450.group1project.model.PushyTokenViewModel;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
 import edu.uw.tcss450.group1project.services.PushReceiver;
-import edu.uw.tcss450.group1project.ui.contacts.ContactRequestsFragment;
-import edu.uw.tcss450.group1project.ui.contacts.ContactsFragment;
+import edu.uw.tcss450.group1project.ui.contacts.ContactRequestViewModel;
 import edu.uw.tcss450.group1project.ui.contacts.ContactsParentFragment;
 import edu.uw.tcss450.group1project.ui.contacts.ContactsViewModel;
-import edu.uw.tcss450.group1project.ui.contacts.NewContactsRequestViewModel;
-import edu.uw.tcss450.group1project.ui.home.HomeFragmentDirections;
 import edu.uw.tcss450.group1project.ui.messages.ChatMessage;
-import edu.uw.tcss450.group1project.ui.messages.ChatRoomFragment;
 import edu.uw.tcss450.group1project.ui.messages.ChatViewModel;
-import edu.uw.tcss450.group1project.ui.messages.ChatsFragmentDirections;
 import edu.uw.tcss450.group1project.ui.messages.ChatsListViewModel;
 
 /**
@@ -129,9 +118,6 @@ public class MainActivity extends ThemedActivity {
     /** Keeps track of typing actions */
     private IsTypingViewModel mTypingModel;
 
-    /** The new contact requests view model */
-    private NewContactsRequestViewModel mNewContactsRequestViewModel;
-
     /**
      * The configuration for the bottom navigation displayed
      * on fragments in this activity
@@ -140,6 +126,12 @@ public class MainActivity extends ThemedActivity {
 
     /** The user info view model that stores the current user's information */
     private UserInfoViewModel mUserInfoModel;
+
+    /** The color used for notification badges */
+    private int mBadgeColor;
+
+    /** The color used for notification badge text */
+    private int mBadgeTextColor;
 
     @Override
     protected void onCreate(final Bundle theSavedInstanceState) {
@@ -154,18 +146,24 @@ public class MainActivity extends ThemedActivity {
         mLocationModel =
                 new ViewModelProvider(MainActivity.this).get(LocationViewModel.class);
         mNewMessageModel = new ViewModelProvider(this).get(NewMessageCountViewModel.class);
-        mContactTabNewCountViewModel = new ViewModelProvider(this).get(ContactNotificationViewModel.class);
+        mContactTabNewCountViewModel =
+                new ViewModelProvider(this).get(ContactNotificationViewModel.class);
         mUserInfoModel = new ViewModelProvider(this,
                 new UserInfoViewModel.UserInfoViewModelFactory(args.getJwt()))
                         .get(UserInfoViewModel.class);
-        mContactRequestViewModel = new ViewModelProvider(this).get(ContactRequestViewModel.class);
+        mContactRequestViewModel =
+                new ViewModelProvider(this).get(ContactRequestViewModel.class);
         mContactsViewModel = new ViewModelProvider(this).get(ContactsViewModel.class);
         mChatListViewModel = new ViewModelProvider(this).get(ChatsListViewModel.class);
         mTypingModel = new ViewModelProvider(this).get(IsTypingViewModel.class);
-        mNewContactsRequestViewModel = new ViewModelProvider(this).get(NewContactsRequestViewModel.class);
 
         applyTheme();
         setContentView(R.layout.activity_main);
+        int[] attr = { R.attr.colorAccent, R.attr.buttonTextColor };
+        TypedArray tA = obtainStyledAttributes(attr);
+        mBadgeColor = tA.getResourceId(0, R.color.rose);
+        mBadgeTextColor = tA.getResourceId(1, R.color.white);
+        tA.recycle();
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
 
@@ -190,7 +188,8 @@ public class MainActivity extends ThemedActivity {
             } else {
                 navView.setVisibility(View.GONE);
             }
-            if (id == R.id.navigation_chat_room_info || id == R.id.navigation_contacts_parent) {
+            if (id == R.id.navigation_chat_room_info || id == R.id.navigation_contacts_parent ||
+                id == R.id.navigation_password_change || id == R.id.navigation_messages) {
                 getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
             } else {
                 getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
@@ -201,6 +200,9 @@ public class MainActivity extends ThemedActivity {
         mNewMessageModel.addMessageCountObserver(this, count -> {
             BadgeDrawable badge = navView.getOrCreateBadge(R.id.navigation_messages);
             badge.setMaxCharacterCount(2);
+            badge.setBackgroundColor(getResources().getColor(mBadgeColor, getTheme()));
+            badge.setBadgeTextColor(getResources().getColor(mBadgeTextColor, getTheme()));
+            System.out.println("BADGE");
             if (count > 0) {
                 // new messages! update and show the notification badge.
                 badge.setNumber(count);
@@ -217,6 +219,8 @@ public class MainActivity extends ThemedActivity {
             int totalCount = map.getOrDefault(ContactNotificationViewModel.TOTAL_KEY, 0);
             BadgeDrawable badge = navView.getOrCreateBadge(R.id.navigation_contacts_parent);
             badge.setMaxCharacterCount(2);
+            badge.setBackgroundColor(getResources().getColor(mBadgeColor, getTheme()));
+            badge.setBadgeTextColor(getResources().getColor(mBadgeTextColor, getTheme()));
             if (totalCount > 0) {
                 badge.setNumber(totalCount);
                 badge.setVisible(true);
@@ -325,7 +329,6 @@ public class MainActivity extends ThemedActivity {
 
     @Override
     public boolean onCreateOptionsMenu(final Menu theMenu) {
-        System.out.println("menu created");
         getMenuInflater().inflate(R.menu.toolbar, theMenu);
         return true;
     }
@@ -341,7 +344,6 @@ public class MainActivity extends ThemedActivity {
         if (id == R.id.action_sign_out){
             displaySignOutDialog();
         }
-
         return super.onOptionsItemSelected(theItem);
     }
 
@@ -466,7 +468,6 @@ public class MainActivity extends ThemedActivity {
             } else if (type.equals(PushReceiver.TYPING)) {
                 completeNewTypingActions(theContext, theIntent);
             }
-
         }
 
         /**
@@ -493,7 +494,8 @@ public class MainActivity extends ThemedActivity {
 
             // Inform the view model holding chatroom messages of the new
             // message.
-            mChatMessageViewModel.addMessage(theIntent.getIntExtra("chatid", -1), chatMessage);
+            mChatMessageViewModel.addMessage(
+                    theIntent.getIntExtra("chatid", -1), chatMessage);
         }
 
         /**
@@ -545,9 +547,6 @@ public class MainActivity extends ThemedActivity {
             Log.d("RECIEVE INTENT", "New Contact Request Response Actions");
             mContactRequestViewModel.allContactRequests(mUserInfoModel.getJwt());
 
-            // remove any notifications from the requests tab UI
-            mContactTabNewCountViewModel.removeTabNotifications(ContactsParentFragment.REQUESTS);
-
             // update the contacts list for both users if the contact request is accepted
             if (theIntent.getBooleanExtra("isAccept", false)) {
                 //update the user's list of contacts
@@ -593,7 +592,8 @@ public class MainActivity extends ThemedActivity {
         }
 
         /**
-         * Handles updating the devices outgoing contact requests when a delete request is received.
+         * Handles updating the devices outgoing contact requests when someone deletes a
+         * contact request they sent you
          *
          * @param theContext the context of the application
          * @param theIntent the Intent that stores the Pushy payload
@@ -603,6 +603,8 @@ public class MainActivity extends ThemedActivity {
             Log.d("RECEIVE INTENT", "New Contact Request Delete Actions");
             mContactRequestViewModel.allContactRequests(mUserInfoModel.getJwt());
 
+            // decrement the contact request notification by 1 if it is > 0
+            mContactTabNewCountViewModel.decrementNotification(ContactsParentFragment.REQUESTS);
         }
 
         /**
@@ -632,13 +634,16 @@ public class MainActivity extends ThemedActivity {
         super.onNewIntent(theIntent);
 
         if (theIntent.hasExtra("newContact")) {
-            Navigation.findNavController(this, R.id.nav_host_fragment).navigate(R.id.action_contacts_global);
+            Navigation.findNavController(
+                    this, R.id.nav_host_fragment).navigate(R.id.action_contacts_global);
 
         } else if (theIntent.hasExtra("chatId")) {
-            MainGraphDirections.ActionChatroomGlobal actionNavigation = MainGraphDirections.actionChatroomGlobal(theIntent.getStringExtra("chatName"),
+            MainGraphDirections.ActionChatroomGlobal actionNavigation =
+                    MainGraphDirections.actionChatroomGlobal(theIntent.getStringExtra("chatName"),
                     String.valueOf(theIntent.getIntExtra("chatId", -1)));
 
-            Navigation.findNavController(this, R.id.nav_host_fragment).navigate(actionNavigation);
+            Navigation.findNavController(
+                    this, R.id.nav_host_fragment).navigate(actionNavigation);
 
         }
 

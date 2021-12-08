@@ -8,7 +8,6 @@
         <item name="android:windowBackground">@color/slate_blue</item>
         <item name="android:textColorPrimary">@color/white</item>
         <item name="android:switchStyle">@style/SwitchStyleTheme1</item>
-        <item name="popupMenuBackground">@drawable/toolbar_dropdown</item>
         <item name="colorAccent">@color/berry</item>
         <item name="title_icon">@drawable/logo_theme_1</item>
         <item name="colorPrimary">@android:color/transparent</item>
@@ -22,6 +21,7 @@
         <item name="background">@color/slate_blue</item>
         <item name="adminTextColor">@color/white</item>
         <item name="bottomNavigationStyle">@style/BottomNavStyleTheme1</item>
+        <item name="badgeStyle">@style/BadgeStyleTheme1</item>
     </style>
 
     <style name="CardStyleTheme1" parent="Widget.MaterialComponents.CardView">
@@ -50,6 +50,11 @@
         <item name="colorSwitchThumbNormal">@color/white</item>
     </style>
 
+    <style name="BadgeStyleTheme1" parent="Widget.MaterialComponents.Badge">
+        <item name="backgroundColor">@color/berry</item>
+        <item name="badgeTextColor">@color/white</item>
+    </style>
+
     <style name="AppTheme2" parent="Theme.MaterialComponents.Light">
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
@@ -57,16 +62,13 @@
         <item name="android:windowBackground">@color/cream</item>
         <item name="android:textColorPrimary">@color/black</item>
         <item name="android:switchStyle">@style/SwitchStyleTheme2</item>
-        <item name="popupMenuBackground">@drawable/toolbar_dropdown</item>
-        <item name="colorSurface">@color/rose</item>
-        <item name="colorAccent">@color/midnight</item>
+        <item name="colorAccent">@color/rose</item>
         <item name="title_icon">@drawable/logo_theme_2</item>
-        <item name="titleTextColor">@color/black</item>
         <item name="colorPrimary">@android:color/transparent</item>
         <item name="editTextStyle">@style/EditTextStyleTheme2</item>
         <item name="cardViewStyle">@style/CardStyleTheme1</item>
         <item name="buttonTextColor">@color/white</item>
-        <item name="cardColor">@color/rose</item>
+        <item name="cardColor">@color/midnight</item>
         <item name="cardTextColor">@color/white</item>
         <item name="cardImageColor">@color/white</item>
         <item name="tabDeselectedColor">@color/black_transparent</item>
@@ -80,7 +82,7 @@
         <item name="itemTextColor">@color/black</item>
     </style>
 
-    <style name="EditTextStyleTheme2" parent="EditTextStyleTheme1">
+    <style name="EditTextStyleTheme2" parent="Widget.AppCompat.EditText">
         <item name="android:backgroundTint">@color/black</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:textColorHint">@color/black</item>
@@ -89,26 +91,21 @@
     </style>
 
     <style name="SwitchStyleTheme2" parent="SwitchStyleTheme1">
-        <item name="colorControlActivated">@color/rose</item>
-        <item name="colorSwitchThumbNormal">@color/rose</item>
+        <item name="colorControlActivated">@color/midnight</item>
+        <item name="colorSwitchThumbNormal">@color/midnight</item>
     </style>
 
-    <style name="AppTheme3" parent="AppTheme1">
-        <item name="android:windowBackground">@color/purple</item>
-        <item name="android:textColorPrimary">@color/white</item>
+    <style name="AppTheme3" parent="AppTheme2">
+        <item name="android:windowBackground">@color/gray</item>
         <item name="android:switchStyle">@style/SwitchStyleTheme3</item>
-        <item name="popupMenuBackground">@drawable/toolbar_dropdown</item>
-        <item name="colorAccent">@color/gray</item>
+        <item name="colorAccent">@color/purple</item>
         <item name="title_icon">@drawable/logo_theme_3</item>
-        <item name="editTextStyle">@style/EditTextStyleTheme1</item>
-        <item name="cardViewStyle">@style/CardStyleTheme1</item>
         <item name="cardColor">@color/gold</item>
-        <item name="buttonTextColor">@color/black</item>
-        <item name="background">@color/purple</item>
-        <item name="adminTextColor">@color/white</item>
-        <item name="bottomNavigationStyle">@style/BottomNavStyleTheme1</item>
+        <item name="cardTextColor">@color/black</item>
+        <item name="cardImageColor">@color/black</item>
+        <item name="buttonTextColor">@color/white</item>
+        <item name="background">@color/gray</item>
     </style>
-
 
     <style name="SwitchStyleTheme3" parent="SwitchStyleTheme1">
         <item name="colorControlActivated">@color/gold</item>
@@ -120,13 +117,13 @@
         <item name="android:textColorPrimary">@color/white</item>
         <item name="android:itemBackground">@color/dark_gray</item>
         <item name="android:switchStyle">@style/SwitchStyleTheme4</item>
-        <item name="popupMenuBackground">@drawable/toolbar_dropdown</item>
         <item name="colorAccent">@color/neon_green</item>
-        <item name="title_icon">@drawable/logo_theme_3</item>
+        <item name="title_icon">@drawable/logo_theme_4</item>
         <item name="editTextStyle">@style/EditTextStyleTheme1</item>
         <item name="cardViewStyle">@style/CardStyleTheme1</item>
         <item name="cardColor">@color/dark_gray</item>
         <item name="buttonTextColor">@color/black</item>
+        <item name="background">@color/black</item>
         <item name="cardTextColor">@color/white</item>
         <item name="cardImageColor">@color/white</item>
         <item name="bottomNavigationStyle">@style/BottomNavStyleTheme1</item>
@@ -159,4 +156,5 @@
     <style name="ContactsTabTextStyle">
         <item name="android:textSize">16sp</item>
     </style>
+
 </resources>

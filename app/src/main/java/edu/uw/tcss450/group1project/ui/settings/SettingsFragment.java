@@ -13,11 +13,13 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
 import edu.uw.tcss450.group1project.MainActivity;
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentSettingsBinding;
+import edu.uw.tcss450.group1project.model.UserInfoViewModel;
 
 /**
  * SettingsFragment is a fragment for settings display including theme changing.
@@ -47,6 +49,14 @@ public class SettingsFragment extends Fragment {
         super.onViewCreated(theView, theSavedInstanceState);
 
         FragmentSettingsBinding binding = FragmentSettingsBinding.bind(getView());
+        UserInfoViewModel userModel =
+                new ViewModelProvider(getActivity()).get(UserInfoViewModel.class);
+
+        binding.nameText.setText(
+                "Name: " + userModel.getFirstName() + " " + userModel.getLastName());
+        binding.nicknameText.setText("Nickname: " + userModel.getNickname());
+        binding.emailText.setText("Email: " + userModel.getEmail());
+
         binding.buttonTheme1.setOnClickListener(button -> {
             ((MainActivity) getActivity()).changeTheme(R.style.AppTheme1);
             getActivity().recreate();
@@ -63,7 +73,7 @@ public class SettingsFragment extends Fragment {
             ((MainActivity) getActivity()).changeTheme(R.style.AppTheme4);
             getActivity().recreate();
         });
-        binding.buttonResetPasswordSetting.setOnClickListener(button ->
+        binding.changeMyPasswordButton.setOnClickListener(button ->
                 Navigation.findNavController(getView()).navigate(
                 SettingsFragmentDirections.actionNavigationSettingsToNavigationPasswordReset())
         );

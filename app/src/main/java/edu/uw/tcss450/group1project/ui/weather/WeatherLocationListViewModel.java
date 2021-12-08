@@ -69,6 +69,7 @@ public class WeatherLocationListViewModel extends AndroidViewModel {
         mDeleteResponse = new MutableLiveData<>();
         mDeleteResponse.setValue(new JSONObject());
         mLocations = new ArrayList<>();
+        mModificationFlag = true;
     }
 
     /**
@@ -104,15 +105,6 @@ public class WeatherLocationListViewModel extends AndroidViewModel {
             @NonNull final LifecycleOwner theOwner,
             @NonNull final Observer<? super JSONObject> theObserver) {
         mDeleteResponse.observe(theOwner, theObserver);
-    }
-
-    /**
-     * Determines if this view model's data fields are readable
-     *
-     * @return true if readable, false otherwise
-     */
-    public boolean containsReadableLocations() {
-        return !mLocations.isEmpty();
     }
 
     /**

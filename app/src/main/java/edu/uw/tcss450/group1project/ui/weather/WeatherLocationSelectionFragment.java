@@ -209,13 +209,14 @@ public class WeatherLocationSelectionFragment
                         mMarker.getPosition().longitude).toString();
                 mSaveChecked = mBinding.saveCheckbox.isChecked();
             } else {
+                valid = false;
                 int zipCode = 0;
                 String input = mBinding.searchText.getText().toString().trim();
                 if (input.length() == 5) {
                     try {
                         zipCode = Integer.valueOf(input);
-                        if (zipCode < 0) {
-                            valid = false;
+                        if (zipCode >= 0) {
+                            valid = true;
                         }
                     } catch (NumberFormatException ex) {
                         // the user did not enter a number
@@ -244,7 +245,7 @@ public class WeatherLocationSelectionFragment
             Log.e("SERVER FAILURE TO SUPPORT LOCATION", theResponse.toString());
             displayErrorDialog("The supplied location " +
                     "is not currently supported. Please try again.");
-            mWeatherModel.clearResponse();
+            mLocationString = "";
         } else if (theResponse.length() != 0) {
             if (mSaveChecked) {
                 mLocationListModel.connectPost(mUserModel.getJwt(), mLocationString);
@@ -255,7 +256,7 @@ public class WeatherLocationSelectionFragment
                         ActionNavigationWeatherLocationSelectionToNavigationWeatherTeaser action =
                         WeatherLocationSelectionFragmentDirections.
                                 actionNavigationWeatherLocationSelectionToNavigationWeatherTeaser(
-                                        "Weather for " + city);
+                                        city);
                 Navigation.findNavController(getView()).navigate(action);
             }
         }
@@ -289,8 +290,8 @@ public class WeatherLocationSelectionFragment
                     Log.e("JSON PARSE ERROR IN LOCATION ADD OBSERVER", ex.getMessage());
                 }
             }
+            mLocationString = "";
             displayErrorDialog(message);
-            mLocationListModel.clearAdditionResponse();
         }
         if (theResponse.length() != 0) {
             mLocationString = "";
@@ -301,8 +302,7 @@ public class WeatherLocationSelectionFragment
             WeatherLocationSelectionFragmentDirections.
                     ActionNavigationWeatherLocationSelectionToNavigationWeatherTeaser action =
                     WeatherLocationSelectionFragmentDirections.
-                            actionNavigationWeatherLocationSelectionToNavigationWeatherTeaser(
-                                    "Weather for " + city);
+                            actionNavigationWeatherLocationSelectionToNavigationWeatherTeaser(city);
             Navigation.findNavController(getView()).navigate(action);
         }
     }

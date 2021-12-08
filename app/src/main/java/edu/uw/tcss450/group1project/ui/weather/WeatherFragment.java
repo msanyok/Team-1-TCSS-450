@@ -126,7 +126,7 @@ public class WeatherFragment extends Fragment {
         mBinding = FragmentWeatherBinding.bind(getView());
         mModel.addResponseObserver(getViewLifecycleOwner(), this::observeResponse);
         if (!mDeletable) {
-            mBinding.locationDeleteButton.setVisibility(View.GONE);
+            mBinding.locationDeleteButton.setVisibility(View.INVISIBLE);
             LocationViewModel locModel =
                     new ViewModelProvider(getActivity()).get(LocationViewModel.class);
             locModel.addLocationObserver(getViewLifecycleOwner(), location -> {
@@ -161,11 +161,15 @@ public class WeatherFragment extends Fragment {
     private void observeResponse(final JSONObject theResponse) {
         if (theResponse.has("code")) {
             Log.e("WEATHER REQUEST ERROR", theResponse.toString());
-//            displayErrorDialog();
             mErrorModel.notifyErrorFlag();
-            mModel.clearResponse();
-        }
-        if (mModel.containsReadableData()) {
+            mBinding.locationDeleteButton.setVisibility(View.INVISIBLE);
+            if (!mDeletable) {
+                mModel.clearResponse();
+            }
+        } else if (theResponse.length() != 0) {
+            if (mDeletable) {
+                mBinding.locationDeleteButton.setVisibility(View.VISIBLE);
+            }
             setViewComponents();
         }
     }

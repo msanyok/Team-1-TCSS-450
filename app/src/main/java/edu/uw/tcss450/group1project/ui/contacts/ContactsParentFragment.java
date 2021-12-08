@@ -6,6 +6,7 @@
 package edu.uw.tcss450.group1project.ui.contacts;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
@@ -51,6 +53,11 @@ public class ContactsParentFragment extends Fragment {
     /** The view pager */
     private ViewPager2 mViewPager;
 
+    /** The color for notification badges */
+    private int mBadgeColor;
+
+    /** The color for notification badge text */
+    private int mBadgeTextColor;
 
     /**
      * Required empty constructor
@@ -125,9 +132,14 @@ public class ContactsParentFragment extends Fragment {
             }
         });
 
+        int[] attr = { R.attr.colorAccent, R.attr.buttonTextColor };
+        TypedArray tA = theView.getContext().obtainStyledAttributes(attr);
+        mBadgeColor = tA.getResourceId(0, R.color.rose);
+        mBadgeTextColor = tA.getResourceId(1, R.color.white);
+        tA.recycle();
+
         ContactsParentFragmentArgs args = ContactsParentFragmentArgs.fromBundle(getArguments());
         mViewPager.setCurrentItem(args.getViewPagerIndex(), false);
-
     }
 
     /**
@@ -142,13 +154,25 @@ public class ContactsParentFragment extends Fragment {
         int requestCount = theMap.getOrDefault(REQUESTS, 0);
 
         if (contactCount > 0) {
-            mTabs.getTabAt(0).getOrCreateBadge().setNumber(contactCount);
+            BadgeDrawable badge = mTabs.getTabAt(0).getOrCreateBadge();
+            badge.setMaxCharacterCount(2);
+            badge.setBackgroundColor(
+                    getResources().getColor(mBadgeColor, getActivity().getTheme()));
+            badge.setBadgeTextColor(
+                    getResources().getColor(mBadgeTextColor, getActivity().getTheme()));
+            badge.setNumber(contactCount);
         } else {
             mTabs.getTabAt(0).removeBadge();
         }
 
         if (requestCount > 0) {
-            mTabs.getTabAt(1).getOrCreateBadge().setNumber(requestCount);
+            BadgeDrawable badge = mTabs.getTabAt(1).getOrCreateBadge();
+            badge.setMaxCharacterCount(2);
+            badge.setBackgroundColor(
+                    getResources().getColor(mBadgeColor, getActivity().getTheme()));
+            badge.setBadgeTextColor(
+                    getResources().getColor(mBadgeTextColor, getActivity().getTheme()));
+            badge.setNumber(requestCount);
         } else {
             mTabs.getTabAt(1).removeBadge();
         }
@@ -164,5 +188,4 @@ public class ContactsParentFragment extends Fragment {
     public String getCurrentTabString() {
         return mTabs.getTabAt(mViewPager.getCurrentItem()).getText().toString();
     }
-
 }

@@ -104,16 +104,20 @@ public class ChatRoomInfoFragment extends Fragment {
         mUserModel = new ViewModelProvider(getActivity()).get(UserInfoViewModel.class);
 
         mParticipantModel = new ViewModelProvider(this).get(ChatRoomParticipantViewModel.class);
+        mParticipantModel.clearAddResponse();
+        mParticipantModel.clearGetResponse();
+        mParticipantModel.clearLeaveResponse();
         mParticipantModel.addGetParticipantsResponseObserver(
                 getViewLifecycleOwner(), this::observeCurrentParticipantResponse);
         mAdditions = mParticipantModel.getSelected();
 
         mContactsModel = new ViewModelProvider(getActivity()).get(ContactsViewModel.class);
+        mContactsModel.removeData();
         mContactsModel.contactsConnect(mUserModel.getJwt());
         mContactsModel.addContactListObserver(
                 getViewLifecycleOwner(), this::observeContactsResponse);
 
-        Spinner spinner = (Spinner) getView().findViewById(R.id.contact_search_spinner);
+        Spinner spinner = getView().findViewById(R.id.contact_search_spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.contact_search_array, R.layout.fragment_contacts_spinner);
         adapter.setDropDownViewResource(R.layout.fragment_contacts_spinner_dropdown);
@@ -245,9 +249,7 @@ public class ChatRoomInfoFragment extends Fragment {
             Log.e("LEAVE ROOM ERROR", theResponse.toString());
             displayErrorDialog(
                     "An unexpected error occured when leaving the room. Please try again.");
-            mParticipantModel.clearLeaveResponse();
         } else if (theResponse.length() != 0) {
-            mParticipantModel.clearLeaveResponse();
             Toast.makeText(getContext(), "You have left the chat room.", Toast.LENGTH_SHORT).show();
             Navigation.findNavController(getView()).navigate(
                     R.id.action_navigation_chat_room_info_to_navigation_messages);
@@ -264,9 +266,7 @@ public class ChatRoomInfoFragment extends Fragment {
             Log.e("CONTACT LIST REQUEST ERROR", theResponse.toString());
             displayErrorDialog("An unexpected error occurred when loading current " +
                     "contacts. Please try again.");
-            mContactsModel.removeData();
-        }
-        if (mContactsModel.containsReadableContacts()) {
+        } else if (theResponse.length() != 0) {
             mParticipantModel.connectGetParticipants(mUserModel.getJwt(), mChatId);
         }
     }
@@ -281,9 +281,7 @@ public class ChatRoomInfoFragment extends Fragment {
             Log.e("PARTICIPANT LIST REQUEST ERROR", theResponse.toString());
             displayErrorDialog("An unexpected error occurred when loading chat room " +
                     "participants. Please try again.");
-            mParticipantModel.clearGetResponse();
-        }
-        if (mParticipantModel.containsReadableParticipants()) {
+        } else if (theResponse.length() != 0) {
             setViewComponents();
         }
     }
@@ -297,9 +295,7 @@ public class ChatRoomInfoFragment extends Fragment {
         if (theResponse.has("code")) {
             Log.e("PARTICIPANT ADDITION ERROR TO EXISTING CHAT ROOM", theResponse.toString());
             displayErrorDialog("Unexpected error when adding members. Please try again.");
-            mParticipantModel.clearAddResponse();
         } else if (theResponse.length() != 0) {
-            mParticipantModel.clearAddResponse();
             Toast.makeText(getContext(), "Members added successfully.", Toast.LENGTH_SHORT).show();
             mContactsModel.contactsConnect(mUserModel.getJwt());
         }
@@ -319,6 +315,7 @@ public class ChatRoomInfoFragment extends Fragment {
      * existing chat room members
      */
     private void setViewComponents() {
+        System.out.println("FILTERING");
         List<Contact> allContacts = mContactsModel.getContactList();
         List<Contact> currentParticipants = mParticipantModel.getParticipants();
         allContacts.removeIf(currentParticipants::contains);
