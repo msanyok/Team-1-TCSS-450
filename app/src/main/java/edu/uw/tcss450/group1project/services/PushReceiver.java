@@ -152,7 +152,7 @@ public class PushReceiver extends BroadcastReceiver {
             NotificationCompat.Builder builder =
                     new NotificationCompat.Builder(theContext, CHANNEL_ID)
                             .setAutoCancel(true)
-                            .setSmallIcon(R.drawable.ic_messages_black_24dp)
+                            .setSmallIcon(R.drawable.ic_android_black_24dp)
                             .setContentTitle("Message from: " + message.getSender())
                             .setContentText(message.getMessage())
                             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
