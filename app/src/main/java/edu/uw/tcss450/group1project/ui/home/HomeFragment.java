@@ -131,8 +131,7 @@ public class HomeFragment extends Fragment {
             Log.e("WEATHER REQUEST ERROR", theResponse.toString());
             mWeatherErrorModel.notifyErrorFlag();
             mWeatherModel.clearResponse();
-        }
-        if (mWeatherModel.containsReadableData()) {
+        } else if (theResponse.length() != 0) {
             setWeatherViewComponents();
         }
     }

@@ -86,18 +86,20 @@ public class CreateChatRoomFragment extends Fragment {
         mUserModel = new ViewModelProvider(getActivity()).get(UserInfoViewModel.class);
 
         mContactsModel = new ViewModelProvider(getActivity()).get(ContactsViewModel.class);
+        mContactsModel.removeData();
         mContactsModel.contactsConnect(mUserModel.getJwt());
         mContactsModel.addContactListObserver(
                 getViewLifecycleOwner(), this::observeContactResponse);
 
         mCreationModel =
                 new ViewModelProvider(this).get(ChatRoomCreationViewModel.class);
+        mCreationModel.clearCreationResponse();
         mCreationModel.addChatRoomCreationResponseObserver(
                 getViewLifecycleOwner(), this::observeCreationResponse);
         mAdditions = mCreationModel.getSelected();
 
         mBinding.createButton.setOnClickListener(this::processCreateRequest);
-        Spinner spinner = (Spinner) getView().findViewById(R.id.contact_search_spinner);
+        Spinner spinner = getView().findViewById(R.id.contact_search_spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.contact_search_array, R.layout.fragment_contacts_spinner);
         adapter.setDropDownViewResource(R.layout.fragment_contacts_spinner_dropdown);
@@ -237,9 +239,7 @@ public class CreateChatRoomFragment extends Fragment {
         if (theResponse.has("code") || theResponse.has("error")) {
             Log.e("CONTACT LIST REQUEST ERROR", theResponse.toString());
             displayErrorDialog("Unexpected error when loading contacts. Please try again.");
-            mContactsModel.removeData();
-        }
-        if (mContactsModel.containsReadableContacts()) {
+        } else if (theResponse.length() != 0) {
             mParticipantOptions = mContactsModel.getContactList();
             displayParticipantOptions();
         }
@@ -254,7 +254,6 @@ public class CreateChatRoomFragment extends Fragment {
         if (theResponse.has("code")) {
             Log.e("CHAT ROOM CREATION REQUEST ERROR", theResponse.toString());
             displayErrorDialog("Unexpected error when creating chat room. Please try again.");
-            mCreationModel.clearCreationResponse();
         } else if (theResponse.length() != 0) {
             try {
                 int roomId = theResponse.getInt("chatID");
@@ -266,7 +265,6 @@ public class CreateChatRoomFragment extends Fragment {
                                         String.valueOf(roomId));
                 Navigation.findNavController(getView()).navigate(action);
             } catch (JSONException ex) {
-                mCreationModel.clearCreationResponse();
                 displayErrorDialog(
                         "Unexpected error when creating chat room. Please try again.");
                 ex.printStackTrace();

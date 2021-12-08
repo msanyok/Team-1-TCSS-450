@@ -95,15 +95,6 @@ public class ChatRoomParticipantViewModel extends AndroidViewModel {
     }
 
     /**
-     * Indicates whether there are contacts in this view model's current participant list
-     *
-     * @return true if participants exist, false otherwise
-     */
-    public boolean containsReadableParticipants() {
-        return !mParticipants.isEmpty();
-    }
-
-    /**
      * Clears the response associated with current participant "get" requests
      */
     public void clearGetResponse() {
