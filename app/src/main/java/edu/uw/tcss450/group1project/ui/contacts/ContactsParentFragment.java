@@ -125,16 +125,8 @@ public class ContactsParentFragment extends Fragment {
             }
         });
 
-        // Delayed call so the navigation to contacts request tab displays correct information
-        mViewPager.postDelayed(new Runnable() {
-
-            @Override
-            public void run() {
-                ContactsParentFragmentArgs args = ContactsParentFragmentArgs.fromBundle(getArguments());
-                mViewPager.setCurrentItem(args.getViewPagerIndex());
-            }
-        }, 100);
-
+        ContactsParentFragmentArgs args = ContactsParentFragmentArgs.fromBundle(getArguments());
+        mViewPager.setCurrentItem(args.getViewPagerIndex(), false);
 
     }
 
