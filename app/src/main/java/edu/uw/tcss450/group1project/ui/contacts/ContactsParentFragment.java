@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.tabs.TabLayout;
@@ -49,6 +50,7 @@ public class ContactsParentFragment extends Fragment {
 
     /** The view pager */
     private ViewPager2 mViewPager;
+
 
     /**
      * Required empty constructor
@@ -122,6 +124,9 @@ public class ContactsParentFragment extends Fragment {
                 // unused
             }
         });
+
+        ContactsParentFragmentArgs args = ContactsParentFragmentArgs.fromBundle(getArguments());
+        mViewPager.setCurrentItem(args.getViewPagerIndex(), false);
 
     }
 

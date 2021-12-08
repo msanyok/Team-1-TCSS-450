@@ -138,6 +138,7 @@ public class SignInFragment extends Fragment {
             // created on the web service.
             if(!jwt.isExpired(0)) {
                 navigateToSuccess(token);
+
                 return;
             }
         }

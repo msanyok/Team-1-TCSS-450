@@ -26,13 +26,17 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavAction;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.auth0.android.jwt.JWT;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -40,6 +44,8 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import java.sql.SQLOutput;
 
 import edu.uw.tcss450.group1project.model.ContactNotificationViewModel;
 import edu.uw.tcss450.group1project.model.IsTypingViewModel;
@@ -50,11 +56,16 @@ import edu.uw.tcss450.group1project.model.NewMessageCountViewModel;
 import edu.uw.tcss450.group1project.model.PushyTokenViewModel;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
 import edu.uw.tcss450.group1project.services.PushReceiver;
+import edu.uw.tcss450.group1project.ui.contacts.ContactRequestsFragment;
+import edu.uw.tcss450.group1project.ui.contacts.ContactsFragment;
 import edu.uw.tcss450.group1project.ui.contacts.ContactsParentFragment;
 import edu.uw.tcss450.group1project.ui.contacts.ContactsViewModel;
 import edu.uw.tcss450.group1project.ui.contacts.NewContactsRequestViewModel;
+import edu.uw.tcss450.group1project.ui.home.HomeFragmentDirections;
 import edu.uw.tcss450.group1project.ui.messages.ChatMessage;
+import edu.uw.tcss450.group1project.ui.messages.ChatRoomFragment;
 import edu.uw.tcss450.group1project.ui.messages.ChatViewModel;
+import edu.uw.tcss450.group1project.ui.messages.ChatsFragmentDirections;
 import edu.uw.tcss450.group1project.ui.messages.ChatsListViewModel;
 
 /**
@@ -133,6 +144,9 @@ public class MainActivity extends ThemedActivity {
     @Override
     protected void onCreate(final Bundle theSavedInstanceState) {
         super.onCreate(theSavedInstanceState);
+
+
+        //onNewIntent(getIntent());
 
         MainActivityArgs args = MainActivityArgs.fromBundle(getIntent().getExtras());
 
@@ -238,6 +252,7 @@ public class MainActivity extends ThemedActivity {
             };
         };
         createLocationRequest();
+
     }
 
     @Override
@@ -610,6 +625,21 @@ public class MainActivity extends ThemedActivity {
                 mTypingModel.stopTyping(theIntent.getIntExtra("chatId", 0),
                         theIntent.getStringExtra("nickname"));
             }
+        }
+    }
+
+    @Override
+    protected void onNewIntent(final Intent theIntent) {
+        super.onNewIntent(theIntent);
+
+        if (theIntent.hasExtra("newContact")) {
+            Navigation.findNavController(this, R.id.nav_host_fragment).navigate(R.id.action_contacts_global);
+
+        } else if (theIntent.hasExtra("chatId")) {
+            MainGraphDirections.ActionChatroomGlobal actionNavigation = MainGraphDirections.actionChatroomGlobal(theIntent.getStringExtra("chatName"),
+                    String.valueOf(theIntent.getIntExtra("chatId", -1)));
+
+            Navigation.findNavController(this, R.id.nav_host_fragment).navigate(actionNavigation);
 
         }
 
