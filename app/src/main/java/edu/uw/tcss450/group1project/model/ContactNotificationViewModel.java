@@ -60,6 +60,18 @@ public class ContactNotificationViewModel extends AndroidViewModel {
     }
 
     /**
+     * Decrements the contact notification count for the specific tab by 1
+     * @param theTab the tab that should be decremented by one
+     */
+    public void decrementNotification(final String theTab) {
+        final Map<String, Integer> map = mTabCounts.getValue();
+        map.put(TOTAL_KEY, map.getOrDefault(TOTAL_KEY, 1) - 1);
+        map.put(theTab, map.getOrDefault(theTab, 1) - 1);
+
+        mTabCounts.setValue(map);
+    }
+
+    /**
      * Removes the entire notification count for the given tab key
      *
      * @param theTab the key that determines which navigation tab the

@@ -286,7 +286,7 @@ public class ChatRoomFragment extends Fragment {
                 } else {
                     // number of people typing is > 3
                     notifText = nicknames.pollFirst() + ", " + nicknames.pollFirst() + ", and " +
-                           (nicknames.size() - 2) + " others are typing...";
+                           nicknames.size() + " others are typing...";
                 }
 
                 binding.userTypingText.setText(notifText);

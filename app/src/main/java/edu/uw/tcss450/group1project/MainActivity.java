@@ -543,9 +543,6 @@ public class MainActivity extends ThemedActivity {
             Log.d("RECIEVE INTENT", "New Contact Request Response Actions");
             mContactRequestViewModel.allContactRequests(mUserInfoModel.getJwt());
 
-            // remove any notifications from the requests tab UI
-            mContactTabNewCountViewModel.removeTabNotifications(ContactsParentFragment.REQUESTS);
-
             // update the contacts list for both users if the contact request is accepted
             if (theIntent.getBooleanExtra("isAccept", false)) {
                 //update the user's list of contacts
@@ -591,7 +588,8 @@ public class MainActivity extends ThemedActivity {
         }
 
         /**
-         * Handles updating the devices outgoing contact requests when a delete request is received.
+         * Handles updating the devices outgoing contact requests when someone deletes a
+         * contact request they sent you
          *
          * @param theContext the context of the application
          * @param theIntent the Intent that stores the Pushy payload
@@ -601,6 +599,8 @@ public class MainActivity extends ThemedActivity {
             Log.d("RECEIVE INTENT", "New Contact Request Delete Actions");
             mContactRequestViewModel.allContactRequests(mUserInfoModel.getJwt());
 
+            // decrement the contact request notification by 1 if it is > 0
+            mContactTabNewCountViewModel.decrementNotification(ContactsParentFragment.REQUESTS);
         }
 
         /**
