@@ -184,8 +184,9 @@ public class ContactsFragment extends Fragment {
         mContactsModel.contactsConnect(mUserInfo.getJwt());
 
         // remove the notifications from this tab if there are any
+
         new ViewModelProvider(this.getActivity()).get(ContactNotificationViewModel.class).
-                removeTabNotifications(ContactsParentFragment.ALL_CONTACTS);
+                clearAllContactsNotifications();
     }
   
     /**

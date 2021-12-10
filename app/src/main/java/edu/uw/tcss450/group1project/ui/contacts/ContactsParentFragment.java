@@ -8,6 +8,7 @@ package edu.uw.tcss450.group1project.ui.contacts;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,7 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.model.ContactNotificationViewModel;
@@ -102,35 +104,42 @@ public class ContactsParentFragment extends Fragment {
 
         final ContactNotificationViewModel contactNotificationViewModel =
                 new ViewModelProvider(getActivity()).get(ContactNotificationViewModel.class);
-        contactNotificationViewModel.addContactNotifObserver(getViewLifecycleOwner(),
-                this::observeNotificationChange);
+
+        contactNotificationViewModel.addContactRequestNotifObserver(getViewLifecycleOwner(),
+                this::observeContactRequestNotificationChange);
+
+        contactNotificationViewModel.addContactsNotifObserver(getViewLifecycleOwner(),
+                this::observeContactsNotificationChange);
 
         // store context so it can be used inside the listener
-        Context thisContext = this.getContext();
-        mTabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                final String selectedTab = tab.getText().toString();
-
-                if (selectedTab.equals(ALL_CONTACTS)) {
-                    contactNotificationViewModel.removeTabNotifications(ALL_CONTACTS);
-                    LocalStorageUtils.deleteContactNotifications(thisContext, ALL_CONTACTS);
-                } else if (selectedTab.equals(REQUESTS)) {
-                    contactNotificationViewModel.removeTabNotifications(REQUESTS);
-                    LocalStorageUtils.deleteContactNotifications(thisContext, REQUESTS);
-                }
-            }
-
-            @Override
-            public void onTabUnselected(final TabLayout.Tab theTab) {
-                // unused
-            }
-
-            @Override
-            public void onTabReselected(final TabLayout.Tab theTab) {
-                // unused
-            }
-        });
+        // todo: may not need this
+//        Context thisContext = this.getContext();
+//        mTabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+//            @Override
+//            public void onTabSelected(TabLayout.Tab tab) {
+//                final String selectedTab = tab.getText().toString();
+//
+//                if (selectedTab.equals(ALL_CONTACTS)) {
+//                    Log.e("", "ALL CONTACTS TAB");
+////                    contactNotificationViewModel.removeTabNotifications(ALL_CONTACTS);
+////                    LocalStorageUtils.deleteContactNotifications(thisContext, ALL_CONTACTS);
+//                } else if (selectedTab.equals(REQUESTS)) {
+//                    Log.e("", "REQUESTS TAB");
+////                    contactNotificationViewModel.removeTabNotifications(REQUESTS);
+////                    LocalStorageUtils.deleteContactNotifications(thisContext, REQUESTS);
+//                }
+//            }
+//
+//            @Override
+//            public void onTabUnselected(final TabLayout.Tab theTab) {
+//                // unused
+//            }
+//
+//            @Override
+//            public void onTabReselected(final TabLayout.Tab theTab) {
+//                // unused
+//            }
+//        });
 
         int[] attr = { R.attr.colorAccent, R.attr.buttonTextColor };
         TypedArray tA = theView.getContext().obtainStyledAttributes(attr);
@@ -142,43 +151,75 @@ public class ContactsParentFragment extends Fragment {
         mViewPager.setCurrentItem(args.getViewPagerIndex(), false);
     }
 
-    /**
-     * Completes actions that should occur when the contacts view model data changes state.
-     * Will set the badges depending on the state of the view model.
-     *
-     * @param theMap the map that represents the view model data
-     */
-    private void observeNotificationChange(final Map<String, Integer> theMap) {
-
-        int contactCount = theMap.getOrDefault(ALL_CONTACTS, 0);
-        int requestCount = theMap.getOrDefault(REQUESTS, 0);
-
-        if (contactCount > 0) {
+    private void observeContactsNotificationChange(final Set<String> theContactsSet) {
+        int count = theContactsSet.size();
+        if (count > 0) {
             BadgeDrawable badge = mTabs.getTabAt(0).getOrCreateBadge();
             badge.setMaxCharacterCount(2);
             badge.setBackgroundColor(
                     getResources().getColor(mBadgeColor, getActivity().getTheme()));
             badge.setBadgeTextColor(
                     getResources().getColor(mBadgeTextColor, getActivity().getTheme()));
-            badge.setNumber(contactCount);
+            badge.setNumber(count);
         } else {
             mTabs.getTabAt(0).removeBadge();
         }
+    }
 
-        if (requestCount > 0) {
+    private void observeContactRequestNotificationChange(final Set<String> theContactRequestSet) {
+        Log.d("", "UPDATE CONTACT REQUESTS");
+        int count = theContactRequestSet.size();
+
+        if (count > 0) {
             BadgeDrawable badge = mTabs.getTabAt(1).getOrCreateBadge();
             badge.setMaxCharacterCount(2);
             badge.setBackgroundColor(
                     getResources().getColor(mBadgeColor, getActivity().getTheme()));
             badge.setBadgeTextColor(
                     getResources().getColor(mBadgeTextColor, getActivity().getTheme()));
-            badge.setNumber(requestCount);
+            badge.setNumber(count);
         } else {
             mTabs.getTabAt(1).removeBadge();
         }
-
-
     }
+
+
+
+//    /**
+//     * Completes actions that should occur when the contacts view model data changes state.
+//     * Will set the badges depending on the state of the view model.
+//     *
+//     * @param theMap the map that represents the view model data
+//     */
+//    private void observeNotificationChange(final Map<String, Integer> theMap) {
+
+//        int contactCount = theMap.getOrDefault(ALL_CONTACTS, 0);
+//        int requestCount = theMap.getOrDefault(REQUESTS, 0);
+
+//        if (contactCount > 0) {
+//            BadgeDrawable badge = mTabs.getTabAt(0).getOrCreateBadge();
+//            badge.setMaxCharacterCount(2);
+//            badge.setBackgroundColor(
+//                    getResources().getColor(mBadgeColor, getActivity().getTheme()));
+//            badge.setBadgeTextColor(
+//                    getResources().getColor(mBadgeTextColor, getActivity().getTheme()));
+//            badge.setNumber(contactCount);
+//        } else {
+//            mTabs.getTabAt(0).removeBadge();
+//        }
+
+//        if (requestCount > 0) {
+//            BadgeDrawable badge = mTabs.getTabAt(1).getOrCreateBadge();
+//            badge.setMaxCharacterCount(2);
+//            badge.setBackgroundColor(
+//                    getResources().getColor(mBadgeColor, getActivity().getTheme()));
+//            badge.setBadgeTextColor(
+//                    getResources().getColor(mBadgeTextColor, getActivity().getTheme()));
+//            badge.setNumber(requestCount);
+//        } else {
+//            mTabs.getTabAt(1).removeBadge();
+//        }
+//    }
 
     /**
      * Returns the title text of the tab that is currently active.

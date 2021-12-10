@@ -41,6 +41,7 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationView;
 
 import edu.uw.tcss450.group1project.model.ContactNotificationViewModel;
 import edu.uw.tcss450.group1project.model.IsTypingViewModel;
@@ -214,20 +215,13 @@ public class MainActivity extends ThemedActivity {
             }
         });
 
-        // Handles the notification badge drawing for contacts
-        mContactTabNewCountViewModel.addContactNotifObserver(this, map -> {
-            int totalCount = map.getOrDefault(ContactNotificationViewModel.TOTAL_KEY, 0);
-            BadgeDrawable badge = navView.getOrCreateBadge(R.id.navigation_contacts_parent);
-            badge.setMaxCharacterCount(2);
-            badge.setBackgroundColor(getResources().getColor(mBadgeColor, getTheme()));
-            badge.setBadgeTextColor(getResources().getColor(mBadgeTextColor, getTheme()));
-            if (totalCount > 0) {
-                badge.setNumber(totalCount);
-                badge.setVisible(true);
-            } else {
-                badge.clearNumber();
-                badge.setVisible(false);
-            }
+        // Handles the notification badge drawing for contacts, note: we need to observe both
+        // contact requests and contacts live data and do the same action when one changes
+        mContactTabNewCountViewModel.addContactRequestNotifObserver(this, set -> {
+            setContactsNotificationBadge(navView);
+        });
+        mContactTabNewCountViewModel.addContactsNotifObserver(this, set -> {
+            setContactsNotificationBadge(navView);
         });
 
         // check for locations permissions
@@ -255,8 +249,24 @@ public class MainActivity extends ThemedActivity {
             };
         };
         createLocationRequest();
-
     }
+
+    private void setContactsNotificationBadge(BottomNavigationView theNavView) {
+        int totalCount = mContactTabNewCountViewModel.getTotalContactsNotificationCount();
+        BadgeDrawable badge = theNavView.getOrCreateBadge(R.id.navigation_contacts_parent);
+        badge.setMaxCharacterCount(2);
+        badge.setBackgroundColor(getResources().getColor(mBadgeColor, getTheme()));
+        badge.setBadgeTextColor(getResources().getColor(mBadgeTextColor, getTheme()));
+        if (totalCount > 0) {
+            badge.setNumber(totalCount);
+            badge.setVisible(true);
+        } else {
+            badge.clearNumber();
+            badge.setVisible(false);
+        }
+    }
+
+
 
     @Override
     public void onRequestPermissionsResult(final int theRequestCode,
@@ -389,7 +399,11 @@ public class MainActivity extends ThemedActivity {
 
         // get the notifications that occurred while the app was not in the foreground
         mNewMessageModel.putData(LocalStorageUtils.getMissedMessages(this));
-        mContactTabNewCountViewModel.putData(LocalStorageUtils.getMissedContacts(this));
+        mContactTabNewCountViewModel.
+                putContactsData(LocalStorageUtils.getContactsNotifications(this));
+        mContactTabNewCountViewModel.
+                putContactRequestData(LocalStorageUtils.
+                        getContactRequestNotifications(this));
 
         if (mPushMessageReceiver == null) {
             mPushMessageReceiver = new MainPushMessageReceiver();
@@ -401,7 +415,9 @@ public class MainActivity extends ThemedActivity {
 
     @Override
     public void onPause() {
-        LocalStorageUtils.saveContactsData(this, mContactTabNewCountViewModel.getData());
+        LocalStorageUtils.saveContactsData(this,
+                mContactTabNewCountViewModel.getContactRequestData(),
+                mContactTabNewCountViewModel.getContactsData());
         super.onPause();
         if (mPushMessageReceiver != null){
             unregisterReceiver(mPushMessageReceiver);
@@ -413,8 +429,6 @@ public class MainActivity extends ThemedActivity {
      * A helper method for sign-out function.
      */
     private void signOut() {
-        // remove the locally stored notification data
-        LocalStorageUtils.clearAllStoredNotifications(this);
 
         SharedPreferences prefs =
                 getSharedPreferences(
@@ -432,6 +446,9 @@ public class MainActivity extends ThemedActivity {
                         .get(UserInfoViewModel.class)
                         .getJwt()
         );
+
+        // remove the locally stored notification data
+        LocalStorageUtils.clearAllStoredNotifications(this);
     }
 
     /**
@@ -527,11 +544,11 @@ public class MainActivity extends ThemedActivity {
                 onFragment = tabString.equals(ContactsParentFragment.REQUESTS);
             }
 
-            boolean isARequestWeSent = theIntent.getStringExtra("fromNickname").
-                    equals(mUserInfoModel.getNickname());
+            final String fromNickname = theIntent.getStringExtra("fromNickname");
+            boolean isARequestWeSent = fromNickname.equals(mUserInfoModel.getNickname());
             if (!onFragment && !isARequestWeSent) {
-                System.out.println("ON FRAGMENT");
-                mContactTabNewCountViewModel.addNotification(ContactsParentFragment.REQUESTS);
+                Log.d("", "ADDING CONTACT REQUEST FROM " + fromNickname);
+                mContactTabNewCountViewModel.addContactRequestNotification(fromNickname);
             }
         }
 
@@ -545,6 +562,7 @@ public class MainActivity extends ThemedActivity {
         private void completeNewContactRequestResponseActions(final Context theContext,
                                                               final Intent theIntent) {
             Log.d("RECIEVE INTENT", "New Contact Request Response Actions");
+            // update the contact request list
             mContactRequestViewModel.allContactRequests(mUserInfoModel.getJwt());
 
             // update the contacts list for both users if the contact request is accepted
@@ -571,8 +589,12 @@ public class MainActivity extends ThemedActivity {
                 }
 
                 if (!onFragment) {
-                    System.out.println("ON FRAGMENT");
-                    mContactTabNewCountViewModel.addNotification(ContactsParentFragment.ALL_CONTACTS);
+                    // store the nickname of the user who just added you as a contact
+                    String otherNickname = theIntent.getStringExtra("fromNickname");
+                    if (otherNickname.equals(mUserInfoModel.getNickname())) {
+                        otherNickname = theIntent.getStringExtra("fromNickname");
+                    }
+                    mContactTabNewCountViewModel.addContactsNotification(otherNickname);
                 }
 
             }
@@ -586,9 +608,7 @@ public class MainActivity extends ThemedActivity {
          */
         private void completeNewContactDeleteActions(final Context theContext,
                                                      final Intent theIntent) {
-            Log.d("RECIEVE INTENT", "New Contact Delete Actions");
             mContactsViewModel.contactsConnect(mUserInfoModel.getJwt());
-
         }
 
         /**
@@ -603,8 +623,9 @@ public class MainActivity extends ThemedActivity {
             Log.d("RECEIVE INTENT", "New Contact Request Delete Actions");
             mContactRequestViewModel.allContactRequests(mUserInfoModel.getJwt());
 
-            // decrement the contact request notification by 1 if it is > 0
-            mContactTabNewCountViewModel.decrementNotification(ContactsParentFragment.REQUESTS);
+            // remove any contact request notification from this user if one exists
+            mContactTabNewCountViewModel.
+                    removeContactRequestNotification(theIntent.getStringExtra("fromNickname"));
         }
 
         /**
