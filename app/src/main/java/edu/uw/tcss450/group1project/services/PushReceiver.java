@@ -195,6 +195,9 @@ public class PushReceiver extends BroadcastReceiver {
                 new ActivityManager.RunningAppProcessInfo();
         ActivityManager.getMyMemoryState(appProcessInfo);
 
+        // store the notification locally so it can be loaded when the app restarts
+        LocalStorageUtils.putContactRequestNotification(theContext, fromNickname);
+
         if (appProcessInfo.importance == IMPORTANCE_FOREGROUND ||
                 appProcessInfo.importance == IMPORTANCE_VISIBLE) {
             // user is inside the app
@@ -212,9 +215,6 @@ public class PushReceiver extends BroadcastReceiver {
         } else {
             // user is outside of the app
             Log.d("PUSHY", "New Contact Request received in background");
-
-            // store the notification locally so it can be loaded when the app restarts
-            LocalStorageUtils.putNewContactsNotification(theContext, fromNickname);
 
             // set up the intent
             Intent intent = new Intent(theContext, AuthActivity.class);
@@ -266,6 +266,12 @@ public class PushReceiver extends BroadcastReceiver {
                 new ActivityManager.RunningAppProcessInfo();
         ActivityManager.getMyMemoryState(appProcessInfo);
 
+        if (isAccept) {
+            // store a contacts notification so it can be loaded when the app restarts
+            // only if the response to the request was an acceptance
+            LocalStorageUtils.putNewContactsNotification(theContext, fromNickname);
+        }
+
         if (appProcessInfo.importance == IMPORTANCE_FOREGROUND ||
                 appProcessInfo.importance == IMPORTANCE_VISIBLE) {
             // user is inside the app
@@ -286,9 +292,6 @@ public class PushReceiver extends BroadcastReceiver {
             // so send a notification ONLY IF it is an acceptance notification.
             // we don't want to send a notification if the user is not accepted.
             Log.d("PUSHY", "New Contact Request Response received in background");
-
-            // store the notification locally so it can be loaded when the app restarts
-            LocalStorageUtils.putContactRequestNotification(theContext, fromNickname);
 
             // set up the intent
             Intent intent = new Intent(theContext, AuthActivity.class);

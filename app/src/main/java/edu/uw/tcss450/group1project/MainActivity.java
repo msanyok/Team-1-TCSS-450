@@ -415,9 +415,6 @@ public class MainActivity extends ThemedActivity {
 
     @Override
     public void onPause() {
-        LocalStorageUtils.saveContactsData(this,
-                mContactTabNewCountViewModel.getContactRequestData(),
-                mContactTabNewCountViewModel.getContactsData());
         super.onPause();
         if (mPushMessageReceiver != null){
             unregisterReceiver(mPushMessageReceiver);
@@ -429,6 +426,9 @@ public class MainActivity extends ThemedActivity {
      * A helper method for sign-out function.
      */
     private void signOut() {
+
+        // remove the locally stored notification data
+        LocalStorageUtils.clearAllStoredNotifications(this);
 
         SharedPreferences prefs =
                 getSharedPreferences(
@@ -447,8 +447,7 @@ public class MainActivity extends ThemedActivity {
                         .getJwt()
         );
 
-        // remove the locally stored notification data
-        LocalStorageUtils.clearAllStoredNotifications(this);
+
     }
 
     /**
@@ -625,7 +624,8 @@ public class MainActivity extends ThemedActivity {
 
             // remove any contact request notification from this user if one exists
             mContactTabNewCountViewModel.
-                    removeContactRequestNotification(theIntent.getStringExtra("fromNickname"));
+                    removeContactRequestNotification(getApplicationContext(),
+                            theIntent.getStringExtra("fromNickname"));
         }
 
         /**

@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import java.sql.SQLOutput;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -243,6 +244,23 @@ public final class LocalStorageUtils {
 //
 //        return contactsMap;
 //    }
+
+    public static void clearContactsNotifications(final Context theContext) {
+        System.out.println("DELETING CONTACTS NOTIFICATIONS");
+        final SharedPreferences contactsStorage =
+                theContext.getSharedPreferences(NOTIFICATION_STORAGE, Context.MODE_PRIVATE);
+        final SharedPreferences.Editor editor = contactsStorage.edit();
+        editor.remove(CONTACTS);
+        editor.apply();
+    }
+
+    public static void clearContactRequestsNotifications(final Context theContext) {
+        final SharedPreferences contactsStorage =
+                theContext.getSharedPreferences(NOTIFICATION_STORAGE, Context.MODE_PRIVATE);
+        final SharedPreferences.Editor editor = contactsStorage.edit();
+        editor.remove(CONTACT_REQUESTS);
+        editor.apply();
+    }
 
     /**
      * Returns the String set that corresponds to the nicknames for contact request notifications

@@ -35,6 +35,7 @@ import java.util.stream.Collectors;
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentContactsBinding;
 import edu.uw.tcss450.group1project.model.ContactNotificationViewModel;
+import edu.uw.tcss450.group1project.model.LocalStorageUtils;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
 
 /**
@@ -183,10 +184,11 @@ public class ContactsFragment extends Fragment {
         // the list will update
         mContactsModel.contactsConnect(mUserInfo.getJwt());
 
-        // remove the notifications from this tab if there are any
-
+        // remove the notifications from the view model and the shared pref storage
+        // for contacts (if any exist)
         new ViewModelProvider(this.getActivity()).get(ContactNotificationViewModel.class).
-                clearAllContactsNotifications();
+                clearAllContactsNotifications(this.getContext());
+
     }
   
     /**

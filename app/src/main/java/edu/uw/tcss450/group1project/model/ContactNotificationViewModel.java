@@ -6,6 +6,7 @@
 package edu.uw.tcss450.group1project.model;
 
 import android.app.Application;
+import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -56,18 +57,6 @@ public class ContactNotificationViewModel extends AndroidViewModel {
         mContactsSet.setValue(new HashSet<>());
     }
 
-//    /**
-//     * Adds a single notification count to the value mapped to given specified key.
-//     *
-//     * @param theTab the key that determines which navigation tab the notification belongs to
-//     */
-//    public void addNotification(final String theTab) {
-//        final Map<String, Integer> map = mTabCounts.getValue();
-//        map.put(theTab, map.getOrDefault(theTab, 0) + 1);
-//        map.put(TOTAL_KEY, map.getOrDefault(TOTAL_KEY, 0) + 1);
-//
-//        mTabCounts.setValue(map);
-//    }
 
     /**
      * Adds the notification to the contact request notification set specified by the
@@ -107,18 +96,9 @@ Log.d("ADDING NICKNAME", theNickname == null ? "null": theNickname);
 //    }
 
 
-    public void removeContactRequestNotification(final String theNickname) {
-System.out.println("NICKNAME REMOVED: " + theNickname);
-        final Set<String> set = mContactRequestSet.getValue();
-        set.remove(theNickname);
-        mContactRequestSet.setValue(set);
-    }
 
-    public void removeContactsNotification(final String theNickname) {
-        final Set<String> set = mContactsSet.getValue();
-        set.remove(theNickname);
-        mContactsSet.setValue(set);
-    }
+
+
 
 //    /**
 //     * Removes the entire notification count for the given tab key
@@ -143,17 +123,6 @@ System.out.println("NICKNAME REMOVED: " + theNickname);
         mContactsSet.setValue(theContactsSet);
     }
 
-//    /**
-//     * Adds an observer to the contact notifications live data
-//     *
-//     * @param theOwner the lifecycle owner of the observer
-//     * @param theObserver the observer
-//     */
-//    public void addContactNotifObserver(@NonNull final LifecycleOwner theOwner,
-//                                        @NonNull final Observer<? super
-//                                                Map<String, Integer>> theObserver) {
-//        mTabCounts.observe(theOwner, theObserver);
-//    }
 
     public void addContactRequestNotifObserver(@NonNull final LifecycleOwner theOwner,
                                                @NonNull final Observer<? super
@@ -167,23 +136,34 @@ System.out.println("NICKNAME REMOVED: " + theNickname);
         mContactsSet.observe(theOwner, theObserver);
     }
 
-    public Set<String> getContactRequestData() {
-        return mContactRequestSet.getValue();
-    }
-
-    public Set<String> getContactsData() {
-        return mContactsSet.getValue();
-    }
 
     public int getTotalContactsNotificationCount() {
         return mContactsSet.getValue().size() + mContactRequestSet.getValue().size();
     }
 
-    public void clearAllContactsNotifications() {
+
+    public void clearAllContactsNotifications(final Context theContext) {
         mContactsSet.setValue(new HashSet<>());
+
+        // clear the local storage of the notification too
+        LocalStorageUtils.clearContactsNotifications(theContext);
     }
 
-    public void clearAllContactRequestNotifications() {
+    public void clearAllContactRequestNotifications(final Context theContext) {
         mContactRequestSet.setValue(new HashSet<>());
+
+        // clear the local storage of the notification too
+        LocalStorageUtils.clearContactRequestsNotifications(theContext);
+        System.out.println("CLEARING ALL CONTACT REQUEST NOTIFICATIONS");
+    }
+
+    public void removeContactRequestNotification(final Context theContext,
+                                                 final String theNickname) {
+        final Set<String> set = mContactRequestSet.getValue();
+        set.remove(theNickname);
+        mContactRequestSet.setValue(set);
+
+        // clear the local storage of the notification too
+        LocalStorageUtils.decrementContactRequestNotifications(theContext, theNickname);
     }
 }
