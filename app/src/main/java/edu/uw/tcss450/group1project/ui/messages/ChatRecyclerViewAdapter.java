@@ -80,6 +80,9 @@ public class ChatRecyclerViewAdapter extends
         constructTextWidthMapping();
     }
 
+    /**
+     * Constructs a mapping of each chat message to its corresponding text view width
+     */
     public void constructTextWidthMapping() {
         for (int i = 0; i < mMessages.size(); i++) {
             TextView tView = new TextView(mContext);

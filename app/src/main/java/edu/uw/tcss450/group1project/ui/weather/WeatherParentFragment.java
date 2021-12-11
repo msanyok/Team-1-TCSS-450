@@ -50,6 +50,7 @@ public class WeatherParentFragment extends Fragment {
     /** The weather data error view model */
     private WeatherErrorViewModel mErrorModel;
 
+    /** The view model used for storing weather teaser data */
     private WeatherDataViewModel mTeaserModel;
 
     /** The user info view model */

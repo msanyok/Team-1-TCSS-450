@@ -200,6 +200,9 @@ public class WeatherLocationSelectionFragment
         }
     }
 
+    /**
+     * Validates a zip code entered by the user
+     */
     private void validateZipInput() {
         String input = mBinding.searchText.getText().toString().trim();
         int zipCode = 0;
@@ -222,6 +225,9 @@ public class WeatherLocationSelectionFragment
         }
     }
 
+    /**
+     * Displays an alert dialog asking whether the user would like to save a selected location
+     */
     private void displaySaveLocationDialog() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
         alertDialog.setMessage(Html.fromHtml("<font color='#000000'>Would you like to " +
