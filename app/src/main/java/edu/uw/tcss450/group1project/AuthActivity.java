@@ -33,7 +33,9 @@ import me.pushy.sdk.Pushy;
  * @version Fall 2021
  */
 public class AuthActivity extends ThemedActivity {
-
+    /**
+     * To keep track of the application bar configuration
+     */
     private AppBarConfiguration mAppBarConfiguration;
 
     @Override
@@ -50,9 +52,7 @@ public class AuthActivity extends ThemedActivity {
 
         //If it is not already running, start the Pushy listening service
         Pushy.listen(this);
-
         initiatePushyTokenRequest();
-
         onNewIntent(getIntent());
 
 
@@ -88,9 +88,11 @@ public class AuthActivity extends ThemedActivity {
             // longer or shorter time period, change the expiration time when the JWT is
             // created on the web service.
             if (!jwt.isExpired(0)) {
+                //Create the new intent to be sent to MainActivity
                 Intent intent = new Intent(this, MainActivity.class);
+                // Jwt to check if they are verified
                 intent.putExtra("jwt", token);
-                System.out.println("HERE: " + theIntent.getStringExtra( "newContact"));
+                //checks what type of notification intent we received
                 if (theIntent.hasExtra("newContact")) {
                     intent.putExtras(theIntent.getExtras());
                 } else if (theIntent.hasExtra("chatId")) {

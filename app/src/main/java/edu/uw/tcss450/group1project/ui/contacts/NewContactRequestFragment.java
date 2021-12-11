@@ -117,17 +117,7 @@ public class NewContactRequestFragment extends Fragment {
                 if(theString.toString().isEmpty()) {
                     mBinding.listRoot.setAdapter(null);
                 } else {
-                    int thePosition = mBinding.requestSearchSpinner.getSelectedItemPosition();
-                    if(thePosition== 0) {
-                        mContactsRequestModel.requestConnect("nickname", theString.toString(),
-                                mUserModel.getJwt());
-                    } else if (thePosition == 1) { ;
-                        mContactsRequestModel.requestConnect("firstname", theString.toString(),
-                                mUserModel.getJwt());
-                    } else if (thePosition == 2) {
-                        mContactsRequestModel.requestConnect("lastname", theString.toString(),
-                                mUserModel.getJwt());
-                    }
+                    updateContactsSearch();
                 }
             }
 
@@ -137,6 +127,7 @@ public class NewContactRequestFragment extends Fragment {
             }
         };
 
+        // Tells the spinner what to do when selection is changed
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
             @Override
@@ -145,7 +136,6 @@ public class NewContactRequestFragment extends Fragment {
                                        final int thePosition,
                                        final long theId) {
                 // the user just changed the type of identifier the user wants to use
-
                 if (thePosition != 3) {
                     if (!mWatcherAssigned) {
                         mWatcherAssigned = true;
@@ -153,17 +143,7 @@ public class NewContactRequestFragment extends Fragment {
                     }
                     mBinding.contactRequestButton.setVisibility(View.GONE);
                     mBinding.listRoot.setVisibility(View.VISIBLE);
-                    String theString = mBinding.addContactText.getText().toString();
-                    if(thePosition== 0) {
-                        mContactsRequestModel.requestConnect("nickname", theString.toString(),
-                                mUserModel.getJwt());
-                    } else if (thePosition == 1) { ;
-                        mContactsRequestModel.requestConnect("firstname", theString.toString(),
-                                mUserModel.getJwt());
-                    } else if (thePosition == 2) {
-                        mContactsRequestModel.requestConnect("lastname", theString.toString(),
-                                mUserModel.getJwt());
-                    }
+                    updateContactsSearch();
                 } else {
                     mBinding.contactRequestButton.setVisibility(View.VISIBLE);
                     mBinding.listRoot.setVisibility(View.INVISIBLE);
@@ -179,6 +159,25 @@ public class NewContactRequestFragment extends Fragment {
         });
 
     }
+
+    /**
+     * Calls the HTTP method to update the current adapter for a new contact search
+     */
+    private void updateContactsSearch() {
+        int thePosition = mBinding.requestSearchSpinner.getSelectedItemPosition();
+        String theString = mBinding.addContactText.getText().toString();
+        if(thePosition == 0) {
+            mContactsRequestModel.requestConnect("nickname", theString.toString(),
+                    mUserModel.getJwt());
+        } else if (thePosition == 1) { ;
+            mContactsRequestModel.requestConnect("firstname", theString.toString(),
+                    mUserModel.getJwt());
+        } else if (thePosition == 2) {
+            mContactsRequestModel.requestConnect("lastname", theString.toString(),
+                    mUserModel.getJwt());
+        }
+    }
+
 
     /**
      * Sends the request for a contact request for the request button
