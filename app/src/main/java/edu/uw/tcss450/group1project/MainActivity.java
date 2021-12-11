@@ -41,7 +41,6 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationView;
 
 import edu.uw.tcss450.group1project.model.ContactNotificationViewModel;
 import edu.uw.tcss450.group1project.model.IsTypingViewModel;
@@ -251,7 +250,11 @@ public class MainActivity extends ThemedActivity {
         createLocationRequest();
     }
 
-    private void setContactsNotificationBadge(BottomNavigationView theNavView) {
+    /**
+     * Sets the badges on the bottom navigation for the contacts
+     * @param theNavView the bottom navigation
+     */
+    private void setContactsNotificationBadge(final BottomNavigationView theNavView) {
         int totalCount = mContactTabNewCountViewModel.getTotalContactsNotificationCount();
         BadgeDrawable badge = theNavView.getOrCreateBadge(R.id.navigation_contacts_parent);
         badge.setMaxCharacterCount(2);
@@ -265,8 +268,6 @@ public class MainActivity extends ThemedActivity {
             badge.setVisible(false);
         }
     }
-
-
 
     @Override
     public void onRequestPermissionsResult(final int theRequestCode,

@@ -15,7 +15,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -35,7 +34,6 @@ import java.util.stream.Collectors;
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentContactsBinding;
 import edu.uw.tcss450.group1project.model.ContactNotificationViewModel;
-import edu.uw.tcss450.group1project.model.LocalStorageUtils;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
 
 /**
@@ -202,7 +200,6 @@ public class ContactsFragment extends Fragment {
             if (theResponse.has("code")) {
                 // a 400 error occurred, so log it.
                 Log.e("Contact List Error", theResponse.toString());
-                // TODO: Handle UI change when the chat list is not received properly?
             } else {
                 mBinding.contactList.setAdapter(new ContactsRecyclerAdapter(
                         mContactsModel.getContactList(), this::showContactDeleteAlertDialog));

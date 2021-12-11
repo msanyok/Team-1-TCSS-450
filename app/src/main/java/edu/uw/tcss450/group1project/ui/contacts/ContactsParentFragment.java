@@ -5,10 +5,8 @@
 
 package edu.uw.tcss450.group1project.ui.contacts;
 
-import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +15,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.badge.BadgeDrawable;
@@ -26,17 +23,16 @@ import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.model.ContactNotificationViewModel;
-import edu.uw.tcss450.group1project.model.LocalStorageUtils;
 
 /**
  * ContactsParentFragment is a class for containing child data fragments via a view pager.
  *
  * @author Parker Rosengreen
+ * @author Austn Attaway
  * @version Fall 2021
  */
 public class ContactsParentFragment extends Fragment {
@@ -111,36 +107,6 @@ public class ContactsParentFragment extends Fragment {
         contactNotificationViewModel.addContactsNotifObserver(getViewLifecycleOwner(),
                 this::observeContactsNotificationChange);
 
-        // store context so it can be used inside the listener
-        // todo: may not need this
-//        Context thisContext = this.getContext();
-//        mTabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-//            @Override
-//            public void onTabSelected(TabLayout.Tab tab) {
-//                final String selectedTab = tab.getText().toString();
-//
-//                if (selectedTab.equals(ALL_CONTACTS)) {
-//                    Log.e("", "ALL CONTACTS TAB");
-////                    contactNotificationViewModel.removeTabNotifications(ALL_CONTACTS);
-////                    LocalStorageUtils.deleteContactNotifications(thisContext, ALL_CONTACTS);
-//                } else if (selectedTab.equals(REQUESTS)) {
-//                    Log.e("", "REQUESTS TAB");
-////                    contactNotificationViewModel.removeTabNotifications(REQUESTS);
-////                    LocalStorageUtils.deleteContactNotifications(thisContext, REQUESTS);
-//                }
-//            }
-//
-//            @Override
-//            public void onTabUnselected(final TabLayout.Tab theTab) {
-//                // unused
-//            }
-//
-//            @Override
-//            public void onTabReselected(final TabLayout.Tab theTab) {
-//                // unused
-//            }
-//        });
-
         int[] attr = { R.attr.colorAccent, R.attr.buttonTextColor };
         TypedArray tA = theView.getContext().obtainStyledAttributes(attr);
         mBadgeColor = tA.getResourceId(0, R.color.rose);
@@ -151,6 +117,11 @@ public class ContactsParentFragment extends Fragment {
         mViewPager.setCurrentItem(args.getViewPagerIndex(), false);
     }
 
+    /**
+     * Completes the actions required when the contact notification state changes
+     *
+     * @param theContactsSet the set of contacts that represent the updated state
+     */
     private void observeContactsNotificationChange(final Set<String> theContactsSet) {
         int count = theContactsSet.size();
         if (count > 0) {
@@ -166,8 +137,13 @@ public class ContactsParentFragment extends Fragment {
         }
     }
 
+    /**
+     * Completes the actions required when the contact notification state changes
+     *
+     * @param theContactRequestSet the set of contact requests Strings
+     *                             that represent the updated state
+     */
     private void observeContactRequestNotificationChange(final Set<String> theContactRequestSet) {
-        Log.d("", "UPDATE CONTACT REQUESTS");
         int count = theContactRequestSet.size();
 
         if (count > 0) {
@@ -182,44 +158,6 @@ public class ContactsParentFragment extends Fragment {
             mTabs.getTabAt(1).removeBadge();
         }
     }
-
-
-
-//    /**
-//     * Completes actions that should occur when the contacts view model data changes state.
-//     * Will set the badges depending on the state of the view model.
-//     *
-//     * @param theMap the map that represents the view model data
-//     */
-//    private void observeNotificationChange(final Map<String, Integer> theMap) {
-
-//        int contactCount = theMap.getOrDefault(ALL_CONTACTS, 0);
-//        int requestCount = theMap.getOrDefault(REQUESTS, 0);
-
-//        if (contactCount > 0) {
-//            BadgeDrawable badge = mTabs.getTabAt(0).getOrCreateBadge();
-//            badge.setMaxCharacterCount(2);
-//            badge.setBackgroundColor(
-//                    getResources().getColor(mBadgeColor, getActivity().getTheme()));
-//            badge.setBadgeTextColor(
-//                    getResources().getColor(mBadgeTextColor, getActivity().getTheme()));
-//            badge.setNumber(contactCount);
-//        } else {
-//            mTabs.getTabAt(0).removeBadge();
-//        }
-
-//        if (requestCount > 0) {
-//            BadgeDrawable badge = mTabs.getTabAt(1).getOrCreateBadge();
-//            badge.setMaxCharacterCount(2);
-//            badge.setBackgroundColor(
-//                    getResources().getColor(mBadgeColor, getActivity().getTheme()));
-//            badge.setBadgeTextColor(
-//                    getResources().getColor(mBadgeTextColor, getActivity().getTheme()));
-//            badge.setNumber(requestCount);
-//        } else {
-//            mTabs.getTabAt(1).removeBadge();
-//        }
-//    }
 
     /**
      * Returns the title text of the tab that is currently active.
