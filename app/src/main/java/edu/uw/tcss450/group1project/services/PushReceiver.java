@@ -270,7 +270,8 @@ public class PushReceiver extends BroadcastReceiver {
         if (isAccept) {
             // store a contacts notification so it can be loaded when the app restarts
             // only if the response to the request was an acceptance
-            LocalStorageUtils.putNewContactsNotification(theContext, fromNickname);
+            LocalStorageUtils.putNewContactsNotification(theContext, toId);
+            System.out.println("HEEREEEE" + toId);
         }
 
         if (appProcessInfo.importance == IMPORTANCE_FOREGROUND ||
