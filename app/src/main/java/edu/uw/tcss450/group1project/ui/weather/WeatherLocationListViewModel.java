@@ -62,7 +62,6 @@ public class WeatherLocationListViewModel extends AndroidViewModel {
      */
     public WeatherLocationListViewModel(@NonNull final Application theApplication) {
         super(theApplication);
-        System.out.println("INSTANTIATED");
         mResponse = new MutableLiveData<>();
         mResponse.setValue(new JSONObject());
         mAdditionResponse = new MutableLiveData<>();
