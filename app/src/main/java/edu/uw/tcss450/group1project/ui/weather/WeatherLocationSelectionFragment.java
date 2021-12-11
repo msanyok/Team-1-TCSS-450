@@ -142,10 +142,6 @@ public class WeatherLocationSelectionFragment
             public void onTextChanged(
                     final CharSequence theSeq, final int theI, final int theI1, final int theI2) {
                 mBinding.searchText.setError(null);
-                if (mMarker != null) {
-                    mMarker.remove();
-                    mMarker = null;
-                }
             }
 
             @Override
@@ -194,6 +190,8 @@ public class WeatherLocationSelectionFragment
             mMap.animateCamera(
                     CameraUpdateFactory.newLatLngZoom(
                             theLatLong, mMap.getCameraPosition().zoom));
+            mBinding.searchText.setText("");
+            mBinding.searchText.clearFocus();
             mLocationString = new LatLong(theLatLong.latitude, theLatLong.longitude).toString();
             Handler handler = new Handler();
             handler.postDelayed(this::displaySaveLocationDialog, 1000);
