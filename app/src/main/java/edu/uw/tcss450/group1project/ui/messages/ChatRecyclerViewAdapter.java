@@ -40,8 +40,10 @@ import edu.uw.tcss450.group1project.databinding.FragmentChatMessageBinding;
 public class ChatRecyclerViewAdapter extends
         RecyclerView.Adapter<ChatRecyclerViewAdapter.MessageViewHolder> {
 
+    /** The size of chat bubble text */
     private static final int TEXT_SIZE = 16;
 
+    /** The size of card corner radii */
     private static final int RADIUS = 15;
 
     /** The list of messages to show */
