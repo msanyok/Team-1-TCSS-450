@@ -58,6 +58,9 @@ public class ContactsFragment extends Fragment {
     /** The TextWatcher that filters the contacts list */
     private TextWatcher mTextWatcher;
 
+    /** The contact that was deleted for toast */
+    private Contact deletedContact;
+
     /**
      * Empty public constructor. Does not provide any functionality.
      */
@@ -225,9 +228,9 @@ public class ContactsFragment extends Fragment {
         if (theResponse.has("code")) {
             Log.e("Contact List Error", theResponse.toString());
         } else if (theResponse.length() != 0){
-            Toast.makeText(getContext(),"You have deleted a contact.",
+            Toast.makeText(getContext(),"You have deleted " + deletedContact.getNickname()+ " from contacts.",
                     Toast.LENGTH_SHORT).show();
-            mContactsModel.removeData();
+            mContactsModel.removeDeleteData();
         }
     }
 
@@ -243,6 +246,7 @@ public class ContactsFragment extends Fragment {
         alertDialog.setPositiveButton(Html.fromHtml("<font color='000000'>Delete</font>"),
                 (dialog, which) -> {
                     mContactsModel.sendDeleteResponse(mUserInfo.getJwt(), theContact.getMemberId());
+                    deletedContact = theContact;
                 });
         alertDialog.setNegativeButton(Html.fromHtml("<font color='#000000'>Cancel</font>"),
                 (dialog, which) -> {});
