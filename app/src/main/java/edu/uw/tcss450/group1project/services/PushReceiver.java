@@ -196,6 +196,7 @@ public class PushReceiver extends BroadcastReceiver {
         ActivityManager.getMyMemoryState(appProcessInfo);
 
         // store the notification locally so it can be loaded when the app restarts
+        // (only if we aren't the one who sent it)
         LocalStorageUtils.putContactRequestNotification(theContext, fromNickname);
 
         if (appProcessInfo.importance == IMPORTANCE_FOREGROUND ||
@@ -224,7 +225,7 @@ public class PushReceiver extends BroadcastReceiver {
             PendingIntent pendingIntent = PendingIntent.getActivity(theContext, 0,
                     intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-            //Build notification
+            // Build notification
             NotificationCompat.Builder builder =
                     new NotificationCompat.Builder(theContext, CHANNEL_ID)
                             .setAutoCancel(true)

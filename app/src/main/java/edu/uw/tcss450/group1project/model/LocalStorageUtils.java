@@ -5,8 +5,14 @@
 
 package edu.uw.tcss450.group1project.model;
 
+import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -206,7 +212,15 @@ public final class LocalStorageUtils {
     public static Set<String> getContactRequestNotifications(final Context theContext) {
         final SharedPreferences missedContactRequestStorage =
                 theContext.getSharedPreferences(NOTIFICATION_STORAGE, Context.MODE_PRIVATE);
-        return missedContactRequestStorage.getStringSet(CONTACT_REQUESTS, new HashSet<>());
+
+        // there is a chance that we save a contact request notification that is
+        // one that we sent someone, so remove a notification from the set that corresponds
+        // to the user's nickname if it exists
+        final Set<String> savedContactRequests =
+                new HashSet<>(missedContactRequestStorage.getStringSet(CONTACT_REQUESTS, new HashSet<>()));
+        savedContactRequests.remove(new ViewModelProvider((ViewModelStoreOwner) theContext).
+                get(UserInfoViewModel.class).getNickname());
+        return savedContactRequests;
     }
 
     /**
