@@ -32,7 +32,7 @@
                 android:ellipsize="end"
                 android:textStyle="bold"
                 android:textAlignment="center"
-                android:textSize="23sp"
+                android:textSize="18sp"
                 android:textColor="?cardTextColor"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/layout_precipitation_info"

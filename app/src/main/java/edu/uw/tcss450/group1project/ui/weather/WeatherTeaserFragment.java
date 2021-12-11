@@ -50,11 +50,11 @@ public class WeatherTeaserFragment extends Fragment {
         super.onViewCreated(theView, theSavedInstanceState);
         NavController navController = Navigation.findNavController(theView);
         NavBackStackEntry backStackEntry =
-                navController.getBackStackEntry(R.id.navigation_weather_location_selection);
+                navController.getBackStackEntry(R.id.navigation_weather_parent);
         WeatherDataViewModel model =
                 new ViewModelProvider(backStackEntry).get(WeatherDataViewModel.class);
         FragmentWeatherBinding binding = FragmentWeatherBinding.bind(theView);
-        binding.locationDeleteButton.setVisibility(View.GONE);
+        binding.locationDeleteButton.setVisibility(View.INVISIBLE);
         binding.titleCity.setText(model.getCurrentData().getCity());
         binding.titleWeatherIcon.setImageResource(
                 WeatherUtils.getInstance()

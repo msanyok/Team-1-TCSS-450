@@ -156,7 +156,10 @@ public class WeatherDataViewModel extends AndroidViewModel {
         try {
             JSONObject curr = theResult.getJSONObject("currentData");
             currentData = new WeatherDataCurrent(
-                    !theDeletable ? "My Location" : theResult.getString("location"),
+                    !theDeletable ?
+                            "My Location" + String.format(" (%s)",
+                                    theResult.getString("location").split(",")[0]):
+                            theResult.getString("location"),
                     curr.getInt("curTemp"),
                     curr.getInt("curFeels_like"),
                     (int) Math.round(curr.getDouble("curRain") * 100),

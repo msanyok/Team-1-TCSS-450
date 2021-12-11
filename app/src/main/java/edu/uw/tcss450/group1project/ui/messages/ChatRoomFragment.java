@@ -17,7 +17,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.Map;
@@ -122,7 +121,8 @@ public class ChatRoomFragment extends Fragment {
         // holds.
         ChatRecyclerViewAdapter adapter = new ChatRecyclerViewAdapter(
                 mChatModel.getMessageListByChatId(mChatId),
-                mUserModel.getNickname());
+                mUserModel.getNickname(),
+                getContext());
         messagesRecyclerView.setAdapter(adapter);
 
         // moves the bottom of the chat recycler view up and down when the keyboard is open/closed
@@ -159,7 +159,7 @@ public class ChatRoomFragment extends Fragment {
                     } else {
                         newScrollPosition = 0;
                     }
-                    adapter.constructCornerMapping();
+                    adapter.constructTextWidthMapping();
                     messagesRecyclerView.getAdapter().notifyDataSetChanged();
                     messagesRecyclerView.scrollToPosition(newScrollPosition);
                     binding.swipeContainer.setRefreshing(false);

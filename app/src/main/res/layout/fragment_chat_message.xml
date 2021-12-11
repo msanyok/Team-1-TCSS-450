@@ -17,6 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/chat_margin"
+        app:contentPadding="8dp"
         app:cardCornerRadius="5dp"
         app:cardElevation="0dp"
         android:layout_gravity="end">
@@ -32,7 +33,6 @@
                 android:id="@+id/text_message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
                 android:textAppearance="?attr/textAppearanceListItem"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

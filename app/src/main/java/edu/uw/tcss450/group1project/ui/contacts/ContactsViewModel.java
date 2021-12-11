@@ -26,6 +26,7 @@ import org.json.JSONObject;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -238,6 +239,8 @@ public class ContactsViewModel extends AndroidViewModel {
                                 contact.get("nickname").toString(),
                                 contact.get("memberid").toString()));
                     }
+                    // sort the list of contacts (Contact is comparable)
+                    Collections.sort(formattedContactList);
                     mContactList = formattedContactList;
                     mContactResponse.setValue(theResponse);
                 } catch (JSONException exception) {

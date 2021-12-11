@@ -9,17 +9,9 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavBackStackEntry;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-
+import android.os.Handler;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,6 +19,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavBackStackEntry;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -110,11 +112,10 @@ public class WeatherLocationSelectionFragment
         super.onViewCreated(theView, theSavedInstanceState);
         NavController navController = Navigation.findNavController(theView);
         NavBackStackEntry backStackEntry =
-                navController.getBackStackEntry(R.id.navigation_weather_location_selection);
+                navController.getBackStackEntry(R.id.navigation_weather_parent);
         mWeatherModel = new ViewModelProvider(backStackEntry).get(WeatherDataViewModel.class);
         mWeatherModel.clearResponse();
-        backStackEntry = navController.getBackStackEntry(R.id.navigation_weather_parent);
-        mLocationListModel = new ViewModelProvider(backStackEntry).get(
+        mLocationListModel = new ViewModelProvider(getActivity()).get(
                 WeatherLocationListViewModel.class);
         mLocationListModel.clearAdditionResponse();
         mUserModel = new ViewModelProvider(getActivity()).get(UserInfoViewModel.class);
@@ -124,7 +125,14 @@ public class WeatherLocationSelectionFragment
                 (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         //add this fragment as the OnMapReadyCallback -> See onMapReady()
         mapFragment.getMapAsync(this);
-        mBinding.searchButton.setOnClickListener(button -> initiateSearchRequest());
+        mBinding.searchButton.setOnClickListener(button -> {
+            InputMethodManager manager = (InputMethodManager)
+                    getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            manager.hideSoftInputFromWindow(button.getWindowToken(), 0);
+            if (mLocationString.isEmpty()) {
+                validateZipInput();
+            }
+        });
         mBinding.searchText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(
@@ -134,12 +142,6 @@ public class WeatherLocationSelectionFragment
             public void onTextChanged(
                     final CharSequence theSeq, final int theI, final int theI1, final int theI2) {
                 mBinding.searchText.setError(null);
-                if (!mBinding.searchText.getText().toString().equals("Dropped pin")) {
-                    if (mMarker != null) {
-                        mMarker.remove();
-                        mMarker = null;
-                    }
-                }
             }
 
             @Override
@@ -181,58 +183,72 @@ public class WeatherLocationSelectionFragment
 
     @Override
     public void onMapClick(@NonNull final LatLng theLatLong) {
-        if (mMarker != null) {
-            mMarker.remove();
+        if (mLocationString.isEmpty()) {
+            mMarker = mMap.addMarker(new MarkerOptions()
+                    .position(theLatLong)
+                    .title("New Marker"));
+            mMap.animateCamera(
+                    CameraUpdateFactory.newLatLngZoom(
+                            theLatLong, mMap.getCameraPosition().zoom));
+            mBinding.searchText.setText("");
+            mBinding.searchText.clearFocus();
+            mLocationString = new LatLong(theLatLong.latitude, theLatLong.longitude).toString();
+            Handler handler = new Handler();
+            handler.postDelayed(this::displaySaveLocationDialog, 1000);
         }
-        mMarker = mMap.addMarker(new MarkerOptions()
-                .position(theLatLong)
-                .title("New Marker"));
-        mMap.animateCamera(
-                CameraUpdateFactory.newLatLngZoom(
-                        theLatLong, mMap.getCameraPosition().zoom));
-        mBinding.searchText.setText("Dropped pin");
     }
 
     /**
-     * Begins a weather location search request either by lat long or zip code.
+     * Validates a zip code entered by the user
      */
-    private void initiateSearchRequest() {
-        InputMethodManager imm = (InputMethodManager)getActivity()
-                .getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (getActivity().getCurrentFocus() != null) {
-            imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),0);
+    private void validateZipInput() {
+        String input = mBinding.searchText.getText().toString().trim();
+        int zipCode = 0;
+        boolean valid = false;
+        if (input.length() == 5) {
+            try {
+                zipCode = Integer.valueOf(input);
+                if (zipCode >= 0) {
+                    valid = true;
+                }
+            } catch (NumberFormatException ex) {
+                // the user did not enter a number
+            }
         }
-        boolean valid = mLocationString.isEmpty();
         if (valid) {
-            if (mMarker != null) {
-                mLocationString = new LatLong(mMarker.getPosition().latitude,
-                        mMarker.getPosition().longitude).toString();
-                mSaveChecked = mBinding.saveCheckbox.isChecked();
-            } else {
-                valid = false;
-                int zipCode = 0;
-                String input = mBinding.searchText.getText().toString().trim();
-                if (input.length() == 5) {
-                    try {
-                        zipCode = Integer.valueOf(input);
-                        if (zipCode >= 0) {
-                            valid = true;
-                        }
-                    } catch (NumberFormatException ex) {
-                        // the user did not enter a number
-                    }
-                }
-                if (valid) {
-                    mLocationString = String.valueOf(zipCode);
-                    mSaveChecked = mBinding.saveCheckbox.isChecked();
-                } else {
-                    mBinding.searchText.setError("Zip code must be a positive, 5 digit value!");
-                }
-            }
-            if (valid) {
-                mWeatherModel.connectGet(mUserModel.getJwt(), mLocationString, true);
-            }
+            mLocationString = String.valueOf(zipCode);
+            displaySaveLocationDialog();
+        } else {
+            mBinding.searchText.setError("Zip code must be a positive, 5 digit value!");
         }
+    }
+
+    /**
+     * Displays an alert dialog asking whether the user would like to save a selected location
+     */
+    private void displaySaveLocationDialog() {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
+        alertDialog.setMessage(Html.fromHtml("<font color='#000000'>Would you like to " +
+                "save this location?</font>"));
+        alertDialog.setPositiveButton(Html.fromHtml("<font color='000000'>Yes</font>"),
+                (dialog, which) -> {
+                    mSaveChecked = true;
+                    mWeatherModel.connectGet(mUserModel.getJwt(), mLocationString, true);
+                });
+        alertDialog.setNegativeButton(Html.fromHtml("<font color='#000000'>No</font>"),
+                (dialog, which) -> {
+                    mSaveChecked = false;
+                    mWeatherModel.connectGet(mUserModel.getJwt(), mLocationString, true);
+                });
+        alertDialog.setNeutralButton(Html.fromHtml("<font color='#000000'>Cancel</font>"),
+                (dialog, which) -> {
+                    if (mMarker != null) {
+                        mMarker.remove();
+                        mMarker = null;
+                    }
+                    mLocationString = "";
+                });
+        alertDialog.show();
     }
 
     /**
@@ -246,11 +262,14 @@ public class WeatherLocationSelectionFragment
             displayErrorDialog("The supplied location " +
                     "is not currently supported. Please try again.");
             mLocationString = "";
+            if (mMarker != null) {
+                mMarker.remove();
+                mMarker = null;
+            }
         } else if (theResponse.length() != 0) {
             if (mSaveChecked) {
                 mLocationListModel.connectPost(mUserModel.getJwt(), mLocationString);
             } else {
-                mLocationString = "";
                 String city = mWeatherModel.getCurrentData().getCity().split(",")[0];
                 WeatherLocationSelectionFragmentDirections.
                         ActionNavigationWeatherLocationSelectionToNavigationWeatherTeaser action =
@@ -268,9 +287,7 @@ public class WeatherLocationSelectionFragment
      * @param theResponse the observed response
      */
     private void observeLocationAdditionResponse(final JSONObject theResponse) {
-        boolean displayToast = true;
         if (theResponse.has("code")) { // error or list size limit met
-            displayToast = false;
             String message = "An unexpected error occurred when adding to saved locations. " +
                 "Please try again.";
             if (theResponse.has("data")) {
@@ -283,8 +300,8 @@ public class WeatherLocationSelectionFragment
                         message = "The provided zip code is invalid and cannot be saved. Please " +
                                 "try again.";
                     } else if (issue.equalsIgnoreCase("Location already exists")) {
-                        message = "It looks like you've already saved this location. We didn't " +
-                                "add it again.";
+                        message = "It looks like you've already saved this location. Please " +
+                                "try again.";
                     }
                 } catch (JSONException ex) {
                     Log.e("JSON PARSE ERROR IN LOCATION ADD OBSERVER", ex.getMessage());
@@ -292,18 +309,10 @@ public class WeatherLocationSelectionFragment
             }
             mLocationString = "";
             displayErrorDialog(message);
-        }
-        if (theResponse.length() != 0) {
-            mLocationString = "";
-            if (displayToast) {
-                Toast.makeText(getContext(),"Location saved", Toast.LENGTH_SHORT).show();
-            }
-            String city = mWeatherModel.getCurrentData().getCity().split(",")[0];
-            WeatherLocationSelectionFragmentDirections.
-                    ActionNavigationWeatherLocationSelectionToNavigationWeatherTeaser action =
-                    WeatherLocationSelectionFragmentDirections.
-                            actionNavigationWeatherLocationSelectionToNavigationWeatherTeaser(city);
-            Navigation.findNavController(getView()).navigate(action);
+        } else if (theResponse.length() != 0) {
+            Toast.makeText(getContext(),"Location saved", Toast.LENGTH_SHORT).show();
+            Navigation.findNavController(getView()).navigate(
+                    R.id.action_navigation_weather_location_selection_to_navigation_weather_parent);
         }
     }
 

@@ -195,6 +195,9 @@ public class PushReceiver extends BroadcastReceiver {
                 new ActivityManager.RunningAppProcessInfo();
         ActivityManager.getMyMemoryState(appProcessInfo);
 
+        // store the notification locally so it can be loaded when the app restarts
+        LocalStorageUtils.putContactRequestNotification(theContext, fromNickname);
+
         if (appProcessInfo.importance == IMPORTANCE_FOREGROUND ||
                 appProcessInfo.importance == IMPORTANCE_VISIBLE) {
             // user is inside the app
@@ -212,9 +215,6 @@ public class PushReceiver extends BroadcastReceiver {
         } else {
             // user is outside of the app
             Log.d("PUSHY", "New Contact Request received in background");
-
-            // store the notification locally so it can be loaded when the app restarts
-            LocalStorageUtils.putContactNotification(theContext, ContactsParentFragment.REQUESTS);
 
             // set up the intent
             Intent intent = new Intent(theContext, AuthActivity.class);
@@ -266,6 +266,12 @@ public class PushReceiver extends BroadcastReceiver {
                 new ActivityManager.RunningAppProcessInfo();
         ActivityManager.getMyMemoryState(appProcessInfo);
 
+        if (isAccept) {
+            // store a contacts notification so it can be loaded when the app restarts
+            // only if the response to the request was an acceptance
+            LocalStorageUtils.putNewContactsNotification(theContext, fromNickname);
+        }
+
         if (appProcessInfo.importance == IMPORTANCE_FOREGROUND ||
                 appProcessInfo.importance == IMPORTANCE_VISIBLE) {
             // user is inside the app
@@ -286,10 +292,6 @@ public class PushReceiver extends BroadcastReceiver {
             // so send a notification ONLY IF it is an acceptance notification.
             // we don't want to send a notification if the user is not accepted.
             Log.d("PUSHY", "New Contact Request Response received in background");
-
-            // store the notification locally so it can be loaded when the app restarts
-            LocalStorageUtils.putContactNotification(theContext,
-                    ContactsParentFragment.ALL_CONTACTS);
 
             // set up the intent
             Intent intent = new Intent(theContext, AuthActivity.class);
@@ -329,10 +331,11 @@ public class PushReceiver extends BroadcastReceiver {
      * @param theIntent the Intent that stores the Pushy payload
      */
     private void acceptContactDeletePushy(final Context theContext, final Intent theIntent) {
-
-        String deletedId = theIntent.getStringExtra("deletedId");
-        String deletorId = theIntent.getStringExtra("deletorId");
-        String fromNickname = theIntent.getStringExtra("fromNickname");
+        // this nickname is the nickname of the account
+        // that initially sent the request but then deleted the request,
+        // we need it so we can delete a contact request notification if one exists
+        // corresponding to it
+        final String fromNickname = theIntent.getStringExtra("fromNickname");
 
         // get tools to check if the user is in the app or not
         ActivityManager.RunningAppProcessInfo appProcessInfo =
@@ -346,8 +349,6 @@ public class PushReceiver extends BroadcastReceiver {
 
             Intent intent = new Intent(NEW_PUSHY_NOTIF);
             intent.putExtra("type", CONTACT_DELETE);
-            intent.putExtra("deletedId", deletedId);
-            intent.putExtra("deletorId", deletorId);
             intent.putExtra("fromNickname", fromNickname);
             intent.putExtras(theIntent.getExtras());
 
@@ -355,7 +356,6 @@ public class PushReceiver extends BroadcastReceiver {
         }
 
         // we don't want any kind of outside-app notifications when someone gets deleted
-
     }
 
 

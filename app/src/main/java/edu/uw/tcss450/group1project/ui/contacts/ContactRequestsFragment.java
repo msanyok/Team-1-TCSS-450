@@ -84,7 +84,8 @@ public class ContactRequestsFragment extends Fragment {
 
         // remove the notifications from this tab if there are any
         new ViewModelProvider(this.getActivity()).get(ContactNotificationViewModel.class).
-                removeTabNotifications(ContactsParentFragment.REQUESTS);
+                clearAllContactRequestNotifications(this.getContext());
+
     }
 
     /**

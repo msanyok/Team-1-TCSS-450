@@ -95,7 +95,12 @@
         tools:layout="@layout/fragment_weather_location_selection" >
         <action
             android:id="@+id/action_navigation_weather_location_selection_to_navigation_weather_teaser"
+            app:popUpTo="@id/navigation_weather_parent"
             app:destination="@id/navigation_weather_teaser" />
+        <action
+            android:id="@+id/action_navigation_weather_location_selection_to_navigation_weather_parent"
+            app:popUpTo="@id/navigation_weather_parent"
+            app:destination="@id/navigation_weather_parent" />
     </fragment>
     <fragment
         android:id="@+id/navigation_weather_teaser"
