@@ -190,7 +190,7 @@ public class ContactsViewModel extends AndroidViewModel {
                 Request.Method.DELETE,
                 url,
                 null,
-                mRequestResponse::setValue,
+                mDeleteResponse::setValue,
                 this::handleRequestError){
             @Override
             public Map<String, String> getHeaders() {
@@ -363,6 +363,15 @@ public class ContactsViewModel extends AndroidViewModel {
         public void removeData() {
             mRequestResponse.setValue(new JSONObject());
         }
+
+
+        /**
+         * Clears the data stored in this view model.
+         */
+        public void removeDeleteData() {
+            mDeleteResponse.setValue(new JSONObject());
+        }
+
 
 }
 

@@ -69,7 +69,8 @@ public class NewContactRequestFragment extends Fragment {
     @Override
     public void onCreate(final Bundle theSavedInstanceState) {
         super.onCreate(theSavedInstanceState);
-        mContactsRequestModel = new ViewModelProvider(getActivity()).get(NewContactsRequestViewModel.class);
+        mContactsRequestModel =
+                new ViewModelProvider(getActivity()).get(NewContactsRequestViewModel.class);
         mUserModel = new ViewModelProvider(getActivity()).get(UserInfoViewModel.class);
     }
 
@@ -143,7 +144,9 @@ public class NewContactRequestFragment extends Fragment {
                     }
                     mBinding.contactRequestButton.setVisibility(View.GONE);
                     mBinding.listRoot.setVisibility(View.VISIBLE);
-                    updateContactsSearch();
+                    if (!mBinding.addContactText.getText().toString().isEmpty()) {
+                        updateContactsSearch();
+                    }
                 } else {
                     mBinding.contactRequestButton.setVisibility(View.VISIBLE);
                     mBinding.listRoot.setVisibility(View.INVISIBLE);
@@ -241,7 +244,6 @@ public class NewContactRequestFragment extends Fragment {
                 }
                 Log.e("REQUEST ERROR", theResponse.toString());
             } else {
-
                 String theString = mBinding.addContactText.getText().toString();
                 int thePosition = mBinding.requestSearchSpinner.getSelectedItemPosition();
                 if(thePosition== 0) {
