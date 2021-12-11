@@ -8,6 +8,7 @@ package edu.uw.tcss450.group1project.ui.contacts;
 import androidx.annotation.NonNull;
 
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.Objects;
 
 /**
@@ -16,7 +17,7 @@ import java.util.Objects;
  * @author Parker Rosengreen
  * @version Fall 2021
  */
-public class Contact {
+public class Contact implements Comparable<Contact> {
 
     /** The Member ID */
     private final String mMemberId;
@@ -98,5 +99,17 @@ public class Contact {
     @Override
     public int hashCode() {
         return Objects.hash(mMemberId);
+    }
+
+    @Override
+    public int compareTo(final Contact theOtherContact) {
+        // note: nicknames are always unique,
+        // so if we reach that point, there will always be a +1 or -1 result from that stage.
+        // we are checking memberId just in case something weird happens.
+        return Comparator.comparing(Contact::getFirst)
+                .thenComparing(Contact::getLast)
+                .thenComparing(Contact::getNickname)
+                .thenComparing(Contact::getMemberId)
+                .compare(this, theOtherContact);
     }
 }
