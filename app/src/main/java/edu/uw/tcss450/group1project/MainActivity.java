@@ -189,7 +189,8 @@ public class MainActivity extends ThemedActivity {
                 navView.setVisibility(View.GONE);
             }
             if (id == R.id.navigation_chat_room_info || id == R.id.navigation_contacts_parent ||
-                id == R.id.navigation_password_change || id == R.id.navigation_messages) {
+                id == R.id.navigation_password_change || id == R.id.navigation_messages ||
+                id == R.id.navigation_weather_location_selection) {
                 getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
             } else {
                 getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
@@ -202,7 +203,7 @@ public class MainActivity extends ThemedActivity {
             badge.setMaxCharacterCount(2);
             badge.setBackgroundColor(getResources().getColor(mBadgeColor, getTheme()));
             badge.setBadgeTextColor(getResources().getColor(mBadgeTextColor, getTheme()));
-            System.out.println("BADGE");
+
             if (count > 0) {
                 // new messages! update and show the notification badge.
                 badge.setNumber(count);

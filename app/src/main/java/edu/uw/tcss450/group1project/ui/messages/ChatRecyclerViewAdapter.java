@@ -5,25 +5,24 @@
 
 package edu.uw.tcss450.group1project.ui.messages;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.util.Log;
-import android.graphics.drawable.Drawable;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.core.graphics.ColorUtils;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.shape.CornerFamily;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +40,10 @@ import edu.uw.tcss450.group1project.databinding.FragmentChatMessageBinding;
 public class ChatRecyclerViewAdapter extends
         RecyclerView.Adapter<ChatRecyclerViewAdapter.MessageViewHolder> {
 
+    private static final int TEXT_SIZE = 16;
+
+    private static final int RADIUS = 15;
+
     /** The list of messages to show */
     private final List<ChatMessage> mMessages;
 
@@ -50,8 +53,11 @@ public class ChatRecyclerViewAdapter extends
      */
     private final String mPersonalIdentifier;
 
-    /** A mapping of how each message's corners are to be shaped */
-    private Map<Integer, int[]> mCornerMap;
+    /** The mapping of each text message's full width */
+    private Map<Integer, Integer> mTextWidthMap;
+
+    /** The context used for creating text views */
+    private final Context mContext;
 
     /**
      * Creates a new ChatRecyclerViewAdapter that shows the given messages for a particular chat.
@@ -60,68 +66,30 @@ public class ChatRecyclerViewAdapter extends
      *
      * @param theMessages the list of messages to show
      * @param thePersonalIdentifier this user's email that helps identify which messages they sent
+     * @param theContext the supplied fragment context
      */
     public ChatRecyclerViewAdapter(final List<ChatMessage> theMessages,
-                                   final String thePersonalIdentifier) {
+                                   final String thePersonalIdentifier,
+                                   final Context theContext) {
         this.mMessages = theMessages;
         mPersonalIdentifier = thePersonalIdentifier;
-        mCornerMap = new HashMap<>();
-        constructCornerMapping();
+        mTextWidthMap = new HashMap<>();
+        mContext = theContext;
+        constructTextWidthMapping();
     }
 
-    /**
-     * Updates the corner mapping of each message in this adapter
-     */
-    public void constructCornerMapping() {
+    public void constructTextWidthMapping() {
         for (int i = 0; i < mMessages.size(); i++) {
-            ChatMessage message = mMessages.get(i);
-            int[] dimensions = new int[4];
-            if (message.getSender().equals("TalkBox Admin")) {
-                dimensions [0] = 15;
-                dimensions[1] = 15;
-                dimensions[2] = 15;
-                dimensions[3] = 15;
+            TextView tView = new TextView(mContext);
+            tView.setTextSize(TEXT_SIZE);
+            if (mMessages.get(i).getSender().equals(mPersonalIdentifier)) {
+                tView.setText(mMessages.get(i).getMessage());
             } else {
-                // top corners first
-                if (i == 0) {
-                    dimensions[0] = 15;
-                    dimensions[1] = 15;
-                } else {
-                    String currSender = message.getSender();
-                    String prevSender = mMessages.get(i - 1).getSender();
-                    if (((currSender.equals(mPersonalIdentifier) &&
-                            prevSender.equals(mPersonalIdentifier)) ||
-                            (!currSender.equals(mPersonalIdentifier) &&
-                                    !prevSender.equals(mPersonalIdentifier))) &&
-                            !prevSender.equals("TalkBox Admin")) {
-                        dimensions[0] = 0;
-                        dimensions[1] = 0;
-                    } else {
-                        dimensions[0] = 15;
-                        dimensions[1] = 15;
-                    }
-                }
-                // bottom corners
-                if (i == mMessages.size() - 1) {
-                    dimensions[2] = 15;
-                    dimensions[3] = 15;
-                } else {
-                    String currSender = message.getSender();
-                    String nextSender = mMessages.get(i + 1).getSender();
-                    if (((currSender.equals(mPersonalIdentifier) &&
-                            nextSender.equals(mPersonalIdentifier)) ||
-                            (!currSender.equals(mPersonalIdentifier) &&
-                                    !nextSender.equals(mPersonalIdentifier))) &&
-                            !nextSender.equals("TalkBox Admin")) {
-                        dimensions[2] = 0;
-                        dimensions[3] = 0;
-                    } else {
-                        dimensions[2] = 15;
-                        dimensions[3] = 15;
-                    }
-                }
+                tView.setText(String.format("%s: %s",
+                        mMessages.get(i).getSender(), mMessages.get(i).getMessage()));
             }
-            mCornerMap.put(message.getMessageId(), dimensions);
+            tView.measure(0, 0);
+            mTextWidthMap.put(mMessages.get(i).getMessageId(), tView.getMeasuredWidth());
         }
     }
 
@@ -137,7 +105,7 @@ public class ChatRecyclerViewAdapter extends
     @Override
     public void onBindViewHolder(@NonNull final MessageViewHolder theHolder,
                                  final int thePosition) {
-        theHolder.setMessage(mMessages.get(thePosition));
+        theHolder.setMessage(mMessages.get(thePosition), thePosition);
     }
 
     @Override
@@ -172,13 +140,14 @@ public class ChatRecyclerViewAdapter extends
 
         /**
          * Sets up a message UI based on its state.
-         * @param theMessage
+         *
+         * @param theMessage the message to be displayed
+         * @param thePosition the list position of the message
          */
-        void setMessage(final ChatMessage theMessage) {
+        void setMessage(final ChatMessage theMessage, final int thePosition) {
 
             final Resources res = mView.getContext().getResources();
             final MaterialCardView card = mBinding.cardRoot;
-
             int[] attr = {
                     R.attr.cardColor,
                     R.attr.colorAccent,
@@ -187,17 +156,6 @@ public class ChatRecyclerViewAdapter extends
                     R.attr.background,
                     R.attr.adminTextColor
             };
-
-            int[] corners = mCornerMap.get(theMessage.getMessageId());
-            card.setShapeAppearanceModel(
-                    card.getShapeAppearanceModel()
-                    .toBuilder()
-                    .setTopLeftCorner(CornerFamily.ROUNDED, corners[0])
-                    .setTopRightCorner(CornerFamily.ROUNDED, corners[1])
-                    .setBottomLeftCorner(CornerFamily.ROUNDED, corners[2])
-                    .setBottomRightCorner(CornerFamily.ROUNDED, corners[3])
-                    .build()
-            );
 
             TypedArray typedArray = mView.getContext().obtainStyledAttributes(attr);
             int sendCardColor = typedArray.getResourceId(0, R.color.white);
@@ -210,6 +168,56 @@ public class ChatRecyclerViewAdapter extends
 
             int standard = (int) res.getDimension(R.dimen.chat_margin);
             int extended = (int) res.getDimension(R.dimen.chat_margin_sided);
+
+            ViewTreeObserver.OnPreDrawListener listener = new ViewTreeObserver.OnPreDrawListener() {
+                @Override
+                public boolean onPreDraw() {
+                    card.getViewTreeObserver().removeOnPreDrawListener(this);
+                    int[] corners = { RADIUS, RADIUS, RADIUS, RADIUS };
+                    if (thePosition >= 1 &&
+                        theMessage.getSender().equals(mMessages.get(thePosition - 1).getSender())) {
+                        int previousWidth =
+                                mTextWidthMap.get(mMessages.get(thePosition - 1).getMessageId());
+                        if (theMessage.getSender().equals(mPersonalIdentifier)) {
+                            corners[1] = 0;
+                            if (mBinding.textMessage.getWidth() <= previousWidth) {
+                                corners[0] = 0;
+                            }
+                        } else {
+                            corners[0] = 0;
+                            if (mBinding.textMessage.getWidth() <= previousWidth) {
+                                corners[1] = 0;
+                            }
+                        }
+                    }
+                    if (thePosition < mMessages.size() - 1 &&
+                        theMessage.getSender().equals(mMessages.get(thePosition + 1).getSender())) {
+                        int nextWidth =
+                                mTextWidthMap.get(mMessages.get(thePosition + 1).getMessageId());
+                        if (theMessage.getSender().equals(mPersonalIdentifier)) {
+                            corners[3] = 0;
+                            if (mBinding.textMessage.getWidth() <= nextWidth) {
+                                corners[2] = 0;
+                            }
+                        } else {
+                            corners[2] = 0;
+                            if (mBinding.textMessage.getWidth() <= nextWidth) {
+                                corners[3] = 0;
+                            }
+                        }
+                    }
+                    card.setShapeAppearanceModel(card.getShapeAppearanceModel()
+                    .toBuilder()
+                    .setTopLeftCorner(CornerFamily.ROUNDED, corners[0])
+                    .setTopRightCorner(CornerFamily.ROUNDED, corners[1])
+                    .setBottomLeftCorner(CornerFamily.ROUNDED, corners[2])
+                    .setBottomRightCorner(CornerFamily.ROUNDED, corners[3])
+                    .build());
+                    return true;
+                }
+            };
+
+            card.getViewTreeObserver().addOnPreDrawListener(listener);
 
             if (mPersonalIdentifier.equals(theMessage.getSender())) {
                 // This message is from the user. Format it as such

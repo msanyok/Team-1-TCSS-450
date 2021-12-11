@@ -156,7 +156,7 @@ public class ChatRoomCreationViewModel extends AndroidViewModel {
         StringBuilder builder = new StringBuilder();
         int size = theParticipants.size();
         if (size == 0) {
-            builder.append("Hey! You have created an empty TalkBox chat room.");
+            builder.append("Hey! " + theNickname + " has created an empty TalkBox chat room.");
         } else {
             builder.append("Hey! " + theNickname + " has created a TalkBox chat room with ");
             int i = 0;

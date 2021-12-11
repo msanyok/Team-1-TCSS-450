@@ -116,11 +116,8 @@ public class WeatherFragment extends Fragment {
                               @Nullable final Bundle theSavedInstanceState) {
         super.onViewCreated(theView, theSavedInstanceState);
         Fragment parentFrag = getParentFragment();
-        NavController navController = Navigation.findNavController(parentFrag.getView());
-        NavBackStackEntry backStackEntry =
-                navController.getBackStackEntry(R.id.navigation_weather_parent);
         mLocationsModel =
-                new ViewModelProvider(backStackEntry).get(WeatherLocationListViewModel.class);
+                new ViewModelProvider(getActivity()).get(WeatherLocationListViewModel.class);
         mErrorModel =
                 new ViewModelProvider(parentFrag).get(WeatherErrorViewModel.class);
         mBinding = FragmentWeatherBinding.bind(getView());

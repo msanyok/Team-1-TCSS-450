@@ -50,6 +50,8 @@ public class WeatherParentFragment extends Fragment {
     /** The weather data error view model */
     private WeatherErrorViewModel mErrorModel;
 
+    private WeatherDataViewModel mTeaserModel;
+
     /** The user info view model */
     private UserInfoViewModel mUserModel;
 
@@ -64,6 +66,12 @@ public class WeatherParentFragment extends Fragment {
     }
 
     @Override
+    public void onSaveInstanceState(@NonNull final Bundle theSavedInstanceState) {
+        theSavedInstanceState.putInt("mViewIndex", mViewIndex);
+        super.onSaveInstanceState(theSavedInstanceState);
+    }
+
+    @Override
     public View onCreateView(final LayoutInflater theInflater, final ViewGroup theContainer,
                              final Bundle theSavedInstanceState) {
         // Inflate the layout for this fragment
@@ -74,23 +82,23 @@ public class WeatherParentFragment extends Fragment {
     public void onViewCreated(@NonNull final View theView,
                               @Nullable final Bundle theSavedInstanceState) {
         super.onViewCreated(theView, theSavedInstanceState);
+        if (theSavedInstanceState != null) {
+            mViewIndex = theSavedInstanceState.getInt("mViewIndex");
+        }
         NavController navController = Navigation.findNavController(theView);
         NavBackStackEntry backStackEntry =
                 navController.getBackStackEntry(R.id.navigation_weather_parent);
         mLocationModel =
-                new ViewModelProvider(backStackEntry).get(WeatherLocationListViewModel.class);
+                new ViewModelProvider(getActivity()).get(WeatherLocationListViewModel.class);
         mLocationModel.clearResponse();
         mLocationModel.clearDeletionResponse();
+        mTeaserModel =
+                new ViewModelProvider(backStackEntry).get(WeatherDataViewModel.class);
         mErrorModel =
                 new ViewModelProvider(this).get(WeatherErrorViewModel.class);
         mErrorModel.resetErrorFlag();
         mUserModel = new ViewModelProvider(getActivity()).get(UserInfoViewModel.class);
-        if (!mLocationModel.isListModified()) {
-            setViewComponents();
-        } else {
-            mLocationModel.checkModifications();
-            mLocationModel.connectGet(mUserModel.getJwt());
-        }
+        mLocationModel.connectGet(mUserModel.getJwt());
         mLocationModel.addResponseObserver(getViewLifecycleOwner(),
                 this::observeLocationListResponse);
         FragmentWeatherParentBinding binding = FragmentWeatherParentBinding.bind(theView);
@@ -127,6 +135,7 @@ public class WeatherParentFragment extends Fragment {
      * Sets this fragment's view components which include its view pager and tab view
      */
     private void setViewComponents() {
+        System.out.println("SET VIEW COMPONENTS");
         List<WeatherFragment> frags = new LinkedList<>();
         LocationViewModel locModel =
                 new ViewModelProvider(getActivity()).get(LocationViewModel.class);
@@ -144,6 +153,11 @@ public class WeatherParentFragment extends Fragment {
                 getChildFragmentManager(), getLifecycle(), frags);
         viewPager.setAdapter(adapter);
         viewPager.setOffscreenPageLimit(3);
+        if (mLocationModel.isListModified()) {
+            mLocationModel.checkModifications();
+            mViewIndex = frags.size() - 1;
+        }
+        System.out.println("mViewIndex: " + mViewIndex);
         viewPager.setCurrentItem(mViewIndex, true);
         new TabLayoutMediator(tabs, viewPager, (tab, position) -> {}).attach();
         viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
@@ -153,7 +167,6 @@ public class WeatherParentFragment extends Fragment {
                 mViewIndex = position;
             }
         });
-        mLocationModel.checkModifications();
     }
 
     /**
