@@ -13,30 +13,31 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import edu.uw.tcss450.group1project.ui.contacts.ContactsParentFragment;
-
 /**
  * Provides utility methods for storing small amounts of data locally.
  * These functions should only be used when the app is not in the foreground.
  *
- * Note: This approach does not work when users are logging in and
+ * Note: This approach is not ideal and does not work when users are logging in and
  * out of the service on the same device. It is important to call
- * clearAllStoredNotifications() when the user logs out
+ * clearAllStoredNotifications() when the user logs out to ensure old data from
+ * previous accounts does not persist.
  *
  * @author Austn Attaway
  * @version Fall 2021
  */
 public final class LocalStorageUtils {
 
-    /** The Shared Pref. key that is used to determine storage for new message notifications */
-    private static final String NEW_MESSAGES_KEY = "NewMessages";
-
-    /** The Shared Pref. key that is used to determine storage for new contact notifications */
-    private static final String NEW_CONTACTS_KEY = "NewMessages";
-
+    /** The Shared Pref. key that is used to determine storage for new notifications */
+    private static final String NOTIFICATION_STORAGE = "NewNotifications";
 
     /** The key of the String set used to store the current chatIds with new messages */
     private static final String NEW_MESSAGE_STRING_SET = "chatIds";
+
+    /** The key for the String set that stores contact request notifications */
+    private static final String CONTACT_REQUESTS = "newContactRequestNotifications";
+
+    /** The key for the String set that stores contact notifications */
+    private static final String CONTACTS = "newContactNotifications";
 
     /**
      * Increments the counter for the given chat in local storage.
@@ -46,7 +47,7 @@ public final class LocalStorageUtils {
      */
     public static final void putMissedMessage(final Context theContext, final String theChatId) {
         final SharedPreferences newMessagesStorage =
-                theContext.getSharedPreferences(NEW_MESSAGES_KEY, Context.MODE_PRIVATE);
+                theContext.getSharedPreferences(NOTIFICATION_STORAGE, Context.MODE_PRIVATE);
         final SharedPreferences.Editor editor = newMessagesStorage.edit();
 
         final Set<String> chatIds =
@@ -59,7 +60,6 @@ public final class LocalStorageUtils {
         editor.putStringSet(NEW_MESSAGE_STRING_SET, chatIds);
         editor.putInt(theChatId, newMessageCount + 1);
         editor.apply();
-
     }
 
     /**
@@ -72,7 +72,7 @@ public final class LocalStorageUtils {
     public static final Map<String, Integer> getMissedMessages(final Context theContext) {
         final Map<String, Integer> missedMessagesMap = new HashMap<>();
         final SharedPreferences newMessagesStorage =
-                theContext.getSharedPreferences(NEW_MESSAGES_KEY, Context.MODE_PRIVATE);
+                theContext.getSharedPreferences(NOTIFICATION_STORAGE, Context.MODE_PRIVATE);
 
         Set<String> chatIdKeys = newMessagesStorage.getStringSet(NEW_MESSAGE_STRING_SET,
                 new HashSet<>());
@@ -91,7 +91,7 @@ public final class LocalStorageUtils {
      */
     public static final void removeNewMessageStore(final Context theContext, final int theChatId) {
         final SharedPreferences newMessagesStorage =
-                theContext.getSharedPreferences(NEW_MESSAGES_KEY, Context.MODE_PRIVATE);
+                theContext.getSharedPreferences(NOTIFICATION_STORAGE, Context.MODE_PRIVATE);
         final SharedPreferences.Editor editor = newMessagesStorage.edit();
 
         editor.remove(String.valueOf(theChatId));
@@ -105,113 +105,120 @@ public final class LocalStorageUtils {
      * @param theContext
      */
     public static void clearAllStoredNotifications(final Context theContext) {
-        // remove the messages notifications
-        final SharedPreferences newMessagesStorage =
-                theContext.getSharedPreferences(NEW_MESSAGES_KEY, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = newMessagesStorage.edit();
-
-        Set<String> chatIdKeys = newMessagesStorage.getStringSet(NEW_MESSAGE_STRING_SET,
-                new HashSet<>());
-        // clear all chatIds, then clear the string set
-        for (String chatId : chatIdKeys) {
-            editor.remove(chatId);
-        }
-        editor.remove(NEW_MESSAGE_STRING_SET);
-        editor.apply();
-
-        // remove the contacts notifications
-        final SharedPreferences contactsStorage =
-                theContext.getSharedPreferences(NEW_CONTACTS_KEY, Context.MODE_PRIVATE);
-        editor = contactsStorage.edit();
-        editor.remove(ContactsParentFragment.ALL_CONTACTS);
-        editor.remove(ContactsParentFragment.REQUESTS);
-        editor.remove(ContactNotificationViewModel.TOTAL_KEY);
-
-        editor.apply();
+        theContext.getSharedPreferences(NOTIFICATION_STORAGE, Context.MODE_PRIVATE).
+                edit().clear().apply();
     }
 
+
     /**
-     * Increments the contact notification count for the given tab.
+     * Increments the contact request notification count.
      *
      * @param theContext the context of where the put is being called
-     * @param theTabString the tab that identifies which navigation tab the notification is for
+     * @param theNickname the nickname that corresponds to who sent you a contact request
      */
-    public static void putContactNotification(final Context theContext,
-                                              final String theTabString) {
-        final SharedPreferences contactsStorage =
-                theContext.getSharedPreferences(NEW_CONTACTS_KEY, Context.MODE_PRIVATE);
-        final SharedPreferences.Editor editor = contactsStorage.edit();
+    public static void putContactRequestNotification(final Context theContext,
+                                                     final String theNickname) {
+        final SharedPreferences contactRequestStorage =
+                theContext.getSharedPreferences(NOTIFICATION_STORAGE, Context.MODE_PRIVATE);
+        final SharedPreferences.Editor editor = contactRequestStorage.edit();
 
-        // increment the store for the tab
-        editor.putInt(theTabString, contactsStorage.getInt(theTabString, 0) + 1);
+        // increment the store
+        Set<String> set = new HashSet<>(contactRequestStorage.getStringSet(CONTACT_REQUESTS, new HashSet<>()));
+        set.add(theNickname);
+        editor.putStringSet(CONTACT_REQUESTS, set);
         editor.apply();
     }
 
     /**
-     * Clears the contact notification count for the given tab.
+     * Increments the new contacts notification count.
+     *
+     * @param theContext the context of where the put is being called
+     * @param theNickname the nickname of the new contact
+     */
+    public static void putNewContactsNotification(final Context theContext,
+                                                  final String theNickname) {
+        final SharedPreferences contactStorage =
+                theContext.getSharedPreferences(NOTIFICATION_STORAGE, Context.MODE_PRIVATE);
+        final SharedPreferences.Editor editor = contactStorage.edit();
+
+        // increment the store
+        Set<String> set = new HashSet<>(contactStorage.getStringSet(CONTACTS, new HashSet<>()));
+        set.add(theNickname);
+        editor.putStringSet(CONTACTS, set);
+        editor.apply();
+    }
+
+
+    /**
+     * Removes the contact request notification corresponding to theNickname
      *
      * @param theContext the context of where the delete is being called
-     * @param theTabString the tab that identifies which navigation tab should be cleared
+     * @param theNickname the nickname that corresponds to the contact request
+     *                    that should no longer be a notification
      */
-    public static void deleteContactNotifications(final Context theContext,
-                                                  final String theTabString) {
+    public static void decrementContactRequestNotifications(final Context theContext,
+                                                  final String theNickname) {
         final SharedPreferences contactsStorage =
-                theContext.getSharedPreferences(NEW_CONTACTS_KEY, Context.MODE_PRIVATE);
+                theContext.getSharedPreferences(NOTIFICATION_STORAGE, Context.MODE_PRIVATE);
         final SharedPreferences.Editor editor = contactsStorage.edit();
 
         // increment the store for the tab
-        editor.putInt(theTabString, 0);
+        Set<String> set =
+                new HashSet<>(contactsStorage.getStringSet(CONTACT_REQUESTS, new HashSet<>()));
+        set.remove(theNickname);
+        editor.putStringSet(CONTACT_REQUESTS, set);
         editor.apply();
     }
 
     /**
-     * Returns the contact notifications that are stored in storage.
+     * Clears all of the contact notifications.
      *
-     * @param theContext the context of where the get is being called
-     * @return the contact notifications that are stored in storage.
+     * @param theContext where this method was called
      */
-    public static Map<String, Integer> getMissedContacts(final Context theContext) {
-
-        final Map<String, Integer> contactsMap = new HashMap<>();
-        final SharedPreferences missedContactsStorage =
-                theContext.getSharedPreferences(NEW_CONTACTS_KEY, Context.MODE_PRIVATE);
-
-        contactsMap.put(ContactsParentFragment.ALL_CONTACTS,
-                missedContactsStorage.getInt(ContactsParentFragment.ALL_CONTACTS, 0));
-        contactsMap.put(ContactsParentFragment.REQUESTS,
-                missedContactsStorage.getInt(ContactsParentFragment.REQUESTS, 0));
-
-        int total = missedContactsStorage.getInt(ContactsParentFragment.ALL_CONTACTS, 0) +
-                missedContactsStorage.getInt(ContactsParentFragment.REQUESTS, 0);
-        contactsMap.put(ContactNotificationViewModel.TOTAL_KEY, total);
-
-        return contactsMap;
-    }
-
-    /**
-     * Saves the given contact notification map on the device
-     * storage so it can be loaded when the app runs again.
-     *
-     * @param theContext the context of where the save is being called
-     * @param theMap the map to be saved
-     */
-    public static void saveContactsData(final Context theContext,
-                                        final Map<String, Integer> theMap) {
-
+    public static void clearContactsNotifications(final Context theContext) {
+        System.out.println("DELETING CONTACTS NOTIFICATIONS");
         final SharedPreferences contactsStorage =
-                theContext.getSharedPreferences(NEW_CONTACTS_KEY, Context.MODE_PRIVATE);
+                theContext.getSharedPreferences(NOTIFICATION_STORAGE, Context.MODE_PRIVATE);
         final SharedPreferences.Editor editor = contactsStorage.edit();
-
-        int total = 0;
-        for (Map.Entry<String, Integer> entry : theMap.entrySet()) {
-            String key = entry.getKey();
-            int value = entry.getValue();
-            editor.putInt(key, value);
-        }
-        editor.putInt(ContactNotificationViewModel.TOTAL_KEY, total);
-
+        editor.remove(CONTACTS);
         editor.apply();
+    }
 
+    /**
+     * Clears all of the contact request notifications.
+     *
+     * @param theContext where this method was called
+     */
+    public static void clearContactRequestsNotifications(final Context theContext) {
+        final SharedPreferences contactsStorage =
+                theContext.getSharedPreferences(NOTIFICATION_STORAGE, Context.MODE_PRIVATE);
+        final SharedPreferences.Editor editor = contactsStorage.edit();
+        editor.remove(CONTACT_REQUESTS);
+        editor.apply();
+    }
+
+    /**
+     * Returns the String set that corresponds to the nicknames for contact request notifications
+     *
+     * @param theContext where this method was called
+     * @return the String set
+     */
+    public static Set<String> getContactRequestNotifications(final Context theContext) {
+        final SharedPreferences missedContactRequestStorage =
+                theContext.getSharedPreferences(NOTIFICATION_STORAGE, Context.MODE_PRIVATE);
+        return missedContactRequestStorage.getStringSet(CONTACT_REQUESTS, new HashSet<>());
+    }
+
+    /**
+     * Returns the String set that corresponds to the nicknames for new contacts notifications
+     *
+     * @param theContext where this method was called
+     * @return the String set
+     */
+    public static Set<String> getContactsNotifications(final Context theContext) {
+        final SharedPreferences missedContactRequestStorage =
+                theContext.getSharedPreferences(NOTIFICATION_STORAGE, Context.MODE_PRIVATE);
+        return missedContactRequestStorage.getStringSet(CONTACTS, new HashSet<>());
     }
 
 }

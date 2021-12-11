@@ -15,7 +15,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -183,9 +182,11 @@ public class ContactsFragment extends Fragment {
         // the list will update
         mContactsModel.contactsConnect(mUserInfo.getJwt());
 
-        // remove the notifications from this tab if there are any
+        // remove the notifications from the view model and the shared pref storage
+        // for contacts (if any exist)
         new ViewModelProvider(this.getActivity()).get(ContactNotificationViewModel.class).
-                removeTabNotifications(ContactsParentFragment.ALL_CONTACTS);
+                clearAllContactsNotifications(this.getContext());
+
     }
   
     /**
@@ -199,7 +200,6 @@ public class ContactsFragment extends Fragment {
             if (theResponse.has("code")) {
                 // a 400 error occurred, so log it.
                 Log.e("Contact List Error", theResponse.toString());
-                // TODO: Handle UI change when the chat list is not received properly?
             } else {
                 mBinding.contactList.setAdapter(new ContactsRecyclerAdapter(
                         mContactsModel.getContactList(), this::showContactDeleteAlertDialog));
