@@ -241,7 +241,8 @@ public class ContactRequestViewModel extends AndroidViewModel {
      */
     public void sendDeleteResponse(@NonNull final String theJwt, final String theMemberId) {
             Objects.requireNonNull(theJwt, "JWT can not be null");
-            final String url = "https://team-1-tcss-450-server.herokuapp.com/contacts/requests/"+ theMemberId;
+            final String url =
+                    "https://team-1-tcss-450-server.herokuapp.com/contacts/requests/"+ theMemberId;
 
             final JSONObject body = new JSONObject();
             try {

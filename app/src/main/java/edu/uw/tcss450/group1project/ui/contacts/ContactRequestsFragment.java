@@ -107,7 +107,7 @@ public class ContactRequestsFragment extends Fragment {
     private void deleteSentRequest(final Contact theContact) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
         alertDialog.setMessage(Html.fromHtml("<font color='#000000'>Are you sure you want "+
-                "to delete this contact?</font>"));
+                "to delete this request?</font>"));
         alertDialog.setPositiveButton(Html.fromHtml("<font color='000000'>Delete</font>"),
                 (dialog, which) -> {
                     mRequestModel.sendDeleteResponse(mUserModel.getJwt(), theContact.getMemberId());
