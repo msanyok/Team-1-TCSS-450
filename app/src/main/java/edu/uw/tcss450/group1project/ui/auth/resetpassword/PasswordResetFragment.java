@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -153,13 +154,8 @@ public class PasswordResetFragment extends Fragment {
 
         directions.setEmail(args.getEmail());
         directions.setPassword(mBinding.newPasswordText.getText().toString());
-
+        Toast.makeText(getContext(), "Password reset successfully.", Toast.LENGTH_SHORT).show();
         Navigation.findNavController(getView()).navigate(directions);
-
-        // Remove the current JSON stored in the live data.
-        // This prevents the fragment from chaining navigations
-        // when they try to come back to this fragment
-        mPasswordResetModel.removeData();
     }
 
     /**

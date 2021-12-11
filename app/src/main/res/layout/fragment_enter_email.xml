@@ -41,6 +41,7 @@
         android:layout_marginStart="40dp"
         android:layout_marginEnd="40dp"
         android:hint="@string/hint_reset_email"
+        android:inputType="textEmailAddress"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@id/button_sent_email"

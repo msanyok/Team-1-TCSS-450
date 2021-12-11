@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import org.json.JSONObject;
 
@@ -163,6 +164,8 @@ public class ChangePasswordFragment extends Fragment {
             if (theResponse.has("code")) {
                 mBinding.oldPassword.setError("Verification failed.");
             } else {
+                Toast.makeText(getContext(),
+                        "Password changed successfully.", Toast.LENGTH_SHORT).show();
                 navigateToSetting();
             }
         } else {
