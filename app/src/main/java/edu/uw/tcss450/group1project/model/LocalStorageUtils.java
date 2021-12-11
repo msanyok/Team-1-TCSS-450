@@ -139,7 +139,7 @@ public final class LocalStorageUtils {
      * Increments the new contacts notification count.
      *
      * @param theContext the context of where the put is being called
-     * @param theNewContactId the nickname of the new contact
+     * @param theNewContactId the id of the new contact (a unique identifier)
      */
     public static void putNewContactsNotification(final Context theContext,
                                                   final String theNewContactId) {
