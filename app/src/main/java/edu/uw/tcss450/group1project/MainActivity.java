@@ -590,12 +590,9 @@ public class MainActivity extends ThemedActivity {
                 }
 
                 if (!onFragment) {
-                    // store the nickname of the user who just added you as a contact
-                    String otherNickname = theIntent.getStringExtra("fromNickname");
-                    if (otherNickname.equals(mUserInfoModel.getNickname())) {
-                        otherNickname = theIntent.getStringExtra("fromNickname");
-                    }
-                    mContactTabNewCountViewModel.addContactsNotification(otherNickname);
+                    // store the id of the user who just added you as a contact
+                    String otherId = theIntent.getStringExtra("toId");
+                    mContactTabNewCountViewModel.addContactsNotification(otherId);
                 }
 
             }

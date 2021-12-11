@@ -139,19 +139,20 @@ public final class LocalStorageUtils {
      * Increments the new contacts notification count.
      *
      * @param theContext the context of where the put is being called
-     * @param theNickname the nickname of the new contact
+     * @param theNewContactId the nickname of the new contact
      */
     public static void putNewContactsNotification(final Context theContext,
-                                                  final String theNickname) {
+                                                  final String theNewContactId) {
         final SharedPreferences contactStorage =
                 theContext.getSharedPreferences(NOTIFICATION_STORAGE, Context.MODE_PRIVATE);
         final SharedPreferences.Editor editor = contactStorage.edit();
 
         // increment the store
         Set<String> set = new HashSet<>(contactStorage.getStringSet(CONTACTS, new HashSet<>()));
-        set.add(theNickname);
+        set.add(theNewContactId);
         editor.putStringSet(CONTACTS, set);
         editor.apply();
+        System.out.println(set.size());
     }
 
 
@@ -232,6 +233,7 @@ public final class LocalStorageUtils {
     public static Set<String> getContactsNotifications(final Context theContext) {
         final SharedPreferences missedContactRequestStorage =
                 theContext.getSharedPreferences(NOTIFICATION_STORAGE, Context.MODE_PRIVATE);
+
         return missedContactRequestStorage.getStringSet(CONTACTS, new HashSet<>());
     }
 

@@ -67,11 +67,11 @@ public class ContactNotificationViewModel extends AndroidViewModel {
      * Adds the notification to the contacts notification set specified by the
      * nickname of who sent the new contact is.
      *
-     * @param theNickname the nickname who sent us the contact request
+     * @param theId the id of the new contact
      */
-    public void addContactsNotification(final String theNickname) {
+    public void addContactsNotification(final String theId) {
         final Set<String> set = mContactsSet.getValue();
-        set.add(theNickname);
+        set.add(theId);
         mContactsSet.setValue(set);
     }
 
