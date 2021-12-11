@@ -56,7 +56,7 @@ public class ChatRecyclerViewAdapter extends
     private final String mPersonalIdentifier;
 
     /** The mapping of each text message's full width */
-    private Map<Integer, Integer> mTextWidthMap;
+    private final Map<Integer, Integer> mTextWidthMap;
 
     /** The context used for creating text views */
     private final Context mContext;
