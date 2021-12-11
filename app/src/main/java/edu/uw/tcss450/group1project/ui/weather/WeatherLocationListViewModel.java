@@ -69,7 +69,7 @@ public class WeatherLocationListViewModel extends AndroidViewModel {
         mDeleteResponse = new MutableLiveData<>();
         mDeleteResponse.setValue(new JSONObject());
         mLocations = new ArrayList<>();
-        mModificationFlag = true;
+        mModificationFlag = false;
     }
 
     /**
@@ -237,10 +237,7 @@ public class WeatherLocationListViewModel extends AndroidViewModel {
                 Request.Method.DELETE,
                 url,
                 null,
-                response -> {
-                    mModificationFlag = true;
-                    mDeleteResponse.setValue(response);
-                },
+                mDeleteResponse::setValue,
                 this::handleDeleteError) {
             @Override
             public Map<String, String> getHeaders() {
