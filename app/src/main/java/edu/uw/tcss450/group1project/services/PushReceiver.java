@@ -5,33 +5,26 @@
 
 package edu.uw.tcss450.group1project.services;
 
+import static android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND;
+import static android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_VISIBLE;
+
 import android.app.ActivityManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
-import androidx.navigation.NavController;
-import androidx.navigation.NavDestination;
-import androidx.navigation.Navigation;
 
 import org.json.JSONException;
 
 import edu.uw.tcss450.group1project.AuthActivity;
-import edu.uw.tcss450.group1project.MainActivity;
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.model.LocalStorageUtils;
-import edu.uw.tcss450.group1project.ui.contacts.ContactsParentFragment;
 import edu.uw.tcss450.group1project.ui.messages.ChatMessage;
 import me.pushy.sdk.Pushy;
-
-import static android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_BACKGROUND;
-import static android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND;
-import static android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_VISIBLE;
 
 /**
  * PushReceiver is a class for accepting push notifications from Pushy
@@ -121,26 +114,21 @@ public class PushReceiver extends BroadcastReceiver {
                 new ActivityManager.RunningAppProcessInfo();
         ActivityManager.getMyMemoryState(appProcessInfo);
 
-        // do a particular type of notification depending on the state of the user in or outside the app
+        // do a particular type of notification depending
+        // on the state of the user in or outside the app
         if (appProcessInfo.importance == IMPORTANCE_FOREGROUND ||
                 appProcessInfo.importance == IMPORTANCE_VISIBLE) {
             // the user is inside the application, so send an intent to the MainActivity
-            Log.d("PUSHY", "Message received in foreground: " + message);
-
-            //create an Intent to broadcast a message to other parts of the app.
+            // create an Intent to broadcast a message to other parts of the app.
             Intent intent = new Intent(NEW_PUSHY_NOTIF);
             intent.putExtra("type", NEW_MESSAGE);
             intent.putExtra("chatMessage", message);
             intent.putExtra("chatid", chatId);
             intent.putExtras(theIntent.getExtras());
-
             theContext.sendBroadcast(intent);
 
         } else {
-
             // the user is not inside the application, so send a notification
-            Log.d("PUSHY", "Message received in background: " + message.getMessage());
-
             // set up the intent
             Intent intent = new Intent(theContext, AuthActivity.class);
             intent.putExtra("chatId", chatId);
@@ -148,7 +136,6 @@ public class PushReceiver extends BroadcastReceiver {
             intent.putExtras(theIntent.getExtras());
             PendingIntent pendingIntent = PendingIntent.getActivity(theContext, 0,
                     intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
 
             //Build notification
             NotificationCompat.Builder builder =
@@ -159,7 +146,6 @@ public class PushReceiver extends BroadcastReceiver {
                             .setContentText(message.getMessage())
                             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                             .setContentIntent(pendingIntent);
-
 
             // Automatically configure a ChatMessageNotification Channel
             Pushy.setNotificationChannel(builder, theContext);
@@ -202,8 +188,6 @@ public class PushReceiver extends BroadcastReceiver {
         if (appProcessInfo.importance == IMPORTANCE_FOREGROUND ||
                 appProcessInfo.importance == IMPORTANCE_VISIBLE) {
             // user is inside the app
-            Log.d("PUSHY", "New Contact Request received in foreground");
-
             Intent intent = new Intent(NEW_PUSHY_NOTIF);
             intent.putExtra("type", NEW_CONTACT_REQUEST);
             intent.putExtra("toId", toId);
@@ -215,8 +199,6 @@ public class PushReceiver extends BroadcastReceiver {
 
         } else {
             // user is outside of the app
-            Log.d("PUSHY", "New Contact Request received in background");
-
             // set up the intent
             Intent intent = new Intent(theContext, AuthActivity.class);
             intent.putExtra("newContact", "theValue");
@@ -246,7 +228,6 @@ public class PushReceiver extends BroadcastReceiver {
             // Build the notification and display it
             notificationManager.notify(1, builder.build());
         }
-
     }
 
     /**
@@ -271,14 +252,11 @@ public class PushReceiver extends BroadcastReceiver {
             // store a contacts notification so it can be loaded when the app restarts
             // only if the response to the request was an acceptance
             LocalStorageUtils.putNewContactsNotification(theContext, toId);
-            System.out.println("HEEREEEE" + toId);
         }
 
         if (appProcessInfo.importance == IMPORTANCE_FOREGROUND ||
                 appProcessInfo.importance == IMPORTANCE_VISIBLE) {
             // user is inside the app
-            Log.d("PUSHY", "New Contact Request Response received in foreground");
-
             Intent intent = new Intent(NEW_PUSHY_NOTIF);
             intent.putExtra("type", CONTACT_REQUEST_RESPONSE);
             intent.putExtra("toId", toId);
@@ -293,8 +271,6 @@ public class PushReceiver extends BroadcastReceiver {
             // we know that the user is outside of the app,
             // so send a notification ONLY IF it is an acceptance notification.
             // we don't want to send a notification if the user is not accepted.
-            Log.d("PUSHY", "New Contact Request Response received in background");
-
             // set up the intent
             Intent intent = new Intent(theContext, AuthActivity.class);
             intent.putExtras(theIntent.getExtras());
@@ -323,7 +299,6 @@ public class PushReceiver extends BroadcastReceiver {
             // Build the notification and display it
             notificationManager.notify(1, builder.build());
         }
-
     }
 
     /**
@@ -347,8 +322,6 @@ public class PushReceiver extends BroadcastReceiver {
         if (appProcessInfo.importance == IMPORTANCE_FOREGROUND ||
                 appProcessInfo.importance == IMPORTANCE_VISIBLE) {
             // user is inside the app
-            Log.d("PUSHY", "Contact deletion in foreground");
-
             Intent intent = new Intent(NEW_PUSHY_NOTIF);
             intent.putExtra("type", CONTACT_DELETE);
             intent.putExtra("fromNickname", fromNickname);
@@ -356,10 +329,8 @@ public class PushReceiver extends BroadcastReceiver {
 
             theContext.sendBroadcast(intent);
         }
-
         // we don't want any kind of outside-app notifications when someone gets deleted
     }
-
 
     /**
      * Handles when this device receives a Outgoing Contact request Deletion from a Pushy payload.
@@ -380,8 +351,6 @@ public class PushReceiver extends BroadcastReceiver {
         if (appProcessInfo.importance == IMPORTANCE_FOREGROUND ||
                 appProcessInfo.importance == IMPORTANCE_VISIBLE) {
             // user is inside the app
-            Log.d("PUSHY", "Contact Request deletion in foreground");
-
             Intent intent = new Intent(NEW_PUSHY_NOTIF);
             intent.putExtra("type", CONTACT_REQUEST_DELETE);
             intent.putExtra("deletedId", deletedId);
@@ -390,9 +359,7 @@ public class PushReceiver extends BroadcastReceiver {
 
             theContext.sendBroadcast(intent);
         }
-
         // we don't want any kind of outside-app notifications when someone gets deleted
-
     }
 
     /**
@@ -421,8 +388,5 @@ public class PushReceiver extends BroadcastReceiver {
             // send to MainActivity
             theContext.sendBroadcast(intent);
         }
-
     }
-
 }
-

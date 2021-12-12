@@ -19,7 +19,7 @@ import edu.uw.tcss450.group1project.databinding.FragmentWeather7dayCardBinding;
 import edu.uw.tcss450.group1project.utils.WeatherUtils;
 
 /**
- * WeatherRecyclerAdapter10Day provides an adapter for the WeatherFragment 10-day forecast
+ * WeatherRecyclerAdapterDaily provides an adapter for the WeatherFragment 10-day forecast
  * RecyclerView.
  *
  * @author Parker Rosengreen
@@ -32,7 +32,7 @@ public class WeatherRecyclerAdapterDaily
     private final List<WeatherData> mForecast;
 
     /**
-     * Creates a new WeatherRecyclerAdapter10Day with a provided list of weather data
+     * Creates a new WeatherRecyclerAdapterDaily with a provided list of weather data
      *
      * @param theData the list of weather data
      */
@@ -69,9 +69,6 @@ public class WeatherRecyclerAdapterDaily
      */
     public class WeatherDayViewHolder extends RecyclerView.ViewHolder {
 
-        /** The assigned view */
-        private final View mView;
-
         /** The ViewBinding corresponded to a daily forecast RecyclerView card */
         private final FragmentWeather7dayCardBinding mBinding;
 
@@ -85,7 +82,6 @@ public class WeatherRecyclerAdapterDaily
          */
         public WeatherDayViewHolder(@NonNull View theItemView) {
             super(theItemView);
-            mView = theItemView;
             mBinding = FragmentWeather7dayCardBinding.bind(theItemView);
         }
 
@@ -109,4 +105,3 @@ public class WeatherRecyclerAdapterDaily
         }
     }
 }
-

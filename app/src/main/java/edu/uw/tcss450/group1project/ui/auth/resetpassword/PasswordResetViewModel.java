@@ -2,6 +2,7 @@
  * TCSS450 Mobile Applications
  * Fall 2021
  */
+
 package edu.uw.tcss450.group1project.ui.auth.resetpassword;
 
 import android.app.Application;
@@ -86,7 +87,6 @@ public class PasswordResetViewModel extends AndroidViewModel {
         Objects.requireNonNull(theEmail, "theEmail can not be null");
         Objects.requireNonNull(thePassword, "thePassword can not be null");
         Objects.requireNonNull(theCode, "theCode can not be null");
-
 
         final String url = "https://team-1-tcss-450-server.herokuapp.com/password/reset";
 

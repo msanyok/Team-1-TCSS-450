@@ -25,7 +25,7 @@ public final class TextFieldHints {
      * @return the hint to be displayed to the user
      * @throws NullPointerException if theName is null
      */
-    public static final String getNameHint(final String theName) {
+    public static String getNameHint(final String theName) {
         Objects.requireNonNull(theName, "theName can not be null");
         // the only invalid state names have is being < 2 characters.
         // we assume all strings passed to this method are invalid, so this is the only result
@@ -42,7 +42,7 @@ public final class TextFieldHints {
      * @return the hint displayed to the user
      * @throws NullPointerException if theEmail is null
      */
-    public static final String getEmailHint(final String theEmail) {
+    public static String getEmailHint(final String theEmail) {
         Objects.requireNonNull(theEmail, "theEmail can not be null");
         if (theEmail.length() < TextFieldValidators.EMAIL_MIN_LENGTH) {
             return "Emails must be at least 3 characters long.";
@@ -70,7 +70,7 @@ public final class TextFieldHints {
      * @return the hint displayed to the user
      * @throws NullPointerException if thePassword is null
      */
-    public static final String getPasswordHint(final String thePassword) {
+    public static String getPasswordHint(final String thePassword) {
         Objects.requireNonNull(thePassword, "thePassword can not be null");
         if (thePassword.length() < TextFieldValidators.PASSWORD_MIN_LENGTH) {
             return "Passwords must be at least 8 characters.";

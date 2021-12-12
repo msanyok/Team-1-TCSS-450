@@ -5,7 +5,10 @@
 
 package edu.uw.tcss450.group1project.ui.messages;
 
+import java.util.Comparator;
 import java.util.Objects;
+
+import edu.uw.tcss450.group1project.ui.contacts.Contact;
 
 /**
  * Stores data about a particular chat room
@@ -17,19 +20,19 @@ import java.util.Objects;
 public class ChatRoom implements Comparable<ChatRoom> {
 
     /** The name of this chat room */
-    private String mChatRoomName;
+    private final String mChatRoomName;
 
     /** The unique id for this chat room */
-    private String mChatRoomID;
+    private final String mChatRoomID;
 
     /** The most recent message sent in this chat room */
-    private String mChatRoomMessage;
+    private final String mChatRoomMessage;
 
     /** The timestamp that corresponds to when the most recent message was sent in this chat room */
-    private String mTimestamp;
+    private final String mTimestamp;
 
     /** The number of missed messages this chat has */
-    private int mMissedMessageCount;
+    private final int mMissedMessageCount;
 
     /**
      * Creates a new chat room with the provided name, id, and most recent message.
@@ -105,25 +108,9 @@ public class ChatRoom implements Comparable<ChatRoom> {
         return mTimestamp;
     }
 
-
-
     @Override
     public int compareTo(final ChatRoom theChatRoom) {
-        // compares first by missed messages, then by timestamp
-        int result = 0;
-        if (this.getMissedMessageCount() > 0 && theChatRoom.getMissedMessageCount() == 0) {
-            // this chat has new messages and the other one doesn't
-            result = -1;
-        } else if (theChatRoom.getMissedMessageCount() > 0 && this.getMissedMessageCount() == 0) {
-            // this chat has no new messages and the other one does
-            result = 1;
-        } else {
-            // either both chats have missed messages or neither chats have missed messages,
-            // so compare based on timestamp
-            result = theChatRoom.getTimestamp().compareTo(this.getTimestamp());
-        }
-
-        return result;
-
+        return Comparator.comparing(ChatRoom::getMissedMessageCount)
+                .thenComparing(ChatRoom::getTimestamp).compare(theChatRoom, this);
     }
 }

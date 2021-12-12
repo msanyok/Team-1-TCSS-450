@@ -27,8 +27,6 @@ import androidx.navigation.Navigation;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -62,6 +60,7 @@ public class CreateChatRoomFragment extends Fragment {
     /** The view binding */
     private FragmentCreateChatroomBinding mBinding;
 
+    /** The list of contacts that can be added */
     private List<Contact> mParticipantOptions;
 
     /** The set of added participants */
@@ -265,8 +264,6 @@ public class CreateChatRoomFragment extends Fragment {
                                         String.valueOf(roomId));
                 Navigation.findNavController(getView()).navigate(action);
             } catch (JSONException ex) {
-                displayErrorDialog(
-                        "Unexpected error when creating chat room. Please try again.");
                 ex.printStackTrace();
             }
         }

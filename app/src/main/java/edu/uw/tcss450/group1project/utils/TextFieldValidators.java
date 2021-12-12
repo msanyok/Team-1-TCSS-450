@@ -2,7 +2,6 @@ package edu.uw.tcss450.group1project.utils;
 
 import static edu.uw.tcss450.group1project.utils.PasswordValidator.checkExcludeWhiteSpace;
 import static edu.uw.tcss450.group1project.utils.PasswordValidator.checkPwdDigit;
-import static edu.uw.tcss450.group1project.utils.PasswordValidator.checkPwdDoNotInclude;
 import static edu.uw.tcss450.group1project.utils.PasswordValidator.checkPwdLength;
 import static edu.uw.tcss450.group1project.utils.PasswordValidator.checkPwdLowerCase;
 import static edu.uw.tcss450.group1project.utils.PasswordValidator.checkPwdSpecialChar;
@@ -59,5 +58,4 @@ public class TextFieldValidators {
                     .and(checkExcludeWhiteSpace())
                     .and(checkPwdDigit())
                     .and(checkPwdLowerCase().or(checkPwdUpperCase()));
-
 }

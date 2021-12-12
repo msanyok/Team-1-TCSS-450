@@ -5,8 +5,6 @@
 
 package edu.uw.tcss450.group1project.model;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
@@ -49,8 +47,8 @@ public class NewMessageCountViewModel extends ViewModel {
     /**
      * Adds an observer to the new message count live data
      *
-     * @param theOwner
-     * @param theObserver
+     * @param theOwner the lifecycle owner
+     * @param theObserver the observer to be assigned
      * @throws NullPointerException if theOwner is null
      * @throws NullPointerException if theObserver is null
      */

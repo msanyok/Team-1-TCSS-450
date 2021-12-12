@@ -2,6 +2,7 @@
  * TCSS450 Mobile Applications
  * Fall 2021
  */
+
 package edu.uw.tcss450.group1project.ui.auth.resetpassword;
 
 import android.os.Bundle;
@@ -39,15 +40,18 @@ public class EnterEmailFragment extends Fragment {
     /** ViewModel for the password reset */
     private PasswordResetEmailViewModel mEnterEmailModel;
 
+    /**
+     * Required empty public constructor
+     */
     public EnterEmailFragment() {
         // Required empty public constructor
     }
 
     @Override
-    public View onCreateView(final LayoutInflater theInflater, final ViewGroup theContainer,
+    public View onCreateView(@NonNull final LayoutInflater theInflater,
+                             final ViewGroup theContainer,
                              final Bundle theSavedInstanceState) {
         mBinding = FragmentEnterEmailBinding.inflate(theInflater);
-
         return mBinding.getRoot();
     }
 
@@ -66,13 +70,15 @@ public class EnterEmailFragment extends Fragment {
      *
      * @param theButton the Button that was pressed to invoke this method.
      */
-    private void attemptSentEmail(final View theButton){validateResetEmail();}
+    private void attemptSentEmail(final View theButton){
+        validateResetEmail();
+    }
 
     /**
      * Attempts to validate the text inputted for the user's email.
      *
      * If the validation succeeds, verify the credentials with the server
-     * Else, sets an error text on the email field that requests they enter a vaild email.
+     * Else, sets an error text on the email field that requests they enter a valid email.
      */
     private void validateResetEmail() {
         final String emailText = mBinding.editResetEmail.getText().toString().trim();
@@ -100,7 +106,6 @@ public class EnterEmailFragment extends Fragment {
         mEnterEmailModel.removeData();
     }
 
-
     /**
      * Observes the HTTP Response from the web server. If an error occurred, notify the user
      * accordingly. If it was a success, navigate to the registration verification page.
@@ -119,5 +124,4 @@ public class EnterEmailFragment extends Fragment {
                     + theResponse.toString());
         }
     }
-
 }

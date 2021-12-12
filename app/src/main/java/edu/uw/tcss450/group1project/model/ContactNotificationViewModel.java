@@ -27,12 +27,14 @@ import java.util.Set;
 public class ContactNotificationViewModel extends AndroidViewModel {
 
     /**
-     * The live data map that contains the set of contact request notifications
+     * The live data string set that contains the set of contact requests that remain as
+     * notifications
      */
     private MutableLiveData<Set<String>> mContactRequestSet;
 
     /**
-     * The live data map that contains the set of contacts notifications
+     * The live data string set that contains the set of new contact requests that remain as
+     * notifications
      */
     private MutableLiveData<Set<String>> mContactsSet;
 
@@ -65,7 +67,7 @@ public class ContactNotificationViewModel extends AndroidViewModel {
 
     /**
      * Adds the notification to the contacts notification set specified by the
-     * nickname of who sent the new contact is.
+     * member ID of who sent the new contact is.
      *
      * @param theId the id of the new contact
      */
@@ -100,7 +102,7 @@ public class ContactNotificationViewModel extends AndroidViewModel {
      * @param theObserver the observer
      */
     public void addContactRequestNotifObserver(@NonNull final LifecycleOwner theOwner,
-                                                @NonNull final Observer<? super
+                                               @NonNull final Observer<? super
                                                        Set<String>> theObserver) {
         mContactRequestSet.observe(theOwner, theObserver);
     }
@@ -112,8 +114,8 @@ public class ContactNotificationViewModel extends AndroidViewModel {
      * @param theObserver the observer
      */
     public void addContactsNotifObserver(@NonNull final LifecycleOwner theOwner,
-                                               @NonNull final Observer<? super
-                                                       Set<String>> theObserver) {
+                                         @NonNull final Observer<? super
+                                                 Set<String>> theObserver) {
         mContactsSet.observe(theOwner, theObserver);
     }
 
@@ -138,7 +140,8 @@ public class ContactNotificationViewModel extends AndroidViewModel {
     }
 
     /**
-     * Clears the contact request notification data in the view model AND removes it from local storage
+     * Clears the contact request notification data in the
+     * view model AND removes it from local storage
      *
      * @param theContext where this method was called
      */

@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-
 /**
  * A view model class that stores information from searching new contacts received from the server.
  *
@@ -37,18 +36,21 @@ public class NewContactsRequestViewModel extends AndroidViewModel {
 
     /**
      * The {@link MutableLiveData} that stores the JSON response from the server
-     * when the user gets contacts from the server.
+     * when the user requests to add a new contact.
      */
     private MutableLiveData<JSONObject> mRequestResponse;
 
+    /**
+     * The {@link MutableLiveData} that stores the JSON response from the server
+     * when searching potential new contacts.
+     */
     private MutableLiveData<JSONObject> mNewContactSearchResponse;
 
-
-    /** The live data that stores the list of Contact objects. This should be observed. */
+    /** Stores the list of potential contacts */
     private List<Contact> mContactList;
 
     /**
-     * Creates a new ContactViewModel that is tied to the given application.
+     * Creates a new NewContactsRequestViewModel that is tied to the given application.
      *
      * @param theApplication the Application this ViewModel belongs to
      * @throws NullPointerException if theApplication is null
@@ -62,9 +64,7 @@ public class NewContactsRequestViewModel extends AndroidViewModel {
 
         mNewContactSearchResponse = new MutableLiveData<>();
         mNewContactSearchResponse.setValue(new JSONObject());
-
     }
-
 
     /**
      * Adds the given observer to the contact request live data.
@@ -95,10 +95,6 @@ public class NewContactsRequestViewModel extends AndroidViewModel {
         Objects.requireNonNull(theObserver, "theObserver can not be null");
         mRequestResponse.observe(theOwner, theObserver);
     }
-
-
-    //TODO: We need a way to search for users instead of just add also for nickname,first, etc
-
 
     /**
      * Sends an HTTP POST request to the server attempting to send a contact request
@@ -143,9 +139,6 @@ public class NewContactsRequestViewModel extends AndroidViewModel {
         Volley.newRequestQueue(getApplication().getApplicationContext())
                 .add(request);
     }
-
-
-
 
     /**
      * Sends an HTTP POST request to the server attempting to get all contacts that are similar
@@ -214,18 +207,15 @@ public class NewContactsRequestViewModel extends AndroidViewModel {
                 Log.e("JSON PARSE", "JSON Parse Error in handleError");
             }
         }
-
     }
 
-
     /**
-     * Returns the current list of contacts
-     * @return
+     * Returns the current list of potential new contacts
+     * @return the list of contacts
      */
     public List<Contact> getContactList() {
         return mContactList;
     }
-
 
     /**
      * Observes the HTTP Response from the web server. If an error occurred, notify the user
@@ -236,23 +226,19 @@ public class NewContactsRequestViewModel extends AndroidViewModel {
     private void parseContactsListData(final JSONObject theResponse) {
         if (theResponse.length() > 0) {
             List<Contact> formattedContactList = new ArrayList<>();
-            if (theResponse.has("code")) {
-                //this is an error
-            } else {
-                try {
-                    JSONArray contacts = theResponse.getJSONArray("data");
-                    for(int i = 0; i < contacts.length(); i++) {
-                        JSONObject contact = (JSONObject) contacts.get(i);
-                        formattedContactList.add(new Contact(contact.get("first").toString(),
-                                contact.get("last").toString(),
-                                contact.get("nickname").toString(),
-                                contact.get("memberid").toString()));
-                    }
-                    mContactList = formattedContactList;
-                    mNewContactSearchResponse.setValue(theResponse);
-                } catch (JSONException exception) {
-                    Log.e("JSON Parse Error", exception.getMessage());
+            try {
+                JSONArray contacts = theResponse.getJSONArray("data");
+                for(int i = 0; i < contacts.length(); i++) {
+                    JSONObject contact = (JSONObject) contacts.get(i);
+                    formattedContactList.add(new Contact(contact.get("first").toString(),
+                            contact.get("last").toString(),
+                            contact.get("nickname").toString(),
+                            contact.get("memberid").toString()));
                 }
+                mContactList = formattedContactList;
+                mNewContactSearchResponse.setValue(theResponse);
+            } catch (JSONException exception) {
+                Log.e("JSON Parse Error", exception.getMessage());
             }
         } else {
             Log.d("Registration JSON Response", "No Response");
@@ -260,12 +246,11 @@ public class NewContactsRequestViewModel extends AndroidViewModel {
     }
 
     /**
-     * Clears the data stored in this view model.
+     * Clears the contact request response data stored in this view model.
      */
     public void removeData() {
         mRequestResponse.setValue(new JSONObject());
     }
-
 }
 
 

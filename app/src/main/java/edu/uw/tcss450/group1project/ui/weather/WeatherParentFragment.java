@@ -50,9 +50,6 @@ public class WeatherParentFragment extends Fragment {
     /** The weather data error view model */
     private WeatherErrorViewModel mErrorModel;
 
-    /** The view model used for storing weather teaser data */
-    private WeatherDataViewModel mTeaserModel;
-
     /** The user info view model */
     private UserInfoViewModel mUserModel;
 
@@ -93,8 +90,7 @@ public class WeatherParentFragment extends Fragment {
                 new ViewModelProvider(getActivity()).get(WeatherLocationListViewModel.class);
         mLocationModel.clearResponse();
         mLocationModel.clearDeletionResponse();
-        mTeaserModel =
-                new ViewModelProvider(backStackEntry).get(WeatherDataViewModel.class);
+        new ViewModelProvider(backStackEntry).get(WeatherDataViewModel.class);
         mErrorModel =
                 new ViewModelProvider(this).get(WeatherErrorViewModel.class);
         mErrorModel.resetErrorFlag();
@@ -136,7 +132,6 @@ public class WeatherParentFragment extends Fragment {
      * Sets this fragment's view components which include its view pager and tab view
      */
     private void setViewComponents() {
-        System.out.println("SET VIEW COMPONENTS");
         List<WeatherFragment> frags = new LinkedList<>();
         LocationViewModel locModel =
                 new ViewModelProvider(getActivity()).get(LocationViewModel.class);
@@ -158,7 +153,6 @@ public class WeatherParentFragment extends Fragment {
             mLocationModel.checkModifications();
             mViewIndex = frags.size() - 1;
         }
-        System.out.println("mViewIndex: " + mViewIndex);
         viewPager.setCurrentItem(mViewIndex, true);
         new TabLayoutMediator(tabs, viewPager, (tab, position) -> {}).attach();
         viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {

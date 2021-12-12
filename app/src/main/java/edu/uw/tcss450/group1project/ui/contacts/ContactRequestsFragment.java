@@ -72,7 +72,6 @@ public class ContactRequestsFragment extends Fragment {
         mRequestModel.addRequestResponseObserver(getViewLifecycleOwner(),
                 this::observeRequestResponse);
         mRequestModel.allContactRequests(mUserModel.getJwt());
-
     }
 
     @Override
@@ -85,7 +84,6 @@ public class ContactRequestsFragment extends Fragment {
         // remove the notifications from this tab if there are any
         new ViewModelProvider(this.getActivity()).get(ContactNotificationViewModel.class).
                 clearAllContactRequestNotifications(this.getContext());
-
     }
 
     /**
@@ -111,7 +109,6 @@ public class ContactRequestsFragment extends Fragment {
         alertDialog.setPositiveButton(Html.fromHtml("<font color='000000'>Delete</font>"),
                 (dialog, which) -> {
                     mRequestModel.sendDeleteResponse(mUserModel.getJwt(), theContact.getMemberId());
-
                 });
         alertDialog.setNegativeButton(Html.fromHtml("<font color='#000000'>Cancel</font>"),
                 (dialog, which) -> {});
@@ -131,7 +128,6 @@ public class ContactRequestsFragment extends Fragment {
                 Log.e("REQUEST ERROR", theResponse.toString());
             } else if (theResponse.length() != 0) {
                 setContactListComponents();
-
             }
         } else {
             // no response from the request

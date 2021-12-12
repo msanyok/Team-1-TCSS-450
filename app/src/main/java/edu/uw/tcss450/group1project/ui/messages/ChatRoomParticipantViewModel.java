@@ -45,19 +45,19 @@ import edu.uw.tcss450.group1project.ui.contacts.Contact;
 public class ChatRoomParticipantViewModel extends AndroidViewModel {
 
     /** The JSONObject response assigned to chat room participant additions */
-    private MutableLiveData<JSONObject> mAddParticipantsResponse;
+    private final MutableLiveData<JSONObject> mAddParticipantsResponse;
 
     /** The JSONObject response assigned to chat room participant "gets" */
-    private MutableLiveData<JSONObject> mGetParticipantsResponse;
+    private final MutableLiveData<JSONObject> mGetParticipantsResponse;
 
     /** The JSONObject response assigned to leaving a particular chat room */
-    private MutableLiveData<JSONObject> mLeaveRoomResponse;
+    private final MutableLiveData<JSONObject> mLeaveRoomResponse;
+
+    /** The list of selected participants to be added */
+    private final Set<Contact> mSelected;
 
     /** The list of current participants */
     private List<Contact> mParticipants;
-
-    /** The list of selected participants to be added */
-    private Set<Contact> mSelected;
 
     /**
      * Constructs a new ChatRoomParticipantViewModel with the provided application

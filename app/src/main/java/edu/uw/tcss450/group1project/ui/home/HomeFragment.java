@@ -117,7 +117,7 @@ public class HomeFragment extends Fragment {
         mBinding.welcomeText.setText(String.format("Welcome, %s!", mUserModel.getNickname()));
 
         mBinding.listNewMessages.setAdapter(
-                new MessagesNotificationsRecyclerAdapter(new ArrayList<>()));
+                new ChatRoomNotificationsRecyclerAdapter(new ArrayList<>()));
     }
 
     /**
@@ -206,9 +206,7 @@ public class HomeFragment extends Fragment {
                             newMessageModel.getNumNewMessages(
                                     Integer.valueOf(chat.get("chatid").toString()))));
                 }
-
             }
-
             // once the list has been repopulated, sort the chat rooms based on the timestamp
             // of the most recent message sent
             Collections.sort(newMessagesChatList);
@@ -218,6 +216,6 @@ public class HomeFragment extends Fragment {
             exception.printStackTrace();
         }
         mBinding.listNewMessages.setAdapter(
-                new MessagesNotificationsRecyclerAdapter(newMessagesChatList));
+                new ChatRoomNotificationsRecyclerAdapter(newMessagesChatList));
     }
 }

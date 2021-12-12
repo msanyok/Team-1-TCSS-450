@@ -130,7 +130,7 @@ public class ChatRecyclerViewAdapter extends
         private final View mView;
 
         /** The View Binding the the chat message card */
-        private FragmentChatMessageBinding mBinding;
+        private final FragmentChatMessageBinding mBinding;
 
         /**
          * Creates a new View Holder
@@ -292,4 +292,3 @@ public class ChatRecyclerViewAdapter extends
         }
     }
 }
-

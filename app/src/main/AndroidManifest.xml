@@ -27,8 +27,8 @@
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
              Note that the API key is linked to the encryption key used to sign the APK.
-             You need a different API key for each encryption key, including the release key that is used to
-             sign the APK for publishing.
+             You need a different API key for each encryption key, including the release key
+             that is used to sign the APK for publishing.
              You can define the keys for the debug and release targets in src/debug/ and src/release/.
         -->
         <meta-data
@@ -47,14 +47,15 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity> <!-- Pushy Declarations -->
+        </activity>
+
+        <!-- Pushy Declarations -->
         <!-- Pushy Notification Receiver -->
         <!-- Incoming push notifications will invoke the following BroadcastReceiver -->
         <receiver
             android:name=".services.PushReceiver"
             android:exported="false">
             <intent-filter>
-
                 <!-- Do not modify this -->
                 <action android:name="pushy.me" />
             </intent-filter>
@@ -76,7 +77,8 @@
             </intent-filter>
         </receiver> <!-- Pushy Socket Service -->
         <!-- Do not modify - internal service -->
-        <service android:name="me.pushy.sdk.services.PushySocketService" /> <!-- Pushy Job Service (added in Pushy SDK 1.0.35) -->
+        <service android:name="me.pushy.sdk.services.PushySocketService" />
+        <!-- Pushy Job Service (added in Pushy SDK 1.0.35) -->
         <!-- Do not modify - internal service -->
         <service
             android:name="me.pushy.sdk.services.PushyJobService"

@@ -43,24 +43,21 @@ public class OutgoingRequestRecyclerAdapter
                                           final Consumer<Contact> theConsumer) {
         mContacts = theContacts;
         mConsumer = theConsumer;
-
     }
 
     @NonNull
     @Override
     public ContactsViewHolder onCreateViewHolder(@NonNull final ViewGroup theParent,
                                                  final int theViewType) {
-
         return new ContactsViewHolder(LayoutInflater
                 .from(theParent.getContext())
                 .inflate(R.layout.fragment_contacts_card,
                         theParent, false));
-
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final ContactsViewHolder holder, final int position) {
-        holder.setContact(mContacts.get(position));
+    public void onBindViewHolder(@NonNull final ContactsViewHolder theHolder, final int thePos) {
+        theHolder.setContact(mContacts.get(thePos));
     }
 
     @Override
@@ -69,8 +66,8 @@ public class OutgoingRequestRecyclerAdapter
     }
 
     /**
-     * ContactsViewHolder is a class defining an individual ViewHolder for the ContactsFragment
-     * RecyclerView.
+     * ContactsViewHolder is a class defining an individual ViewHolder for the
+     * ContactRequestFragment RecyclerView for outgoing requests.
      *
      * @author Parker Rosengreen
      * @author Chris Ding
@@ -79,19 +76,10 @@ public class OutgoingRequestRecyclerAdapter
      */
     public class ContactsViewHolder extends RecyclerView.ViewHolder {
 
-        /**
-         * The assigned view
-         */
-        private final View mView;
-
-        /**
-         * The ViewBinding corresponded to a contact request RecyclerView card
-         */
+        /** The ViewBinding corresponded to a contact request RecyclerView card */
         private final FragmentContactsCardBinding mBinding;
 
-        /**
-         * The contact request assigned to this ViewHolder
-         */
+        /** The contact request assigned to this ViewHolder */
         private Contact mContact;
 
         /**
@@ -101,7 +89,6 @@ public class OutgoingRequestRecyclerAdapter
          */
         public ContactsViewHolder(@NonNull final View theItemView) {
             super(theItemView);
-            mView = theItemView;
             mBinding = FragmentContactsCardBinding.bind(theItemView);
             mBinding.buttonDelete.setOnClickListener(button -> mConsumer.accept(mContact));
         }

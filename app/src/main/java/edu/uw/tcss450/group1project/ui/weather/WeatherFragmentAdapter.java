@@ -8,16 +8,13 @@ package edu.uw.tcss450.group1project.ui.weather;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.lifecycle.Lifecycle;
-import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import java.util.List;
 
 /**
- * WeatherFragmentPagerAdatper is a class for displaying individual weather fragments.
+ * WeatherFragmentPagerAdapter is a class for displaying individual weather fragments.
  *
  * @author Parker Rosengreen
  * @version Fall 2021

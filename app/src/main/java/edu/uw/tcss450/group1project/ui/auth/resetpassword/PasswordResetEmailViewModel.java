@@ -2,6 +2,7 @@
  * TCSS450 Mobile Applications
  * Fall 2021
  */
+
 package edu.uw.tcss450.group1project.ui.auth.resetpassword;
 
 import android.app.Application;
@@ -41,7 +42,11 @@ public class PasswordResetEmailViewModel extends AndroidViewModel {
      */
     private MutableLiveData<JSONObject> mResponse;
 
-
+    /**
+     * Creates a new PasswordResetEmailViewModel with the provided application
+     *
+     * @param theApplication the application
+     */
     public PasswordResetEmailViewModel(@NonNull final Application theApplication) {
         super(Objects.requireNonNull(theApplication, "theApplication can not be null"));
         mResponse = new MutableLiveData<>();
@@ -67,7 +72,7 @@ public class PasswordResetEmailViewModel extends AndroidViewModel {
      * Sends an HTTP POST request to the server attempting to validate
      * the email that match user's account.
      *
-     * @param theEmail the user's email attatched to their account
+     * @param theEmail the user's email attached to their account
      * @throws NullPointerException if theEmail is null
      */
     public void connect(@NonNull final String theEmail){
@@ -97,7 +102,6 @@ public class PasswordResetEmailViewModel extends AndroidViewModel {
         //Instantiate the RequestQueue and add the request to the queue
         Volley.newRequestQueue(getApplication().getApplicationContext())
                 .add(request);
-
     }
 
     /**
@@ -135,6 +139,4 @@ public class PasswordResetEmailViewModel extends AndroidViewModel {
     public void removeData() {
         mResponse.setValue(new JSONObject());
     }
-
-
 }

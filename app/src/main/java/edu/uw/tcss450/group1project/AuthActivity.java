@@ -20,7 +20,6 @@ import androidx.navigation.ui.NavigationUI;
 import com.auth0.android.jwt.JWT;
 
 import edu.uw.tcss450.group1project.model.PushyTokenViewModel;
-import edu.uw.tcss450.group1project.ui.auth.signin.SignInFragmentDirections;
 import me.pushy.sdk.Pushy;
 
 /**
@@ -33,15 +32,14 @@ import me.pushy.sdk.Pushy;
  * @version Fall 2021
  */
 public class AuthActivity extends ThemedActivity {
-    /**
-     * To keep track of the application bar configuration
-     */
+
+    /** To keep track of the application bar configuration */
     private AppBarConfiguration mAppBarConfiguration;
 
     @Override
     protected void onCreate(final Bundle theSavedInstanceState) {
         super.onCreate(theSavedInstanceState);
-        applyTheme();   // todo: does this change anything?
+        applyTheme();
 
         setContentView(R.layout.activity_auth);
 
@@ -54,8 +52,6 @@ public class AuthActivity extends ThemedActivity {
         Pushy.listen(this);
         initiatePushyTokenRequest();
         onNewIntent(getIntent());
-
-
     }
 
     @Override
@@ -72,7 +68,6 @@ public class AuthActivity extends ThemedActivity {
     private void initiatePushyTokenRequest() {
         new ViewModelProvider(this).get(PushyTokenViewModel.class).retrieveToken();
     }
-
 
     @Override
     protected void onNewIntent(final Intent theIntent) {
@@ -99,10 +94,7 @@ public class AuthActivity extends ThemedActivity {
                     intent.putExtras(theIntent.getExtras());
                 }
                 startActivity(intent);
-                return;
             }
         }
-
     }
-
 }

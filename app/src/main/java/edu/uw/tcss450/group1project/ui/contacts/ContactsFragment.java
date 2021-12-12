@@ -5,7 +5,6 @@
 
 package edu.uw.tcss450.group1project.ui.contacts;
 
-
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.Html;
@@ -77,7 +76,8 @@ public class ContactsFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(final LayoutInflater theInflater, final ViewGroup theContainer,
+    public View onCreateView(@NonNull final LayoutInflater theInflater,
+                             final ViewGroup theContainer,
                              final Bundle theSavedInstanceState) {
         // Inflate the layout for this fragment
         mBinding = FragmentContactsBinding.inflate(theInflater);
@@ -94,7 +94,7 @@ public class ContactsFragment extends Fragment {
                 this::observeDeleteResponse);
         mContactsModel.contactsConnect(mUserInfo.getJwt());
 
-        Spinner spinner = (Spinner) getView().findViewById(R.id.contact_search_spinner);
+        Spinner spinner = getView().findViewById(R.id.contact_search_spinner);
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.contact_search_array, R.layout.fragment_contacts_spinner);
@@ -143,7 +143,6 @@ public class ContactsFragment extends Fragment {
                             }
                             identifier = identifier.toLowerCase(Locale.ROOT);
 
-
                             return identifier.startsWith(firstChars);
                         }).collect(Collectors.toList());
 
@@ -165,7 +164,7 @@ public class ContactsFragment extends Fragment {
                                        final int thePosition,
                                        final long theId) {
                 // the user just changed the type of identifier the user wants to use
-                // to filter contacts, so tell the text listener to refilter.
+                // to filter contacts, so tell the text listener to re-filter.
                 mTextWatcher.onTextChanged(mBinding.addContactText.getText().toString(),
                         0, 0, 0);
             }
@@ -174,7 +173,6 @@ public class ContactsFragment extends Fragment {
             public void onNothingSelected(final AdapterView<?> theParentView) {
                 // unused
             }
-
         });
     }
 
@@ -189,7 +187,6 @@ public class ContactsFragment extends Fragment {
         // for contacts (if any exist)
         new ViewModelProvider(this.getActivity()).get(ContactNotificationViewModel.class).
                 clearAllContactsNotifications(this.getContext());
-
     }
   
     /**
@@ -228,7 +225,8 @@ public class ContactsFragment extends Fragment {
         if (theResponse.has("code")) {
             Log.e("Contact List Error", theResponse.toString());
         } else if (theResponse.length() != 0){
-            Toast.makeText(getContext(),"You have deleted " + deletedContact.getNickname()+ " from contacts.",
+            Toast.makeText(getContext(),
+                    "You have deleted " + deletedContact.getNickname()+ " from contacts.",
                     Toast.LENGTH_SHORT).show();
             mContactsModel.removeDeleteData();
         }

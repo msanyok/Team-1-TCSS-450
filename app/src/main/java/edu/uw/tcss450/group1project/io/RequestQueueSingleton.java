@@ -42,7 +42,7 @@ public class RequestQueueSingleton {
      */
     private RequestQueueSingleton(final Context theContext) {
         RequestQueueSingleton.mContext = theContext;
-        mRequestQueue = getmRequestQueue();
+        mRequestQueue = getRequestQueue();
 
         mImageLoader = new ImageLoader(mRequestQueue,
                 new ImageLoader.ImageCache() {
@@ -78,7 +78,7 @@ public class RequestQueueSingleton {
      * Returns the request queue.
      * @return the request queue.
      */
-    public RequestQueue getmRequestQueue() {
+    public RequestQueue getRequestQueue() {
         if (mRequestQueue == null) {
             // getApplicationContext() is key, it keeps you from leaking the
             // Activity or BroadcastReceiver if someone passes one in.
@@ -90,18 +90,9 @@ public class RequestQueueSingleton {
     /**
      * Adds the given request to this request queue.
      * @param theRequest the request
-     * @param <T>
+     * @param <T> the type of the request
      */
     public <T> void addToRequestQueue(final Request<T> theRequest) {
-        getmRequestQueue().add(theRequest);
-    }
-
-    // TODO: IS THIS NEEDED?
-    /**
-     * Gets the Image Loader
-     * @return
-     */
-    public ImageLoader getmImageLoader() {
-        return mImageLoader;
+        getRequestQueue().add(theRequest);
     }
 }

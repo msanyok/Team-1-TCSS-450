@@ -57,7 +57,8 @@ public class RegisterVerificationFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(final LayoutInflater theInflater, final ViewGroup theContainer,
+    public View onCreateView(@NonNull final LayoutInflater theInflater,
+                             final ViewGroup theContainer,
                              final Bundle theSavedInstanceState) {
         mBinding = FragmentVerificationBinding.inflate(theInflater);
         return mBinding.getRoot();
@@ -120,7 +121,6 @@ public class RegisterVerificationFragment extends Fragment {
 
         mRegisterVerificationModel.connect(args.getEmail(),
                 mBinding.editVerificationCode.getText().toString().trim());
-        // Above call is async, don't add code below.
     }
 
     /**
@@ -163,5 +163,4 @@ public class RegisterVerificationFragment extends Fragment {
         // when the user comes back to this page.
         mRegisterVerificationModel.removeData();
     }
-
 }

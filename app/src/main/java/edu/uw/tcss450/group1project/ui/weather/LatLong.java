@@ -33,24 +33,6 @@ public class LatLong implements Serializable {
         mLong = theLong;
     }
 
-    /**
-     * Provides the latitude
-     *
-     * @return the latitude
-     */
-    public double getLat() {
-        return mLat;
-    }
-
-    /**
-     * Provides the longitude
-     *
-     * @return the longitude
-     */
-    public double getLong() {
-        return mLong;
-    }
-
     @NonNull
     @Override
     public String toString() {

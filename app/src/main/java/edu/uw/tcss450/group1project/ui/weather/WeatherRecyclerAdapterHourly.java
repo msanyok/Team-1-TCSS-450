@@ -19,7 +19,7 @@ import edu.uw.tcss450.group1project.databinding.FragmentWeather24hrCardBinding;
 import edu.uw.tcss450.group1project.utils.WeatherUtils;
 
 /**
- * WeatherRecyclerAdapter24Hour provides an adapter for the WeatherFragment
+ * WeatherRecyclerAdapterHourly provides an adapter for the WeatherFragment
  * 24-hour forecast RecyclerView.
  *
  * @author Parker Rosengreen
@@ -32,7 +32,7 @@ public class WeatherRecyclerAdapterHourly
     private final List<WeatherData> mForecast;
 
     /**
-     * Creates a new WeatherRecyclerAdapter24Hour with a provided list of weather data
+     * Creates a new WeatherRecyclerAdapterHourly with a provided list of weather data
      *
      * @param theData the list of weather data
      */
@@ -69,9 +69,6 @@ public class WeatherRecyclerAdapterHourly
      */
     public class WeatherHourViewHolder extends RecyclerView.ViewHolder {
 
-        /** The assigned view */
-        private final View mView;
-
         /** The ViewBinding corresponded to an hourly weather RecyclerView card */
         private final FragmentWeather24hrCardBinding mBinding;
 
@@ -85,7 +82,6 @@ public class WeatherRecyclerAdapterHourly
          */
         public WeatherHourViewHolder(@NonNull final View theItemView) {
             super(theItemView);
-            mView = theItemView;
             mBinding = FragmentWeather24hrCardBinding.bind(theItemView);
         }
 
@@ -109,4 +105,3 @@ public class WeatherRecyclerAdapterHourly
         }
     }
 }
-

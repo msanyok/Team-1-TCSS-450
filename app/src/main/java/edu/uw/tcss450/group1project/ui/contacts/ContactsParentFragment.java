@@ -36,6 +36,7 @@ import edu.uw.tcss450.group1project.model.ContactNotificationViewModel;
  * @version Fall 2021
  */
 public class ContactsParentFragment extends Fragment {
+
     /** The String shown at the top of the contacts tab */
     public static final String ALL_CONTACTS = "All Contacts";
 
