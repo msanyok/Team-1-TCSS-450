@@ -148,7 +148,7 @@ public class WeatherParentFragment extends Fragment {
         WeatherFragmentAdapter adapter = new WeatherFragmentAdapter(
                 getChildFragmentManager(), getLifecycle(), frags);
         viewPager.setAdapter(adapter);
-        viewPager.setOffscreenPageLimit(3);
+        viewPager.setOffscreenPageLimit(1);
         if (mLocationModel.isListModified()) {
             mLocationModel.checkModifications();
             mViewIndex = frags.size() - 1;
