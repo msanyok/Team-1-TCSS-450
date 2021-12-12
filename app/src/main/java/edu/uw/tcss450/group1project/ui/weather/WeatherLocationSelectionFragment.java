@@ -309,6 +309,10 @@ public class WeatherLocationSelectionFragment
             }
             mLocationString = "";
             displayErrorDialog(message);
+            if (mMarker != null) {
+                mMarker.remove();
+                mMarker = null;
+            }
         } else if (theResponse.length() != 0) {
             Toast.makeText(getContext(),"Location saved", Toast.LENGTH_SHORT).show();
             Navigation.findNavController(getView()).navigate(
