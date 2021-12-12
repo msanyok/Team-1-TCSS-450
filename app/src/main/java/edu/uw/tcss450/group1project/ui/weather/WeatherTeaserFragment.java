@@ -60,7 +60,7 @@ public class WeatherTeaserFragment extends Fragment {
                 WeatherUtils.getInstance()
                         .getIconResource(model.getCurrentData().getWeatherCondition()));
         binding.titleTemperature
-                .setText(String.valueOf(model.getCurrentData().getTemperature()) + "\u2109");
+                .setText(model.getCurrentData().getTemperature() + "\u2109");
         binding.titleFeelsLike
                 .setText("Feels like: " + model.getCurrentData().getFeelsLike() + "\u2109");
         binding.titleChanceRain

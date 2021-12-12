@@ -53,13 +53,6 @@ public class ChangePasswordFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(final Bundle theSavedInstanceState) {
-        super.onCreate(theSavedInstanceState);
-
-    }
-
-
-    @Override
     public View onCreateView(final LayoutInflater theInflater, final ViewGroup theContainer,
                              Bundle theSavedInstanceState) {
 
@@ -74,13 +67,10 @@ public class ChangePasswordFragment extends Fragment {
         mChangePasswordModel =
                 new ViewModelProvider(this).get(ChangePasswordViewModel.class);
 
-        mBinding.buttonChangePassword.setOnClickListener(this::changePassword);
+        mBinding.buttonChangePassword.setOnClickListener(button -> validateExistPassword());
         mChangePasswordModel.addResponseObserver(getViewLifecycleOwner(),
                 this::observeResponse);
     }
-
-    /** start the chain for validating text field for existed and new passwords*/
-    private void changePassword(final View theButton) { validateExistPassword(); }
 
     /**
      * Attempts to validate that the existing password is valid.
@@ -111,7 +101,6 @@ public class ChangePasswordFragment extends Fragment {
                 this::newPasswordMatch,
                 result -> mBinding.newPassword.setError(
                         TextFieldHints.getPasswordHint(passwordText)));
-
     }
 
     /**
@@ -141,7 +130,6 @@ public class ChangePasswordFragment extends Fragment {
                 mBinding.oldPassword.getText().toString(),
                 mBinding.newPassword.getText().toString(),
                 new ViewModelProvider(this.getActivity()).get(UserInfoViewModel.class).getJwt());
-
     }
 
     /**

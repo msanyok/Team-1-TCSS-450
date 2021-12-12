@@ -2,6 +2,7 @@
  * TCSS450 Mobile Applications
  * Fall 2021
  */
+
 package edu.uw.tcss450.group1project.ui.auth.resetpassword;
 
 import static edu.uw.tcss450.group1project.utils.PasswordValidator.checkClientPredicate;
@@ -54,18 +55,9 @@ public class PasswordResetFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(final Bundle theSavedInstanceState) {
-        super.onCreate(theSavedInstanceState);
-
-    }
-
-    @Override
-    public View onCreateView(final LayoutInflater theInflater, final ViewGroup theContainer,
-                             Bundle theSavedInstanceState) {
-        final PasswordResetFragmentArgs args =
-                PasswordResetFragmentArgs.fromBundle(getArguments());
-        Log.e("Hello",args.getEmail());
-
+    public View onCreateView(@NonNull final LayoutInflater theInflater,
+                             final ViewGroup theContainer,
+                             final Bundle theSavedInstanceState) {
         mBinding = FragmentPasswordResetBinding.inflate(theInflater);
         return mBinding.getRoot();
     }
@@ -77,15 +69,14 @@ public class PasswordResetFragment extends Fragment {
         mPasswordResetModel =
                 new ViewModelProvider(this).get(PasswordResetViewModel.class);
 
-        mBinding.buttonResetPasswordDone.setOnClickListener(this::resetPassword);
+        mBinding.buttonResetPasswordDone.setOnClickListener(button -> validateVerificationCode());
         mPasswordResetModel.addResponseObserver(getViewLifecycleOwner(),
                 this::observeResponse);
     }
 
-    /** start the chain for vaildateing text field */
-    private void resetPassword(final View theButton) { validateVerificationCode(); }
-
-    /** Helper method to validate Verification Code */
+    /**
+     * Helper method to validate Verification Code
+     */
     public void validateVerificationCode() {
         mCodeValidator.processResult(
                 mCodeValidator.apply(mBinding.resetComfirmationCode.getText().toString().trim()),
@@ -176,5 +167,4 @@ public class PasswordResetFragment extends Fragment {
                     + theResponse.toString());
         }
     }
-
 }

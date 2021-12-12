@@ -137,6 +137,11 @@ public class WeatherFragment extends Fragment {
         }
     }
 
+    /**
+     * Displays an alert dialog ensuring the user would like to delete this fragment's location
+     *
+     * @param theButton the pressed delete button
+     */
     private void displayLocationDeleteDialog(final View theButton) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
         alertDialog.setMessage(Html.fromHtml("<font color='#000000'>Are you sure " +
@@ -180,7 +185,7 @@ public class WeatherFragment extends Fragment {
                 WeatherUtils.getInstance()
                         .getIconResource(mModel.getCurrentData().getWeatherCondition()));
         mBinding.titleTemperature
-                .setText(String.valueOf(mModel.getCurrentData().getTemperature()) + "\u2109");
+                .setText(mModel.getCurrentData().getTemperature() + "\u2109");
         mBinding.titleFeelsLike
                 .setText("Feels like: " + mModel.getCurrentData().getFeelsLike() + "\u2109");
         mBinding.titleChanceRain

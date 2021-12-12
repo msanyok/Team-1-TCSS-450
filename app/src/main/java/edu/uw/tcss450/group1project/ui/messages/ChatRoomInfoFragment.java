@@ -27,8 +27,6 @@ import androidx.navigation.Navigation;
 
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -315,7 +313,6 @@ public class ChatRoomInfoFragment extends Fragment {
      * existing chat room members
      */
     private void setViewComponents() {
-        System.out.println("FILTERING");
         List<Contact> allContacts = mContactsModel.getContactList();
         List<Contact> currentParticipants = mParticipantModel.getParticipants();
         allContacts.removeIf(currentParticipants::contains);

@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.io.RequestQueueSingleton;
 
 /**
@@ -46,7 +45,7 @@ public class ChatViewModel extends AndroidViewModel {
      * The Key represents the Chat ID
      * The value represents the List of (known) messages for that that room.
      */
-    private Map<Integer, MutableLiveData<List<ChatMessage>>> mMessages;
+    private final Map<Integer, MutableLiveData<List<ChatMessage>>> mMessages;
 
     /**
      * Creates a new ChatViewModel with the provided application
@@ -136,8 +135,6 @@ public class ChatViewModel extends AndroidViewModel {
         //Instantiate the RequestQueue and add the request to the queue
         RequestQueueSingleton.getInstance(getApplication().getApplicationContext())
                 .addToRequestQueue(request);
-
-        //code here will run
     }
 
     /**
@@ -194,7 +191,8 @@ public class ChatViewModel extends AndroidViewModel {
         // there are some instances where a message may be added to the message list due
         // to navigation BEFORE a pushy notification makes it to the app.
         // In those cases, we should prevent that message from happening twice
-        if (list.size() > 0 && theMessage.getMessageId() != list.get(list.size() - 1).getMessageId()) {
+        if (list.size() > 0 &&
+                theMessage.getMessageId() != list.get(list.size() - 1).getMessageId()) {
             list.add(theMessage);
             getOrCreateMapEntry(theChatId).setValue(list);
         }
@@ -207,9 +205,6 @@ public class ChatViewModel extends AndroidViewModel {
      */
     private void handleSuccess(final JSONObject theResponse) {
         List<ChatMessage> list;
-        if (!theResponse.has("chatId")) {
-            throw new IllegalStateException("Unexpected response in ChatViewModel: " + theResponse);
-        }
         try {
             list = getMessageListByChatId(theResponse.getInt("chatId"));
             JSONArray messages = theResponse.getJSONArray("rows");
@@ -230,11 +225,10 @@ public class ChatViewModel extends AndroidViewModel {
                     Log.wtf("Chat message already received",
                             "Or duplicate id:" + cMessage.getMessageId());
                 }
-
             }
             //inform observers of the change (setValue)
             getOrCreateMapEntry(theResponse.getInt("chatId")).setValue(list);
-        }catch (JSONException e) {
+        } catch (JSONException e) {
             Log.e("JSON PARSE ERROR", "Found in handle Success ChatViewModel");
             Log.e("JSON PARSE ERROR", "Error: " + e.getMessage());
         }

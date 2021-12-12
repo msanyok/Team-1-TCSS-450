@@ -208,15 +208,6 @@ public interface PasswordValidator
         return password -> this.apply(password)
                 .flatMap(result -> result == ValidationResult.SUCCESS ?
                         other.apply(password) : Optional.of(result));
-
-        /*
-         * NOTE: If you have access to Java 1.9 (Which AS still doesn't support) you can simplify
-         * the above return statement to below. The or method was introduced to the Optional
-         * class in Java 1.9.
-         */
-//        return password -> this.apply(password)
-//                .filter(result -> result != SUCCESS)
-//                .or(() -> other.apply(password));
     }
 
     /**

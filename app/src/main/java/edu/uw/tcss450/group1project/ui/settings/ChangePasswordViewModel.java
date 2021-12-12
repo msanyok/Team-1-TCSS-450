@@ -36,17 +36,16 @@ import java.util.Objects;
  * @author Parker Rosengreen
  * @version Fall 2021
  */
-
 public class ChangePasswordViewModel extends AndroidViewModel {
 
     /**
      * The {@link MutableLiveData} that stores the JSON response from the server
      * verify the existing password and a create a new one.
      */
-    private MutableLiveData<JSONObject> mResponse;
+    private final MutableLiveData<JSONObject> mResponse;
 
     /**
-     * Creates a new PasswordResetToolbarViewModel that is tied to the given application.
+     * Creates a new ChangePasswordViewModel that is tied to the given application.
      *
      * @param theApplication the Application this ViewModel belongs to
      */

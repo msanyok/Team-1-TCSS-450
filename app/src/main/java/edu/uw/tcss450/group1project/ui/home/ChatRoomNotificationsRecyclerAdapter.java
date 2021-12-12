@@ -20,39 +20,39 @@ import edu.uw.tcss450.group1project.databinding.FragmentChatRoomCardBinding;
 import edu.uw.tcss450.group1project.ui.messages.ChatRoom;
 
 /**
- * MessagesNotificationsRecyclerAdapter provides an adapter for the HomeFragment
+ * ChatRoomNotificationsRecyclerAdapter provides an adapter for the HomeFragment
  * new messages RecyclerView.
  *
  * @author Parker Rosengreen
  * @version Fall 2021
  */
-public class MessagesNotificationsRecyclerAdapter extends
-        RecyclerView.Adapter<MessagesNotificationsRecyclerAdapter.MessagesNotificationsViewHolder> {
+public class ChatRoomNotificationsRecyclerAdapter extends
+        RecyclerView.Adapter<ChatRoomNotificationsRecyclerAdapter.ChatRoomNotificationsViewHolder> {
 
     /** The list of relevant chat rooms to be displayed */
     private final List<ChatRoom> mChatRooms;
 
     /**
-     * Creates a new MessagesNotificationsRecyclerAdapter with a provided list of chat rooms
+     * Creates a new ChatRoomNotificationsRecyclerAdapter with a provided list of chat rooms
      *
      * @param theRooms the list of chat rooms
      */
-    public MessagesNotificationsRecyclerAdapter(final List<ChatRoom> theRooms) {
+    public ChatRoomNotificationsRecyclerAdapter(final List<ChatRoom> theRooms) {
         mChatRooms = theRooms;
     }
 
     @NonNull
     @Override
-    public MessagesNotificationsViewHolder onCreateViewHolder(@NonNull final ViewGroup theParent,
+    public ChatRoomNotificationsViewHolder onCreateViewHolder(@NonNull final ViewGroup theParent,
                                                               final int theViewType) {
-        return new MessagesNotificationsViewHolder(LayoutInflater
+        return new ChatRoomNotificationsViewHolder(LayoutInflater
                 .from(theParent.getContext())
                 .inflate(R.layout.fragment_chat_room_card,
                          theParent, false));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final MessagesNotificationsViewHolder holder,
+    public void onBindViewHolder(@NonNull final ChatRoomNotificationsViewHolder holder,
                                  final int position) {
         holder.setChatRoom(mChatRooms.get(position));
     }
@@ -63,13 +63,13 @@ public class MessagesNotificationsRecyclerAdapter extends
     }
 
     /**
-     * MessagesNotificationsViewHolder is a class defining an individual ViewHolder for
+     * ChatRoomNotificationsViewHolder is a class defining an individual ViewHolder for
      * HomeFragment new messages RecyclerView.
      *
      * @author Parker Rosengreen
      * @version Fall 2021
      */
-    public class MessagesNotificationsViewHolder extends RecyclerView.ViewHolder {
+    public class ChatRoomNotificationsViewHolder extends RecyclerView.ViewHolder {
 
         /** The assigned view */
         private final View mView;
@@ -81,11 +81,11 @@ public class MessagesNotificationsRecyclerAdapter extends
         private ChatRoom mRoom;
 
         /**
-         * Creates a new MessagesNotificationsViewHolder with the provided view
+         * Creates a new ChatRoomNotificationsViewHolder with the provided view
          *
          * @param theItemView the view to be assigned
          */
-        public MessagesNotificationsViewHolder(@NonNull final View theItemView) {
+        public ChatRoomNotificationsViewHolder(@NonNull final View theItemView) {
             super(theItemView);
             mView = theItemView;
             mBinding = FragmentChatRoomCardBinding.bind(theItemView);
@@ -115,7 +115,6 @@ public class MessagesNotificationsRecyclerAdapter extends
 
         /** Displays all chat room data and image views for a single new message card */
         private void display() {
-            // TODO style the same as on chat list frag
             mBinding.chatName.setText(mRoom.getChatName());
             mBinding.currentMessage.setText(mRoom.getMostRecentMessage());
             mBinding.participantImage.setImageResource(R.drawable.ic_messages_black_24dp);

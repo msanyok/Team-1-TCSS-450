@@ -43,19 +43,16 @@ public class ContactsRecyclerAdapter
                                    final Consumer<Contact> theConsumer) {
         mContacts = theContacts;
         mConsumer = theConsumer;
-
     }
 
     @NonNull
     @Override
     public ContactsViewHolder onCreateViewHolder(@NonNull final ViewGroup theParent,
                                                  final int theViewType) {
-
         return new ContactsViewHolder(LayoutInflater
                                       .from(theParent.getContext())
                                       .inflate(R.layout.fragment_contacts_card,
                                               theParent, false));
-
     }
     @Override
     public void onBindViewHolder(@NonNull final ContactsViewHolder holder, final int position) {
@@ -78,9 +75,6 @@ public class ContactsRecyclerAdapter
      */
     public class ContactsViewHolder extends RecyclerView.ViewHolder {
 
-        /** The assigned view */
-        private final View mView;
-
         /** The ViewBinding corresponded to a contact RecyclerView card */
         private final FragmentContactsCardBinding mBinding;
 
@@ -94,7 +88,6 @@ public class ContactsRecyclerAdapter
          */
         public ContactsViewHolder(@NonNull final View theItemView) {
             super(theItemView);
-            mView = theItemView;
             mBinding = FragmentContactsCardBinding.bind(theItemView);
             mBinding.buttonDelete.setOnClickListener(button -> mConsumer.accept(mContact));
         }

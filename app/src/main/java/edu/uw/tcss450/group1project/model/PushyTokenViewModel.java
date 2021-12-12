@@ -95,12 +95,8 @@ public class PushyTokenViewModel extends AndroidViewModel{
      */
     public void retrieveToken() {
         if (!Pushy.isRegistered(getApplication().getApplicationContext())) {
-
-            Log.d("PUSH VIEW MODEL", "FETCHING NEW TOKEN");
             new RegisterForPushNotificationsAsync().execute();
-
         } else {
-            Log.d("PUSH VIEW MODEL", "USING OLD TOKEN");
             mPushyToken.setValue(
                     Pushy.getDeviceCredentials(getApplication().getApplicationContext()).token);
         }
@@ -155,11 +151,7 @@ public class PushyTokenViewModel extends AndroidViewModel{
         if (mPushyToken.getValue().isEmpty()) {
             throw new IllegalStateException("No pushy token. Do NOT call until token is retrieved");
         }
-
-        // TODO: consider using R.string.base_url for project urls? probably a good idea...
         final String url = "https://team-1-tcss-450-server.herokuapp.com/auth";
-//                getApplication().getResources().getString(R.string.base_url) + "auth";
-
         final JSONObject body = new JSONObject();
         try {
             body.put("token", mPushyToken.getValue());
@@ -199,8 +191,6 @@ public class PushyTokenViewModel extends AndroidViewModel{
      * @param theError the error that occurred
      */
     private void handleError(final VolleyError theError) {
-        Log.wtf("WTF", "SIGN IN FAILED");
-        Log.wtf("WTF", theError.getMessage());
         if (Objects.isNull(theError.networkResponse)) {
             try {
                 mResponse.setValue(new JSONObject("{" +

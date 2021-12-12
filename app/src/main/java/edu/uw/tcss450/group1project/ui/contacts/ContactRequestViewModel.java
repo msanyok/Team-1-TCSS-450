@@ -39,17 +39,18 @@ import java.util.Objects;
  * @version Fall 2021
  */
 public class ContactRequestViewModel extends AndroidViewModel {
+
     /**
      * The {@link MutableLiveData} that stores the JSON response from the server
      * when the user tries to get contact requests.
      */
-    private MutableLiveData<JSONObject> mRequestResponse;
+    private final MutableLiveData<JSONObject> mRequestResponse;
 
     /**
      * The {@link MutableLiveData} that stores the JSON response from the server
      * when the user tried to accept or decline a contact request.
      */
-    private MutableLiveData<JSONObject> mContactRequestResponse;
+    private final MutableLiveData<JSONObject> mContactRequestResponse;
 
     /** The list of request objects. */
     private List<Contact> mRequestList;
@@ -84,7 +85,8 @@ public class ContactRequestViewModel extends AndroidViewModel {
      * @throws NullPointerException if theObserver is null
      */
     public void addRequestResponseObserver(@NonNull final LifecycleOwner theOwner,
-                                   @NonNull final Observer<? super JSONObject> theObserver) {
+                                           @NonNull final Observer<?
+                                                   super JSONObject> theObserver) {
         Objects.requireNonNull(theOwner, "theOwner can not be null");
         Objects.requireNonNull(theObserver, "theObserver can not be null");
         mRequestResponse.observe(theOwner, theObserver);
@@ -109,7 +111,6 @@ public class ContactRequestViewModel extends AndroidViewModel {
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Authorization", theJwt);
-
                 return headers;
             }
         };
@@ -135,11 +136,14 @@ public class ContactRequestViewModel extends AndroidViewModel {
      * Returns the current list of outgoing requests
      * @return mOutgoingRequestList List<Contacts>
      */
-    public List<Contact> getOutgoingRequestList() { return mOutgoingRequestList; }
+    public List<Contact> getOutgoingRequestList() {
+        return mOutgoingRequestList;
+    }
 
     /**
      * Observes the HTTP Response from the web server. If an error occurred, notify the user
-     * accordingly. If it was a success, parse the contact request information incoming and outgoing.
+     * accordingly. If it was a success,
+     * parse the contact request information incoming and outgoing.
      *
      * @param theResponse the Response from the server
      */
@@ -147,50 +151,44 @@ public class ContactRequestViewModel extends AndroidViewModel {
         if (theResponse.length() > 0) {
             List<Contact> formattedIncomingList = new ArrayList<>();
             List<Contact> formattedOutgoingList = new ArrayList<>();
-            if (theResponse.has("code")) {
-                //this is an error
-            } else {
-                try {
-                    //loop for incoming requests
-                    JSONArray incoming = theResponse.getJSONArray("receivedRequests");
-                    if (incoming.length() > 0) {
-                        for (int i = 0; i < incoming.length(); i++) {
-                            JSONObject contact = (JSONObject) incoming.get(i);
-                            formattedIncomingList.add(new Contact(contact.get("first").toString(),
-                                    contact.get("last").toString(),
-                                    contact.get("nickname").toString(),
-                                    contact.get("memberid").toString()));
-                        }
+            try {
+                //loop for incoming requests
+                JSONArray incoming = theResponse.getJSONArray("receivedRequests");
+                if (incoming.length() > 0) {
+                    for (int i = 0; i < incoming.length(); i++) {
+                        JSONObject contact = (JSONObject) incoming.get(i);
+                        formattedIncomingList.add(new Contact(contact.get("first").toString(),
+                                contact.get("last").toString(),
+                                contact.get("nickname").toString(),
+                                contact.get("memberid").toString()));
                     }
-                        //loop for outgoing list could probably refactor
-                    JSONArray outgoing = theResponse.getJSONArray("sentRequests");
-                    if (outgoing.length() > 0) {
-                        for (int i = 0; i < outgoing.length(); i++) {
-                            JSONObject contact = (JSONObject) outgoing.get(i);
-                            formattedOutgoingList.add(new Contact(contact.get("first").toString(),
-                                    contact.get("last").toString(),
-                                    contact.get("nickname").toString(),
-                                    contact.get("memberid").toString()));
-                        }
-                    }
-                    mOutgoingRequestList = formattedOutgoingList;
-                    mRequestList = formattedIncomingList;
-                    mRequestResponse.setValue(theResponse);
-                } catch (JSONException exception) {
-                    
-                    Log.e("JSON Parse Error", exception.getMessage());
                 }
+                JSONArray outgoing = theResponse.getJSONArray("sentRequests");
+                if (outgoing.length() > 0) {
+                    for (int i = 0; i < outgoing.length(); i++) {
+                        JSONObject contact = (JSONObject) outgoing.get(i);
+                        formattedOutgoingList.add(new Contact(contact.get("first").toString(),
+                                contact.get("last").toString(),
+                                contact.get("nickname").toString(),
+                                contact.get("memberid").toString()));
+                    }
+                }
+                mOutgoingRequestList = formattedOutgoingList;
+                mRequestList = formattedIncomingList;
+                mRequestResponse.setValue(theResponse);
+            } catch (JSONException exception) {
+                Log.e("JSON Parse Error", exception.getMessage());
             }
         } else {
             Log.d("Registration JSON Response", "No Response");
         }
     }
 
-
     /**
      * Sends an HTTP Put request to the server attempts to accept/decline
      *
      * @param theChoice the new account's nickname
+     * @param theMemberId the user's member id
      * @param theJwt JWT token to be passed to server
      * @throws NullPointerException if theNickname is null
      */
@@ -345,6 +343,4 @@ public class ContactRequestViewModel extends AndroidViewModel {
     public void removeData() {
         mRequestResponse.setValue(new JSONObject());
     }
-
-    
 }

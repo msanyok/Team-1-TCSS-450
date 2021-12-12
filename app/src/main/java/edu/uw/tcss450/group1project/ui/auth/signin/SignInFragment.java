@@ -54,7 +54,6 @@ public class SignInFragment extends Fragment {
     /** The view model that stores the user's information */
     private UserInfoViewModel mUserViewModel;
 
-
     /**
      * Empty public constructor. Does not provide any functionality.
      */
@@ -72,10 +71,10 @@ public class SignInFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(final LayoutInflater theInflater, final ViewGroup theContainer,
+    public View onCreateView(@NonNull final LayoutInflater theInflater,
+                             final ViewGroup theContainer,
                              final Bundle theSavedInstanceState) {
         mBinding = FragmentSignInBinding.inflate(theInflater);
-
         // Inflate the layout for this fragment
         return mBinding.getRoot();
     }
@@ -95,7 +94,6 @@ public class SignInFragment extends Fragment {
                         SignInFragmentDirections.actionSignInFragmentToEnterEmailFragment(
                         mBinding.editEmail.getText().toString()
                         )));
-
 
         mBinding.buttonSignIn.setOnClickListener(this::attemptSignIn);
 
@@ -138,8 +136,6 @@ public class SignInFragment extends Fragment {
             // created on the web service.
             if(!jwt.isExpired(0)) {
                 navigateToSuccess(token);
-
-                return;
             }
         }
     }
@@ -218,8 +214,6 @@ public class SignInFragment extends Fragment {
         mSignInModel.connect(
                 mBinding.editEmail.getText().toString(),
                 mBinding.editPassword.getText().toString());
-        //This is an Asynchronous call. No statements after should rely on the
-        //result of connect().
     }
 
     /**
@@ -299,7 +293,6 @@ public class SignInFragment extends Fragment {
                             )).get(UserInfoViewModel.class);
 
                     this.sendPushyToken();
-
                     navigateToSuccess(theResponse.getString("token"));
 
                 } catch (JSONException e) {

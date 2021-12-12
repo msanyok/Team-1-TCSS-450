@@ -5,12 +5,9 @@
 
 package edu.uw.tcss450.group1project.model;
 
-import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelStoreOwner;
 
@@ -21,7 +18,6 @@ import java.util.Set;
 
 /**
  * Provides utility methods for storing small amounts of data locally.
- * These functions should only be used when the app is not in the foreground.
  *
  * Note: This approach is not ideal and does not work when users are logging in and
  * out of the service on the same device. It is important to call
@@ -51,7 +47,7 @@ public final class LocalStorageUtils {
      * @param theContext the context this method is used from
      * @param theChatId the chat a new message came from
      */
-    public static final void putMissedMessage(final Context theContext, final String theChatId) {
+    public static void putMissedMessage(final Context theContext, final String theChatId) {
         final SharedPreferences newMessagesStorage =
                 theContext.getSharedPreferences(NOTIFICATION_STORAGE, Context.MODE_PRIVATE);
         final SharedPreferences.Editor editor = newMessagesStorage.edit();
@@ -75,7 +71,7 @@ public final class LocalStorageUtils {
      * @param theContext where this method was called from
      * @return the map
      */
-    public static final Map<String, Integer> getMissedMessages(final Context theContext) {
+    public static Map<String, Integer> getMissedMessages(final Context theContext) {
         final Map<String, Integer> missedMessagesMap = new HashMap<>();
         final SharedPreferences newMessagesStorage =
                 theContext.getSharedPreferences(NOTIFICATION_STORAGE, Context.MODE_PRIVATE);
@@ -95,7 +91,7 @@ public final class LocalStorageUtils {
      * @param theContext the context this method is used from
      * @param theChatId the chat a new message came from
      */
-    public static final void removeNewMessageStore(final Context theContext, final int theChatId) {
+    public static void removeNewMessageStore(final Context theContext, final int theChatId) {
         final SharedPreferences newMessagesStorage =
                 theContext.getSharedPreferences(NOTIFICATION_STORAGE, Context.MODE_PRIVATE);
         final SharedPreferences.Editor editor = newMessagesStorage.edit();
@@ -108,7 +104,7 @@ public final class LocalStorageUtils {
      * Clears all new message and contact notification data for this user. MUST do this action when
      * the account is logged out.
      *
-     * @param theContext
+     * @param theContext the context this method is used from
      */
     public static void clearAllStoredNotifications(final Context theContext) {
         theContext.getSharedPreferences(NOTIFICATION_STORAGE, Context.MODE_PRIVATE).
@@ -129,7 +125,8 @@ public final class LocalStorageUtils {
         final SharedPreferences.Editor editor = contactRequestStorage.edit();
 
         // increment the store
-        Set<String> set = new HashSet<>(contactRequestStorage.getStringSet(CONTACT_REQUESTS, new HashSet<>()));
+        Set<String> set = new HashSet<>(
+                contactRequestStorage.getStringSet(CONTACT_REQUESTS, new HashSet<>()));
         set.add(theNickname);
         editor.putStringSet(CONTACT_REQUESTS, set);
         editor.apply();
@@ -164,7 +161,7 @@ public final class LocalStorageUtils {
      *                    that should no longer be a notification
      */
     public static void decrementContactRequestNotifications(final Context theContext,
-                                                  final String theNickname) {
+                                                            final String theNickname) {
         final SharedPreferences contactsStorage =
                 theContext.getSharedPreferences(NOTIFICATION_STORAGE, Context.MODE_PRIVATE);
         final SharedPreferences.Editor editor = contactsStorage.edit();
@@ -218,7 +215,8 @@ public final class LocalStorageUtils {
         // one that we sent someone, so remove a notification from the set that corresponds
         // to the user's nickname if it exists
         final Set<String> savedContactRequests =
-                new HashSet<>(missedContactRequestStorage.getStringSet(CONTACT_REQUESTS, new HashSet<>()));
+                new HashSet<>(missedContactRequestStorage.getStringSet(
+                        CONTACT_REQUESTS, new HashSet<>()));
         savedContactRequests.remove(new ViewModelProvider((ViewModelStoreOwner) theContext).
                 get(UserInfoViewModel.class).getNickname());
         return savedContactRequests;
@@ -236,5 +234,4 @@ public final class LocalStorageUtils {
 
         return missedContactRequestStorage.getStringSet(CONTACTS, new HashSet<>());
     }
-
 }

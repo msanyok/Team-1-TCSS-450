@@ -137,9 +137,6 @@ public class MainActivity extends ThemedActivity {
     protected void onCreate(final Bundle theSavedInstanceState) {
         super.onCreate(theSavedInstanceState);
 
-
-        //onNewIntent(getIntent());
-
         MainActivityArgs args = MainActivityArgs.fromBundle(getIntent().getExtras());
 
         // set up all of the view models
@@ -448,8 +445,6 @@ public class MainActivity extends ThemedActivity {
                         .get(UserInfoViewModel.class)
                         .getJwt()
         );
-
-
     }
 
     /**
@@ -461,7 +456,7 @@ public class MainActivity extends ThemedActivity {
     private class MainPushMessageReceiver extends BroadcastReceiver {
 
         /** View model that contains data about chat messages */
-        private ChatViewModel mChatMessageViewModel =
+        private final ChatViewModel mChatMessageViewModel =
                 new ViewModelProvider(MainActivity.this)
                         .get(ChatViewModel.class);
 
@@ -470,31 +465,28 @@ public class MainActivity extends ThemedActivity {
 
             final String type = theIntent.getStringExtra("type");
 
-            Log.d("RECEIVE INTENT", "Type: " + type);
-
             // figure out what kind of pushy notification was sent, then do the corresponding tasks.
             if (type.equals(PushReceiver.NEW_MESSAGE)) {
-                completeNewMessageActions(theContext, theIntent);
+                completeNewMessageActions(theIntent);
             } else if (type.equals(PushReceiver.NEW_CONTACT_REQUEST)) {
-                completeNewContactRequestActions(theContext, theIntent);
+                completeNewContactRequestActions(theIntent);
             } else if (type.equals(PushReceiver.CONTACT_REQUEST_RESPONSE)) {
-                completeNewContactRequestResponseActions(theContext, theIntent);
+                completeNewContactRequestResponseActions(theIntent);
             } else if (type.equals(PushReceiver.CONTACT_DELETE)) {
-                completeNewContactDeleteActions(theContext, theIntent);
+                completeNewContactDeleteActions();
             } else if (type.equals(PushReceiver.CONTACT_REQUEST_DELETE)) {
-                completeNewContactRequestDeleteActions(theContext, theIntent);
+                completeNewContactRequestDeleteActions(theIntent);
             } else if (type.equals(PushReceiver.TYPING)) {
-                completeNewTypingActions(theContext, theIntent);
+                completeNewTypingActions(theIntent);
             }
         }
 
         /**
          * Handles updating the devices view model when a message is received.
          *
-         * @param theContext the context of the application
          * @param theIntent the Intent that stores the Pushy payload
          */
-        private void completeNewMessageActions(final Context theContext, final Intent theIntent) {
+        private void completeNewMessageActions(final Intent theIntent) {
 
             ChatMessage chatMessage =
                     (ChatMessage) theIntent.getSerializableExtra("chatMessage");
@@ -519,11 +511,9 @@ public class MainActivity extends ThemedActivity {
         /**
          * Handles updating the devices contact requests when a request is received or sent.
          *
-         * @param theContext the context of the application
          * @param theIntent the Intent that stores the Pushy payload
          */
-        private void completeNewContactRequestActions(final Context theContext,
-                                                      final Intent theIntent) {
+        private void completeNewContactRequestActions(final Intent theIntent) {
             // notify that there is a new contact request
             mContactRequestViewModel.allContactRequests(mUserInfoModel.getJwt());
 
@@ -548,7 +538,6 @@ public class MainActivity extends ThemedActivity {
             final String fromNickname = theIntent.getStringExtra("fromNickname");
             boolean isARequestWeSent = fromNickname.equals(mUserInfoModel.getNickname());
             if (!onFragment && !isARequestWeSent) {
-                Log.d("", "ADDING CONTACT REQUEST FROM " + fromNickname);
                 mContactTabNewCountViewModel.addContactRequestNotification(fromNickname);
             }
         }
@@ -557,12 +546,10 @@ public class MainActivity extends ThemedActivity {
          * Handles updating the devices contacts and contacts
          * requests when a request is accepted/declined.
          *
-         * @param theContext the context of the application
          * @param theIntent the Intent that stores the Pushy payload
          */
-        private void completeNewContactRequestResponseActions(final Context theContext,
-                                                              final Intent theIntent) {
-            Log.d("RECIEVE INTENT", "New Contact Request Response Actions");
+        private void completeNewContactRequestResponseActions(final Intent theIntent) {
+
             // update the contact request list
             mContactRequestViewModel.allContactRequests(mUserInfoModel.getJwt());
 
@@ -594,18 +581,13 @@ public class MainActivity extends ThemedActivity {
                     String otherId = theIntent.getStringExtra("toId");
                     mContactTabNewCountViewModel.addContactsNotification(otherId);
                 }
-
             }
         }
 
         /**
-         * Handles updating the devices contacts when a delete request is recieved.
-         *
-         * @param theContext the context of the application
-         * @param theIntent the Intent that stores the Pushy payload
+         * Handles updating the devices contacts when a delete request is received.
          */
-        private void completeNewContactDeleteActions(final Context theContext,
-                                                     final Intent theIntent) {
+        private void completeNewContactDeleteActions() {
             mContactsViewModel.contactsConnect(mUserInfoModel.getJwt());
         }
 
@@ -613,12 +595,10 @@ public class MainActivity extends ThemedActivity {
          * Handles updating the devices outgoing contact requests when someone deletes a
          * contact request they sent you
          *
-         * @param theContext the context of the application
          * @param theIntent the Intent that stores the Pushy payload
          */
-        private void completeNewContactRequestDeleteActions(final Context theContext,
-                                                            final Intent theIntent) {
-            Log.d("RECEIVE INTENT", "New Contact Request Delete Actions");
+        private void completeNewContactRequestDeleteActions(final Intent theIntent) {
+
             mContactRequestViewModel.allContactRequests(mUserInfoModel.getJwt());
 
             // remove any contact request notification from this user if one exists
@@ -630,12 +610,9 @@ public class MainActivity extends ThemedActivity {
         /**
          * Handles updating the devices typing timers when typing notification is received.
          *
-         * @param theContext the context of the application
          * @param theIntent the Intent that stores the Pushy payload
          */
-        private void completeNewTypingActions(final Context theContext,
-                                              final Intent theIntent) {
-            Log.d("RECEIVE INTENT", "New Typing Actions");
+        private void completeNewTypingActions(final Intent theIntent) {
 
             if (theIntent.getBooleanExtra("isTyping", false)) {
                 // a notification came that tells us a user is typing
@@ -661,12 +638,8 @@ public class MainActivity extends ThemedActivity {
             MainGraphDirections.ActionChatroomGlobal actionNavigation =
                     MainGraphDirections.actionChatroomGlobal(theIntent.getStringExtra("chatName"),
                     String.valueOf(theIntent.getIntExtra("chatId", -1)));
-
             Navigation.findNavController(
                     this, R.id.nav_host_fragment).navigate(actionNavigation);
-
         }
-
     }
-
 }

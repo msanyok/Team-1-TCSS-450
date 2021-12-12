@@ -184,7 +184,6 @@ public class RegisterFragment extends Fragment {
                 mBinding.editNickname.getText().toString(),
                 mBinding.editEmail.getText().toString(),
                 mBinding.editPassword1.getText().toString());
-        // Above call is asynchronous, do not write code below that relies on the result.
     }
 
     /**
@@ -198,7 +197,7 @@ public class RegisterFragment extends Fragment {
                 ));
 
         // Remove the current JSON stored in the live data.
-        // This prevents the fragment from chaining navigations
+        // This prevents the fragment from chaining navigation
         // when they try to come back to this fragment
         mRegisterModel.removeData();
     }
@@ -240,5 +239,4 @@ public class RegisterFragment extends Fragment {
             Log.d("Registration JSON Response", "No Response");
         }
     }
-
 }

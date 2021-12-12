@@ -203,8 +203,18 @@ public class WeatherDataViewModel extends AndroidViewModel {
      * @param theError the resulting Volley error to be handled
      */
     private void handleError(final VolleyError theError) {
-        Map<String, String> map = new HashMap<>();
-        map.put("code", "Server error: " + theError.getMessage());
+        Map<String, Object> map = new HashMap<>();
+        if (theError.networkResponse != null) {
+            map.put("code", String.valueOf(theError.networkResponse.statusCode));
+            try {
+                String data = new String(theError.networkResponse.data, Charset.defaultCharset())
+                        .replace('\"', '\'');
+                map.put("data", theError.networkResponse.data == null ? new JSONObject() :
+                        new JSONObject(data));
+            } catch (JSONException ex) {
+                Log.e("JSON PARSE ERROR IN ERROR HANDLER", ex.getMessage());
+            }
+        }
         mResponse.setValue(new JSONObject(map));
     }
 }

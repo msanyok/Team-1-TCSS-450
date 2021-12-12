@@ -71,9 +71,6 @@ public class ChatRoomParticipantRecyclerAdapter
      */
     public class ParticipantViewHolder extends RecyclerView.ViewHolder {
 
-        /** The assigned view */
-        private final View mView;
-
         /** The ViewBinding corresponded to a current member recycler view card */
         private final FragmentContactsCardBinding mBinding;
 
@@ -87,7 +84,6 @@ public class ChatRoomParticipantRecyclerAdapter
          */
         public ParticipantViewHolder(@NonNull final View theItemView) {
             super(theItemView);
-            mView = theItemView;
             mBinding = FragmentContactsCardBinding.bind(theItemView);
         }
 
@@ -112,4 +108,3 @@ public class ChatRoomParticipantRecyclerAdapter
         }
     }
 }
-

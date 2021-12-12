@@ -30,7 +30,6 @@ import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentNewContactRequestBinding;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
 
-
 /**
  * NewContactRequestFragment is a class for searching new TalkBox members to add as contacts.
  *
@@ -49,14 +48,10 @@ public class NewContactRequestFragment extends Fragment {
     /** User View Model for Jwt*/
     private UserInfoViewModel mUserModel;
 
-    /**
-     * TextWatcher class for text changes
-     */
+    /** TextWatcher class for text changes */
     private TextWatcher mTextWatcher;
 
-    /**
-     * Boolean to determine if a new watcher needs to be created
-     */
+    /** Boolean to determine if a new watcher needs to be created */
     private boolean mWatcherAssigned;
 
     /**
@@ -97,7 +92,7 @@ public class NewContactRequestFragment extends Fragment {
         mContactsRequestModel.addContactAddObserver(getViewLifecycleOwner(),
                 this::observeContactResponse);
 
-        Spinner spinner = (Spinner) getView().findViewById(R.id.request_search_spinner);
+        Spinner spinner = getView().findViewById(R.id.request_search_spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.request_search_array, R.layout.fragment_contacts_spinner);
         adapter.setDropDownViewResource(R.layout.fragment_contacts_spinner_dropdown);
@@ -109,12 +104,17 @@ public class NewContactRequestFragment extends Fragment {
         mTextWatcher = new TextWatcher() {
 
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+            public void beforeTextChanged(final CharSequence theString,
+                                          final int theStart,
+                                          final int theCount,
+                                          final int theAfter) {
             }
 
             @Override
-            public void onTextChanged(CharSequence theString, int start, int before, int count) {
+            public void onTextChanged(final CharSequence theString,
+                                      final int theStart,
+                                      final int theCount,
+                                      final int theAfter) {
                 if(theString.toString().isEmpty()) {
                     mBinding.listRoot.setAdapter(null);
                 } else {
@@ -123,8 +123,7 @@ public class NewContactRequestFragment extends Fragment {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
-
+            public void afterTextChanged(final Editable theString) {
             }
         };
 
@@ -148,10 +147,14 @@ public class NewContactRequestFragment extends Fragment {
                         updateContactsSearch();
                     }
                 } else {
+                    // don't listen to text events when selecting by email
+                    if (mWatcherAssigned) {
+                        mBinding.addContactText.removeTextChangedListener(mTextWatcher);
+                        mWatcherAssigned = false;
+                    }
                     mBinding.contactRequestButton.setVisibility(View.VISIBLE);
                     mBinding.listRoot.setVisibility(View.INVISIBLE);
                 }
-
             }
 
             @Override
@@ -180,7 +183,6 @@ public class NewContactRequestFragment extends Fragment {
                     mUserModel.getJwt());
         }
     }
-
 
     /**
      * Sends the request for a contact request for the request button
@@ -267,17 +269,14 @@ public class NewContactRequestFragment extends Fragment {
             Log.d("Chats List JSON Response", "No Response: "
                     + theResponse.toString());
         }
-
     }
 
     /**
      * Sends the request for a contact request from a search
-     *
+     * @param theContact the contact to be requested
      */
     private void setRequests(final Contact theContact) {
         mContactsRequestModel.contactRequestConnect(theContact.getNickname(), "nickname",
                 mUserModel.getJwt());
-
     }
-
 }

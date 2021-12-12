@@ -18,39 +18,38 @@ import java.util.List;
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentChatRoomCardBinding;
 
-// todo: this class to be refactoed to 'ChatRoomRecyclerAdapter'
 /**
- * ContactRecyclerAdapter provides an adapter for the ContactsFragment RecyclerView.
+ * ChatRoomsRecyclerAdapter provides an adapter for the ChatsFragment RecyclerView.
  *
  * @author Parker Rosengreen
  * @version Fall 2021
  */
-public class MessagesRecyclerAdapter
-        extends RecyclerView.Adapter<MessagesRecyclerAdapter.MessagesViewHolder> {
+public class ChatRoomsRecyclerAdapter
+        extends RecyclerView.Adapter<ChatRoomsRecyclerAdapter.ChatRoomViewHolder> {
 
     /** The list of contacts to be displayed */
     private final List<ChatRoom> mChatRooms;
 
     /**
-     * Creates a new ContactsRecyclerAdapter with a provided list of contacts
+     * Creates a new ChatRoomsRecyclerAdapter with a provided list of contacts
      *
      * @param theRooms the list of contacts
      */
-    public MessagesRecyclerAdapter(final List<ChatRoom> theRooms) {
+    public ChatRoomsRecyclerAdapter(final List<ChatRoom> theRooms) {
         mChatRooms = theRooms;
     }
 
     @NonNull
     @Override
-    public MessagesViewHolder onCreateViewHolder(@NonNull final ViewGroup theParent,
+    public ChatRoomViewHolder onCreateViewHolder(@NonNull final ViewGroup theParent,
                                                  final int theViewType) {
-        return new MessagesViewHolder(LayoutInflater
+        return new ChatRoomViewHolder(LayoutInflater
                 .from(theParent.getContext())
                 .inflate(R.layout.fragment_chat_room_card, theParent, false));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final MessagesViewHolder theHolder,
+    public void onBindViewHolder(@NonNull final ChatRoomViewHolder theHolder,
                                  final int thePosition) {
         theHolder.setChatRoom(mChatRooms.get(thePosition));
     }
@@ -61,31 +60,27 @@ public class MessagesRecyclerAdapter
     }
 
     /**
-     * ContactsViewHolder is a class defining an individual ViewHolder for the ContactsFragment
+     * ChatRoomViewHolder is a class defining an individual ViewHolder for the ChatsFragment
      * RecyclerView.
      *
      * @author Parker Rosengreen
      * @version Fall 2021
      */
-    public class MessagesViewHolder extends RecyclerView.ViewHolder {
+    public class ChatRoomViewHolder extends RecyclerView.ViewHolder {
 
-        /** The assigned view */
-        private final View mView;
-
-        /** The ViewBinding corresponded to a contact RecyclerView card */
+        /** The ViewBinding corresponded to a chat room RecyclerView card */
         private final FragmentChatRoomCardBinding mBinding;
 
-        /** The contact assigned to this ViewHolder */
+        /** The chat room assigned to this ViewHolder */
         private ChatRoom mRoom;
 
         /**
-         * Creates a new ContactsViewHolder with the provided view
+         * Creates a new ChatRoomViewHolder with the provided view
          *
          * @param theItemView the view to be assigned
          */
-        public MessagesViewHolder(@NonNull final View theItemView) {
+        public ChatRoomViewHolder(@NonNull final View theItemView) {
             super(theItemView);
-            mView = theItemView;
             mBinding = FragmentChatRoomCardBinding.bind(theItemView);
 
             // navigate to a chat room fragment when the chat room card is pressed.
@@ -101,7 +96,7 @@ public class MessagesRecyclerAdapter
         }
 
         /**
-         * Assigns a contact to this view holder
+         * Assigns a chat room to this view holder
          *
          * @param theRoom the contact to be assigned
          */
@@ -110,7 +105,7 @@ public class MessagesRecyclerAdapter
             display();
         }
 
-        /** Displays all contact data and image views for a single contact card */
+        /** Displays all chat room data and image views for a single chat room card */
         private void display() {
             mBinding.chatName.setText(mRoom.getChatName());
             mBinding.currentMessage.setText(mRoom.getMostRecentMessage());

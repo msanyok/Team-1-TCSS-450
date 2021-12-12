@@ -13,7 +13,6 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -21,20 +20,13 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
-import edu.uw.tcss450.group1project.model.NewMessageCountViewModel;
-
 
 /**
  * An {@link AndroidViewModel} child class that gets, parses, and stores
@@ -46,10 +38,10 @@ import edu.uw.tcss450.group1project.model.NewMessageCountViewModel;
 public class ChatsListViewModel extends AndroidViewModel {
 
     /** The live data that stores the chats/list/ JSON response. */
-    private MutableLiveData<JSONObject> mResponse;
+    private final MutableLiveData<JSONObject> mResponse;
 
     /**
-     * Creates a new Chats view model with default values
+     * Creates a new chat list view model with default values
      *
      * @param theApplication the app this view model is assigned to
      * @throws NullPointerException if theApplication is null
@@ -135,5 +127,4 @@ public class ChatsListViewModel extends AndroidViewModel {
             }
         }
     }
-
 }

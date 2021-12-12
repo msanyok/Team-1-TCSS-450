@@ -27,7 +27,6 @@ import org.json.JSONObject;
 import java.nio.charset.Charset;
 import java.util.Objects;
 
-
 /**
  * An {@link AndroidViewModel} child class that handles the data related to
  * verifying a user's account.
@@ -75,7 +74,7 @@ public class RegisterVerificationViewModel extends AndroidViewModel {
      * the account that corresponds to the given email using the
      * given verification code.
      *
-     * @param theEmail the user's email attatched to their account
+     * @param theEmail the user's email attached to their account
      * @param theCode  the user's inputted verification code
      * @throws NullPointerException if theEmail is null
      * @throws NullPointerException if theCode is null
@@ -108,7 +107,6 @@ public class RegisterVerificationViewModel extends AndroidViewModel {
         //Instantiate the RequestQueue and add the request to the queue
         Volley.newRequestQueue(getApplication().getApplicationContext())
                 .add(request);
-
     }
 
     /**
@@ -211,5 +209,4 @@ public class RegisterVerificationViewModel extends AndroidViewModel {
         successToast.setDuration(Toast.LENGTH_SHORT);
         successToast.show();
     }
-
 }

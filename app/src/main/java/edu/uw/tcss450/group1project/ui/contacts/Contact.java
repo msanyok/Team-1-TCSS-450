@@ -7,7 +7,6 @@ package edu.uw.tcss450.group1project.ui.contacts;
 
 import androidx.annotation.NonNull;
 
-import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Objects;
 

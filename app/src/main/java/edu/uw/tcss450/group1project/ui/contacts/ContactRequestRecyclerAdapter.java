@@ -18,7 +18,6 @@ import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentContactRequestCardBinding;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
 
-
 /**
  * ContactRequestRecyclerAdapter provides an adapter for the HomeFragment contact request
  * RecyclerView.
@@ -42,6 +41,8 @@ public class ContactRequestRecyclerAdapter
      * Creates a new ContactRequestRecyclerAdapter with a provided list of potential contacts
      *
      * @param theContacts the list of potential contacts
+     * @param theViewModel the contact request view model
+     * @param theUserModel the user info view model
      */
     public ContactRequestRecyclerAdapter(final List<Contact> theContacts,
                                          final ContactRequestViewModel theViewModel,
@@ -80,9 +81,6 @@ public class ContactRequestRecyclerAdapter
      */
     public class ContactRequestViewHolder extends RecyclerView.ViewHolder {
 
-        /** The assigned view */
-        private final View mView;
-
         /** The ViewBinding corresponded to a contact request RecyclerView card */
         private final FragmentContactRequestCardBinding mBinding;
 
@@ -96,13 +94,11 @@ public class ContactRequestRecyclerAdapter
          */
         public ContactRequestViewHolder(@NonNull final View theItemView) {
             super(theItemView);
-            mView = theItemView;
             mBinding = FragmentContactRequestCardBinding.bind(theItemView);
             mBinding.acceptButton.setOnClickListener(button -> {
                     mContactRequests.sendContactResponse(
                             true, mContact.getMemberId(), mUserInfo.getJwt());
             });
-
 
             mBinding.denyButton.setOnClickListener(button -> {
                 mContactRequests.sendContactResponse(

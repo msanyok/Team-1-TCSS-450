@@ -250,11 +250,9 @@ public class ChatRoomFragment extends Fragment {
 
                     // we also want to be able to notify people if we start typing again
                     // immediately (rather than having to wait for the timer to run out)
-                    // todo:
                     mTypingTimer = new Timer();
                     mCanType = true;
                 }
-
             }
 
             @Override
@@ -297,8 +295,6 @@ public class ChatRoomFragment extends Fragment {
                 binding.userTypingText.setText("");
                 binding.userTypingText.setVisibility(View.GONE);
             }
-
         });
     }
-
 }

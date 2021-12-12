@@ -14,7 +14,8 @@ import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentAddContactCardBinding;
 
 /**
- * ContactAdapter provides an adapter for the Fragment RecyclerView.
+ * NewContactRequestRecyclerAdapter provides an adapter for the contact notifications
+ * fragment RecyclerView.
  *
  * @author Parker Rosengreen
  * @author Steven Omegna
@@ -36,10 +37,9 @@ public class NewContactRequestRecyclerAdapter
      * @param theConsumer the method to be passed
      */
     public NewContactRequestRecyclerAdapter(final List<Contact> theContacts,
-                                   final Consumer<Contact> theConsumer) {
+                                            final Consumer<Contact> theConsumer) {
         mContacts = theContacts;
         mConsumer = theConsumer;
-
     }
 
     @NonNull
@@ -51,7 +51,6 @@ public class NewContactRequestRecyclerAdapter
                 .from(theParent.getContext())
                 .inflate(R.layout.fragment_add_contact_card,
                         theParent, false));
-
     }
     @Override
     public void onBindViewHolder(@NonNull final ContactsViewHolder holder, final int position) {
@@ -74,9 +73,6 @@ public class NewContactRequestRecyclerAdapter
      */
     public class ContactsViewHolder extends RecyclerView.ViewHolder {
 
-        /** The assigned view */
-        private final View mView;
-
         /** The ViewBinding corresponded to a contact RecyclerView card */
         private final FragmentAddContactCardBinding mBinding;
 
@@ -90,7 +86,6 @@ public class NewContactRequestRecyclerAdapter
          */
         public ContactsViewHolder(@NonNull final View theItemView) {
             super(theItemView);
-            mView = theItemView;
             mBinding = FragmentAddContactCardBinding.bind(theItemView);
             mBinding.toggleButton.setOnClickListener(button -> mConsumer.accept(mContact));
         }
@@ -115,4 +110,3 @@ public class NewContactRequestRecyclerAdapter
         }
     }
 }
-

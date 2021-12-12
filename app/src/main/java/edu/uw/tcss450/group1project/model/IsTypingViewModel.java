@@ -6,14 +6,12 @@
 package edu.uw.tcss450.group1project.model;
 
 import android.app.Application;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModel;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -25,7 +23,6 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -159,8 +156,8 @@ public class IsTypingViewModel extends AndroidViewModel {
      * @param theObserver the observer that observes the map
      */
     public void addTimersObserver(@NonNull final LifecycleOwner theOwner,
-                                  @NonNull final Observer<? super Map<Integer, Map<String, Timer>>> theObserver) {
+                                  @NonNull final Observer<? super Map<Integer, Map<String, Timer>>>
+                                          theObserver) {
         mTimers.observe(theOwner, theObserver);
     }
-
 }

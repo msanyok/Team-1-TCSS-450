@@ -27,14 +27,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import edu.uw.tcss450.group1project.R;
 import edu.uw.tcss450.group1project.databinding.FragmentChatRoomsBinding;
 import edu.uw.tcss450.group1project.model.NewMessageCountViewModel;
 import edu.uw.tcss450.group1project.model.UserInfoViewModel;
-import edu.uw.tcss450.group1project.ui.contacts.Contact;
 
 /**
  * A {@link Fragment} subclass that is responsible for the showing a user's available chats.
@@ -116,7 +114,7 @@ public class ChatsFragment extends Fragment {
                                     room.getChatName()
                                             .toLowerCase(Locale.ROOT).startsWith(firstChars)
                             ).collect(Collectors.toList());
-                    mBinding.listRoot.setAdapter(new MessagesRecyclerAdapter(newList));
+                    mBinding.listRoot.setAdapter(new ChatRoomsRecyclerAdapter(newList));
                 }
             }
         };
@@ -133,14 +131,10 @@ public class ChatsFragment extends Fragment {
             if (theResponse.has("code")) {
                 // a 400 error occurred, so log it.
                 Log.e("CHATS LIST 400", theResponse.toString());
-                // TODO: Handle UI change when the chat list is not received properly,
-                //  potentailly show Dialog?
-
             } else {
                 // the data was retrieved properly, so get the formatted data from the view model
                 // (will be up to date by the time this method is called from the observer)
                 parseAndSetChatList(theResponse);
-
             }
         } else {
             // no response from the request
@@ -184,9 +178,8 @@ public class ChatsFragment extends Fragment {
             // should we do something specific here if the json isn't parsed properly/
             exception.printStackTrace();
         }
-        mBinding.listRoot.setAdapter(new MessagesRecyclerAdapter(mChatRoomList));
+        mBinding.listRoot.setAdapter(new ChatRoomsRecyclerAdapter(mChatRoomList));
         mTextWatcher.onTextChanged(mBinding.roomSearchText.getText().toString(),
                 0, 0, 0);
     }
-
 }
