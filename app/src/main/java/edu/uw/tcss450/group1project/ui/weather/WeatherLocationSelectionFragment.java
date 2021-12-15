@@ -228,6 +228,7 @@ public class WeatherLocationSelectionFragment
      */
     private void displaySaveLocationDialog() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
+        alertDialog.setCancelable(false);
         alertDialog.setMessage(Html.fromHtml("<font color='#000000'>Would you like to " +
                 "save this location?</font>"));
         alertDialog.setPositiveButton(Html.fromHtml("<font color='000000'>Yes</font>"),
